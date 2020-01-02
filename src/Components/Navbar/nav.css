@@ -5,3 +5,13 @@
     
     
 }
+
+.link{
+    color:white;
+
+}
+
+.link:hover{
+    color: white;
+    text-decoration: none;
+}

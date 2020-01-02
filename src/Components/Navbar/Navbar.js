@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -15,6 +15,13 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import {Link} from 'react-router-dom';
 import './nav.css';
+import styled from 'styled-components';
+
+
+const StyledMenuIcon = styled(MenuIcon)`
+color:white;
+`
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -77,7 +84,7 @@ const useStyles = makeStyles(theme => ({
           aria-haspopup="true"
           onClick={handleToggle}
         >
-          <MenuIcon/>
+          <StyledMenuIcon />
         </Button>
         <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
           {({ TransitionProps, placement }) => (
@@ -107,7 +114,7 @@ const useStyles = makeStyles(theme => ({
     </div>
           
           <Typography variant="h6" color="inherit" className={classes.flag}>
-          <Link className="link" to="/" className="linkcss">
+          <Link className="link" to="/" >
                     Norvegiana.ro
            </Link>
        
