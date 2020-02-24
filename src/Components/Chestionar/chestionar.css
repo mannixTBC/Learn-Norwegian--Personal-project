@@ -127,8 +127,12 @@ body{
     width: 20rem;
 }
 
-
-/* .progress-bar{
-    width: 20%;
-} */
-
+.mesaj{
+    text-align: center;
+    font-size: 3rem;
+    padding-bottom: 3rem;
+}
+.helpMessage{
+    text-align: center;
+    font-size: 1.5rem;
+}

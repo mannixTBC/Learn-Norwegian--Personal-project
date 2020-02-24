@@ -31,7 +31,15 @@ class Hangman extends Component {
     this.setState(st => ({
       guessed: st.guessed.add(letter),
       mistake: st.mistake + (st.list[0].includes(letter) ? 0 : 1)
-    }));
+    }))
+    console.log(this.state.list);
+    if(this.state.guessed.length === this.state.list[0].length){
+      this.resetButton();
+      console.log('ajunge aici');
+
+    }
+    
+    ;
   }
 
   guessedWord() {
@@ -62,16 +70,20 @@ class Hangman extends Component {
   }
 
   render() {
+    let intrebare = this.state.list[1];
+    const answer = this.state.list[0];
     const gameOver = this.state.mistake >= this.props.maxWrong;
-    const isWinner = this.guessedWord().join("") === this.state.answer;
+    const isWinner = this.guessedWord().join("") === answer;
     let gameStat = this.generateButtons();
 
     if (isWinner) {
-      gameStat = "You Won!!!"
+      gameStat = "Ai castigat!";
+      intrebare = '';
+      
     }
 
     if (gameOver) {
-      gameStat = "You Lost!!!"
+      gameStat = "Ai pierdut!"
     }
 
     return (
@@ -82,7 +94,7 @@ class Hangman extends Component {
           <img src={this.props.images[this.state.mistake]} alt=""/>
         </div>
         <div className="text-center">
-          <p>{this.state.list[1]}</p>
+          <p>{intrebare}</p>
           <p>
             {!gameOver ? this.guessedWord() : this.state.answer}
           </p>

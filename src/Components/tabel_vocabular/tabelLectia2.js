@@ -135,7 +135,7 @@ const Tabel2 = () => {
 
     </Paper>
           
-          <Paper><Text1/></Paper>
+          
          
     </div>
   );

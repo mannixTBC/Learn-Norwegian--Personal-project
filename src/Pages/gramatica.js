@@ -11,7 +11,7 @@ const Gramatica = () =>{
     return(
         <div>
             <h1>Gramatica</h1>
-            <Chestionar/>
+            
         </div>
     )
 }

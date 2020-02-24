@@ -1,12 +1,12 @@
 import React from 'react';
-import Hangman from '../Components/Hangman/Hangman.js';
+import CardExercitii from '../Components/Card/cardsExercitii'
 
 const Exercitiu = () =>{
     return(
-        <div>
-            <h1>Exercitiu</h1>
-            <Hangman/>
-        </div>
+        
+            
+            <CardExercitii/>
+        
     )
 }
 

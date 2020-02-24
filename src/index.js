@@ -1,10 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App1 from '../src/Components/soundplay/soundplay'
 import App from './App';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import * as serviceWorker from './serviceWorker';
-import Card from './Components/Card/cards'
+
 
 
 ReactDOM.render(<App />, document.getElementById('root'));

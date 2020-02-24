@@ -1,7 +1,7 @@
 export const intrebari = [
-    [['Roma','Atena','Nicosia'],['1 Care este capitala Imperioului Roman?'],['Roma']],
-    [['Roma','Nicropole','Constantinopol'],['2 Care este capitala Imperioului Bizantin?'],['Constantinopol']],
-    [['Damasc','Atena','Viena'],['3 Care este capitala Imperioului Sirian?'],['Damasc']]
+    [['meg','oss','deg'],['Jeg trenger litt hjelp - Kan du hjelpe .....?'],['meg']],
+    [['oss','dem','deg'],['Anna og Peter trenger litt hjelp - Kan du hjelpe .....'],['dem']],
+    [['deg','henne','oss'],['Trenger du litt hjelp? - Jeg kan hjelpe .....'],['deg']]
 ]
 
 function randomQuestion() {

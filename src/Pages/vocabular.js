@@ -1,5 +1,4 @@
 import React from 'react';
-import Tabel from '../Components/tabel_vocabular/tabel';
 import Cards from '../Components/Card/cards';
 
 const Vocabular = () =>{
