@@ -12,6 +12,7 @@ import Hangman from './Components/Hangman/Hangman';
 import Chestionar from './Components/Chestionar/chestionar1';
 import Wheather from './Components/Weather/weatherCard';
 
+
 function App() {
   return (
     <Router>

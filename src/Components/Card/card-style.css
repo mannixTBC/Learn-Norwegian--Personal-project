@@ -13,8 +13,8 @@ body{
     padding-top:6rem;
 }
 
-.card .card-body{
-    padding:3rem 0 !important;
+.text-center{
+    margin-left: 3rem;
 }
 .card-img-top {
     height:11rem;

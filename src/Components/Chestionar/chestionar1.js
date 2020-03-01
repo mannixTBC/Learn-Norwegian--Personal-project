@@ -1,20 +1,13 @@
-import React, { Component, useState }  from 'react';
-
-
+import React, { Component}  from 'react';
 import intrebari from './intrebari.js';
 import './chestionar.css';
 import Progres from './progres';
 
-
-
 class Chestionar extends Component{
-
-    
+   
     constructor(props) {
-        super(props);
-        
-        this.state = {
-            
+        super(props);       
+        this.state = {           
           corecte : 0,
           gresite : 0,
           raspunse: 0,
@@ -23,10 +16,8 @@ class Chestionar extends Component{
           isCorrect: false,
           currentList : intrebari,
           currentQuestion : intrebari[0],
-          selectedAnswer : 0
-          
-        }
-        
+          selectedAnswer : 0        
+        }       
       }
 
       x = 0;
