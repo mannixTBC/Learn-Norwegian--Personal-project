@@ -4,11 +4,5 @@ export const intrebari = [
     [['deg','henne','oss'],['Trenger du litt hjelp? - Jeg kan hjelpe .....'],['deg']]
 ]
 
-function randomQuestion() {
-    const list =   intrebari[Math.floor(Math.random() * intrebari.length)]
-    return list;
-  }
 
-
-export {randomQuestion}  
 export default intrebari;

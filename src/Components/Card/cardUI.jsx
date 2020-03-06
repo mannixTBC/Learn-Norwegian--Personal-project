@@ -10,12 +10,12 @@ const Card = (props)=> {
                <img src={props.imgsrc} alt="people" className="card-img-top"/>
            </div>
            <div className="card-body text-dark">
-    <h4 className="card-title">{props.title}</h4> 
-              <p className="card-text text-secondary">
+                <h4 className="card-title">{props.title}</h4> 
+                <p className="card-text text-secondary">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut officia nam, eius unde suscipit nostrum deserunt? Aliquid rerum earum velit.
-              </p>
+                </p>
               <Link to={props.path}>
-              <a href="#" className="btn btn-outline-success">Incepe</a>
+              <a href="#" className="btn btn-outline-success">Start</a>
               </Link>
               
             </div>       

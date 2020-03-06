@@ -1,12 +1,5 @@
 import React from 'react';
 
-
-
-
-
-
-
-
 const Progres = ({width}) => {
     return(
         <div class="progress pad2">

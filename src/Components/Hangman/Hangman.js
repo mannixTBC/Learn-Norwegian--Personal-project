@@ -79,7 +79,6 @@ class Hangman extends Component {
     if (isWinner) {
       gameStat = "Ai castigat!";
       intrebare = '';
-      
     }
 
     if (gameOver) {

@@ -13,8 +13,7 @@ const Card1 = styled(Card)`
     }
 
     .card{
-        width: 20rem;
-       
+        width: 20rem; 
     }
     
     .card:hover {
@@ -24,10 +23,12 @@ const Card1 = styled(Card)`
     .card .card-body {
         padding:3rem 0 !important;
     }
+
     .card-text {
         font-size:.9rem;
         padding: 0.4rem 1.9rem;
     }
+    
     .container-fluid .row{
         padding-top:6rem;
     }
@@ -39,9 +40,6 @@ const Card1 = styled(Card)`
   }
 `
 class Cards extends Component{
-
-
-
 
     render(){
         return(

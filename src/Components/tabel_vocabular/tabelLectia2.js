@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, ThemeProvider} from '@material-ui/core/styles';
+import { makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,7 +8,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { flexbox } from '@material-ui/system';
 import styled from 'styled-components';
-import Icon from '@material-ui/core/Icon';
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
 import {Howl, Howler} from 'howler';
 import Sound1 from '../audio/Lectia2/11.mp3';
@@ -16,14 +15,8 @@ import Sound2 from '../audio/Lectia2/22.mp3';
 import Sound3 from '../audio/Lectia2/33.mp3';
 import Sound4 from '../audio/Lectia2/44.mp3';
 import Sound5 from '../audio/Lectia2/55.mp3';
-import Sound6 from '../audio/Lectia2/66.mp3';
-import Text from './textlectia2'
 
 
-const audioCLips = [
-  {sound:Sound1, label:"sunet" },
-  {sound:Sound2, label:"sunet" }
-]
 
 const NumberCell = styled(TableCell)`
 && {
@@ -77,6 +70,10 @@ const useStyles = makeStyles({
   },
   traducere:{
     textAlign:"center",  
+  },
+
+  pronuntie:{
+    textAlign:"left",
   }
 
 });
@@ -105,7 +102,8 @@ const Tabel2 = () => {
         <TableHead>
           <TableRow>
             <NumberCell>#</NumberCell>
-            <TableCell className={classes.cuvant}  style={{width:'10%'}}>Cuvant</TableCell>
+            <TableCell className={classes.cuvant}  style={{width:'30%'}}>Cuvant</TableCell>
+            <TableCell className={classes.pronuntie} align="right">Pronuntie</TableCell>
             <TableCell className={classes.traducere} align="right">Traducere</TableCell>
             
           </TableRow>

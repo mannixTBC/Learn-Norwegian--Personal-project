@@ -14,8 +14,8 @@ const Layout = () => {
                         <li>Exercitii</li>             
                         </h1></div>
             
-        </div >
-        </div>
+                </div >
+            </div>
     
         </div>
       
