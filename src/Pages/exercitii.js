@@ -4,8 +4,7 @@ import CardExercitii from '../Components/Card/cardsExercitii'
 const Exercitiu = () =>{
     return(
         
-            
-            <CardExercitii/>
+            <CardExercitii />
         
     )
 }

@@ -98,9 +98,6 @@ const useStyles = makeStyles(theme => ({
                     <Link to="/vocabular" className="linkcss">
                     <MenuItem onClick={handleClose}>Lectii</MenuItem>
                     </Link>
-                    <Link to="/gramatica" className="linkcss">
-                    <MenuItem onClick={handleClose}>Gramatica</MenuItem>
-                    </Link>
                     <Link to="/exercitiu" className="linkcss">
                     <MenuItem onClick={handleClose}>Exercitii</MenuItem>
                     </Link>

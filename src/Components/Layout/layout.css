@@ -1,9 +1,11 @@
 .imagine{
-    background-image: url("https://norwegianabc.com/assets/front-cover.jpg");
+    background-image: url("https://netstorage-yen.akamaized.net/images/3o3bpd7kbnmo7ileu.jpg?imwidth=900");
     width: 100%;
     height: 100%;
     padding: 30px 15px;
     color: #FAFAFA;
+    background-repeat:no-repeat;
+    background-size: cover;
 }
 
 .text {
@@ -17,7 +19,6 @@
     padding: 18px;
     background-color: rgba(28,28,28,0.7);
     text-align: center;
-    /* padding: 18px; */
 
 }
 

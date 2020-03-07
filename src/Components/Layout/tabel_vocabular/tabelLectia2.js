@@ -28,15 +28,6 @@ const NumberCell = styled(TableCell)`
 }  
 `
 
-const Text1 = styled(Text)`
-&& {
-  font-family: "Open Sans", "Lucida Sans", Geneva, Verdana, sans-serif;
-}
-.paragraf{
-  font-family: "Open Sans", "Lucida Sans", Geneva, Verdana, sans-serif;
-  font-size: 1.5em;
-}  
-`
 
 const soundPlay = (src) => {
   const sound = new Howl({
