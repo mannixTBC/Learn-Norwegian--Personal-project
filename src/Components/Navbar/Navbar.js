@@ -96,7 +96,7 @@ const useStyles = makeStyles(theme => ({
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
                     <Link to="/vocabular" className="linkcss">
-                    <MenuItem onClick={handleClose}>Lectii</MenuItem>
+                    <MenuItem onClick={handleClose} style={{textDecoration:'none'}}>Lectii</MenuItem>
                     </Link>
                     <Link to="/exercitiu" className="linkcss">
                     <MenuItem onClick={handleClose}>Exercitii</MenuItem>
