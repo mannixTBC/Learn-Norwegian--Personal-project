@@ -5,7 +5,7 @@ import Layout from './Components/Layout/layout';
 import Exercitiu from './Pages/exercitii';
 import Gramatica from './Pages/gramatica';
 import Vocabular from './Pages/vocabular';
-import Tabel from './Components/tabel_vocabular/tabel';
+import Tabel from './';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import Tabel2 from './Components/tabel_vocabular/tabelLectia2';
 import Hangman from './Components/Hangman/Hangman';
