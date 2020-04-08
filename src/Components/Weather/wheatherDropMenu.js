@@ -18,12 +18,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function ControlledOpenSelect(props) {
   const classes = useStyles();
-  const [age, setAge] = React.useState('');
-
   const [open, setOpen] = React.useState(false);
-
-  const handleChange =async( event) => {
-    setAge(event.target.value);
+  const handleChange = async (event) => {
     await props.setCity(event.target.value);
     props.getWeather();
     console.log(event.target.value);
@@ -36,9 +32,7 @@ export default function ControlledOpenSelect(props) {
   const handleOpen = () => {
     setOpen(true);
   };
-
-    
-
+ 
   return (
     <div>
       
@@ -50,14 +44,10 @@ export default function ControlledOpenSelect(props) {
           open={open}
           onClose={handleClose}
           onOpen={handleOpen}
-          value={age}
           onChange={handleChange}
         >
-          <MenuItem value="Oslo">
-            <em>Oslo</em>
-          </MenuItem>
-          <MenuItem value="Oslo">Oslo</MenuItem>
           
+          <MenuItem value="Oslo">Oslo</MenuItem>
           <MenuItem value="Tromso">Tromso</MenuItem>
           <MenuItem value="Bergen">Bergen</MenuItem>
         </Select>

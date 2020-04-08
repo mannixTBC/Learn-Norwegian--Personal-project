@@ -5,11 +5,10 @@ import './weatherCard.css';
 
 const WeatherCard = (props) => {
     return(
-        <div className="container border border-primary card" style={{width:`15rem`}}>
+        <div  className="container border border-primary card" style={{width:`20rem`,justifyContent:'center'}}>
             <div className="cards">
                     <h1 className="text-center">{props.city}</h1>
-                    <h2 className="text-center">{props.choseCity}</h2>
-                  
+                    <h2 className="text-center">{props.choseCity}</h2>     
                     <h5 className="py-1 text-center">
                         <i class={`wi ${props.wheatherIcon} display-1`}></i>
                     </h5>

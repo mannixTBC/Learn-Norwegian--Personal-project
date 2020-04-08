@@ -4,7 +4,7 @@ import 'weather-icons/css/weather-icons.css';
 import styled from 'styled-components';
 import Menu from './wheatherDropMenu';
 
-const WheatherCard1 = styled(WheatherCard)`
+const WheatherCardStyled = styled(WheatherCard)`
 &&{
     .container{
         width:15rem;
@@ -85,8 +85,7 @@ class Wheather extends React.Component{
     getWheather = async()=>{
         const api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${this.state.city},${this.state.country}&appid=${API_key}`);
         const response = await api_call.json();
-        console.log(response);
-
+        
         this.setState({
            celsius:this.calcCelsius(response.main.temp),
            temp_max: this.calcCelsius(response.main.temp_max),
@@ -94,39 +93,34 @@ class Wheather extends React.Component{
            description: response.weather[0].description,
            
         });
-        this.getWeatherIcon(response.weather[0].id,this.wheatherIcon);
-        
-        
-        console.log('intra in functie')
+        this.getWeatherIcon(response.weather[0].id,this.wheatherIcon);          // Face update la wheather icon state
     }
    
     
-      setCity=(city) => {
+      setCity=(city) => {                // Update la state cu orasul selectat
         this.setState({city:city})
-      
       }
-      choseCity = () => {
+
+      choseCity = () => {      // Componenta Menu face render dupa executarea functiei
         return(
             <Menu 
-                         
-                       setCity={this.setCity}
-                       getWeather = {this.getWheather}
+               setCity={this.setCity}     
+               getWeather = {this.getWheather}
                         />
         )
     }
     render(){
         return(
             <div>
-                <WheatherCard1 
+                <WheatherCardStyled
                 city={this.state.city}
                 temp_celsius={`${this.state.celsius}`}
                 temp_min = {this.state.temp_min}
                 temp_max = {this.state.temp_max}
                 description = {this.state.description}
                 wheatherIcon = {this.state.icon}
-                choseCity = {this.choseCity()}
-                / >
-                   
+                choseCity = {this.choseCity()}   //  Drop Menu
+                />
                     <p>{this.state.message}</p>
             </div>
                 

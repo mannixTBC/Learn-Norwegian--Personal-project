@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import * as serviceWorker from './serviceWorker';
-import DragAndDrop3 from './Components/DND/DND.test/index'
+
 
 
 
