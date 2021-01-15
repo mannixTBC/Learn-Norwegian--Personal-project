@@ -10,6 +10,8 @@ import Lectia2 from './Components/Lectii/Lectia-2/tabel';
 import Hangman from './Components/Exercitii/Hangman/Hangman';
 import Chestionar from './Components/Exercitii/Chestionar/chestionar';
 import Wheather from './Components/Weather/weatherCard';
+import Dnd from './Components/Exercitii/DragAndDrop/Drag-and-drop/App'
+
 
 
 function App() {
@@ -26,6 +28,7 @@ function App() {
       <Route path="/hangman" component={Hangman}/>
       <Route path="/chestionar" component={Chestionar}/>
       <Route path="/vremea" component={Wheather}/>
+      <Route path="/drag" component={Dnd}/>
       </Switch>
     </div>
     </Router>

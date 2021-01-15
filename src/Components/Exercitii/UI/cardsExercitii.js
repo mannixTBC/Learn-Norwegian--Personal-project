@@ -28,7 +28,7 @@ class CardsExercitii extends Component{
                         <Card
                          imgsrc={img3}
                          title={"Drag and drop"}
-                         path={"/chestionar"}/>
+                         path={"/drag"}/>
                     </div>
                     
                 </div>
