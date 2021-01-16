@@ -3,7 +3,7 @@ const initialData = {
 tasks :{
     "task 1" : {id :'task 1', content : "bever", description:'animal'},
     "task 2" : {id :'task 2', content : "kalv", description:'animal'},
-    "task 3" : {id :'task 3', content : "svart", description:'car'},
+    "task 3" : {id :'task 3', content : "svart", description:'color'},
     "task 4" : {id :'task 4', content : "gul", description: 'color'},
 },
 columns : {

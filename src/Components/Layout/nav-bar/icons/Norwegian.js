@@ -1,11 +1,17 @@
 import React from 'react';
 import Steag from './norway.png';
+import styled from 'styled-components';
+
+
+const Container = styled.div`
+    margin-left:auto;
+`
 
 const NorwegianFlagIcon = () => {
     return(
-        <div>
+        <Container>
             <img src={Steag} />
-        </div>
+        </Container>
     )
 }
 

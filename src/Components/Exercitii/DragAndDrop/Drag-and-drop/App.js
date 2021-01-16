@@ -64,6 +64,19 @@ class App extends React.Component {
       taskIds:finishTaskIds,
     }
 
+    
+    let correctAnswers = 0;
+    finishTaskIds.map((taskId)=>{
+      if(this.state.tasks[taskId].description === finish.description)
+        {
+          correctAnswers +=  1
+          console.log(`numarul de alegeri corecte este ${correctAnswers}`)
+        }else{
+          console.log('raspuns eronat')
+        }
+        return correctAnswers
+    })
+
     const newState= {
       ...this.state,
       columns:{
@@ -72,14 +85,15 @@ class App extends React.Component {
         [newFinish.id]:newFinish,
       }
     }
+
+    
     this.setState(newState);
-    console.log(start,finish)
+    
 
     
     
   }
-
-  handleAnswers = (result)=>{
+handleAnswers = (result)=>{
     const {destination, source, draggableId} = result;
     if(!destination){
       return
@@ -106,9 +120,14 @@ class App extends React.Component {
         }
         return correctAnswers
     })
+   const newState = {
+      ...this.state,
+      correctAnswers: correctAnswers,
+    }
   }
 
   render(){
+    
     return (<div>
         <h1>Drag the words in the correct tabel</h1>
         <DragDropContext
@@ -123,7 +142,7 @@ class App extends React.Component {
           </Container>
         </DragDropContext>
         <button onClick={this.handleAnswers}>Check answers</button>
-        <h3>Work in progress :)</h3>
+        <h3>Correct answers {this.state.correctAnswers}</h3>
         {console.log(this.state)}
         </div>
     )
