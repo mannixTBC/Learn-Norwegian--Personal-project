@@ -33,6 +33,7 @@ const useStyles = makeStyles(theme => ({
     },
     flag : {
         marginRight: theme.spacing(130),
+        borderRadius : 20,
     },
     root1: {
       display: 'flex',
@@ -101,7 +102,7 @@ const useStyles = makeStyles(theme => ({
                     <Link to="/exercitiu" className="linkcss">
                     <MenuItem onClick={handleClose}>Exercitii</MenuItem>
                     </Link>
-                    <Link to="/vremea" className="linkcss">
+                    <Link to="/wheather" className="linkcss">
                     <MenuItem onClick={handleClose}>Meteo</MenuItem>
                     </Link>
                   </MenuList>
@@ -113,11 +114,28 @@ const useStyles = makeStyles(theme => ({
       </div>
     </div>
           
-          <Typography variant="h6" color="inherit" className={classes.flag}>
-          <Link className="link" to="/" >
+          <Typography variant="h6" color="inherit" >
+          <Link className="link homelink" to="/" >
                     Norvegiana.ro
-           </Link>
-       
+          </Link>
+          </Typography>
+
+          <Typography>
+          <Link  id="short-menu" className="link" to="/exercitiu" >
+                    Exercitii
+          </Link>
+          </Typography>
+
+          <Typography>
+          <Link  id="short-menu" className="link" to="/vocabular" >
+                    Lectii
+          </Link>
+          </Typography>
+
+          <Typography>
+          <Link  id="short-menu" className="link" to="/wheather" >
+                    Meteo
+          </Link>
           </Typography>
         
         <NorwegianFlagIcon  className={classes.flag}/>

@@ -15,3 +15,14 @@
     color: white;
     text-decoration: none;
 }
+
+#short-menu{
+    font-family: cursive;
+    font-size: medium;
+    margin-left: 5rem;
+}
+
+.homelink{
+    color: red;
+    font-weight: bold;
+}

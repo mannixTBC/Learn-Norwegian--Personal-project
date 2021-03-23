@@ -89,9 +89,9 @@ class Chestionar extends Component{
         if(this.state.isActive === true){
         return(
             <div id="liste">
-        <button id='istorie'type="button" class="clasaListe"  onClick={()=>this.checkAnswer(this.state.currentQuestion[0][0])} >{this.state.currentQuestion[0][0]}</button>
-        <button id='geografie'type="button"class="clasaListe" onClick={() =>this.checkAnswer(this.state.currentQuestion[0][1])}>{this.state.currentQuestion[0][1]}</button>
-        <button id='politica'type="button" class="clasaListe" onClick={() =>this.checkAnswer(this.state.currentQuestion[0][2])}>{this.state.currentQuestion[0][2]}</button>
+                    <button id='istorie'type="button" class="clasaListe"  onClick={()=>this.checkAnswer(this.state.currentQuestion[0][0])} >{this.state.currentQuestion[0][0]}</button>
+                    <button id='geografie'type="button"class="clasaListe" onClick={() =>this.checkAnswer(this.state.currentQuestion[0][1])}>{this.state.currentQuestion[0][1]}</button>
+                    <button id='politica'type="button" class="clasaListe" onClick={() =>this.checkAnswer(this.state.currentQuestion[0][2])}>{this.state.currentQuestion[0][2]}</button>
             </div>
         )}
 
@@ -155,35 +155,34 @@ class Chestionar extends Component{
        render(){
     
         return(
-            <div>
-    <h1 id="titlu">{}</h1>
-            <h2 id="intrebare">{this.generateQuestion()} </h2>
-        <div >
-       {
-           this.generateAnswers()
-       }
-       </div>    
-        <div id='butoane'>
-            <button id='butonA'type="button" class="butoane">A</button>
-            <button id='butonB'type="button" class="butoane">B</button>
-            <button id='butonC'type="button" class="butoane">C</button>
-        </div>
-        
-        <div id='middle'> </div>
-        <div >{ this.generateHelpMessage()}</div>
-        <Progres
-        width = {this.progresconstanta}/>
-            {this.generateButtons()}
-                
-    
-    
-        <div id='middle'> </div> 
-        
-        <div class="raspunsuri">
-        <div id="rscorect">Corecte:{this.state.corecte}</div>
-       <div id="rsgresit">Gresite:{this.state.gresite}</div>
-        </div>
-      </div>
+            <div id="main-container">
+                            
+                                <h2 id="intrebare">{this.generateQuestion()} </h2>
+                            <div >
+                        
+                            <div id="quiz-answer-choice-container">
+                                {this.generateAnswers()}
+                            </div>
+                        
+                            </div>    
+                            <div id='butoane'>
+                                <button id='butonA'type="button" class="butoane">A</button>
+                                <button id='butonB'type="button" class="butoane">B</button>
+                                <button id='butonC'type="button" class="butoane">C</button>
+                            </div>
+                            
+                        
+                            <div >{ this.generateHelpMessage()}</div>
+                            <Progres
+                            width = {this.progresconstanta}/>
+                                {this.generateButtons()}
+                                    
+                        
+                            <div class="raspunsuri">
+                            <div id="correct-answer">Corecte:{this.state.corecte}</div>
+                            <div id="wrong-answer">Gresite:{this.state.gresite}</div>
+                            </div>
+            </div>
         )
         }
 }

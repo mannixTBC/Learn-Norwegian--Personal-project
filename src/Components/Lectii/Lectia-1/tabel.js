@@ -17,10 +17,8 @@ import Sound4 from './audio/4.mp3';
 import Sound5 from './audio/5.mp3';
 
 
-const audioCLips = [
-  {sound:Sound1, label:"sunet" },
-  {sound:Sound2, label:"sunet" }
-]
+
+
 
 const NumberCell = styled(TableCell)`
 && {
@@ -30,6 +28,8 @@ const NumberCell = styled(TableCell)`
   padding-top:5rem;
 }  
 `
+
+
 
 const soundPlay = (src) => {
   const sound = new Howl({
@@ -58,7 +58,9 @@ const useStyles = makeStyles({
     
   },
   tabel:{
-    width:"80%"
+    width:"80%",
+    margin:"auto",
+    marginTop:"10rem"
     
   },
   traducere:{

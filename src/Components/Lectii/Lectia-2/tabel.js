@@ -56,7 +56,9 @@ const useStyles = makeStyles({
     
   },
   tabel:{
-    width:"80%"
+    width:"80%",
+    margin:"auto",
+    marginTop:"10rem"
     
   },
   traducere:{
