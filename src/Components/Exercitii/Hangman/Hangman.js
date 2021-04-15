@@ -86,7 +86,7 @@ class Hangman extends Component {
     }
 
     return (
-      <div className="Hangman container">
+      <div className="background-image">
         <h1 className='text-center'>Hangman</h1>
         <div className="float-right">Wrong Guesses: {this.state.mistake} of {this.props.maxWrong}</div>
         <div className="text-center">
