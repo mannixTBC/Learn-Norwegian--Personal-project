@@ -5,9 +5,9 @@ import './footer.css'
 
 const Footer = () => {
     return(
-        <footer class="footer">
+        <div class="footer mt-auto py-3 bg-light">
             Footer 
-        </footer>   
+        </div>   
     )
 }
 

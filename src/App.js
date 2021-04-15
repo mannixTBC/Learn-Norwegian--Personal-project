@@ -31,6 +31,7 @@ function App() {
       <Route path="/wheather" component={Wheather}/>
       <Route path="/drag" component={Dnd}/>
       </Switch>
+      <Footer/>
       
     </div>
     </Router>
