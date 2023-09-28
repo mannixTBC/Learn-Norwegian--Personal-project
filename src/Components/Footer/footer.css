@@ -1,7 +1,7 @@
-.footer{
-    background-color: blueviolet;
+footer{
+    background-color: rgb(109, 100, 117);
     height: 50px;
     width: 100%;
-    color: brown;
-    margin-bottom: -50px;
+    color: #fff;
+    margin-top: auto;
 }

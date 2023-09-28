@@ -26,7 +26,7 @@ color:white;
 
 const useStyles = makeStyles(theme => ({
     root: {
-      flexGrow: 1,
+      flexGrow: 0,
     },
     menuButton: {
       marginRight: theme.spacing(2),
@@ -34,6 +34,7 @@ const useStyles = makeStyles(theme => ({
     flag : {
         marginRight: theme.spacing(130),
         borderRadius : 20,
+        
     },
     root1: {
       display: 'flex',
@@ -137,8 +138,10 @@ const useStyles = makeStyles(theme => ({
                     Meteo
           </Link>
           </Typography>
+    
+          <NorwegianFlagIcon  className="flag-icon"/>
         
-        <NorwegianFlagIcon  className={classes.flag}/>
+       
         </Toolbar>
         
       </AppBar>

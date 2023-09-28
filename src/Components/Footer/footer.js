@@ -5,9 +5,9 @@ import './footer.css'
 
 const Footer = () => {
     return(
-        <div class="footer mt-auto py-3 bg-light">
-            Footer 
-        </div>   
+        <footer>
+            <p>Teofil Badelita Web Design, Copyright &copy;2023</p>
+        </footer>
     )
 }
 
