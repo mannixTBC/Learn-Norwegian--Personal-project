@@ -98,13 +98,13 @@ const useStyles = makeStyles(theme => ({
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
                     <Link to="/vocabular" className="linkcss">
-                    <MenuItem onClick={handleClose} style={{textDecoration:'none'}}>Lectii</MenuItem>
+                    <MenuItem onClick={handleClose} style={{textDecoration:'none'}}>Lessons</MenuItem>
                     </Link>
                     <Link to="/exercitiu" className="linkcss">
-                    <MenuItem onClick={handleClose}>Exercitii</MenuItem>
+                    <MenuItem onClick={handleClose}>Exercises</MenuItem>
                     </Link>
                     <Link to="/wheather" className="linkcss">
-                    <MenuItem onClick={handleClose}>Meteo</MenuItem>
+                    <MenuItem onClick={handleClose}>Whether</MenuItem>
                     </Link>
                   </MenuList>
                 </ClickAwayListener>
@@ -117,25 +117,31 @@ const useStyles = makeStyles(theme => ({
           
           <Typography variant="h6" color="inherit" >
           <Link className="link homelink" to="/" >
-                    Norvegiana.ro
+                    DiscoverNorway.com
           </Link>
           </Typography>
 
           <Typography>
           <Link  id="short-menu" className="link" to="/exercitiu" >
-                    Exercitii
+                    Exercises
           </Link>
           </Typography>
 
           <Typography>
           <Link  id="short-menu" className="link" to="/vocabular" >
-                    Lectii
+                    Lessons
           </Link>
           </Typography>
 
           <Typography>
           <Link  id="short-menu" className="link" to="/wheather" >
-                    Meteo
+                    Whether
+          </Link>
+          </Typography>
+          <Typography>
+
+          <Link  id="short-menu" className="link" to="/wheather" >
+                    News
           </Link>
           </Typography>
     

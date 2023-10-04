@@ -112,7 +112,7 @@ class Wheather extends React.Component{
     }
     render(){
         return(
-            <div>
+            <div className='whather-container'>
                 <WheatherCardStyled
                 city={this.state.city}
                 temp_celsius={`${this.state.celsius}`}

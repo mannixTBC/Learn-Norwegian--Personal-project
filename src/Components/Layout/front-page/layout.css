@@ -1,3 +1,8 @@
+.layout-container{
+ height: 450px;
+}
+
+
 .imagine{
     background-image: url("https://netstorage-yen.akamaized.net/images/3o3bpd7kbnmo7ileu.jpg?imwidth=900");
     width: 100%;
@@ -25,3 +30,31 @@
 li{
     list-style: none;
 }
+
+.showcase-container{
+    display:flex;
+    flex-direction: row;
+    margin-top:3px;
+    margin-bottom:3px;
+    justify-content: space-around;
+    background-color:#30aad3;
+    min-width: 100vh;
+}
+
+.box img{
+    width: 100px;
+    height: 100px;
+    border-radius:5px;
+}
+
+.box{
+    padding: 10px 10px;
+    margin: 5px 5px;
+}
+
+.box a {
+    display: block;
+    text-align: center;
+    font-size:17px;
+}
+
