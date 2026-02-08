@@ -48,19 +48,19 @@ class Cards extends Component{
                     <div className="col-md-4">
                         <Card1
                         imgsrc={img1}
-                        title={"Leason 1"}
+                        title={"Lecția 1"}
                         path={"/lectia1"}/>
                     </div>
                     <div className="col-md-4">
                         <Card1
                          imgsrc={img2}
-                         title={"Leason 2"}
+                         title={"Lecția 2"}
                          path={"/lectia2"}/>
                     </div>
                     <div className="col-md-4">
                         <Card1
                          imgsrc={img3}
-                         title={"Leason 3"}/>
+                         title={"Lecția 3"}/>
                     </div>
                 </div>
             </div>

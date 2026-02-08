@@ -1,151 +1,153 @@
 import React from 'react';
 import initialData from './initial-data';
 import Column from './column.js';
-import {DragDropContext} from 'react-beautiful-dnd';
-import styled from 'styled-components';
-
-
-const Container = styled.div`
-  display:flex;
-
-`
-
-
+import Word from './word.js';
+import { DragDropContext } from 'react-beautiful-dnd';
+import './App.css';
 
 class App extends React.Component {
+  state = { ...initialData, score: null, checked: false };
 
-  state = initialData
-  onDragEnd = (result)=>{
-    const {destination, source, draggableId} = result;
-    if(!destination){
-      return
-    }
-    if(
-      destination.droppableId === source.droppableId && 
-      destination.index === source.index
-    ){
-      return
-    };
-    const start = this.state.columns[source.droppableId];
-    const finish = this.state.columns[destination.droppableId];
-    if(start === finish){
-      const newTaskIds =Array.from(start.taskIds);
-      newTaskIds.splice(source.index,1);
-      newTaskIds.splice(destination.index,0,draggableId)
-  
-      const newColumn = {
-        ...start,
-        taskIds : newTaskIds
+  onDragEnd = (result) => {
+    const { destination, source, draggableId } = result;
+    if (!destination) return;
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+
+    // Mutare în aceeași zonă (reordonare)
+    if (source.droppableId === destination.droppableId) {
+      const ids = source.droppableId === 'words' 
+        ? [...this.state.words] 
+        : [...this.state.categories[source.droppableId].wordIds];
+      const [removed] = ids.splice(source.index, 1);
+      ids.splice(destination.index, 0, removed);
+
+      if (source.droppableId === 'words') {
+        this.setState({ words: ids });
+      } else {
+        this.setState({
+          categories: {
+            ...this.state.categories,
+            [source.droppableId]: {
+              ...this.state.categories[source.droppableId],
+              wordIds: ids,
+            },
+          },
+        });
       }
-  
-      const newState = {
-        ...this.state,
-        columns : {
-          ...this.state.columns,
-          [newColumn.id]: newColumn,
-        }
-      }
-      this.setState(newState);
+      return;
     }
 
-    const startTaskIds = Array.from(start.taskIds);
-    startTaskIds.splice(source.index,1);
+    // Mutare între zone diferite
+    const startIds = source.droppableId === 'words'
+      ? [...this.state.words]
+      : [...this.state.categories[source.droppableId].wordIds];
+    const finishIds = destination.droppableId === 'words'
+      ? [...this.state.words]
+      : [...this.state.categories[destination.droppableId].wordIds];
 
-    const newStart = {
-      ...start,
-      taskIds:startTaskIds,
+    const [movedId] = startIds.splice(source.index, 1);
+    finishIds.splice(destination.index, 0, movedId);
+
+    const newState = { ...this.state };
+
+    if (source.droppableId === 'words') {
+      newState.words = startIds;
+    } else {
+      newState.categories = {
+        ...newState.categories,
+        [source.droppableId]: {
+          ...newState.categories[source.droppableId],
+          wordIds: startIds,
+        },
+      };
     }
 
-    const finishTaskIds = Array.from(finish.taskIds);
-    finishTaskIds.splice(destination.index,0,draggableId);
-
-    const newFinish = {
-      ...finish,
-      taskIds:finishTaskIds,
+    if (destination.droppableId === 'words') {
+      newState.words = finishIds;
+    } else {
+      newState.categories = {
+        ...newState.categories,
+        [destination.droppableId]: {
+          ...newState.categories[destination.droppableId],
+          wordIds: finishIds,
+        },
+      };
     }
 
-    
-    let correctAnswers = 0;
-    finishTaskIds.map((taskId)=>{
-      if(this.state.tasks[taskId].description === finish.description)
-        {
-          correctAnswers +=  1
-          console.log(`numarul de alegeri corecte este ${correctAnswers}`)
-        }else{
-          console.log('raspuns eronat')
-        }
-        return correctAnswers
-    })
-
-    const newState= {
-      ...this.state,
-      columns:{
-        ...this.state.columns,
-        [newStart.id]:newStart,
-        [newFinish.id]:newFinish,
-      }
-    }
-
-    
     this.setState(newState);
-    
+  };
 
-    
-    
-  }
-handleAnswers = (result)=>{
-    const {destination, source, draggableId} = result;
-    if(!destination){
-      return
-    }
-    if(
-      destination.droppableId === source.droppableId && 
-      destination.index === source.index
-    ){
-      return
-    };
-    const start = this.state.columns[source.droppableId];
-    const finish = this.state.columns[destination.droppableId];
-  
+  checkAnswers = () => {
+    let correct = 0;
+    const { categories, wordMap } = this.state;
 
-    const taskIdss = Array.from(finish.taskIds);
-    let correctAnswers = 0;
-    taskIdss.map((taskId)=>{
-      if(this.state.tasks[taskId].description === finish.description)
-        {
-          correctAnswers +=  1
-          console.log(correctAnswers)
-        }else{
-          console.log('error')
-        }
-        return correctAnswers
-    })
-   const newState = {
-      ...this.state,
-      correctAnswers: correctAnswers,
-    }
-  }
+    this.state.categoryOrder.forEach((catId) => {
+      const cat = categories[catId];
+      cat.wordIds.forEach((wordId) => {
+        if (wordMap[wordId].category === cat.correctCategory) correct++;
+      });
+    });
 
-  render(){
-    
-    return (<div>
-        <h1>Drag the words in the correct tabel</h1>
-        <DragDropContext
-        onDragEnd={this.onDragEnd}
-        >
-          <Container>
-          {this.state.columnOrder.map((columnId)=> {
-          const column = this.state.columns[columnId];
-          const tasks = column.taskIds.map((taskId) => this.state.tasks[taskId] );
-          return <Column key = {columnId} column={column} tasks ={tasks}/>
-          })}
-          </Container>
+    this.setState({ score: correct, checked: true });
+  };
+
+  resetGame = () => {
+    this.setState({ ...initialData, score: null, checked: false });
+  };
+
+  render() {
+    const { words, categories, categoryOrder, wordMap, score, checked } = this.state;
+
+    return (
+      <div className="game-container">
+        <h1>Clasifică cuvintele</h1>
+        <p className="instructions">Trage cuvintele în categoria corectă: Animale sau Culori</p>
+
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <div className="game-board">
+            <Column droppableId="words" title="Cuvinte" isEmpty={words.length === 0}>
+              {words.map((wordId, index) => (
+                <Word key={wordId} word={wordMap[wordId]} index={index} />
+              ))}
+            </Column>
+
+            <div className="categories">
+              {categoryOrder.map((catId) => {
+                const cat = categories[catId];
+                const catWords = cat.wordIds.map((id) => wordMap[id]);
+                return (
+                  <Column
+                    key={catId}
+                    droppableId={catId}
+                    title={cat.title}
+                    isEmpty={cat.wordIds.length === 0}
+                  >
+                    {catWords.map((word, index) => (
+                      <Word key={word.id} word={word} index={index} />
+                    ))}
+                  </Column>
+                );
+              })}
+            </div>
+          </div>
         </DragDropContext>
-        <button onClick={this.handleAnswers}>Check answers</button>
-        <h3>Correct answers {this.state.correctAnswers}</h3>
-        {console.log(this.state)}
+
+        <div className="actions">
+          <button onClick={this.checkAnswers} className="btn btn-check">
+            Verifică răspunsurile
+          </button>
+          <button onClick={this.resetGame} className="btn btn-reset">
+            Resetează
+          </button>
         </div>
-    )
+
+        {checked && (
+          <div className="score">
+            Scor: {score} / {Object.keys(wordMap).length} corecte
+          </div>
+        )}
+      </div>
+    );
   }
 }
 

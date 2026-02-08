@@ -1,34 +1,20 @@
+// Cuvinte norvegiene cu categoria lor (animal sau culoare)
+const words = [
+  { id: 'w1', text: 'bever', category: 'animal' },
+  { id: 'w2', text: 'kalv', category: 'animal' },
+  { id: 'w3', text: 'svart', category: 'color' },
+  { id: 'w4', text: 'gul', category: 'color' },
+];
 
+// Coloane: words = de unde tragem, animals = unde punem animalele, colors = unde punem culorile
 const initialData = {
-tasks :{
-    "task 1" : {id :'task 1', content : "bever", description:'animal'},
-    "task 2" : {id :'task 2', content : "kalv", description:'animal'},
-    "task 3" : {id :'task 3', content : "svart", description:'color'},
-    "task 4" : {id :'task 4', content : "gul", description: 'color'},
-},
-columns : {
-    "column-1":{
-        id:'column-1',
-        title: "to be ordered",
-        taskIds: ["task 1","task 2","task 3","task 4"],
-        description : 'animal'
-    },
-    "column-2":{
-        id:'column-2',
-        title: "Animals",
-        taskIds: [],
-        description:'animal'
-    },
-    "column-3":{
-        id:'column-3',
-        title: "Colors",
-        taskIds: [],
-        description:'color'
-    }
-},
-columnOrder: ['column-1','column-2','column-3'],
-correctAnswers:0
-
-}
+  words: words.map(w => w.id),
+  categories: {
+    animals: { id: 'animals', title: 'Animale', wordIds: [], correctCategory: 'animal' },
+    colors: { id: 'colors', title: 'Culori', wordIds: [], correctCategory: 'color' },
+  },
+  categoryOrder: ['animals', 'colors'],
+  wordMap: Object.fromEntries(words.map(w => [w.id, w])),
+};
 
 export default initialData;

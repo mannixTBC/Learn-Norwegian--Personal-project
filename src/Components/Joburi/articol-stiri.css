@@ -1,0 +1,139 @@
+/* Articole Joburi – design aliniat cu restul site-ului */
+.articol-stiri {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+  font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+}
+
+.articol-stiri__back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-bottom: 1px solid #1a1a2e;
+  transition: opacity 0.2s;
+}
+
+.articol-stiri__back:hover {
+  opacity: 0.7;
+  color: #1a1a2e;
+}
+
+.articol-stiri__card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+.articol-stiri__header {
+  background: #e0eef9;
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid #d0e0f0;
+}
+
+.articol-stiri__meta {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #495057;
+  margin: 0 0 0.25rem 0;
+}
+
+.articol-stiri__title {
+  margin: 0 0 4px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  font-family: 'Playfair Display', Georgia, serif;
+  line-height: 1.25;
+}
+
+.articol-stiri__lead {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #495057;
+  line-height: 1.5;
+}
+
+.articol-stiri__body {
+  padding: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #2a2a2a;
+}
+
+.articol-stiri__body h2 {
+  margin: 1.5rem 0 0.5rem 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.articol-stiri__body h2:first-child {
+  margin-top: 0;
+}
+
+.articol-stiri__body h3 {
+  margin: 1.25rem 0 0.4rem 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.articol-stiri__body p {
+  margin: 0 0 1em 0;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.articol-stiri__body p:last-child {
+  margin-bottom: 0;
+}
+
+.articol-stiri__body strong {
+  font-weight: 700;
+}
+
+.articol-stiri__link {
+  color: #0d6efd;
+  text-decoration: underline;
+}
+
+.articol-stiri__link:hover {
+  color: #0a58ca;
+}
+
+.articol-stiri__body ul {
+  margin: 0 0 1em 0;
+  padding-left: 1.5em;
+  text-align: justify;
+}
+
+.articol-stiri__body li {
+  margin-bottom: 0.35em;
+}
+
+@media (max-width: 600px) {
+  .articol-stiri {
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  .articol-stiri__header,
+  .articol-stiri__body {
+    padding: 1rem;
+  }
+
+  .articol-stiri__title {
+    font-size: 1.35rem;
+  }
+
+  .articol-stiri__lead {
+    font-size: 0.9rem;
+  }
+}

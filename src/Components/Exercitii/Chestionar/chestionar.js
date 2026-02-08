@@ -1,194 +1,173 @@
-import React, { Component}  from 'react';
-import intrebari from './intrebari.js';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { chestionarData } from './chestionarData';
 import './chestionar.css';
-import Progres from './progres-bar/progres';
 
-class Chestionar extends Component{
-   
-    constructor(props) {
-        super(props);       
-        this.state = {           
-          corecte : 0,
-          gresite : 0,
-          raspunse: 0,
-          guessed: new Set([]),
-          isActive : true,
-          isCorrect: false,
-          currentList : intrebari,
-          currentQuestion : intrebari[0],
-          selectedAnswer : 0,
-          currentAnswer:''       
-        }       
-      }
+const Chestionar = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [wrongCount, setWrongCount] = useState(0);
+  const [answeredCount, setAnsweredCount] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [isFinished, setIsFinished] = useState(false);
 
-      x = 0;
-      setNextQuestion = () =>{
-        if ( this.x === this.state.currentList.length - 1){
-            this.x = this.state.currentList.length - 1
-            this.setState(st => ({ 
-                currentQuestion : st.currentList[this.x]
-              }));
-        }else{
-            this.x = this.x + 1;
-            this.setState(st => ({
-                currentQuestion : st.currentList[this.x] 
-              }));         
-                }
+  const questions = chestionarData;
+  const currentQuestion = questions[currentIndex];
+  const progressPercent = questions.length > 0 ? (answeredCount / questions.length) * 100 : 0;
+
+  const handleSelectAnswer = (option) => {
+    if (selectedAnswer !== null) return;
+    setSelectedAnswer(option);
+  };
+
+  const handleConfirm = () => {
+    if (selectedAnswer === null) return;
+
+    const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
+    if (isCorrect) {
+      setCorrectCount((c) => c + 1);
+    } else {
+      setWrongCount((w) => w + 1);
     }
-        
-    previosQuestion = () => {
-        if ( this.x === 0){
-            this.x = 0
-            this.setState(st => ({ 
-                currentQuestion : st.currentList[this.x]
-              }));
-        }else{
-            this.x = this.x - 1;
-            this.setState(st => ({
-                currentQuestion : st.currentList[this.x] 
-              }));         
-                console.log(this.state.x)
-                }
-    }    
-    
+    setAnsweredCount((a) => a + 1);
 
-    progresconstanta = 0;
-    procentIntrebare = 100/intrebari.length;
-
-    saveAnswer (state) {
-        if(state === true && this.state.raspunse <= this.state.currentList.length - 1) {
-            this.setState(st => ({
-                corecte : st.corecte + 1,
-                raspunse : st.raspunse + 1
-              }));
-            if(this.state.raspunse >= this.state.currentList.length-1){
-                this.state.isActive = false;
-            }
-            this.progresconstanta = this.progresconstanta + this.procentIntrebare;
-            this.setNextQuestion();
-            console.log('varianta corecta')
-        }
-       
-        else if (state === false) {
-            this.setState(st => ({
-                gresite : st.gresite + 1,
-                raspunse : st.raspunse + 1
-              }));
-             
-              if(this.state.raspunse >= this.state.currentList.length-1){
-                this.state.isActive = false;
-            }
-              this.setNextQuestion();  
-              this.progresconstanta = this.progresconstanta + this.procentIntrebare;
-            console.log('varianta gresita')
-        }
-        console.log(this.state)
+    if (currentIndex >= questions.length - 1) {
+      setIsFinished(true);
+    } else {
+      setCurrentIndex((i) => i + 1);
+      setSelectedAnswer(null);
     }
+  };
 
-    generateAnswers() {
-        if(this.state.isActive === true){
-        return(
-            <div id="liste">
-                    <button id='istorie'type="button" class="clasaListe"  onClick={()=>this.checkAnswer(this.state.currentQuestion[0][0])} >{this.state.currentQuestion[0][0]}</button>
-                    <button id='geografie'type="button"class="clasaListe" onClick={() =>this.checkAnswer(this.state.currentQuestion[0][1])}>{this.state.currentQuestion[0][1]}</button>
-                    <button id='politica'type="button" class="clasaListe" onClick={() =>this.checkAnswer(this.state.currentQuestion[0][2])}>{this.state.currentQuestion[0][2]}</button>
-            </div>
-        )}
+  const handlePrevious = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((i) => i - 1);
+      setSelectedAnswer(null);
+    }
+  };
 
-        else if ( this.state.isActive === false )
-            {
-                return (
-                    <div class='mesaj'>
-                        Testarea a luat sfarsit! Ai raspuns corect la {this.state.corecte} intrebari!
+  const handleNext = () => {
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex((i) => i + 1);
+      setSelectedAnswer(null);
+    }
+  };
 
-                    </div>
-                )
-            }
-      }
+  const handleReset = () => {
+    setCurrentIndex(0);
+    setCorrectCount(0);
+    setWrongCount(0);
+    setAnsweredCount(0);
+    setSelectedAnswer(null);
+    setIsFinished(false);
+  };
 
-      generateButtons(){
-          if(this.state.isActive === true){
-              return(
-            <div id="butoane2" >
-                <button id='prevButon'type="button" class="butoaneFunctionale" onClick={this.previosQuestion}>Back</button>
-                <button id='saveAnswer'type="button" class="butoaneFunctionale" onClick={()=>this.saveAnswer(this.state.isCorrect)}>Save</button>
-                <button id='nextButon'type="button" class="butoaneFunctionale" onClick={this.setNextQuestion}>Next</button>
-            </div>
-              )
-          }
-      }
+  if (questions.length === 0) {
+    return (
+      <div className="chestionar">
+        <Link to="/invata-limba" className="chestionar__back">← Înapoi la Învață limba</Link>
+        <p className="chestionar__empty">Nu există întrebări.</p>
+      </div>
+    );
+  }
 
-      generateQuestion(){
-        const intrebare = this.state.currentQuestion[1];
-        if(this.state.isActive === true){
-            return(<div>{intrebare}</div>
-                
-            )
-        }
-      }
-      generateHelpMessage(){
-          if(this.state.raspunse === 0) {
-              return(<div class="helpMessage">Selecteaza raspunsul corect apoi apasa click pe "Save"</div>
-                 
-              )
-          }
-      }
-         
-    checkAnswer = (value) => {
-        const rightAnswer = this.state.currentQuestion[2][0];
-        console.log(value)
-        console.log(rightAnswer)  
-        if(value === rightAnswer){
-            this.setState(st => ({
-                isCorrect : true
-              }));          
-        }else{
-            this.setState(st => ({
-                isCorrect : false
-              }));
-        }
-    } 
+  if (isFinished) {
+    return (
+      <div className="chestionar">
+        <Link to="/invata-limba" className="chestionar__back">← Înapoi la Învață limba</Link>
+        <div className="chestionar__card">
+          <div className="chestionar__header">
+            <h1 className="chestionar__title">Chestionar</h1>
+            <p className="chestionar__subtitle">Testarea s-a încheiat</p>
+          </div>
+          <div className="chestionar__result">
+            <p className="chestionar__score-text">
+              Ai răspuns corect la <strong>{correctCount}</strong> din <strong>{questions.length}</strong> întrebări.
+            </p>
+            <p className="chestionar__stats">
+              Corecte: <span className="chestionar__stat--correct">{correctCount}</span>
+              {' · '}
+              Greșite: <span className="chestionar__stat--wrong">{wrongCount}</span>
+            </p>
+            <button type="button" className="chestionar__btn chestionar__btn--primary" onClick={handleReset}>
+              Încearcă din nou
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-    
-    progresconstanta = 0;
-    procentIntrebare = 100/intrebari.length;
-       render(){
-    
-        return(
-            <div id="main-container">
-                            
-                                <h2 id="intrebare">{this.generateQuestion()} </h2>
-                            <div >
-                        
-                            <div id="quiz-answer-choice-container">
-                                {this.generateAnswers()}
-                            </div>
-                        
-                            </div>    
-                            <div id='butoane'>
-                                <button id='butonA'type="button" class="butoane">A</button>
-                                <button id='butonB'type="button" class="butoane">B</button>
-                                <button id='butonC'type="button" class="butoane">C</button>
-                            </div>
-                            
-                        
-                            <div >{ this.generateHelpMessage()}</div>
-                            <Progres
-                            width = {this.progresconstanta}/>
-                                {this.generateButtons()}
-                                    
-                        
-                            <div class="raspunsuri">
-                            <div id="correct-answer">Corecte:{this.state.corecte}</div>
-                            <div id="wrong-answer">Gresite:{this.state.gresite}</div>
-                            </div>
-            </div>
-        )
-        }
-}
+  return (
+    <div className="chestionar">
+      <Link to="/invata-limba" className="chestionar__back">← Înapoi la Învață limba</Link>
+      <div className="chestionar__card">
+        <div className="chestionar__header">
+          <h1 className="chestionar__title">Chestionar</h1>
+          <p className="chestionar__subtitle">
+            Întrebarea {currentIndex + 1} din {questions.length}
+          </p>
+        </div>
 
+        <div className="chestionar__body">
+          <p className="chestionar__question">{currentQuestion.question}</p>
 
+          <div className="chestionar__options">
+            {currentQuestion.options.map((option) => (
+              <button
+                key={option}
+                type="button"
+                className={`chestionar__option ${selectedAnswer === option ? 'chestionar__option--selected' : ''}`}
+                onClick={() => handleSelectAnswer(option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+
+          {answeredCount === 0 && (
+            <p className="chestionar__hint">Selectează răspunsul, apoi apasă „Salvează”</p>
+          )}
+
+          <div className="chestionar__progress-wrap">
+            <div className="chestionar__progress-bar" style={{ width: `${progressPercent}%` }} />
+          </div>
+
+          <div className="chestionar__actions">
+            <button
+              type="button"
+              className="chestionar__btn chestionar__btn--secondary"
+              onClick={handlePrevious}
+              disabled={currentIndex === 0}
+            >
+              Înapoi
+            </button>
+            <button
+              type="button"
+              className="chestionar__btn chestionar__btn--primary"
+              onClick={handleConfirm}
+              disabled={selectedAnswer === null}
+            >
+              Salvează
+            </button>
+            <button
+              type="button"
+              className="chestionar__btn chestionar__btn--secondary"
+              onClick={handleNext}
+              disabled={currentIndex >= questions.length - 1}
+            >
+              Următorul
+            </button>
+          </div>
+
+          <div className="chestionar__stats-row">
+            <span className="chestionar__stat chestionar__stat--correct">Corecte: {correctCount}</span>
+            <span className="chestionar__stat chestionar__stat--wrong">Greșite: {wrongCount}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Chestionar;
-
-

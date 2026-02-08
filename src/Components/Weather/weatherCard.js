@@ -1,135 +1,132 @@
-
 import React from 'react';
-import WheatherCard from './Card';
+import WeatherCard from './Card';
 import 'weather-icons/css/weather-icons.css';
-import styled from 'styled-components';
-import Menu from './wheatherDropMenu';
+import './weatherCard.css';
 
-const WheatherCardStyled = styled(WheatherCard)`
-&&{
-    .container{
-        width:15rem;
-    },
-    .border-primary{
-        width:15rem;
-    }
-    
-}
-`
+const API_KEY = "53d81b0d0c74cce91d48f62434ea1b03";
+const CITIES = [
+  { name: 'Oslo', country: 'no' },
+  { name: 'Bergen', country: 'no' },
+  { name: 'Trondheim', country: 'no' },
+  { name: 'Stavanger', country: 'no' },
+  { name: 'Tromsø', apiName: 'Tromso', country: 'no' },
+  { name: 'Kristiansand', country: 'no' },
+  { name: 'Bodø', apiName: 'Bodo', country: 'no' },
+  { name: 'Ålesund', apiName: 'Alesund', country: 'no' },
+];
 
-const API_key = "53d81b0d0c74cce91d48f62434ea1b03";
+const WEATHER_ICONS = {
+  Thunderstorm: 'wi-thunderstorm',
+  Drizzle: 'wi-sleet',
+  Rain: 'wi-storm-showers',
+  Snow: 'wi-snow',
+  Atmosphere: 'wi-fog',
+  Clear: 'wi-day-sunny',
+  Clouds: 'wi-day-cloudy',
+};
 
-class Wheather extends React.Component{
-    constructor(){
+const getWeatherIcon = (weatherId) => {
+  if (weatherId >= 200 && weatherId <= 232) return WEATHER_ICONS.Thunderstorm;
+  if (weatherId >= 300 && weatherId <= 321) return WEATHER_ICONS.Drizzle;
+  if (weatherId >= 500 && weatherId <= 531) return WEATHER_ICONS.Rain;
+  if (weatherId >= 600 && weatherId <= 622) return WEATHER_ICONS.Snow;
+  if (weatherId >= 701 && weatherId <= 781) return WEATHER_ICONS.Atmosphere;
+  if (weatherId === 800) return WEATHER_ICONS.Clear;
+  if (weatherId >= 801 && weatherId <= 804) return WEATHER_ICONS.Clouds;
+  return WEATHER_ICONS.Clouds;
+};
 
-        super()
-        this.state={
-            city:"Oslo",
-            country:"no",
-            icon:undefined,
-            main:undefined,
-            celsius:undefined,
-            temp_max:undefined,
-            temp_min:undefined,
-            message: "" 
-        }
-        this.getWheather();
+const getIconType = (weatherId) => {
+  if (weatherId >= 200 && weatherId <= 232) return 'thunderstorm';
+  if (weatherId >= 300 && weatherId <= 321) return 'drizzle';
+  if (weatherId >= 500 && weatherId <= 531) return 'rain';
+  if (weatherId >= 600 && weatherId <= 622) return 'snow';
+  if (weatherId >= 701 && weatherId <= 781) return 'atmosphere';
+  if (weatherId === 800) return 'clear';
+  return 'clouds';
+};
 
-        this.wheatherIcon = {
-            Thunderstorm:"wi-thunderstorm",
-            Drizzle:"wi-sleet",
-            Rain: "wi-storm-showers",
-            Snow: "wi-snow",
-            Atmosphere: "wi-fog",
-            Clear: "wi-day-sunny",
-            Clouds: "wi-day-fog"
-        }
+class Weather extends React.Component {
+  state = {
+    cities: [],
+    loading: true,
+    error: null,
+  };
 
-        
-    }
-    calcCelsius(temp){
-        let cell =  Math.floor(temp - 273.15);
-        return cell;
+  componentDidMount() {
+    this.fetchAllWeather();
+  }
+
+  fetchCityWeather = async (city) => {
+    const query = city.apiName || city.name;
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${query},${city.country}&appid=${API_KEY}`
+    );
+    const data = await res.json();
+    if (data.cod !== 200) throw new Error(data.message);
+    const weatherId = data.weather[0].id;
+    return {
+      name: city.name,
+      temp: Math.floor(data.main.temp - 273.15),
+      tempMin: Math.floor(data.main.temp_min - 273.15),
+      tempMax: Math.floor(data.main.temp_max - 273.15),
+      description: data.weather[0].description,
+      icon: getWeatherIcon(weatherId),
+      iconType: getIconType(weatherId),
     };
+  };
 
-    getWeatherIcon  (rangeId,icons) {
-        
-                switch(true){
-                    case rangeId >=200 && rangeId <= 232:
-                        this.setState({icon:this.wheatherIcon.Thunderstorm});
-                            break;
-                        case rangeId >=300 && rangeId <= 321:
-                        this.setState({icon:this.wheatherIcon.Drizzle});
-                            break;
-                        case rangeId >=500 && rangeId <= 531:
-                        this.setState({icon:this.wheatherIcon.Rain});
-                            break;    
-                        case rangeId >=600 && rangeId <= 622:
-                        this.setState({icon:this.wheatherIcon.Rain});
-                            break;
-                        case rangeId >=701 && rangeId <= 781:
-                        this.setState({icon:this.wheatherIcon.Atmosphere});
-                            break;
-                        case rangeId === 800:
-                        this.setState({icon:this.wheatherIcon.Clear});
-                            break; 
-                         case rangeId >=801 && rangeId <= 804:
-                        this.setState({icon:this.wheatherIcon.Clouds});
-                            break;      
-                       default:
-                        this.setState({icon:this.wheatherIcon.Clouds});
-                        
-                 }    
-        
+  fetchAllWeather = async () => {
+    this.setState({ loading: true, error: null });
+    try {
+      const results = await Promise.all(
+        CITIES.map((city) => this.fetchCityWeather(city))
+      );
+      this.setState({ cities: results, loading: false });
+    } catch (err) {
+      this.setState({ error: err.message, loading: false });
+    }
+  };
+
+  render() {
+    const { cities, loading, error } = this.state;
+
+    if (loading) {
+      return (
+        <div className="weather-section">
+          <h1 className="weather-title">Vremea în Norvegia</h1>
+          <p className="weather-loading">Se încarcă datele meteo...</p>
+        </div>
+      );
     }
 
-    getWheather = async()=>{
-        const api_call = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${this.state.city},${this.state.country}&appid=${API_key}`);
-        const response = await api_call.json();
-        
-        this.setState({
-           celsius:this.calcCelsius(response.main.temp),
-           temp_max: this.calcCelsius(response.main.temp_max),
-           temp_min: this.calcCelsius(response.main.temp_min),
-           description: response.weather[0].description,
-           
-        });
-        this.getWeatherIcon(response.weather[0].id,this.wheatherIcon);          // Face update la wheather icon state
+    if (error) {
+      return (
+        <div className="weather-section">
+          <h1 className="weather-title">Vremea în Norvegia</h1>
+          <p className="weather-error">Eroare: {error}</p>
+          <button onClick={this.fetchAllWeather} className="weather-retry-btn">
+            Încearcă din nou
+          </button>
+        </div>
+      );
     }
-   
-    
-      setCity=(city) => {                // Update la state cu orasul selectat
-        this.setState({city:city})
-      }
 
-      choseCity = () => {      // Componenta Menu face render dupa executarea functiei
-        return(
-            <Menu 
-               setCity={this.setCity}     
-               getWeather = {this.getWheather}
-                        />
-        )
-    }
-    render(){
-        return(
-            <div className='whather-container'>
-                <WheatherCardStyled
-                city={this.state.city}
-                temp_celsius={`${this.state.celsius}`}
-                temp_min = {this.state.temp_min}
-                temp_max = {this.state.temp_max}
-                description = {this.state.description}
-                wheatherIcon = {this.state.icon}
-                choseCity = {this.choseCity()}   //  Drop Menu
-                />
-                    <p>{this.state.message}</p>
-            </div>
-                
-            
-        )
-    }
+    return (
+      <div className="weather-section">
+        <h1 className="weather-title">Vremea în Norvegia</h1>
+        <p className="weather-subtitle">Temperatura în principalele orașe</p>
+        <div className="weather-grid">
+          {cities.map((city) => (
+            <WeatherCard key={city.name} {...city} />
+          ))}
+        </div>
+        <button onClick={this.fetchAllWeather} className="weather-refresh-btn">
+          Actualizează
+        </button>
+      </div>
+    );
+  }
 }
 
-export default Wheather;
-
-
+export default Weather;

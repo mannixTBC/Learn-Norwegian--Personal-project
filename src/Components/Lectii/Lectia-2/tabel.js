@@ -95,8 +95,8 @@ const Tabel2 = () => {
         <TableHead>
           <TableRow>
             <NumberCell>#</NumberCell>
-            <TableCell className={classes.cuvant}  style={{width:'30%'}}>Cuvant</TableCell>
-            <TableCell className={classes.pronuntie} align="right">Pronuntie</TableCell>
+            <TableCell className={classes.cuvant}  style={{width:'30%'}}>Cuvânt</TableCell>
+            <TableCell className={classes.pronuntie} align="right">Pronunție</TableCell>
             <TableCell className={classes.traducere} align="right">Traducere</TableCell>
             
           </TableRow>

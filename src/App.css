@@ -9,3 +9,7 @@ body{
     display:flex;
     flex-direction:column; 
 }
+
+.App__main {
+    flex: 1;
+}

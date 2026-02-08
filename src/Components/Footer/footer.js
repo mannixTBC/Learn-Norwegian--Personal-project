@@ -4,11 +4,13 @@ import './footer.css'
 
 
 const Footer = () => {
-    return(
-        <footer>
-            <p>Teofil Badelita Web Design, Copyright &copy;2023</p>
-        </footer>
-    )
+  return (
+    <footer className="footer">
+      <div className="footer__inner">
+        <p className="footer__text">Teofil Badelita Web Design, Copyright &copy;2025</p>
+      </div>
+    </footer>
+  );
 }
 
 

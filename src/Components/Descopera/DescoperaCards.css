@@ -1,0 +1,36 @@
+.descopera-cards {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 4rem 24px 48px;
+}
+
+.descopera-cards__header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.descopera-cards__title {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.descopera-cards__subtitle {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #495057;
+}
+
+.descopera-cards__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.descopera-cards__grid .card {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}

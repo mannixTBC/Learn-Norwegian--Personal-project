@@ -37,7 +37,7 @@ export default function ControlledOpenSelect(props) {
     <div>
       
       <FormControl className={classes.formControl}>
-        <InputLabel id="demo-controlled-open-select-label">City</InputLabel>
+        <InputLabel id="demo-controlled-open-select-label">Oraș</InputLabel>
         <Select
           labelId="demo-controlled-open-select-label"
           id="demo-controlled-open-select"

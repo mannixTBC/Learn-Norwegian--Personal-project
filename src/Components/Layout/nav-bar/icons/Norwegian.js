@@ -7,10 +7,10 @@ const Container = styled.div`
     margin-left:auto;
 `
 
-const NorwegianFlagIcon = () => {
+const NorwegianFlagIcon = ({ className }) => {
     return(
-        <Container>
-            <img src={Steag} />
+        <Container className={className}>
+            <img src={Steag} alt="NorvegiaTa" />
         </Container>
     )
 }

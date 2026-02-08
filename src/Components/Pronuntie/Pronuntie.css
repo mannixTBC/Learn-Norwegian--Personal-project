@@ -1,0 +1,88 @@
+.pronuntie {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.pronuntie__back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-bottom: 1px solid #1a1a2e;
+}
+
+.pronuntie__back:hover {
+  opacity: 0.7;
+  color: #1a1a2e;
+}
+
+.pronuntie__card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  border: 1px solid #e9ecef;
+}
+
+.pronuntie__title {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.5rem;
+  color: #1a1a2e;
+}
+
+.pronuntie__subtitle {
+  margin: 0 0 1.5rem 0;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.pronuntie__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pronuntie__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.pronuntie__item:last-child {
+  border-bottom: none;
+}
+
+.pronuntie__word {
+  flex: 1;
+  font-weight: 500;
+  color: #0d6efd;
+}
+
+.pronuntie__translation {
+  flex: 1;
+  color: #333;
+}
+
+.pronuntie__play {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: #0d6efd;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 3px;
+}
+
+.pronuntie__play:hover {
+  background: #0b5ed7;
+}

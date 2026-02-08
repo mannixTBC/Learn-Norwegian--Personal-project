@@ -1,12 +1,18 @@
-footer{
-    background-color: rgb(109, 100, 117);
-    height: 50px;
-    width: 100%;
-    color: #fff;
-    margin-top: auto;
+.footer {
+  background: #e0eef9;
+  border-top: 1px solid #d0e0f0;
+  margin-top: auto;
 }
 
-footer p{
-    text-align: right;
-    margin-top:15px;
+.footer__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 24px;
+}
+
+.footer__text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #495057;
+  text-align: center;
 }

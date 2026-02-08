@@ -1,0 +1,17 @@
+.word {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  cursor: grab;
+  transition: box-shadow 0.2s ease;
+}
+
+.word:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.word:active {
+  cursor: grabbing;
+}
