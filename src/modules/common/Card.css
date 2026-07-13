@@ -1,0 +1,124 @@
+/* Card educațional – aliniat cu stilul site-ului */
+.card-edu {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+  font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+}
+
+.card-edu:hover {
+  box-shadow: 0 12px 32px rgba(13, 110, 253, 0.15);
+  transform: translateY(-4px);
+  border-color: #d0e0f0;
+}
+
+.card-edu--link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.card-edu--link:hover {
+  color: inherit;
+}
+
+.card-edu__img-wrap {
+  position: relative;
+  height: 140px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #e0eef9 0%, #d4e8f7 100%);
+}
+
+.card-edu__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.95;
+  transition: transform 0.3s;
+}
+
+.card-edu:hover .card-edu__img {
+  transform: scale(1.05);
+}
+
+.card-edu__badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.card-edu__body {
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-edu__title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  font-family: 'Playfair Display', Georgia, serif;
+  line-height: 1.3;
+}
+
+.card-edu:hover .card-edu__title {
+  color: #0d6efd;
+}
+
+.card-edu__text {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.card-edu__cta {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0d6efd;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.card-edu:hover .card-edu__cta {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Layout pagină Învață limba */
+.container-fluid .row.cards-exercitii__row {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.cards-exercitii__row .col-md-3 {
+  display: flex;
+  justify-content: center;
+}
+
+.cards-exercitii__row .card-edu {
+  width: 100%;
+  max-width: 360px;
+}
