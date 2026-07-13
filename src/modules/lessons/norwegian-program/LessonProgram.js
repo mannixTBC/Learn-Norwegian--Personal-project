@@ -1,30 +1,39 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { courseLessons } from './lessonContent';
+import { courseCatalog } from './lessonContent';
+import { speakNorwegian } from '../../../services/norwegianSpeech';
+import { saveReviewItem } from '../../../services/spacedReview';
+import { recordStudyActivity } from '../../../services/learningActivity';
+import { getCareerLessonModule, getCareerProfile } from '../../../services/careerProfile';
+import { useAuth } from '../../auth/AuthContext';
 import './LessonProgram.css';
 
-const PROGRESS_KEY = 'lesson_prog_progress';
-const REVIEW_KEY = 'norwegian_review_items';
-const steps = ['Introducere', 'Vocabular', 'Dialog', 'Gramatică', 'Exerciții', 'Rezultat'];
+const getProgressKey = (levelCode) => levelCode === 'A1' ? 'lesson_prog_progress' : `lesson_prog_progress_${levelCode.toLowerCase()}`;
+const steps = ['Introducere', 'Vocabular', 'Direcția ta', 'Dialog', 'Gramatică', 'Exerciții', 'Rezultat'];
 
 const readStorage = (key, fallback) => {
   try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch (_) { return fallback; }
 };
 
-const speak = (text, rate = 0.85) => {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'nb-NO';
-  utterance.rate = rate;
-  window.speechSynthesis.speak(utterance);
-};
-
 const AudioButton = ({ text, slow = false }) => (
-  <button className="audio-button" type="button" onClick={() => speak(text, slow ? 0.58 : 0.85)} aria-label={`Ascultă ${slow ? 'lent ' : ''}: ${text}`}>
+  <button className="audio-button" type="button" onClick={() => speakNorwegian(text, { slow })} aria-label={`Ascultă ${slow ? 'lent ' : ''}: ${text}`}>
     <span role="img" aria-hidden="true">🔊</span>{slow ? 'Lent' : 'Ascultă'}
   </button>
 );
+
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const HighlightedSentence = ({ sentence, word, highlight }) => {
+  const term = highlight || word.replace(/^(å|en|ei|et)\s+/i, '');
+  if (!term) return sentence;
+
+  const parts = sentence.split(new RegExp(`(${escapeRegExp(term)})`, 'i'));
+  return parts.map((part, index) => (
+    part.toLocaleLowerCase() === term.toLocaleLowerCase()
+      ? <mark className="vocabulary-card__highlight" key={`${part}-${index}`}>{part}</mark>
+      : part
+  ));
+};
 
 const LessonExercise = ({ exercise, index, onResult }) => {
   const [value, setValue] = useState('');
@@ -71,57 +80,78 @@ const LessonExercise = ({ exercise, index, onResult }) => {
 
 const LessonProgram = ({ match }) => {
   const history = useHistory();
+  const { user } = useAuth();
+  const requestedLevel = ((match && match.params && match.params.level) || 'a1').toUpperCase();
+  const course = courseCatalog[requestedLevel] || courseCatalog.A1;
+  const courseLessons = course.lessons;
+  const levelCode = course.code;
+  const progressKey = getProgressKey(levelCode);
   const requestedId = Number(match && match.params && match.params.lessonId) || 1;
   const lesson = courseLessons.find((item) => item.id === requestedId) || courseLessons[0];
+  const careerProfile = getCareerProfile(user) || { pathId: 'general' };
+  const careerModule = useMemo(() => getCareerLessonModule(careerProfile.pathId, levelCode, lesson.id), [careerProfile.pathId, lesson.id, levelCode]);
+  const lessonExercises = useMemo(() => [...lesson.exercises, careerModule.exercise], [careerModule, lesson.exercises]);
+  const lessonStartedAt = useRef(Date.now());
   const [step, setStep] = useState(0);
   const [showTranslations, setShowTranslations] = useState({});
   const [answers, setAnswers] = useState({});
-  const [progress, setProgress] = useState(() => readStorage(PROGRESS_KEY, { unlocked: 1, completed: [] }));
+  const [progress, setProgress] = useState(() => readStorage(progressKey, { unlocked: 1, completed: [] }));
   const score = Object.values(answers).filter(Boolean).length;
   const answered = Object.keys(answers).length;
-  const canFinish = answered === lesson.exercises.length;
+  const canFinish = answered === lessonExercises.length;
 
-  useEffect(() => { setStep(0); setAnswers({}); setShowTranslations({}); window.scrollTo(0, 0); }, [lesson.id]);
-  useEffect(() => { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); }, [progress]);
+  useEffect(() => { lessonStartedAt.current = Date.now(); setStep(0); setAnswers({}); setShowTranslations({}); window.scrollTo(0, 0); }, [lesson.id, levelCode]);
+  useEffect(() => { setProgress(readStorage(progressKey, { unlocked: 1, completed: [] })); }, [progressKey]);
+  useEffect(() => { localStorage.setItem(progressKey, JSON.stringify(progress)); }, [progress, progressKey]);
 
-  const reviewItems = useMemo(() => lesson.exercises.filter((_, index) => answers[index] === false), [answers, lesson.exercises]);
+  const reviewItems = useMemo(() => lessonExercises.filter((_, index) => answers[index] === false), [answers, lessonExercises]);
 
   const recordResult = (index, correct, exercise) => {
     setAnswers((current) => ({ ...current, [index]: correct }));
     if (!correct) {
-      const stored = readStorage(REVIEW_KEY, []);
-      const item = { lessonId: lesson.id, prompt: exercise.prompt, answer: Array.isArray(exercise.answer) ? exercise.answer.join(' ') : exercise.type === 'choice' ? exercise.options[exercise.answer] : exercise.answer };
-      const unique = stored.filter((entry) => !(entry.lessonId === item.lessonId && entry.prompt === item.prompt));
-      localStorage.setItem(REVIEW_KEY, JSON.stringify([...unique, item]));
+      saveReviewItem({
+        level: levelCode,
+        lessonId: lesson.id,
+        source: 'lesson',
+        prompt: exercise.prompt,
+        answer: Array.isArray(exercise.answer) ? exercise.answer.join(' ') : exercise.type === 'choice' ? exercise.options[exercise.answer] : exercise.answer,
+      });
     }
   };
 
   const finishLesson = () => {
     if (!canFinish) return;
     setProgress((current) => ({ unlocked: Math.max(current.unlocked || 1, Math.min(lesson.id + 1, courseLessons.length)), completed: Array.from(new Set([...(current.completed || []), lesson.id])) }));
-    setStep(5);
+    recordStudyActivity({ type: 'lesson', level: levelCode, lessonId: lesson.id, minutes: Math.min(lesson.duration, Math.max(1, Math.round((Date.now() - lessonStartedAt.current) / 60000))), score: Math.round((score / lessonExercises.length) * 100), words: lesson.vocabulary.length + careerModule.phrases.length });
+    setStep(6);
     window.scrollTo(0, 0);
   };
 
-  const next = () => { if (step === 4) finishLesson(); else { setStep((current) => Math.min(current + 1, 5)); window.scrollTo(0, 0); } };
+  const next = () => { if (step === 5) finishLesson(); else { setStep((current) => Math.min(current + 1, 6)); window.scrollTo(0, 0); } };
   const previous = () => { setStep((current) => Math.max(current - 1, 0)); window.scrollTo(0, 0); };
-  const goNextLesson = () => { const nextId = Math.min(lesson.id + 1, courseLessons.length); history.push(`/curs/a1/${nextId}`); };
+  const goNextLesson = () => { const nextId = Math.min(lesson.id + 1, courseLessons.length); history.push(`/curs/${levelCode.toLowerCase()}/${nextId}`); };
 
   return (
     <div className="lesson-shell">
-      <header className="lesson-topbar"><Link to="/invata">← Cursul A1</Link><div><span>Lecția {lesson.id} din {courseLessons.length}</span><strong>{lesson.title}</strong></div><span>{lesson.duration} min</span></header>
+      <header className="lesson-topbar"><Link to="/invata">← Cursul {levelCode}</Link><div><span>Lecția {lesson.id} din {courseLessons.length}</span><strong>{lesson.title}</strong></div><span>{lesson.duration} min</span></header>
       <div className="lesson-stepper" aria-label="Progresul lecției">{steps.map((label, index) => <button type="button" key={label} className={`${index === step ? 'active' : ''} ${index < step ? 'done' : ''}`} onClick={() => index <= step && setStep(index)} disabled={index > step}><span>{index < step ? '✓' : index + 1}</span><small>{label}</small></button>)}</div>
 
       <main className="lesson-content">
-        {step === 0 && <section className="lesson-intro"><p className="lesson-eyebrow">Lecția {lesson.id} · Nivel A1</p><h1>{lesson.title}</h1><p className="lesson-lead">O lecție practică pe care o poți finaliza în aproximativ {lesson.duration} minute.</p><div className="objectives"><h2>După această lecție vei putea:</h2>{lesson.objectives.map((objective) => <div key={objective}><span>✓</span><p>{objective}</p></div>)}</div></section>}
-        {step === 1 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 2</p><h1>Vocabular esențial</h1><p>Ascultă fiecare expresie și citește exemplul. Nu trebuie să memorezi totul din prima.</p></div><div className="vocabulary-grid">{lesson.vocabulary.map(([word, translation, example]) => <article className="vocabulary-card" key={word}><div><h2>{word}</h2><p>{translation}</p></div><AudioButton text={word}/><blockquote>{example}</blockquote><AudioButton text={example} slow/></article>)}</div></section>}
-        {step === 2 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 3</p><h1>Dialog practic</h1><p>Ascultă dialogul, apoi descoperă traducerea fiecărei replici.</p></div><div className="dialogue"><div className="dialogue__actions"><AudioButton text={lesson.dialogue.map((line) => line[1]).join('. ')}/><AudioButton text={lesson.dialogue.map((line) => line[1]).join('. ')} slow/></div>{lesson.dialogue.map(([speaker, text, translation], index) => <article className="dialogue-line" key={`${speaker}-${index}`}><div className="speaker">{speaker.charAt(0)}</div><div><strong>{speaker}</strong><p>{text}</p>{showTranslations[index] && <small>{translation}</small>}<div><AudioButton text={text}/><button className="translation-button" type="button" onClick={() => setShowTranslations((current) => ({...current,[index]:!current[index]}))}>{showTranslations[index] ? 'Ascunde traducerea' : 'Vezi traducerea'}</button></div></div></article>)}</div></section>}
-        {step === 3 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 4</p><h1>{lesson.grammar.title}</h1><p>O regulă scurtă, urmată imediat de exemple.</p></div><div className="grammar-card"><div className="grammar-rule"><span>Regula</span><p>{lesson.grammar.rule}</p></div>{lesson.grammar.examples.map((example) => <div className="grammar-example" key={example}><span>✓</span><p>{example}</p></div>)}<div className="grammar-example grammar-example--wrong"><span>×</span><p>{lesson.grammar.wrong}</p></div></div></section>}
-        {step === 4 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 5</p><h1>Verifică ce ai învățat</h1><p>Răspunde la toate cele {lesson.exercises.length} întrebări. Greșelile vor fi salvate pentru recapitulare.</p></div><div className="exercise-progress"><span style={{width:`${(answered/lesson.exercises.length)*100}%`}}/><small>{answered} din {lesson.exercises.length} răspunsuri verificate</small></div>{lesson.exercises.map((exercise,index) => <LessonExercise exercise={exercise} index={index} onResult={recordResult} key={`${lesson.id}-${index}`}/>)}</section>}
-        {step === 5 && <section className="lesson-result"><div className="result-icon">✓</div><p className="lesson-eyebrow">Lecție finalizată</p><h1>Bravo! Ai terminat „{lesson.title}”</h1><p>Ai răspuns corect la {score} din {lesson.exercises.length} întrebări.</p><div className="result-score"><strong>{Math.round((score/lesson.exercises.length)*100)}%</strong><span>scorul lecției</span></div>{reviewItems.length > 0 && <div className="review-box"><h2>De repetat</h2><p>Am salvat {reviewItems.length} {reviewItems.length === 1 ? 'răspuns' : 'răspunsuri'} pentru recapitulare.</p><button type="button" onClick={() => {setAnswers({});setStep(4);}}>Repetă exercițiile</button></div>}<div className="result-actions">{lesson.id < courseLessons.length ? <button type="button" className="primary" onClick={goNextLesson}>Continuă cu lecția {lesson.id + 1} →</button> : <Link className="primary" to="/invata">Înapoi la curs</Link>}<button type="button" onClick={() => setStep(1)}>Revezi vocabularul</button></div></section>}
+        {step === 0 && <section className="lesson-intro"><p className="lesson-eyebrow">Lecția {lesson.id} · Nivel {levelCode} {course.title}</p><h1>{lesson.title}</h1><p className="lesson-lead">O lecție practică pe care o poți finaliza în aproximativ {lesson.duration} minute.</p><div className="objectives"><h2>După această lecție vei putea:</h2>{lesson.objectives.map((objective) => <div key={objective}><span>✓</span><p>{objective}</p></div>)}</div></section>}
+        {step === 1 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 2</p><h1>Vocabular esențial</h1><p>Ascultă fraza completă, observă cuvântul evidențiat și compară traducerea. Poți reda fiecare exemplu normal sau lent.</p></div><div className="vocabulary-grid">{lesson.vocabulary.map(([word, wordTranslation, example, sentenceTranslation, highlight], index) => <article className="vocabulary-card" key={word}><header><div><span className="vocabulary-card__label">Expresia {String(index + 1).padStart(2, '0')}</span><h2>{word}</h2></div><span className="vocabulary-card__meaning">{wordTranslation}</span></header><div className="vocabulary-card__example"><span>Exemplu în context</span><blockquote lang="no"><HighlightedSentence sentence={example} word={word} highlight={highlight}/></blockquote></div><div className="vocabulary-card__translation" lang="ro"><span>RO</span><p>{sentenceTranslation}</p></div><div className="vocabulary-card__audio"><AudioButton text={example}/><AudioButton text={example} slow/></div></article>)}</div></section>}
+        {step === 2 && <section className="career-lesson">
+          <div className="lesson-heading"><p className="lesson-eyebrow">Pasul 3 · Personalizat</p><h1>{careerModule.path.title} în viața reală</h1><p>{careerModule.coaching}</p></div>
+          <div className="career-lesson__intro"><span aria-hidden="true">{careerModule.path.icon}</span><div><small>Direcția aleasă</small><strong>{careerModule.path.shortTitle}</strong><p>{careerModule.path.outcome}</p></div><Link to={`/alege-directia?redirect=${encodeURIComponent(`/curs/${levelCode.toLowerCase()}/${lesson.id}`)}`}>Schimbă direcția</Link></div>
+          <div className="career-phrase-grid">{careerModule.phrases.map(([norwegian, romanian, highlight], index) => <article key={norwegian}><span>Expresia {index + 1}</span><h2 lang="no"><HighlightedSentence sentence={norwegian} word={highlight} highlight={highlight}/></h2><p lang="ro">{romanian}</p><div><AudioButton text={norwegian}/><AudioButton text={norwegian} slow/></div></article>)}</div>
+          <div className="career-scenario"><div><span>Scenariu profesional</span><h2>{careerModule.scenario.title}</h2></div><div><p lang="no">{careerModule.scenario.norwegian}</p><small lang="ro">{careerModule.scenario.romanian}</small><AudioButton text={careerModule.scenario.norwegian}/></div></div>
+        </section>}
+        {step === 3 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 4</p><h1>Dialog practic</h1><p>Ascultă dialogul, apoi descoperă traducerea fiecărei replici.</p></div><div className="dialogue"><div className="dialogue__actions"><AudioButton text={lesson.dialogue.map((line) => line[1]).join('. ')}/><AudioButton text={lesson.dialogue.map((line) => line[1]).join('. ')} slow/></div>{lesson.dialogue.map(([speaker, text, translation], index) => <article className="dialogue-line" key={`${speaker}-${index}`}><div className="speaker">{speaker.charAt(0)}</div><div><strong>{speaker}</strong><p>{text}</p>{showTranslations[index] && <small>{translation}</small>}<div><AudioButton text={text}/><button className="translation-button" type="button" onClick={() => setShowTranslations((current) => ({...current,[index]:!current[index]}))}>{showTranslations[index] ? 'Ascunde traducerea' : 'Vezi traducerea'}</button></div></div></article>)}</div></section>}
+        {step === 4 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 5</p><h1>{lesson.grammar.title}</h1><p>O regulă scurtă, urmată imediat de exemple.</p></div><div className="grammar-card"><div className="grammar-rule"><span>Regula</span><p>{lesson.grammar.rule}</p></div>{lesson.grammar.examples.map((example) => <div className="grammar-example" key={example}><span>✓</span><p>{example}</p></div>)}<div className="grammar-example grammar-example--wrong"><span>×</span><p>{lesson.grammar.wrong}</p></div></div></section>}
+        {step === 5 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 6</p><h1>Verifică ce ai învățat</h1><p>Răspunde la toate cele {lessonExercises.length} întrebări, inclusiv situația pentru „{careerModule.path.shortTitle}”. Greșelile vor fi salvate pentru recapitulare.</p></div><div className="exercise-progress"><span style={{width:`${(answered/lessonExercises.length)*100}%`}}/><small>{answered} din {lessonExercises.length} răspunsuri verificate</small></div>{lessonExercises.map((exercise,index) => <LessonExercise exercise={exercise} index={index} onResult={recordResult} key={`${lesson.id}-${index}-${exercise.careerPath || 'general'}`}/>)}</section>}
+        {step === 6 && <section className="lesson-result"><div className="result-icon">✓</div><p className="lesson-eyebrow">Lecție finalizată</p><h1>Bravo! Ai terminat „{lesson.title}”</h1><p>Ai răspuns corect la {score} din {lessonExercises.length} întrebări.</p><div className="result-score"><strong>{Math.round((score/lessonExercises.length)*100)}%</strong><span>scorul lecției</span></div>{reviewItems.length > 0 && <div className="review-box"><h2>De repetat</h2><p>Am salvat {reviewItems.length} {reviewItems.length === 1 ? 'răspuns' : 'răspunsuri'} pentru recapitulare.</p><button type="button" onClick={() => {setAnswers({});setStep(5);}}>Repetă exercițiile</button></div>}<div className="result-actions">{lesson.id < courseLessons.length ? <button type="button" className="primary" onClick={goNextLesson}>Continuă cu lecția {lesson.id + 1} →</button> : <Link className="primary" to="/invata">Înapoi la curs</Link>}<button type="button" onClick={() => setStep(1)}>Revezi vocabularul</button></div></section>}
       </main>
 
-      {step < 5 && <footer className="lesson-navigation"><button type="button" onClick={previous} disabled={step === 0}>← Înapoi</button><span>Pasul {step + 1} din {steps.length}</span><button type="button" className="primary" onClick={next} disabled={step === 4 && !canFinish}>{step === 4 ? (canFinish ? 'Finalizează lecția' : 'Răspunde la toate întrebările') : 'Continuă →'}</button></footer>}
+      {step < 6 && <footer className="lesson-navigation"><button type="button" onClick={previous} disabled={step === 0}>← Înapoi</button><span>Pasul {step + 1} din {steps.length}</span><button type="button" className="primary" onClick={next} disabled={step === 5 && !canFinish}>{step === 5 ? (canFinish ? 'Finalizează lecția' : 'Răspunde la toate întrebările') : 'Continuă →'}</button></footer>}
     </div>
   );
 };

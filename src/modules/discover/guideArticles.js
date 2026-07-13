@@ -23,3 +23,19 @@ export const guideArticles=[
 ];
 
 export const checklistItems=['Verific actele de identitate','Păstrez copii digitale ale documentelor','Verific contractul de muncă','Clarific locuința și depozitul','Verific pașii personali în ghidul UDI','Programez controlul ID dacă se aplică','Solicit skattekort dacă lucrez','Verific numărul norvegian de identificare','Aflu serviciile medicale locale','Încep un plan constant de limbă'];
+
+const workAndDocumentsSlugs = [
+ 'inainte-de-plecare',
+ 'primii-pasi-roman-norvegia',
+ 'primele-30-zile',
+ 'numar-identificare-skattekort',
+ 'contract-munca-drepturi',
+ 'alegerea-orasului',
+ 'mutarea-in-oslo',
+ 'mutarea-in-bergen',
+ 'mutarea-in-tromso',
+];
+
+export const workAndDocumentsArticles = workAndDocumentsSlugs
+ .map((slug) => guideArticles.find((article) => article.slug === slug))
+ .filter(Boolean);

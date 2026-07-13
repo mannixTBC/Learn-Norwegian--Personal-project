@@ -5,21 +5,18 @@ import './ArticleDetail.css';
 const STORAGE_KEY = 'news_articles';
 const PLACEHOLDER = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&h=400&fit=crop';
 
-const getMyMemoryUrl = (text, fromLang, toLang) => {
-  const email = process.env.REACT_APP_MYMEMORY_EMAIL;
-  const base = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fromLang}|${toLang}`;
-  return email ? `${base}&de=${encodeURIComponent(email)}` : base;
-};
-
 const translateText = async (text, toLang) => {
   if (!text || text.trim().length === 0) return text;
   const tryLang = async (fromLang) => {
     try {
-      const res = await fetch(getMyMemoryUrl(text, fromLang, toLang));
+      const res = await fetch('/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, fromLang, toLang }),
+      });
       const data = await res.json();
-      if (data.quotaFinished) return null;
-      if (data.responseStatus === 200 && data.responseData && data.responseData.translatedText) {
-        return data.responseData.translatedText;
+      if (res.ok && data.translated) {
+        return data.translated;
       }
     } catch (e) {
       return null;
@@ -130,7 +127,7 @@ const ArticleDetail = () => {
       const translated = await translateLongText(fullContent);
       setTranslatedContent(translated);
     } catch (e) {
-      setTranslateError('Eroare la traducere. Verifică conexiunea. Pentru limită mai mare (50000 car/zi), adaugă REACT_APP_MYMEMORY_EMAIL=email@exemplu.com în .env.local');
+      setTranslateError('Eroare la traducere. Verifică conexiunea și configurarea backendului.');
     } finally {
       setTranslating(false);
     }

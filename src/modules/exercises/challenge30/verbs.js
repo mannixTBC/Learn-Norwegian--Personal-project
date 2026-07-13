@@ -1,4 +1,4 @@
-// 30 zile × 3 verbe = 90 verbe norvegiene
+// 40 sesiuni × 3 verbe = 120 de verbe, câte 10 sesiuni pentru fiecare nivel
 // Format: { norwegian, romanian }
 export const verbsByDay = [
   [{ norwegian: 'å være', romanian: 'a fi' }, { norwegian: 'å ha', romanian: 'a avea' }, { norwegian: 'å gjøre', romanian: 'a face' }],
@@ -31,6 +31,16 @@ export const verbsByDay = [
   [{ norwegian: 'å fly', romanian: 'a zbura' }, { norwegian: 'å lande', romanian: 'a ateriza' }, { norwegian: 'å seile', romanian: 'a naviga' }],
   [{ norwegian: 'å klare', romanian: 'a reuși' }, { norwegian: 'å greie', romanian: 'a descurca' }, { norwegian: 'å lyve', romanian: 'a minți' }],
   [{ norwegian: 'å synes', romanian: 'a părea' }, { norwegian: 'å mene', romanian: 'a considera' }, { norwegian: 'å tenke', romanian: 'a gândi' }],
+  [{ norwegian: 'å vurdere', romanian: 'a evalua' }, { norwegian: 'å analysere', romanian: 'a analiza' }, { norwegian: 'å sammenligne', romanian: 'a compara' }],
+  [{ norwegian: 'å begrunne', romanian: 'a justifica' }, { norwegian: 'å hevde', romanian: 'a susține' }, { norwegian: 'å argumentere', romanian: 'a argumenta' }],
+  [{ norwegian: 'å påvirke', romanian: 'a influența' }, { norwegian: 'å bidra', romanian: 'a contribui' }, { norwegian: 'å gjennomføre', romanian: 'a realiza' }],
+  [{ norwegian: 'å forhandle', romanian: 'a negocia' }, { norwegian: 'å lede', romanian: 'a conduce' }, { norwegian: 'å koordinere', romanian: 'a coordona' }],
+  [{ norwegian: 'å håndtere', romanian: 'a gestiona' }, { norwegian: 'å løse', romanian: 'a rezolva' }, { norwegian: 'å forebygge', romanian: 'a preveni' }],
+  [{ norwegian: 'å påpeke', romanian: 'a sublinia' }, { norwegian: 'å understreke', romanian: 'a accentua' }, { norwegian: 'å oppsummere', romanian: 'a rezuma' }],
+  [{ norwegian: 'å forutsette', romanian: 'a presupune' }, { norwegian: 'å innebære', romanian: 'a implica' }, { norwegian: 'å medføre', romanian: 'a atrage după sine' }],
+  [{ norwegian: 'å tolke', romanian: 'a interpreta' }, { norwegian: 'å formidle', romanian: 'a comunica' }, { norwegian: 'å uttrykke', romanian: 'a exprima' }],
+  [{ norwegian: 'å prioritere', romanian: 'a prioritiza' }, { norwegian: 'å effektivisere', romanian: 'a eficientiza' }, { norwegian: 'å tilrettelegge', romanian: 'a facilita' }],
+  [{ norwegian: 'å reflektere', romanian: 'a reflecta' }, { norwegian: 'å nyansere', romanian: 'a nuanța' }, { norwegian: 'å konkludere', romanian: 'a concluziona' }],
 ];
 
 export const getVerbsUpToDay = (day) => {

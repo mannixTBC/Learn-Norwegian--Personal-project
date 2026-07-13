@@ -1,0 +1,6 @@
+.pronuntie__phrase{transition:border-color .2s,box-shadow .2s,transform .2s}
+.pronuntie__phrase--active{border-color:#ba0c2f;box-shadow:0 12px 30px rgba(186,12,47,.1);transform:translateY(-2px)}
+.pronuntie__actions button:nth-child(2){color:#33445a;border:1px solid #ccd6e1;background:#fff}
+.pronuntie__actions .pronuntie__practice-button{margin-left:auto;color:#8f0a27;border:1px solid #edc5cd;background:#fff0f2}
+.pronuntie__actions .pronuntie__practice-button span{font-size:.65rem}
+@media(max-width:520px){.pronuntie__actions{flex-wrap:wrap}.pronuntie__actions .pronuntie__practice-button{width:100%;justify-content:center;margin-left:0}}

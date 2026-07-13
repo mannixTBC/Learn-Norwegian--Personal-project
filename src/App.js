@@ -5,6 +5,7 @@ import './App.css';
 import Navbar from './modules/layout/Navbar/Navbar';
 import Footer from './modules/layout/Footer/Footer';
 import AppRoutes from './routes/AppRoutes';
+import { AuthProvider } from './modules/auth/AuthContext';
 
 /**
  * Componenta rădăcină a aplicației „NorvegiaTa”.
@@ -17,13 +18,15 @@ import AppRoutes from './routes/AppRoutes';
 function App() {
   return (
     <Router>
-      <div className="App">
-        <Navbar />
-        <main className="App__main">
-          <AppRoutes />
-        </main>
-        <Footer />
-      </div>
+      <AuthProvider>
+        <div className="App">
+          <Navbar />
+          <main className="App__main">
+            <AppRoutes />
+          </main>
+          <Footer />
+        </div>
+      </AuthProvider>
     </Router>
   );
 }

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import NorwegianFlagIcon from './NorwegianFlagIcon';
+import { useAuth } from '../../auth/AuthContext';
 import './Navbar.css';
 
 const navigation = [
+  { to: '/dashboard', label: 'Dashboard' },
   { to: '/invata', label: 'Învață' },
   { to: '/descopera', label: 'Descoperă' },
   { to: '/viata-in-norvegia', label: 'Viața în Norvegia' },
@@ -11,6 +13,7 @@ const navigation = [
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
   const closeMenu = () => setMenuOpen(false);
 
   return (
@@ -38,6 +41,10 @@ export default function Navbar() {
             </NavLink>
           ))}
         </nav>
+
+        <div className="navbar__account">
+          {user ? <><div className="navbar__user"><span>{user.isGuest ? 'V' : user.name.charAt(0).toUpperCase()}</span><div><small>{user.isGuest ? 'Mod anonim' : 'Conectat'}</small><strong>{user.name}</strong></div></div><button type="button" className="navbar__logout" onClick={() => { logout(); closeMenu(); }}>Ieșire</button></> : <Link className="navbar__login" to="/autentificare" onClick={closeMenu}>Conectare</Link>}
+        </div>
 
         <button
           type="button"

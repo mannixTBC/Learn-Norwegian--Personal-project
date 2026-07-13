@@ -1,0 +1,2 @@
+.sentence-match__list>article.correct .sentence-match__options button.selected{border-color:#27815b;background:#eaf7f1}
+.sentence-match__list>article.wrong .sentence-match__options button.selected{border-color:#c94258;background:#fff0f2}

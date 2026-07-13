@@ -16,7 +16,7 @@ const HomePage = () => (
         <h1 className="landing__title">Construiește-ți drumul spre Norvegia</h1>
         <p className="landing__subtitle">Învață norvegiana pas cu pas și găsește informațiile practice de care ai nevoie.</p>
         <div className="landing__actions">
-          <Link to="/invata" className="landing__button landing__button--primary">Începe să înveți</Link>
+          <Link to="/dashboard" className="landing__button landing__button--primary">Începe să înveți</Link>
           <Link to="/viata-in-norvegia" className="landing__button landing__button--secondary">Explorează ghidurile</Link>
         </div>
       </div>

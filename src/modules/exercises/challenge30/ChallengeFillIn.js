@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { speakNorwegian } from '../../../services/norwegianSpeech';
 import './Challenge30.css';
+import './AudioControls.css';
 
 const ChallengeFillIn = ({ verbs, onComplete }) => {
   const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
@@ -58,6 +60,7 @@ const ChallengeFillIn = ({ verbs, onComplete }) => {
             {checked && item.answer.toLowerCase().trim() !== item.norwegian.toLowerCase().trim() && (
               <span className="challenge-fill__correct-answer">{item.norwegian}</span>
             )}
+            {checked && <button className="challenge-audio-mini" type="button" onClick={() => speakNorwegian(item.norwegian)} aria-label={`Ascultă ${item.norwegian}`}>▶</button>}
           </li>
         ))}
       </ul>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { speakNorwegian } from '../../../services/norwegianSpeech';
 import './Challenge30.css';
+import './AudioControls.css';
 
 const ChallengeDragDrop = ({ verbs, onComplete }) => {
   const [slots, setSlots] = useState(() =>
@@ -113,7 +115,7 @@ const ChallengeDragDrop = ({ verbs, onComplete }) => {
                         {...p.dragHandleProps}
                         className="challenge-drag__word"
                       >
-                        {v.norwegian}
+                        <span>{v.norwegian}</span><button className="challenge-audio-mini" type="button" onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); speakNorwegian(v.norwegian); }} aria-label={`Ascultă ${v.norwegian}`}>▶</button>
                       </div>
                     )}
                   </Draggable>
@@ -146,7 +148,7 @@ const ChallengeDragDrop = ({ verbs, onComplete }) => {
                               {...p.dragHandleProps}
                               className="challenge-drag__word"
                             >
-                              {word.norwegian}
+                              <span>{word.norwegian}</span><button className="challenge-audio-mini" type="button" onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); speakNorwegian(word.norwegian); }} aria-label={`Ascultă ${word.norwegian}`}>▶</button>
                             </div>
                           )}
                         </Draggable>

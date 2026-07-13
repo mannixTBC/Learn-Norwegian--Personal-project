@@ -10,21 +10,18 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('ro-RO', options);
 };
 
-const getMyMemoryUrl = (text, fromLang, toLang) => {
-  const email = process.env.REACT_APP_MYMEMORY_EMAIL;
-  const base = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fromLang}|${toLang}`;
-  return email ? `${base}&de=${encodeURIComponent(email)}` : base;
-};
-
 const translateText = async (text, toLang) => {
   if (!text || text.trim().length === 0) return text;
   const tryLang = async (fromLang) => {
     try {
-      const res = await fetch(getMyMemoryUrl(text, fromLang, toLang));
+      const res = await fetch('/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, fromLang, toLang }),
+      });
       const data = await res.json();
-      if (data.quotaFinished) return null;
-      if (data.responseStatus === 200 && data.responseData && data.responseData.translatedText) {
-        return data.responseData.translatedText;
+      if (res.ok && data.translated) {
+        return data.translated;
       }
     } catch (e) {
       return null;
@@ -88,20 +85,14 @@ const News = () => {
   const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
-    const apiKey = process.env.REACT_APP_GNEWS_API_KEY;
-
-    if (!apiKey) {
-      setError('Lipsește cheia API. Adaugă REACT_APP_GNEWS_API_KEY în fișierul .env.local');
-      setLoading(false);
-      return;
-    }
-
     const fetchAndTranslate = async () => {
       try {
-        const res = await fetch(
-          `https://gnews.io/api/v4/top-headlines?country=no&max=10&token=${apiKey}`
-        );
+        const res = await fetch('/api/news/headlines');
         const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Eroare la încărcarea știrilor');
+        }
 
         if (data.errors && data.errors.length > 0) {
           throw new Error((data.errors[0] && data.errors[0].message) || 'Eroare la încărcarea știrilor');
@@ -173,7 +164,7 @@ const News = () => {
             <a href="https://gnews.io/register" target="_blank" rel="noopener noreferrer">
               gnews.io
             </a>{' '}
-            și adaugă în proiect: <code>REACT_APP_GNEWS_API_KEY=cheia_ta</code> în fișierul <code>.env.local</code>
+            și configurează variabila <code>GNEWS_API_KEY</code> în Netlify
           </p>
         </header>
       </div>

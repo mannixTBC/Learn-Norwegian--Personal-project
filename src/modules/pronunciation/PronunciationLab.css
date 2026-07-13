@@ -1,0 +1,87 @@
+.pronunciation-lab{margin:32px 0 48px;padding:28px;border:1px solid #dce4ee;border-radius:24px;background:linear-gradient(180deg,#fff,#f7f9fc);box-shadow:0 18px 45px rgba(20,33,61,.08)}
+.pronunciation-lab__heading{display:flex;justify-content:space-between;gap:30px;align-items:flex-start;margin-bottom:22px}
+.pronunciation-lab__heading>div:first-child>span,.pronunciation-result__eyebrow{display:block;margin-bottom:7px;color:#ba0c2f;font-size:.7rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.pronunciation-lab__heading h2{margin:0;color:#14213d;font-size:clamp(1.65rem,3vw,2.25rem);letter-spacing:-.025em}
+.pronunciation-lab__title-row{display:flex;gap:12px;align-items:center}
+.pronunciation-lab__title-row em{padding:6px 10px;color:#176b51;border:1px solid #b9dfd2;border-radius:20px;background:#eaf8f3;font-size:.68rem;font-style:normal;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+.pronunciation-lab__heading>div:first-child>p{max-width:660px;margin:9px 0 0;color:#647387;line-height:1.55}
+.pronunciation-lab__best{display:grid;min-width:190px;padding:15px 18px;border:1px solid #e0e6ef;border-radius:14px;background:#fff;text-align:right}
+.pronunciation-lab__best small{color:#7a8798;font-size:.7rem;font-weight:800;text-transform:uppercase}
+.pronunciation-lab__best strong{margin:2px 0;color:#14213d;font-size:1.75rem}
+.pronunciation-lab__best span{color:#7a8798;font-size:.7rem}
+.pronunciation-lab__workspace{display:grid;grid-template-columns:1.05fr .95fr;overflow:hidden;border:1px solid #d9e2ec;border-radius:19px;background:#fff}
+.pronunciation-lab__prompt{padding:28px;border-right:1px solid #e1e7ef}
+.pronunciation-lab__prompt-label{display:flex;gap:12px;align-items:center}
+.pronunciation-lab__prompt-label>span{display:grid;place-items:center;width:44px;height:44px;color:#fff;border-radius:12px;background:#ba0c2f;font-size:.8rem;font-weight:900}
+.pronunciation-lab__prompt-label div{display:grid;gap:2px}
+.pronunciation-lab__prompt-label small{color:#78869a;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.pronunciation-lab__prompt-label strong{color:#14213d;font-size:1.05rem}
+.pronunciation-lab__prompt blockquote{margin:26px 0 10px;padding:0;border:0;color:#14213d;font-size:clamp(1.4rem,2.5vw,2rem);font-weight:800;line-height:1.35;letter-spacing:-.02em}
+.pronunciation-lab__prompt>p{display:flex;gap:9px;margin:0 0 24px;color:#647387;line-height:1.5}
+.pronunciation-lab__prompt>p span{height:max-content;padding:3px 6px;color:#ba0c2f;border-radius:5px;background:#fff0f2;font-size:.63rem;font-weight:900}
+.pronunciation-lab__model-actions{display:flex;gap:9px;flex-wrap:wrap}
+.pronunciation-lab__model-actions button{display:flex;gap:8px;align-items:center;padding:11px 14px;color:#fff;border:0;border-radius:9px;background:#14213d;font-weight:800;cursor:pointer}
+.pronunciation-lab__model-actions button:last-child{color:#354760;border:1px solid #ced8e3;background:#fff}
+.pronunciation-lab__tip{display:flex;gap:10px;align-items:flex-start;margin-top:22px;padding:12px 14px;color:#55657a;border-radius:10px;background:#f2f6fa;font-size:.78rem;line-height:1.5}
+.pronunciation-lab__tip>span{color:#ba0c2f;font-size:1.1rem}
+.pronunciation-lab__tip p{margin:0}
+.pronunciation-recorder{display:flex;min-height:410px;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 50% 30%,#f5f8fc 0,#eef3f8 58%,#e8eef5 100%);text-align:center}
+.pronunciation-recorder__status{display:flex;width:100%;justify-content:space-between;align-items:center;color:#68778a;font-size:.72rem;font-weight:850;text-transform:uppercase;letter-spacing:.07em}
+.pronunciation-recorder__status>span:before{display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:#99a7b7;content:''}
+.pronunciation-recorder--recording .pronunciation-recorder__status>span:before{background:#d00f38;box-shadow:0 0 0 6px rgba(208,15,56,.1);animation:labPulse 1.2s infinite}
+.pronunciation-recorder__status strong{color:#14213d;font-size:.76rem}
+.pronunciation-recorder__visual{display:flex;height:72px;align-items:center;justify-content:center;gap:5px;margin:24px 0 18px}
+.pronunciation-recorder__visual i{width:5px;height:calc(12px + var(--bar) * 4px);max-height:44px;border-radius:5px;background:#9eacbb;opacity:.6}
+.pronunciation-recorder--recording .pronunciation-recorder__visual i{background:#ba0c2f;animation:labWave .75s ease-in-out infinite alternate;animation-delay:calc(var(--bar) * -.09s)}
+.pronunciation-recorder--analyzing .pronunciation-recorder__visual i,.pronunciation-recorder--processing .pronunciation-recorder__visual i{background:#24466f;animation:labWave 1s ease-in-out infinite alternate;animation-delay:calc(var(--bar) * -.08s)}
+.pronunciation-recorder__button{display:flex;width:min(280px,100%);flex-direction:column;align-items:center;padding:18px;color:#14213d;border:1px solid #d2dbe6;border-radius:16px;background:#fff;box-shadow:0 10px 28px rgba(20,33,61,.09);cursor:pointer}
+.pronunciation-recorder__button>span{display:grid;place-items:center;width:52px;height:52px;margin-bottom:10px;color:#fff;border-radius:50%;background:#ba0c2f;box-shadow:0 0 0 9px rgba(186,12,47,.09);font-size:1.15rem}
+.pronunciation-recorder__button.is-recording>span{border-radius:14px;background:#14213d}
+.pronunciation-recorder__button strong{font-size:.9rem}
+.pronunciation-recorder__button small{margin-top:4px;color:#8491a2;font-size:.68rem;line-height:1.4}
+.pronunciation-recorder__button:disabled{cursor:wait;opacity:.65}
+.pronunciation-recorder__playback{width:min(310px,100%);height:36px;margin-top:14px}
+.pronunciation-recorder__privacy{display:flex;gap:6px;align-items:flex-start;max-width:330px;margin:18px 0 0;color:#7b8999;font-size:.68rem;line-height:1.45}
+.pronunciation-recorder__error{width:100%;margin-top:14px;padding:13px;color:#8d1b30;border:1px solid #f0c7d0;border-radius:10px;background:#fff1f4;font-size:.76rem;line-height:1.45}
+.pronunciation-recorder__error p{margin:4px 0}
+.pronunciation-recorder__error small{display:block;color:#705561}
+.pronunciation-recorder__error button{margin-top:9px;padding:7px 10px;color:#fff;border:0;border-radius:7px;background:#8d1b30;font-weight:800;cursor:pointer}
+.pronunciation-lab__steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.pronunciation-lab__steps div{display:flex;gap:10px;align-items:center;padding:13px 15px;border:1px solid #e1e7ef;border-radius:11px;background:#fff}
+.pronunciation-lab__steps span{display:grid;place-items:center;min-width:28px;height:28px;color:#ba0c2f;border-radius:50%;background:#fff0f2;font-size:.72rem;font-weight:900}
+.pronunciation-lab__steps p{margin:0;color:#68778a;font-size:.76rem;line-height:1.4}
+.pronunciation-lab__steps strong{color:#14213d}
+.pronunciation-result{display:grid;grid-template-columns:150px 1fr 1.25fr;gap:24px;align-items:center;margin-top:18px;padding:22px;border:1px solid #cfe5dc;border-radius:17px;background:#f5fbf8}
+.pronunciation-result--practice,.pronunciation-result--retry{border-color:#f0d4bb;background:#fff9f1}
+.pronunciation-result__score{display:grid;place-items:center;width:126px;height:126px;border-radius:50%;background:conic-gradient(#1b8a68 var(--score),#d9e7e2 0);position:relative}
+.pronunciation-result--practice .pronunciation-result__score,.pronunciation-result--retry .pronunciation-result__score{background:conic-gradient(#d47418 var(--score),#f2e2d1 0)}
+.pronunciation-result__score:before{position:absolute;width:96px;height:96px;border-radius:50%;background:#fff;content:''}
+.pronunciation-result__score div{z-index:1;display:grid;text-align:center}
+.pronunciation-result__score strong{color:#14213d;font-size:2rem;line-height:1}
+.pronunciation-result__score span{margin-top:4px;color:#7c8999;font-size:.65rem;font-weight:800;text-transform:uppercase}
+.pronunciation-result__content h3{margin:0;color:#14213d;font-size:1.4rem}
+.pronunciation-result__content>p{margin:7px 0 14px;color:#617084;font-size:.82rem;line-height:1.5}
+.pronunciation-result__metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.pronunciation-result__metrics div{display:grid;gap:3px;padding:9px;border-radius:8px;background:#fff}
+.pronunciation-result__metrics span{color:#7c8999;font-size:.63rem}
+.pronunciation-result__metrics strong{color:#14213d;font-size:.9rem}
+.pronunciation-result__transcript{padding:17px;border-left:1px solid #d7e5df}
+.pronunciation-result__transcript>div:first-child{display:flex;justify-content:space-between;gap:10px}
+.pronunciation-result__transcript>div:first-child span{color:#14213d;font-size:.72rem;font-weight:900;text-transform:uppercase}
+.pronunciation-result__transcript>div:first-child small{color:#748397;font-size:.65rem}
+.pronunciation-result__transcript blockquote{margin:9px 0 13px;padding:0;border:0;color:#425269;font-size:.85rem;line-height:1.5}
+.pronunciation-result__words{display:flex;gap:6px;flex-wrap:wrap}
+.pronunciation-result__words>span{padding:5px 7px;border-radius:6px;background:#fff;color:#14213d;font-size:.72rem;font-weight:800}
+.pronunciation-result__words .is-correct{color:#176b51;background:#e4f5ee}
+.pronunciation-result__words .is-close{color:#9a5c12;background:#fff0d9}
+.pronunciation-result__words .is-different,.pronunciation-result__words .is-missing{color:#a1253d;background:#ffe5ea;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+.pronunciation-result__legend{display:flex;gap:13px;margin-top:12px;color:#758397;font-size:.62rem}
+.pronunciation-result__legend span{display:flex;gap:5px;align-items:center}
+.pronunciation-result__legend i{width:7px;height:7px;border-radius:50%}
+.pronunciation-result__legend .correct{background:#2f9c78}.pronunciation-result__legend .close{background:#e19a38}.pronunciation-result__legend .different{background:#d34a63}
+.pronunciation-lab__disclaimer{margin:13px 2px 0;color:#7d8998;font-size:.68rem;line-height:1.5}
+@keyframes labWave{from{height:12px;opacity:.45}to{height:54px;opacity:1}}
+@keyframes labPulse{50%{box-shadow:0 0 0 10px rgba(208,15,56,0)}}
+@media(max-width:900px){.pronunciation-lab__workspace{grid-template-columns:1fr}.pronunciation-lab__prompt{border-right:0;border-bottom:1px solid #e1e7ef}.pronunciation-result{grid-template-columns:130px 1fr}.pronunciation-result__transcript{grid-column:1/-1;border-top:1px solid #d7e5df;border-left:0}.pronunciation-recorder{min-height:370px}}
+@media(max-width:680px){.pronunciation-lab{padding:18px}.pronunciation-lab__heading{flex-direction:column}.pronunciation-lab__best{width:100%;box-sizing:border-box;text-align:left}.pronunciation-lab__title-row{align-items:flex-start;flex-direction:column}.pronunciation-lab__steps{grid-template-columns:1fr}.pronunciation-result{grid-template-columns:1fr}.pronunciation-result__score{margin:0 auto}.pronunciation-result__metrics{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:440px){.pronunciation-lab__prompt{padding:20px}.pronunciation-recorder{padding:19px}.pronunciation-result__metrics{grid-template-columns:1fr}.pronunciation-lab__model-actions button{width:100%;justify-content:center}}

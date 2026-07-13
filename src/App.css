@@ -13,3 +13,14 @@ body{
 .App__main {
     flex: 1;
 }
+
+:root {
+    --fjord-deep: #14213d;
+    --fjord: #1f6f78;
+    --fjord-hover: #185861;
+    --fjord-mid: #3f9299;
+    --fjord-soft: #e7f2f3;
+    --fjord-soft-strong: #d1e8ea;
+    --fjord-light: #9ed8dc;
+    --fjord-ice: #f4f9fa;
+}

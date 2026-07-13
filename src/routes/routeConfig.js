@@ -32,7 +32,15 @@ import LearningHub from '../modules/lessons/LearningHub';
 import NorwayLifeHub from '../modules/discover/NorwayLifeHub';
 import NotFound from '../modules/layout/NotFound';
 import ReviewPage from '../modules/lessons/ReviewPage';
+import LevelFinalTest from '../modules/lessons/LevelFinalTest';
 import GuideArticle from '../modules/discover/GuideArticle';
+import AuthPage from '../modules/auth/AuthPage';
+import Dashboard from '../modules/dashboard/Dashboard';
+import CareerOnboarding from '../modules/onboarding/CareerOnboarding';
+import withCareerProfile from '../modules/onboarding/CareerProfileGate';
+
+const PersonalizedLearningHub = withCareerProfile(LearningHub);
+const PersonalizedLessonProgram = withCareerProfile(LessonProgram);
 
 const LearningRedirect = () => <Redirect to="/invata#practica" />;
 const QuizPractice = () => <PracticeGame game="quiz" />;
@@ -83,51 +91,84 @@ const routes = [
   {
     path: '/invata',
     exact: true,
-    component: LearningHub,
+    component: PersonalizedLearningHub,
+    protected: true,
   },
   {
     path: '/exerseaza',
     exact: true,
     component: LearningRedirect,
+    protected: true,
   },
   // Adresă veche păstrată pentru compatibilitate
   {
     path: '/invata-limba',
     exact: true,
-    component: LearningHub,
+    component: PersonalizedLearningHub,
+    protected: true,
   },
   {
     path: '/pronuntie',
     component: Pronunciation,
+    protected: true,
   },
   {
     path: '/hangman',
     component: WordPractice,
+    protected: true,
   },
   {
     path: '/chestionar',
     component: QuizPractice,
+    protected: true,
   },
   {
     path: '/drag',
     component: OrderPractice,
+    protected: true,
   },
   {
     path: '/challenge30',
     component: Challenge30,
+    protected: true,
   },
   {
     path: '/recapitulare',
     exact: true,
     component: ReviewPage,
+    protected: true,
   },
   {
-    path: '/curs/a1/:lessonId',
-    component: LessonProgram,
+    path: '/dashboard',
+    exact: true,
+    component: Dashboard,
+    protected: true,
+  },
+  {
+    path: '/alege-directia',
+    exact: true,
+    component: CareerOnboarding,
+    protected: true,
+  },
+  {
+    path: '/autentificare',
+    exact: true,
+    component: AuthPage,
+  },
+  {
+    path: '/test-final/:level',
+    component: LevelFinalTest,
+    protected: true,
+  },
+  {
+    path: '/curs/:level/:lessonId',
+    component: PersonalizedLessonProgram,
+    protected: true,
   },
   {
     path: '/program-norvegiana',
-    component: LessonProgram,
+    component: PersonalizedLessonProgram,
+    protected: true,
   },
 
   // ── Utile (joburi și viața în Norvegia) ────────────────────────────
@@ -135,6 +176,10 @@ const routes = [
     path: '/joburi',
     exact: true,
     component: JobsCards,
+  },
+  {
+    path: '/joburi/ghid/:slug',
+    component: GuideArticle,
   },
   {
     path: '/joburi/acte',
