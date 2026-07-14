@@ -21,6 +21,10 @@ const rememberAudio = (key, audio) => {
   audioCache.set(key, audio);
 };
 
+const prepareSpeechText = (text, slow) => (
+  slow && text === 'Bra, takk.' ? 'Bra, takk!' : text
+);
+
 const readInput = (event) => {
   if (event.httpMethod === 'GET') {
     return event.queryStringParameters || {};
@@ -62,7 +66,8 @@ exports.handler = async (event) => {
   }
 
   const normalizedText = text.trim();
-  const cacheKey = `${ELEVENLABS_VOICE_ID}:${ELEVENLABS_MODEL_ID}:${slow ? 'slow' : 'normal'}:${normalizedText}`;
+  const speechText = prepareSpeechText(normalizedText, slow);
+  const cacheKey = `${ELEVENLABS_VOICE_ID}:${ELEVENLABS_MODEL_ID}:${slow ? 'slow-v2' : 'normal'}:${speechText}`;
   let audio = audioCache.get(cacheKey);
   let provider = 'elevenlabs-cache';
 
@@ -77,7 +82,7 @@ exports.handler = async (event) => {
           Accept: 'audio/mpeg',
         },
         body: JSON.stringify({
-          text: normalizedText,
+          text: speechText,
           model_id: ELEVENLABS_MODEL_ID,
           language_code: 'no',
           voice_settings: {
@@ -85,7 +90,7 @@ exports.handler = async (event) => {
             similarity_boost: 0.78,
             style: 0.12,
             use_speaker_boost: true,
-            speed: slow ? 0.72 : 0.94,
+            speed: slow && speechText.length <= 12 ? 0.82 : (slow ? 0.72 : 0.94),
           },
         }),
       });

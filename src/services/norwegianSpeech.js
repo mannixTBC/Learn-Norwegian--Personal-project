@@ -27,7 +27,7 @@ const stopActiveAudio = () => {
 };
 
 const buildSpeechUrl = (text, slow) => (
-  `${speechEndpoint}?text=${encodeURIComponent(text)}&slow=${slow ? '1' : '0'}&player=native-v1`
+  `${speechEndpoint}?text=${encodeURIComponent(text)}&slow=${slow ? '1' : '0'}&player=native-v1${slow ? '&slowVersion=2' : ''}`
 );
 
 const mediaErrorMessage = (audio) => {
