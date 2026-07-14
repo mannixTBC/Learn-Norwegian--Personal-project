@@ -1,5 +1,6 @@
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID;
+const ELEVENLABS_FEMALE_VOICE_ID = process.env.ELEVENLABS_FEMALE_VOICE_ID || '21m00Tcm4TlvDq8ikWAM';
 const ELEVENLABS_MODEL_ID = process.env.ELEVENLABS_MODEL_ID || 'eleven_flash_v2_5';
 const MAX_TEXT_LENGTH = 3000;
 const MAX_CACHE_ITEMS = 100;
@@ -51,6 +52,8 @@ exports.handler = async (event) => {
 
   const { text } = input;
   const slow = input.slow === true || input.slow === 'true' || input.slow === '1';
+  const voice = input.voice === 'female' ? 'female' : 'male';
+  const voiceId = voice === 'female' ? ELEVENLABS_FEMALE_VOICE_ID : ELEVENLABS_VOICE_ID;
 
   if (!text || typeof text !== 'string' || !text.trim()) {
     return jsonResponse(400, { error: 'Lipsește textul pentru pronunție.' });
@@ -67,13 +70,13 @@ exports.handler = async (event) => {
 
   const normalizedText = text.trim();
   const speechText = prepareSpeechText(normalizedText, slow);
-  const cacheKey = `${ELEVENLABS_VOICE_ID}:${ELEVENLABS_MODEL_ID}:${slow ? 'slow-v2' : 'normal'}:${speechText}`;
+  const cacheKey = `${voiceId}:${ELEVENLABS_MODEL_ID}:${slow ? 'slow-v2' : 'normal'}:${speechText}`;
   let audio = audioCache.get(cacheKey);
   let provider = 'elevenlabs-cache';
 
   try {
     if (!audio) {
-      const endpoint = `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(ELEVENLABS_VOICE_ID)}?output_format=mp3_44100_128`;
+      const endpoint = `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voiceId)}?output_format=mp3_44100_128`;
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -115,6 +118,7 @@ exports.handler = async (event) => {
         'Content-Type': 'audio/mpeg',
         'Cache-Control': 'private, max-age=86400',
         'X-Audio-Provider': provider,
+        'X-Audio-Voice': voice,
         'Content-Length': String(audio.length),
       },
       body: audio.toString('base64'),

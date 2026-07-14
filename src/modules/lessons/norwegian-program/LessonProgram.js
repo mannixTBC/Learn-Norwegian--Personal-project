@@ -15,11 +15,41 @@ const readStorage = (key, fallback) => {
   try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch (_) { return fallback; }
 };
 
-const AudioButton = ({ text, slow = false }) => (
-  <button className="audio-button" type="button" onClick={() => speakNorwegian(text, { slow })} aria-label={`Ascultă ${slow ? 'lent ' : ''}: ${text}`}>
-    <span role="img" aria-hidden="true">🔊</span>{slow ? 'Lent' : 'Ascultă'}
+const AudioButton = ({ text, slow = false, voice = 'male', label }) => (
+  <button className="audio-button" type="button" onClick={() => speakNorwegian(text, { slow, voice })} aria-label={`Ascultă ${slow ? 'lent ' : ''}: ${text}`}>
+    <span role="img" aria-hidden="true">🔊</span>{label || (slow ? 'Lent' : 'Ascultă')}
   </button>
 );
+
+const femaleSpeakers = new Set(['anna', 'ana', 'nora', 'ida', 'sara', 'mia']);
+const maleSpeakers = new Set(['lars', 'erik', 'mihai', 'radu', 'andrei', 'alex', 'dan', 'ola']);
+
+const getDialogueVoice = (speaker, index) => {
+  const normalizedSpeaker = speaker.toLocaleLowerCase().trim();
+  if (femaleSpeakers.has(normalizedSpeaker)) return 'female';
+  if (maleSpeakers.has(normalizedSpeaker)) return 'male';
+  return index % 2 === 0 ? 'female' : 'male';
+};
+
+const DialogueAudioButton = ({ dialogue, slow = false }) => {
+  const playDialogue = async () => {
+    for (let index = 0; index < dialogue.length; index += 1) {
+      const [speaker, text] = dialogue[index];
+      const result = await speakNorwegian(text, {
+        slow,
+        voice: getDialogueVoice(speaker, index),
+        waitForEnd: true,
+      });
+      if (!result.ok) break;
+    }
+  };
+
+  return (
+    <button className="audio-button" type="button" onClick={playDialogue} aria-label={`${slow ? 'Ascultă lent' : 'Ascultă'} dialogul cu două voci`}>
+      <span role="img" aria-hidden="true">🔊</span>{slow ? 'Dialog lent' : 'Ascultă dialogul'}
+    </button>
+  );
+};
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -145,7 +175,7 @@ const LessonProgram = ({ match }) => {
           <div className="career-phrase-grid">{careerModule.phrases.map(([norwegian, romanian, highlight], index) => <article key={norwegian}><span>Expresia {index + 1}</span><h2 lang="no"><HighlightedSentence sentence={norwegian} word={highlight} highlight={highlight}/></h2><p lang="ro">{romanian}</p><div><AudioButton text={norwegian}/><AudioButton text={norwegian} slow/></div></article>)}</div>
           <div className="career-scenario"><div><span>Scenariu profesional</span><h2>{careerModule.scenario.title}</h2></div><div><p lang="no">{careerModule.scenario.norwegian}</p><small lang="ro">{careerModule.scenario.romanian}</small><AudioButton text={careerModule.scenario.norwegian}/></div></div>
         </section>}
-        {step === 3 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 4</p><h1>Dialog practic</h1><p>Ascultă dialogul, apoi descoperă traducerea fiecărei replici.</p></div><div className="dialogue"><div className="dialogue__actions"><AudioButton text={lesson.dialogue.map((line) => line[1]).join('. ')}/><AudioButton text={lesson.dialogue.map((line) => line[1]).join('. ')} slow/></div>{lesson.dialogue.map(([speaker, text, translation], index) => <article className="dialogue-line" key={`${speaker}-${index}`}><div className="speaker">{speaker.charAt(0)}</div><div><strong>{speaker}</strong><p>{text}</p>{showTranslations[index] && <small>{translation}</small>}<div><AudioButton text={text}/><button className="translation-button" type="button" onClick={() => setShowTranslations((current) => ({...current,[index]:!current[index]}))}>{showTranslations[index] ? 'Ascunde traducerea' : 'Vezi traducerea'}</button></div></div></article>)}</div></section>}
+        {step === 3 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 4</p><h1>Dialog practic</h1><p>Ascultă dialogul cu voci diferite pentru fiecare vorbitor, apoi descoperă traducerea fiecărei replici.</p></div><div className="dialogue"><div className="dialogue__actions"><DialogueAudioButton dialogue={lesson.dialogue}/><DialogueAudioButton dialogue={lesson.dialogue} slow/></div>{lesson.dialogue.map(([speaker, text, translation], index) => <article className="dialogue-line" key={`${speaker}-${index}`}><div className={`speaker speaker--${getDialogueVoice(speaker, index)}`}>{speaker.charAt(0)}</div><div><strong>{speaker}</strong><p>{text}</p>{showTranslations[index] && <small>{translation}</small>}<div><AudioButton text={text} voice={getDialogueVoice(speaker, index)}/><button className="translation-button" type="button" onClick={() => setShowTranslations((current) => ({...current,[index]:!current[index]}))}>{showTranslations[index] ? 'Ascunde traducerea' : 'Vezi traducerea'}</button></div></div></article>)}</div></section>}
         {step === 4 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 5</p><h1>{lesson.grammar.title}</h1><p>O regulă scurtă, urmată imediat de exemple.</p></div><div className="grammar-card"><div className="grammar-rule"><span>Regula</span><p>{lesson.grammar.rule}</p></div>{lesson.grammar.examples.map((example) => <div className="grammar-example" key={example}><span>✓</span><p>{example}</p></div>)}<div className="grammar-example grammar-example--wrong"><span>×</span><p>{lesson.grammar.wrong}</p></div></div></section>}
         {step === 5 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 6</p><h1>Verifică ce ai învățat</h1><p>Răspunde la toate cele {lessonExercises.length} întrebări, inclusiv situația pentru „{careerModule.path.shortTitle}”. Greșelile vor fi salvate pentru recapitulare.</p></div><div className="exercise-progress"><span style={{width:`${(answered/lessonExercises.length)*100}%`}}/><small>{answered} din {lessonExercises.length} răspunsuri verificate</small></div>{lessonExercises.map((exercise,index) => <LessonExercise exercise={exercise} index={index} onResult={recordResult} key={`${lesson.id}-${index}-${exercise.careerPath || 'general'}`}/>)}</section>}
         {step === 6 && <section className="lesson-result"><div className="result-icon">✓</div><p className="lesson-eyebrow">Lecție finalizată</p><h1>Bravo! Ai terminat „{lesson.title}”</h1><p>Ai răspuns corect la {score} din {lessonExercises.length} întrebări.</p><div className="result-score"><strong>{Math.round((score/lessonExercises.length)*100)}%</strong><span>scorul lecției</span></div>{reviewItems.length > 0 && <div className="review-box"><h2>De repetat</h2><p>Am salvat {reviewItems.length} {reviewItems.length === 1 ? 'răspuns' : 'răspunsuri'} pentru recapitulare.</p><button type="button" onClick={() => {setAnswers({});setStep(5);}}>Repetă exercițiile</button></div>}<div className="result-actions">{lesson.id < courseLessons.length ? <button type="button" className="primary" onClick={goNextLesson}>Continuă cu lecția {lesson.id + 1} →</button> : <Link className="primary" to="/invata">Înapoi la curs</Link>}<button type="button" onClick={() => setStep(1)}>Revezi vocabularul</button></div></section>}

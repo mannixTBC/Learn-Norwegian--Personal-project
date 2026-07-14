@@ -26,8 +26,8 @@ const stopActiveAudio = () => {
   releaseAudio(audio);
 };
 
-const buildSpeechUrl = (text, slow) => (
-  `${speechEndpoint}?text=${encodeURIComponent(text)}&slow=${slow ? '1' : '0'}&player=native-v1${slow ? '&slowVersion=2' : ''}`
+const buildSpeechUrl = (text, slow, voice) => (
+  `${speechEndpoint}?text=${encodeURIComponent(text)}&slow=${slow ? '1' : '0'}&voice=${voice}&player=native-v2${slow ? '&slowVersion=2' : ''}`
 );
 
 const mediaErrorMessage = (audio) => {
@@ -45,6 +45,8 @@ const mediaErrorMessage = (audio) => {
 
 export const speakNorwegian = (text, options = {}) => {
   const slow = Boolean(options.slow);
+  const voice = options.voice === 'female' ? 'female' : 'male';
+  const waitForEnd = Boolean(options.waitForEnd);
 
   stopActiveAudio();
   if (window.speechSynthesis) window.speechSynthesis.cancel();
@@ -54,7 +56,7 @@ export const speakNorwegian = (text, options = {}) => {
   activeAudio = audio;
   audio.preload = 'auto';
   audio.playsInline = true;
-  audio.src = buildSpeechUrl(text, slow);
+  audio.src = buildSpeechUrl(text, slow, voice);
 
   return new Promise((resolve) => {
     let settled = false;
@@ -85,13 +87,14 @@ export const speakNorwegian = (text, options = {}) => {
     };
 
     audio.onplay = () => {
-      reportSpeechStatus({ status: 'playing', provider: 'elevenlabs' });
-      finish({ ok: true, provider: 'elevenlabs' });
+      reportSpeechStatus({ status: 'playing', provider: 'elevenlabs', voice });
+      if (!waitForEnd) finish({ ok: true, provider: 'elevenlabs', voice });
     };
 
     audio.onended = () => {
       if (activeAudio === audio) activeAudio = null;
       releaseAudio(audio);
+      finish({ ok: true, provider: 'elevenlabs', voice });
     };
 
     audio.onerror = () => fail(new Error(mediaErrorMessage(audio)));
