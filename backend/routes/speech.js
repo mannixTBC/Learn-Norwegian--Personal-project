@@ -18,8 +18,10 @@ const rememberAudio = (key, audio) => {
   audioCache.set(key, audio);
 };
 
-router.post('/', async (req, res, next) => {
-  const { text, slow = false } = req.body || {};
+const handleSpeech = async (req, res, next) => {
+  const input = req.method === 'GET' ? req.query : (req.body || {});
+  const { text } = input;
+  const slow = input.slow === true || input.slow === 'true' || input.slow === '1';
 
   if (!text || typeof text !== 'string') {
     return res.status(400).json({ error: 'Lipsește textul pentru pronunție.' });
@@ -90,6 +92,9 @@ router.post('/', async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
-});
+};
+
+router.get('/', handleSpeech);
+router.post('/', handleSpeech);
 
 module.exports = router;
