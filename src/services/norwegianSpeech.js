@@ -18,7 +18,7 @@ const stopActiveAudio = () => {
 };
 
 const buildSpeechUrl = (text, slow) => (
-  `${speechEndpoint}?text=${encodeURIComponent(text)}&slow=${slow ? '1' : '0'}`
+  `${speechEndpoint}?text=${encodeURIComponent(text)}&slow=${slow ? '1' : '0'}&player=v2`
 );
 
 export const speakNorwegian = async (text, options = {}) => {
@@ -43,6 +43,10 @@ export const speakNorwegian = async (text, options = {}) => {
     await audio.play();
     return { ok: true, provider: 'elevenlabs' };
   } catch (error) {
+    if (error && error.name === 'AbortError') {
+      return { ok: false, provider: 'elevenlabs', cancelled: true };
+    }
+
     console.error('ElevenLabs audio could not be played.', error);
     reportSpeechStatus({
       status: 'error',

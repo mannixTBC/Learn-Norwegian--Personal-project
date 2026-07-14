@@ -43,7 +43,7 @@ const handleSpeech = async (req, res, next) => {
   if (cachedAudio) {
     res.set({
       'Content-Type': 'audio/mpeg',
-      'Cache-Control': 'public, max-age=86400',
+      'Cache-Control': 'private, max-age=86400',
       'X-Audio-Provider': 'elevenlabs-cache',
       'Content-Length': cachedAudio.length,
     });
@@ -84,7 +84,7 @@ const handleSpeech = async (req, res, next) => {
     rememberAudio(cacheKey, audio);
     res.set({
       'Content-Type': 'audio/mpeg',
-      'Cache-Control': 'public, max-age=86400',
+      'Cache-Control': 'private, max-age=86400',
       'X-Audio-Provider': 'elevenlabs',
       'Content-Length': audio.length,
     });
