@@ -1,6 +1,5 @@
-import { Howl } from 'howler';
-
-let activeSound = null;
+let activeAudio = null;
+let playbackSequence = 0;
 
 const speechEndpoint = process.env.NODE_ENV === 'development'
   ? 'http://localhost:5000/api/speech'
@@ -10,21 +9,39 @@ const reportSpeechStatus = (detail) => {
   window.dispatchEvent(new CustomEvent('norwegian-speech-status', { detail }));
 };
 
-const stopActiveAudio = () => {
-  if (!activeSound) return;
+const releaseAudio = (audio) => {
+  audio.onplay = null;
+  audio.onended = null;
+  audio.onerror = null;
+  audio.pause();
+  audio.removeAttribute('src');
+  audio.load();
+};
 
-  activeSound.stop();
-  activeSound.unload();
-  activeSound = null;
+const stopActiveAudio = () => {
+  if (!activeAudio) return;
+
+  const audio = activeAudio;
+  activeAudio = null;
+  releaseAudio(audio);
 };
 
 const buildSpeechUrl = (text, slow) => (
-  `${speechEndpoint}?text=${encodeURIComponent(text)}&slow=${slow ? '1' : '0'}&player=v3`
+  `${speechEndpoint}?text=${encodeURIComponent(text)}&slow=${slow ? '1' : '0'}&player=native-v1`
 );
 
-const normalizeAudioError = (reason) => (
-  reason instanceof Error ? reason : new Error(String(reason || 'Eroare audio necunoscută.'))
-);
+const mediaErrorMessage = (audio) => {
+  if (!audio.error) return 'Redarea audio nu a putut porni.';
+
+  const messages = {
+    1: 'Redarea audio a fost întreruptă.',
+    2: 'Fișierul audio nu a putut fi descărcat.',
+    3: 'Fișierul audio nu a putut fi decodat.',
+    4: 'Formatul audio nu este acceptat de browser.',
+  };
+
+  return messages[audio.error.code] || 'Eroare audio necunoscută.';
+};
 
 export const speakNorwegian = (text, options = {}) => {
   const slow = Boolean(options.slow);
@@ -32,9 +49,15 @@ export const speakNorwegian = (text, options = {}) => {
   stopActiveAudio();
   if (window.speechSynthesis) window.speechSynthesis.cancel();
 
+  const playbackId = ++playbackSequence;
+  const audio = new Audio();
+  activeAudio = audio;
+  audio.preload = 'auto';
+  audio.playsInline = true;
+  audio.src = buildSpeechUrl(text, slow);
+
   return new Promise((resolve) => {
     let settled = false;
-    let sound = null;
 
     const finish = (result) => {
       if (settled) return;
@@ -43,9 +66,14 @@ export const speakNorwegian = (text, options = {}) => {
     };
 
     const fail = (reason) => {
-      const error = normalizeAudioError(reason);
-      if (activeSound === sound) activeSound = null;
-      if (sound) sound.unload();
+      if (playbackId !== playbackSequence || activeAudio !== audio) {
+        finish({ ok: false, provider: 'elevenlabs', cancelled: true });
+        return;
+      }
+
+      const error = reason instanceof Error ? reason : new Error(mediaErrorMessage(audio));
+      activeAudio = null;
+      releaseAudio(audio);
 
       console.error('ElevenLabs audio could not be played.', error);
       reportSpeechStatus({
@@ -56,24 +84,23 @@ export const speakNorwegian = (text, options = {}) => {
       finish({ ok: false, provider: 'elevenlabs', error });
     };
 
-    sound = new Howl({
-      src: [buildSpeechUrl(text, slow)],
-      format: ['mp3'],
-      html5: true,
-      preload: true,
-      onplay: () => {
-        reportSpeechStatus({ status: 'playing', provider: 'elevenlabs' });
-        finish({ ok: true, provider: 'elevenlabs' });
-      },
-      onloaderror: (_id, error) => fail(error),
-      onplayerror: (_id, error) => fail(error),
-      onend: () => {
-        if (activeSound === sound) activeSound = null;
-        sound.unload();
-      },
-    });
+    audio.onplay = () => {
+      reportSpeechStatus({ status: 'playing', provider: 'elevenlabs' });
+      finish({ ok: true, provider: 'elevenlabs' });
+    };
 
-    activeSound = sound;
-    sound.play();
+    audio.onended = () => {
+      if (activeAudio === audio) activeAudio = null;
+      releaseAudio(audio);
+    };
+
+    audio.onerror = () => fail(new Error(mediaErrorMessage(audio)));
+
+    // Calling play immediately inside the click keeps browser playback permission active
+    // while the MP3 is downloaded from the Netlify function.
+    const playRequest = audio.play();
+    if (playRequest && typeof playRequest.catch === 'function') {
+      playRequest.catch(fail);
+    }
   });
 };
