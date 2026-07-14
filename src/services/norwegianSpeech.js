@@ -1,11 +1,46 @@
 const audioCache = new Map();
+let audioContext = null;
+let activeSource = null;
 let activeAudio = null;
+
 const speechEndpoint = process.env.NODE_ENV === 'development'
   ? 'http://localhost:5000/api/speech'
   : '/api/speech';
 
 const reportSpeechStatus = (detail) => {
   window.dispatchEvent(new CustomEvent('norwegian-speech-status', { detail }));
+};
+
+// AudioContext must be created/resumed synchronously inside the user's click.
+// Otherwise browsers may reject playback after the ElevenLabs request finishes.
+const prepareAudioContext = () => {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return { context: null, ready: Promise.resolve() };
+
+  if (!audioContext) audioContext = new AudioContextClass();
+  const ready = audioContext.state === 'suspended'
+    ? audioContext.resume()
+    : Promise.resolve();
+
+  return { context: audioContext, ready };
+};
+
+const stopActiveAudio = () => {
+  if (activeSource) {
+    try {
+      activeSource.stop();
+    } catch (_) {
+      // The source may already have ended.
+    }
+    activeSource.disconnect();
+    activeSource = null;
+  }
+
+  if (activeAudio) {
+    activeAudio.pause();
+    activeAudio.currentTime = 0;
+    activeAudio = null;
+  }
 };
 
 const fetchAudio = async (text, slow) => {
@@ -27,26 +62,59 @@ const fetchAudio = async (text, slow) => {
     throw new Error('Răspunsul audio nu provine de la ElevenLabs.');
   }
 
-  const audioUrl = URL.createObjectURL(await response.blob());
-  const audio = { audioUrl, provider };
+  const audio = { blob: await response.blob(), provider };
   audioCache.set(cacheKey, audio);
   return audio;
 };
 
+const playWithAudioContext = async (context, blob) => {
+  const audioBuffer = await context.decodeAudioData(await blob.arrayBuffer());
+  const source = context.createBufferSource();
+  source.buffer = audioBuffer;
+  source.connect(context.destination);
+  source.onended = () => {
+    if (activeSource === source) activeSource = null;
+    source.disconnect();
+  };
+  activeSource = source;
+  source.start(0);
+};
+
+const playWithAudioElement = async (blob) => {
+  const audioUrl = URL.createObjectURL(blob);
+  const audio = new Audio(audioUrl);
+  activeAudio = audio;
+  audio.preload = 'auto';
+  audio.onended = () => {
+    URL.revokeObjectURL(audioUrl);
+    if (activeAudio === audio) activeAudio = null;
+  };
+  try {
+    await audio.play();
+  } catch (error) {
+    URL.revokeObjectURL(audioUrl);
+    if (activeAudio === audio) activeAudio = null;
+    throw error;
+  }
+};
+
 export const speakNorwegian = async (text, options = {}) => {
   const slow = Boolean(options.slow);
+  const playback = prepareAudioContext();
 
   try {
-    if (activeAudio) {
-      activeAudio.pause();
-      activeAudio.currentTime = 0;
-    }
+    stopActiveAudio();
     if (window.speechSynthesis) window.speechSynthesis.cancel();
 
-    const { audioUrl, provider } = await fetchAudio(text, slow);
-    activeAudio = new Audio(audioUrl);
-    activeAudio.preload = 'auto';
-    await activeAudio.play();
+    const { blob, provider } = await fetchAudio(text, slow);
+    await playback.ready;
+
+    if (playback.context) {
+      await playWithAudioContext(playback.context, blob);
+    } else {
+      await playWithAudioElement(blob);
+    }
+
     reportSpeechStatus({ status: 'playing', provider });
     return { ok: true, provider };
   } catch (error) {
