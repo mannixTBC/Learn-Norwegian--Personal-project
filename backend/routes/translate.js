@@ -3,8 +3,19 @@ const router = express.Router();
 const fetch = typeof globalThis.fetch === 'function' ? globalThis.fetch : require('node-fetch');
 
 const MYMEMORY_EMAIL = process.env.MYMEMORY_EMAIL;
+const AZURE_TRANSLATOR_KEY = process.env.AZURE_TRANSLATOR_KEY;
+const AZURE_TRANSLATOR_REGION = process.env.AZURE_TRANSLATOR_REGION;
+const AZURE_TRANSLATOR_ENDPOINT = (process.env.AZURE_TRANSLATOR_ENDPOINT || 'https://api.cognitive.microsofttranslator.com').replace(/\/$/, '');
 const DEEPL_API_KEY = process.env.DEEPL_API_KEY;
 const DEEPL_API_URL = process.env.DEEPL_API_URL || 'https://api-free.deepl.com/v2/translate';
+
+const AZURE_LANGUAGES = {
+  no: 'nb',
+  nb: 'nb',
+  'nb-NO': 'nb',
+  ro: 'ro',
+  en: 'en',
+};
 
 const DEEPL_LANGUAGES = {
   no: 'NB',
@@ -17,6 +28,35 @@ const DEEPL_LANGUAGES = {
 function getMyMemoryUrl(text, fromLang, toLang) {
   const base = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=' + fromLang + '|' + toLang;
   return MYMEMORY_EMAIL ? base + '&de=' + encodeURIComponent(MYMEMORY_EMAIL) : base;
+}
+
+async function translateWithAzure(text, fromLang, toLang) {
+  const query = new URLSearchParams({
+    'api-version': '3.0',
+    from: AZURE_LANGUAGES[fromLang] || fromLang,
+    to: AZURE_LANGUAGES[toLang] || toLang,
+  });
+  const headers = {
+    'Ocp-Apim-Subscription-Key': AZURE_TRANSLATOR_KEY,
+    'Content-Type': 'application/json',
+  };
+
+  if (AZURE_TRANSLATOR_REGION) {
+    headers['Ocp-Apim-Subscription-Region'] = AZURE_TRANSLATOR_REGION;
+  }
+
+  const response = await fetch(`${AZURE_TRANSLATOR_ENDPOINT}/translate?${query.toString()}`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify([{ Text: text }]),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Azure Translator a răspuns cu statusul ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data[0] && data[0].translations && data[0].translations[0] && data[0].translations[0].text;
 }
 
 async function translateWithDeepL(text, fromLang, toLang) {
@@ -51,6 +91,17 @@ router.post('/', async (req, res, next) => {
     return res.status(400).json({ error: 'Lipseste "text" in body' });
   }
   try {
+    if (AZURE_TRANSLATOR_KEY) {
+      try {
+        const translated = await translateWithAzure(text.trim(), fromLang, toLang);
+        if (translated) {
+          return res.json({ translated, original: text, provider: 'azure' });
+        }
+      } catch (azureError) {
+        console.warn('Azure Translator indisponibil; încercăm DeepL:', azureError.message);
+      }
+    }
+
     if (DEEPL_API_KEY) {
       try {
         const translated = await translateWithDeepL(text.trim(), fromLang, toLang);
