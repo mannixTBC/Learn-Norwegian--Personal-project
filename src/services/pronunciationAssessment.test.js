@@ -28,4 +28,24 @@ describe('pronunciation assessment', () => {
   it('keeps Norwegian characters while normalizing punctuation', () => {
     expect(normalizeNorwegian('  Først, går vi på Øya!  ')).toBe('først går vi på øya');
   });
+
+  it('uses the pronunciation scores returned by Azure Speech', () => {
+    const result = assessPronunciation({
+      referenceText: 'Jeg lærer norsk.',
+      transcript: 'Jeg lærer norsk',
+      duration: 2,
+      provider: 'azure-speech-pronunciation',
+      providerAssessment: {
+        pronunciationScore: 87.4,
+        accuracy: 91.2,
+        completeness: 100,
+        fluency: 76.6,
+      },
+    });
+
+    expect(result.score).toBe(87);
+    expect(result.accuracy).toBe(91);
+    expect(result.completeness).toBe(100);
+    expect(result.rhythm).toBe(77);
+  });
 });

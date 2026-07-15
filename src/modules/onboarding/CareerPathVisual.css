@@ -1,0 +1,12 @@
+.career-path-visual{display:grid;place-items:center;color:var(--icon-color,#174e59);border:1px solid var(--icon-border,#badbdd);background:var(--icon-bg,#e8f5f5)}
+.career-path-visual svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.career-path-visual--transport{--icon-color:#315782;--icon-bg:#edf3fb;--icon-border:#c9d8eb}
+.career-path-visual--hospitality{--icon-color:#9a5a28;--icon-bg:#fff4e8;--icon-border:#efd6bb}
+.career-path-visual--construction{--icon-color:#8a681b;--icon-bg:#fff8df;--icon-border:#eadb9f}
+.career-path-visual--healthcare{--icon-color:#9b3f50;--icon-bg:#fff0f3;--icon-border:#ebc7ce}
+.career-path-visual--cleaning{--icon-color:#247b84;--icon-bg:#e9f8f8;--icon-border:#bde1e3}
+.career-path-visual--retail{--icon-color:#6b5a91;--icon-bg:#f4f0fb;--icon-border:#d7cdea}
+.career-path-visual--office{--icon-color:#366c91;--icon-bg:#edf6fb;--icon-border:#c8deeb}
+.career-path-visual--studies{--icon-color:#397354;--icon-bg:#edf8f1;--icon-border:#c5e1cf}
+.career-path-visual--family{--icon-color:#9a506e;--icon-bg:#fcf0f5;--icon-border:#e8cbd7}
+.career-path-visual--general{--icon-color:#174e59;--icon-bg:#e8f5f5;--icon-border:#badbdd}

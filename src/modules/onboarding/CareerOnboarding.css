@@ -8,3 +8,88 @@
 .career-path-card--selected .career-path-card__icon,.career-path-card__check,.career-selection__icon{background:var(--fjord)}
 .career-selection>button{background:var(--fjord)}
 .career-selection>button:hover{background:var(--fjord-hover)}
+
+/* Selectie directa: fiecare directie are propria actiune, fara bifare intermediara. */
+.career-onboarding__hero{grid-template-columns:1fr}
+.career-onboarding__hero>div:first-child{max-width:820px}
+.career-path-card{grid-template-columns:auto 1fr;min-height:156px;cursor:default}
+.career-path-card--current{border-color:var(--fjord);box-shadow:0 0 0 3px rgba(31,111,120,.1)}
+.career-path-card--current .career-path-card__icon{background:var(--fjord)}
+.career-path-card__copy em{width:max-content;margin-top:2px;padding:4px 7px;color:#174e59;border-radius:6px;background:#e8f5f5;font-size:.61rem;font-style:normal;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+.career-path-card__action{grid-column:1/-1;display:flex;min-height:44px;justify-content:center;align-items:center;gap:7px;padding:0 15px;color:#fff;border:1px solid var(--fjord);border-radius:11px;background:linear-gradient(135deg,#174e59,var(--fjord));box-shadow:0 7px 17px rgba(31,111,120,.17);font-family:inherit;font-size:.76rem;font-weight:900;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+.career-path-card__action:hover{background:linear-gradient(135deg,#123f47,var(--fjord-hover));box-shadow:0 10px 22px rgba(31,111,120,.24);transform:translateY(-1px)}
+.career-path-card__action:active{box-shadow:none;transform:translateY(0)}
+.career-path-card__action:focus-visible{outline:3px solid #8fd3d7;outline-offset:3px}
+
+@media(max-width:560px){
+  .career-onboarding{padding-top:14px}
+  .career-onboarding__hero{padding:22px 20px}
+  .career-onboarding__hero h1{font-size:2rem}
+  .career-onboarding main{padding-top:28px}
+  .career-path-card{min-height:0}
+  .career-path-card__action{min-height:48px;font-size:.8rem}
+}
+
+/* Iconuri expresive, cu accente pastelate din aceeasi familie vizuala. */
+.career-path-card__icon{color:var(--icon-color,#174e59);border:1px solid var(--icon-border,#badbdd);background:var(--icon-bg,#e8f5f5)}
+.career-path-card__icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.career-path-card__icon--transport{--icon-color:#315782;--icon-bg:#edf3fb;--icon-border:#c9d8eb}
+.career-path-card__icon--hospitality{--icon-color:#9a5a28;--icon-bg:#fff4e8;--icon-border:#efd6bb}
+.career-path-card__icon--construction{--icon-color:#8a681b;--icon-bg:#fff8df;--icon-border:#eadb9f}
+.career-path-card__icon--healthcare{--icon-color:#9b3f50;--icon-bg:#fff0f3;--icon-border:#ebc7ce}
+.career-path-card__icon--cleaning{--icon-color:#247b84;--icon-bg:#e9f8f8;--icon-border:#bde1e3}
+.career-path-card__icon--retail{--icon-color:#6b5a91;--icon-bg:#f4f0fb;--icon-border:#d7cdea}
+.career-path-card__icon--office{--icon-color:#366c91;--icon-bg:#edf6fb;--icon-border:#c8deeb}
+.career-path-card__icon--studies{--icon-color:#397354;--icon-bg:#edf8f1;--icon-border:#c5e1cf}
+.career-path-card__icon--family{--icon-color:#9a506e;--icon-bg:#fcf0f5;--icon-border:#e8cbd7}
+.career-path-card__icon--general{--icon-color:#174e59;--icon-bg:#e8f5f5;--icon-border:#badbdd}
+.career-path-card--current .career-path-card__icon{color:var(--icon-color);border-color:var(--icon-border);background:var(--icon-bg);box-shadow:0 0 0 3px rgba(31,111,120,.1)}
+
+/* Introducere mai luminoasă și mai compactă exclusiv pe telefon. */
+@media(max-width:560px){
+  .career-onboarding__hero{
+    padding:24px 21px 25px;
+    color:#153b46;
+    border:1px solid #c8e4e3;
+    border-radius:20px;
+    background:linear-gradient(145deg,#f8fcfb 0%,#edf8f7 58%,#e5f3f4 100%);
+    box-shadow:0 12px 30px rgba(23,78,89,.09);
+  }
+  .career-onboarding__step{
+    display:none;
+  }
+  .career-onboarding__hero h1{
+    max-width:330px;
+    margin-bottom:13px;
+    color:#153b46;
+    font-size:1.78rem;
+    font-weight:750;
+    line-height:1.1;
+    letter-spacing:-.035em;
+  }
+  .career-onboarding__hero p{
+    max-width:330px;
+    color:#506b73;
+    font-size:.92rem;
+    line-height:1.55;
+  }
+  .career-onboarding__heading h2{
+    max-width:330px;
+    font-size:1.42rem;
+    line-height:1.18;
+    letter-spacing:-.025em;
+  }
+  .career-onboarding__heading{
+    gap:0;
+    margin-bottom:16px;
+  }
+  .career-onboarding__heading>div{
+    display:none;
+  }
+  .career-onboarding__heading>small{
+    max-width:310px;
+    color:#63777f;
+    font-size:.8rem;
+    line-height:1.45;
+  }
+}

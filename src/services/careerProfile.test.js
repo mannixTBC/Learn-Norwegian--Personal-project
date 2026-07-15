@@ -23,5 +23,14 @@ test('modulul profesional oferă vocabular, scenariu și exercițiu corect', () 
   const module = getCareerLessonModule('hospitality', 'B1', 4);
   expect(module.phrases).toHaveLength(3);
   expect(module.scenario.norwegian).toBeTruthy();
-  expect(module.exercise.options[module.exercise.answer]).toBe(module.phrases[0][1]);
+  expect(module.exercise.type).toBe('gaps');
+  expect(module.exercise.answer).toEqual([module.phrases[0][2]]);
+});
+
+test('A1 oferă doar două formule profesionale scurte și un scenariu familiar', () => {
+  const module = getCareerLessonModule('hospitality', 'A1', 1);
+  expect(module.phrases).toHaveLength(2);
+  expect(module.phrases[0][0]).toBe('Har du en reservasjon?');
+  expect(module.scenario.norwegian).toBe(module.phrases[0][0]);
+  expect(module.coaching).toContain('prima zi la serviciu');
 });

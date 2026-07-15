@@ -100,21 +100,39 @@ const feedbackFor = (score, focusWords) => {
   return { tone: 'retry', title: 'Încearcă încă o dată, mai rar', text: 'Apropie-te de microfon, ascultă modelul lent și pronunță fiecare cuvânt separat.' };
 };
 
-export const assessPronunciation = ({ referenceText, transcript, words = [], duration = 0, provider = 'browser' }) => {
+const validProviderScore = (value) => (Number.isFinite(Number(value))
+  ? Math.max(0, Math.min(100, Math.round(Number(value))))
+  : null);
+
+export const assessPronunciation = ({
+  referenceText,
+  transcript,
+  words = [],
+  duration = 0,
+  provider = 'browser',
+  providerAssessment = null,
+}) => {
   const expectedWords = normalizeText(referenceText).split(' ').filter(Boolean);
   const spokenWords = normalizeText(transcript).split(' ').filter(Boolean);
   const alignment = alignWords(expectedWords, spokenWords);
   const comparable = alignment.filter((item) => item.expected);
   const points = comparable.reduce((total, item) => total + (item.status === 'correct' ? 1 : item.status === 'close' ? 0.65 : 0), 0);
-  const accuracy = expectedWords.length ? Math.round((points / expectedWords.length) * 100) : 0;
+  const estimatedAccuracy = expectedWords.length ? Math.round((points / expectedWords.length) * 100) : 0;
   const recognized = comparable.filter((item) => item.status === 'correct' || item.status === 'close').length;
-  const completeness = expectedWords.length ? Math.round((recognized / expectedWords.length) * 100) : 0;
+  const estimatedCompleteness = expectedWords.length ? Math.round((recognized / expectedWords.length) * 100) : 0;
   const timedWords = words.filter((word) => Number.isFinite(word.start) && Number.isFinite(word.end));
   const speechDuration = timedWords.length
     ? timedWords[timedWords.length - 1].end - timedWords[0].start
     : duration;
-  const rhythm = scoreRhythm(speechDuration, expectedWords.length);
-  const score = Math.round((accuracy * 0.7) + (completeness * 0.2) + (rhythm * 0.1));
+  const estimatedFluency = scoreRhythm(speechDuration, expectedWords.length);
+  const providerAccuracy = validProviderScore(providerAssessment?.accuracy);
+  const providerCompleteness = validProviderScore(providerAssessment?.completeness);
+  const providerFluency = validProviderScore(providerAssessment?.fluency);
+  const providerScore = validProviderScore(providerAssessment?.pronunciationScore);
+  const accuracy = providerAccuracy ?? estimatedAccuracy;
+  const completeness = providerCompleteness ?? estimatedCompleteness;
+  const rhythm = providerFluency ?? estimatedFluency;
+  const score = providerScore ?? Math.round((accuracy * 0.7) + (completeness * 0.2) + (rhythm * 0.1));
   const focusWords = comparable.filter((item) => item.status !== 'correct').slice(0, 4);
 
   return {

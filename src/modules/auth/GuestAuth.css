@@ -30,12 +30,14 @@
   background: #fff;
   text-align: left;
   cursor: pointer;
-  transition: border-color 0.18s, background 0.18s, transform 0.18s;
+  box-shadow: 0 5px 14px rgba(20, 33, 61, .045);
+  transition: border-color .18s, background .18s, box-shadow .18s, transform .18s;
 }
 
 .auth-guest:hover {
-  border-color: #8094aa;
-  background: #f7fafc;
+  border-color: #9bbdb6;
+  background: #f7fbfa;
+  box-shadow: 0 8px 20px rgba(23, 107, 91, .09);
   transform: translateY(-1px);
 }
 
@@ -45,14 +47,27 @@
   height: 38px;
   place-items: center;
   color: #fff;
-  border-radius: 50%;
-  background: #176b5b;
-  font-size: 1.2rem;
-  font-weight: 800;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 12px;
+  background: linear-gradient(145deg, #238474, #145f54);
+  box-shadow: 0 4px 10px rgba(23, 107, 91, .2);
+}
+
+.auth-guest__mark {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.75;
 }
 
 .auth-guest strong,
 .auth-guest small { display: block; }
 .auth-guest strong { font-size: 0.88rem; }
 .auth-guest small { margin-top: 3px; color: #788699; font-size: 0.72rem; }
-.auth-guest__arrow { color: #176b5b; font-size: 1.1rem; font-weight: 850; }
+.auth-guest__arrow { color: #176b5b; font-size: 1.1rem; font-weight: 850; transition: transform .18s; }
+.auth-guest:hover .auth-guest__arrow { transform: translateX(2px); }
+.auth-guest:active { transform: translateY(0); }
+.auth-guest:focus-visible { outline: 3px solid rgba(23, 107, 91, .2); outline-offset: 2px; }

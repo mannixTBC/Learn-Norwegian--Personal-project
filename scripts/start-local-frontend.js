@@ -8,10 +8,8 @@ const env = Object.fromEntries(
   Object.entries(process.env).filter(([key]) => key.toLowerCase() !== 'path')
 );
 env.Path = `C:\\Program Files\\nodejs;${process.env.Path || process.env.PATH || ''}`;
-env.PORT = '4173';
-env.BROWSER = 'none';
-env.NODE_OPTIONS = '--openssl-legacy-provider';
-const child = spawn(process.execPath, ['--openssl-legacy-provider', path.join(root, 'node_modules', 'react-scripts', 'bin', 'react-scripts.js'), 'start'], {
+const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const child = spawn(npmCommand, ['run', 'dev:frontend'], {
   cwd: root,
   detached: true,
   stdio: ['ignore', log, log],

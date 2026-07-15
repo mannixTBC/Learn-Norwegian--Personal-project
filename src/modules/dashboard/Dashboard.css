@@ -41,10 +41,128 @@
 .today-task--primary .today-task__top>span{color:#fff;background:rgba(255,255,255,.17)}
 .today-task--primary .today-task__top>small,.today-task--primary>p,.today-task__meta{color:#dff4f5}
 .today-task>a,.dashboard-recommendations a,.dashboard-section__heading>a{color:var(--fjord)}
-.today-task--primary>a{color:#fff}
+.today-task--primary>a{display:flex;justify-content:center;align-items:center;min-height:46px;margin-top:auto;padding:0 20px;color:#174e59;border:1px solid rgba(255,255,255,.72);border-radius:12px;background:#fff;box-shadow:0 8px 20px rgba(8,42,48,.2);font-size:.82rem;font-weight:900;letter-spacing:.01em;text-align:center;transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease}
+.today-task--primary>a:hover{background:#f2fcfc;box-shadow:0 11px 26px rgba(8,42,48,.28);transform:translateY(-2px)}
+.today-task--primary>a:focus-visible{outline:3px solid #bce7e9;outline-offset:3px}
+.today-task--primary>a:active{box-shadow:0 5px 13px rgba(8,42,48,.2);transform:translateY(0)}
 .dashboard-week__chart>div>div>span.active{background:linear-gradient(#58b7bd,var(--fjord))}
 .dashboard-goal-picker button.active{border-color:var(--fjord);background:var(--fjord)}
 .dashboard-calendar__days>span.today{box-shadow:0 0 0 2px var(--fjord)}
 .dashboard-levels article.active{border-color:var(--fjord);box-shadow:0 0 0 2px rgba(31,111,120,.09)}
 .dashboard-levels article>div:first-child>span{color:var(--fjord);background:var(--fjord-soft)}
 .dashboard-levels__track span{background:linear-gradient(90deg,var(--fjord),#58aeb5)}
+
+/* Toate actiunile folosesc acelasi limbaj vizual ca butonul principal. */
+.daily-dashboard a,.daily-dashboard a:hover,.daily-dashboard a:focus,.daily-dashboard a:active,.daily-dashboard a:visited{text-decoration:none!important;-webkit-tap-highlight-color:transparent}
+.today-task>a,.dashboard-career>a,.dashboard-recommendations a,.dashboard-section__heading>a{display:inline-flex;justify-content:center;align-items:center;min-height:46px;padding:0 20px;color:#fff;border:1px solid var(--fjord);border-radius:12px;background:linear-gradient(135deg,#174e59,var(--fjord));box-sizing:border-box;box-shadow:0 8px 20px rgba(8,42,48,.18);font-size:.78rem;font-weight:900;letter-spacing:.01em;text-align:center;transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+.today-task>a:visited,.dashboard-career>a:visited,.dashboard-recommendations a:visited,.dashboard-section__heading>a:visited{color:#fff}
+.today-task>a:hover,.dashboard-career>a:hover,.dashboard-recommendations a:hover,.dashboard-section__heading>a:hover{color:#fff;background:linear-gradient(135deg,#123f47,#185f68);box-shadow:0 11px 26px rgba(8,42,48,.25);transform:translateY(-2px)}
+.today-task>a,.dashboard-recommendations a{width:100%;margin-top:auto}
+.today-task--primary>a{color:#14213d;border-color:#f6c453;background:linear-gradient(135deg,#ffd978,#f6c453);box-shadow:0 9px 22px rgba(91,63,8,.26)}
+.today-task--primary>a:visited{color:#14213d}
+.today-task--primary>a:hover{color:#14213d;border-color:#ffdc7b;background:linear-gradient(135deg,#ffe59d,#ffd066);box-shadow:0 12px 28px rgba(91,63,8,.34)}
+.dashboard-career:not(.dashboard-career--empty)>a{color:#174e59;border-color:rgba(255,255,255,.72);background:#fff}
+.dashboard-career:not(.dashboard-career--empty)>a:visited{color:#174e59}
+.dashboard-career:not(.dashboard-career--empty)>a:hover{color:#174e59;background:#f2fcfc}
+
+.daily-dashboard__welcome>div>a{display:inline-flex;justify-content:center;align-items:center;min-height:36px;padding:0 13px;color:#174e59;border:1px solid rgba(255,255,255,.72);border-radius:10px;background:#fff;box-shadow:0 6px 15px rgba(8,42,48,.16);font-size:.72rem;font-weight:900;transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease}
+.daily-dashboard__welcome>div>a:visited{color:#174e59}
+.daily-dashboard__welcome>div>a:hover{color:#174e59;background:#f2fcfc;box-shadow:0 9px 20px rgba(8,42,48,.24);transform:translateY(-2px)}
+
+.dashboard-recommendations article{transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.dashboard-recommendations article:hover{border-color:#c8dfe2;box-shadow:0 10px 24px rgba(20,33,61,.08);transform:translateY(-2px)}
+.dashboard-recommendations article:nth-child(2)>span{background:#315782}
+.dashboard-recommendations article:nth-child(3)>span{background:#6b5a91}
+.dashboard-recommendations article:nth-child(4)>span{background:#b26a2f}
+
+/* Pictograme expresive pentru acțiunile principale din recomandări. */
+.dashboard-recommendations .dashboard-recommendation__visual{width:52px;min-width:52px;height:52px;overflow:hidden;border-radius:15px;box-shadow:0 8px 18px rgba(20,33,61,.16)}
+.dashboard-recommendation__visual svg{width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dashboard-recommendations article>.dashboard-recommendation__visual--direction{color:#fff;background:linear-gradient(145deg,#174e59,#2b8991)}
+.dashboard-recommendations article:nth-child(2)>.dashboard-recommendation__visual--lesson{color:#fff;background:linear-gradient(145deg,#213d66,#3f6f99)}
+.dashboard-recommendation__accent{fill:#f6c453;stroke:#f6c453}
+.dashboard-recommendation__play{fill:#213d66;stroke:#213d66;stroke-width:1}
+.dashboard-recommendation--direction{background:linear-gradient(145deg,#fff 72%,#edf8f8)!important}
+.dashboard-recommendation--lesson{background:linear-gradient(145deg,#fff 72%,#eef3f8)!important}
+.dashboard-recommendation--direction h3,.dashboard-recommendation--lesson h3{color:#14213d}
+
+.dashboard-goal-picker button{min-height:38px;padding:0 13px;border-radius:10px;transition:color .18s ease,border-color .18s ease,background-color .18s ease,transform .18s ease,box-shadow .18s ease}
+.dashboard-goal-picker button:hover{color:#174e59;border-color:#9ecfd2;background:#edf8f8;transform:translateY(-1px)}
+.dashboard-goal-picker button.active{box-shadow:0 6px 14px rgba(31,111,120,.2)}
+.dashboard-goal-picker button.active:hover{color:#fff;background:#174e59}
+
+.daily-dashboard a:focus-visible,.dashboard-goal-picker button:focus-visible{outline:3px solid #7acbd0;outline-offset:3px}
+.daily-dashboard a:active,.dashboard-goal-picker button:active{transform:translateY(0);box-shadow:none}
+
+@media(max-width:680px){.dashboard-career>a,.dashboard-section__heading>a{width:100%}}
+
+/* Rezumat mobil: progresul si urmatoarea lectie apar in primul ecran. */
+.dashboard-mobile-start{display:none}
+
+@media(max-width:680px){
+  .daily-dashboard{display:flex;width:min(100% - 24px,1160px);flex-direction:column;padding:14px 0 64px}
+
+  .daily-dashboard__hero{order:1;display:block;padding:20px;border-radius:20px;box-shadow:0 14px 34px rgba(20,33,61,.14)}
+  .daily-dashboard__welcome>span{margin-bottom:5px;font-size:.62rem}
+  .daily-dashboard__welcome h1{font-size:clamp(1.65rem,8vw,2.15rem);line-height:1.08}
+  .daily-dashboard__welcome>p{display:none}
+  .daily-dashboard__welcome>div{margin-top:14px;padding:7px 8px;gap:7px;border-radius:10px}
+  .daily-dashboard__welcome>div>span{font-size:.56rem}
+  .daily-dashboard__welcome>div>strong{font-size:.72rem}
+  .daily-dashboard__welcome>div>a{min-height:32px;margin-left:auto;padding:0 10px;font-size:.66rem}
+  .daily-goal{display:none}
+
+  .dashboard-mobile-start{order:2;display:block;margin-top:12px;padding:18px;border:1px solid #cfe3e5;border-radius:20px;background:linear-gradient(150deg,#fff 0%,#f4fbfb 100%);box-shadow:0 12px 30px rgba(20,33,61,.08)}
+  .dashboard-mobile-start__top{display:flex;justify-content:space-between;gap:12px;align-items:end}
+  .dashboard-mobile-start__top>div{display:flex;gap:8px;align-items:baseline}
+  .dashboard-mobile-start__top span{color:#516474;font-size:.67rem;font-weight:900;letter-spacing:.055em;text-transform:uppercase}
+  .dashboard-mobile-start__top strong{color:var(--fjord-deep);font-size:1.3rem;line-height:1}
+  .dashboard-mobile-start__top>small{color:#70808f;font-size:.68rem;font-weight:750}
+  .dashboard-mobile-start__track{height:7px;margin:9px 0 16px;overflow:hidden;border-radius:99px;background:#deeaeb}
+  .dashboard-mobile-start__track>span{display:block;height:100%;min-width:3px;border-radius:inherit;background:linear-gradient(90deg,var(--fjord),#62b9be)}
+  .dashboard-mobile-start__lesson small{color:var(--fjord);font-size:.62rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+  .dashboard-mobile-start__lesson h2{margin:4px 0 5px;color:#14213d;font-size:1.08rem;line-height:1.25;letter-spacing:-.015em}
+  .dashboard-mobile-start__lesson p{margin:0;color:#72808e;font-size:.72rem}
+  .dashboard-mobile-start__lesson>a{display:flex;width:100%;min-height:50px;justify-content:center;align-items:center;gap:8px;margin-top:15px;padding:0 18px;color:#14213d!important;border:1px solid #f0bd3f;border-radius:13px;background:linear-gradient(135deg,#ffdd83,#f6c453);box-sizing:border-box;box-shadow:0 9px 22px rgba(91,63,8,.22);font-size:.86rem;font-weight:950;text-decoration:none!important}
+  .dashboard-mobile-start__lesson>a span{font-size:1.1rem;transition:transform .18s ease}
+  .dashboard-mobile-start__lesson>a:active{transform:scale(.985)}
+
+  .dashboard-stats{order:3;grid-template-columns:1fr 1fr;margin-top:12px;gap:8px}
+  .dashboard-stats article{min-width:0;padding:12px 10px;gap:9px;border-radius:13px}
+  .dashboard-stat__icon{min-width:34px;height:34px;border-radius:9px;font-size:.65rem}
+  .dashboard-stats small{font-size:.54rem}
+  .dashboard-stats strong{font-size:1rem}
+  .dashboard-stats p{display:none}
+
+  .dashboard-career{order:4;margin-top:22px;padding:16px;gap:12px;border-radius:16px}
+  .dashboard-career__icon{width:40px;height:40px}
+  .dashboard-career h2{font-size:.96rem}
+  .dashboard-career p,.dashboard-career>div>div{display:none}
+  .dashboard-career>a{min-height:42px}
+
+  .dashboard-today{display:none}
+  .dashboard-main-grid{order:5;margin-top:28px}
+  .dashboard-calendar{display:none}
+  .dashboard-week{padding:17px}
+  .dashboard-week .dashboard-panel__heading{margin-bottom:3px}
+  .dashboard-week__chart{height:170px}
+  .dashboard-week__chart>div>div{height:128px}
+
+  .dashboard-recommendations{order:6;margin-top:28px}
+  .dashboard-recommendations .dashboard-section__heading>small{display:none}
+  .dashboard-recommendations article{padding:16px}
+  .dashboard-recommendations article:nth-child(n+3){display:none}
+  .dashboard-recommendations p{display:none}
+  .dashboard-recommendations a{min-height:42px;margin-top:10px}
+
+  .dashboard-levels{order:7;margin-top:28px}
+  .dashboard-levels .dashboard-section__heading>a{min-height:42px}
+  .dashboard-section__heading h2,.dashboard-panel__heading h2{font-size:1.35rem}
+  .dashboard-section__heading,.dashboard-panel__heading{gap:8px;margin-bottom:13px}
+}
+
+@media(max-width:390px){
+  .daily-dashboard__welcome>div>a{width:100%;margin-left:0}
+  .dashboard-mobile-start{padding:16px}
+  .dashboard-mobile-start__top{align-items:flex-start;flex-direction:column;gap:4px}
+}
