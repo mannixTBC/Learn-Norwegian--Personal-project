@@ -6,6 +6,7 @@ import { learningLevels, levelName } from '../lessons/learningLevel';
 import { getReviewItemsForLevel, getReviewStats } from '../../services/spacedReview';
 import { getDailyGoal, getStudySummary, setDailyGoal } from '../../services/learningActivity';
 import { getCareerLessonModule, getCareerPath, getCareerProfile } from '../../services/careerProfile';
+import CareerPathVisual from '../onboarding/CareerPathVisual';
 import './Dashboard.css';
 
 const progressKey = (level) => level === 'A1' ? 'lesson_prog_progress' : `lesson_prog_progress_${level.toLowerCase()}`;
@@ -27,7 +28,23 @@ const greeting = () => {
   return 'Bună seara';
 };
 
-const RecommendationVisual = ({ type, fallback }) => {
+const RecommendationVisual = ({ type, fallback, pathId }) => {
+  if (type === 'career') {
+    return <CareerPathVisual pathId={pathId} className="dashboard-recommendation__career-icon" />;
+  }
+
+  if (type === 'review') {
+    return (
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M8.2 8.5A10 10 0 1 1 6 20.3" />
+        <path d="M3.8 8.4h5.1v5.1" />
+        <path d="M11.2 13.1h9.6M11.2 17h7.4M11.2 20.9h5.2" />
+        <circle cx="23.8" cy="23.4" r="4.2" className="dashboard-recommendation__accent" />
+        <path d="m22.1 23.4 1.1 1.1 2.3-2.5" className="dashboard-recommendation__review-check" />
+      </svg>
+    );
+  }
+
   if (type === 'direction') {
     return (
       <svg viewBox="0 0 32 32" aria-hidden="true">
@@ -90,10 +107,10 @@ const Dashboard = () => {
 
   const recommendations = [
     careerPath
-      ? { icon: careerPath.icon, title: `Scenariu: ${careerModule.scenario.title}`, text: `${careerModule.scenario.romanian} Este integrat în următoarea lecție.`, to: `/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`, action: `Exersează pentru ${careerPath.shortTitle}` }
+      ? { icon: careerPath.icon, visual: 'career', pathId: careerPath.id, title: `Scenariu: ${careerModule.scenario.title}`, text: `${careerModule.scenario.romanian} Este integrat în următoarea lecție.`, to: `/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`, action: `Exersează pentru ${careerPath.shortTitle}` }
       : { icon: '+', visual: 'direction', title: 'Personalizează cursul', text: 'Alege domeniul în care vrei să folosești norvegiana și primești vocabular, audio și scenarii potrivite.', to: '/alege-directia?redirect=/dashboard', action: 'Alege direcția' },
     reviews.due > 0
-      ? { icon: 'R', title: `Repetă ${reviews.due} ${reviews.due === 1 ? 'element' : 'elemente'} astăzi`, text: difficultItems.length ? `Începe cu „${difficultItems[0].prompt}”, unde ai avut cele mai multe ezitări.` : 'Recapitularea este pregătită pentru sesiunea de astăzi.', to: `/recapitulare?nivel=${activeLevel}`, action: 'Începe recapitularea' }
+      ? { icon: 'R', visual: 'review', title: `Repetă ${reviews.due} ${reviews.due === 1 ? 'element' : 'elemente'} astăzi`, text: difficultItems.length ? `Începe cu „${difficultItems[0].prompt}”, unde ai avut cele mai multe ezitări.` : 'Recapitularea este pregătită pentru sesiunea de astăzi.', to: `/recapitulare?nivel=${activeLevel}`, action: 'Începe recapitularea' }
       : { icon: 'L', visual: 'lesson', title: `Continuă lecția ${nextLesson.id}`, text: `„${nextLesson.title}” este următorul pas potrivit pentru nivelul ${activeLevel}.`, to: `/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`, action: 'Deschide lecția' },
     pronunciationBest < 75
       ? { icon: 'P', title: '5 minute de pronunție', text: pronunciationAttempts.length ? `Cel mai bun scor este ${pronunciationBest}%. Repetă o frază la viteză lentă.` : 'Ascultă o frază, înregistreaz-o și verifică ce cuvinte sunt clare.', to: `/pronuntie?nivel=${activeLevel}`, action: 'Deschide laboratorul' }
@@ -184,7 +201,7 @@ const Dashboard = () => {
 
       <section className="dashboard-section dashboard-recommendations" aria-labelledby="recommendations-title">
         <div className="dashboard-section__heading"><div><span>Următorii pași</span><h2 id="recommendations-title">Recomandări pentru tine</h2></div><small>Bazate pe nivel, direcție și greșelile recente</small></div>
-        <div className="dashboard-recommendations__grid">{recommendations.map((item) => <article className={item.visual ? `dashboard-recommendation dashboard-recommendation--${item.visual}` : 'dashboard-recommendation'} key={item.title}><span className={item.visual ? `dashboard-recommendation__visual dashboard-recommendation__visual--${item.visual}` : 'dashboard-recommendation__visual'} aria-hidden="true"><RecommendationVisual type={item.visual} fallback={item.icon} /></span><div><h3>{item.title}</h3><p>{item.text}</p><Link to={item.to}>{item.action} →</Link></div></article>)}</div>
+        <div className="dashboard-recommendations__grid">{recommendations.map((item) => <article className={item.visual ? `dashboard-recommendation dashboard-recommendation--${item.visual}` : 'dashboard-recommendation'} key={item.title}><span className={item.visual ? `dashboard-recommendation__visual dashboard-recommendation__visual--${item.visual}` : 'dashboard-recommendation__visual'} aria-hidden="true"><RecommendationVisual type={item.visual} fallback={item.icon} pathId={item.pathId} /></span><div><h3>{item.title}</h3><p>{item.text}</p><Link to={item.to}>{item.action} →</Link></div></article>)}</div>
       </section>
 
       <section className="dashboard-section dashboard-levels" aria-labelledby="levels-progress-title">

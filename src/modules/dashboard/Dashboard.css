@@ -80,11 +80,18 @@
 .dashboard-recommendation__visual svg{width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .dashboard-recommendations article>.dashboard-recommendation__visual--direction{color:#fff;background:linear-gradient(145deg,#174e59,#2b8991)}
 .dashboard-recommendations article:nth-child(2)>.dashboard-recommendation__visual--lesson{color:#fff;background:linear-gradient(145deg,#213d66,#3f6f99)}
+.dashboard-recommendations article>.dashboard-recommendation__visual--career{color:inherit;border-radius:15px;background:transparent;box-shadow:none}
+.dashboard-recommendation__career-icon{width:52px;height:52px;border-radius:15px;box-sizing:border-box;box-shadow:0 8px 18px rgba(20,33,61,.13)}
+.dashboard-recommendation__career-icon svg{width:30px;height:30px}
+.dashboard-recommendations article>.dashboard-recommendation__visual--review{color:#fff;background:linear-gradient(145deg,#315782,#537ca4)}
 .dashboard-recommendation__accent{fill:#f6c453;stroke:#f6c453}
 .dashboard-recommendation__play{fill:#213d66;stroke:#213d66;stroke-width:1}
+.dashboard-recommendation__review-check{fill:none;stroke:#315782;stroke-width:1.7}
 .dashboard-recommendation--direction{background:linear-gradient(145deg,#fff 72%,#edf8f8)!important}
 .dashboard-recommendation--lesson{background:linear-gradient(145deg,#fff 72%,#eef3f8)!important}
-.dashboard-recommendation--direction h3,.dashboard-recommendation--lesson h3{color:#14213d}
+.dashboard-recommendation--career{background:linear-gradient(145deg,#fff 72%,#edf3fb)!important}
+.dashboard-recommendation--review{background:linear-gradient(145deg,#fff 72%,#eef3f8)!important}
+.dashboard-recommendation--direction h3,.dashboard-recommendation--lesson h3,.dashboard-recommendation--career h3,.dashboard-recommendation--review h3{color:#14213d}
 
 .dashboard-goal-picker button{min-height:38px;padding:0 13px;border-radius:10px;transition:color .18s ease,border-color .18s ease,background-color .18s ease,transform .18s ease,box-shadow .18s ease}
 .dashboard-goal-picker button:hover{color:#174e59;border-color:#9ecfd2;background:#edf8f8;transform:translateY(-1px)}

@@ -136,7 +136,7 @@
   .career-phrase-grid article{min-height:0}
   .lesson-exercise-list>.practice-card{display:none}
   .lesson-exercise-list>.mobile-exercise-card--active{display:block;animation:mobile-expression-in .24s ease both}
-  .lesson-navigation--exercises{display:none}
+  .lesson-navigation--expressions,.lesson-navigation--exercises{display:none}
   .mobile-exercise-navigation{margin-top:18px}
   .mobile-exercise-navigation>button:last-child{white-space:nowrap}
 }
