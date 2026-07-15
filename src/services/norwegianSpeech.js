@@ -1,9 +1,8 @@
 let activeAudio = null;
 let playbackSequence = 0;
 
-const speechEndpoint = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:5000/api/speech'
-  : '/api/speech';
+const speechEndpoint = '/api/speech';
+const voiceSetVersion = 'alice-george-v1';
 
 const reportSpeechStatus = (detail) => {
   window.dispatchEvent(new CustomEvent('norwegian-speech-status', { detail }));
@@ -27,7 +26,7 @@ const stopActiveAudio = () => {
 };
 
 const buildSpeechUrl = (text, slow, voice) => (
-  `${speechEndpoint}?text=${encodeURIComponent(text)}&slow=${slow ? '1' : '0'}&voice=${voice}&player=native-v2${slow ? '&slowVersion=2' : ''}`
+  `${speechEndpoint}?text=${encodeURIComponent(text)}&slow=${slow ? '1' : '0'}&voice=${voice}&player=native-v3&voiceSet=${voiceSetVersion}${slow ? '&slowVersion=2' : ''}`
 );
 
 const mediaErrorMessage = (audio) => {

@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Backend Node + Express pentru NorvegiaTa",
   "main": "server.js",
+  "engines": {
+    "node": "24.x",
+    "npm": ">=10"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"

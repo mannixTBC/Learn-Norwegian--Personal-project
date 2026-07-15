@@ -22,10 +22,61 @@ const blobToBase64 = (blob) => new Promise((resolve, reject) => {
   reader.readAsDataURL(blob);
 });
 
+const writeAscii = (view, offset, value) => {
+  for (let index = 0; index < value.length; index += 1) view.setUint8(offset + index, value.charCodeAt(index));
+};
+
+const encodePcmWav = (samples, sampleRate) => {
+  const bytesPerSample = 2;
+  const buffer = new ArrayBuffer(44 + (samples.length * bytesPerSample));
+  const view = new DataView(buffer);
+  writeAscii(view, 0, 'RIFF');
+  view.setUint32(4, 36 + (samples.length * bytesPerSample), true);
+  writeAscii(view, 8, 'WAVE');
+  writeAscii(view, 12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * bytesPerSample, true);
+  view.setUint16(32, bytesPerSample, true);
+  view.setUint16(34, 16, true);
+  writeAscii(view, 36, 'data');
+  view.setUint32(40, samples.length * bytesPerSample, true);
+
+  let offset = 44;
+  for (let index = 0; index < samples.length; index += 1) {
+    const sample = Math.max(-1, Math.min(1, samples[index]));
+    view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
+    offset += bytesPerSample;
+  }
+  return buffer;
+};
+
+const convertToAzureWav = async (blob) => {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  const OfflineContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  if (!AudioContext || !OfflineContext) return blob;
+
+  const context = new AudioContext();
+  try {
+    const sourceAudio = await context.decodeAudioData(await blob.arrayBuffer());
+    const sampleRate = 16000;
+    const frameCount = Math.max(1, Math.ceil(sourceAudio.duration * sampleRate));
+    const offline = new OfflineContext(1, frameCount, sampleRate);
+    const source = offline.createBufferSource();
+    source.buffer = sourceAudio;
+    source.connect(offline.destination);
+    source.start(0);
+    const rendered = await offline.startRendering();
+    return new Blob([encodePcmWav(rendered.getChannelData(0), sampleRate)], { type: 'audio/wav' });
+  } finally {
+    if (context.state !== 'closed') await context.close();
+  }
+};
+
 const evaluationEndpoints = () => {
-  const endpoints = [process.env.NODE_ENV === 'development'
-    ? 'http://localhost:5000/api/pronunciation/evaluate'
-    : '/api/pronunciation/evaluate'];
+  const endpoints = ['/api/pronunciation/evaluate'];
   if (typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname) && !endpoints[0].startsWith('http')) {
     endpoints.push('http://localhost:5000/api/pronunciation/evaluate');
   }
@@ -33,9 +84,10 @@ const evaluationEndpoints = () => {
 };
 
 const sendForEvaluation = async (blob, referenceText) => {
+  const evaluationBlob = await convertToAzureWav(blob);
   const payload = {
-    audioBase64: await blobToBase64(blob),
-    mimeType: blob.type || 'audio/webm',
+    audioBase64: await blobToBase64(evaluationBlob),
+    mimeType: evaluationBlob.type || blob.type || 'audio/webm',
     referenceText,
   };
   let lastError = null;
@@ -114,6 +166,7 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
         words: transcription.words,
         duration,
         provider: transcription.provider,
+        providerAssessment: transcription.assessment,
       });
       if (!assessment.transcript) throw new Error('Nu am putut identifica vocea. Încearcă mai aproape de microfon.');
       setResult(assessment);
@@ -287,7 +340,7 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
           )}
           {audioUrl && status !== 'recording' && <audio className="pronunciation-recorder__playback" src={audioUrl} controls preload="metadata">Browserul tău nu poate reda înregistrarea.</audio>}
           {error && <div className="pronunciation-recorder__error" role="alert"><strong>Nu am putut finaliza evaluarea</strong><p>{error}</p><small>Poți continua fără nicio restricție folosind butoanele „Ascultă modelul” și „Mai lent”.</small><button type="button" onClick={resetAttempt}>Încearcă din nou</button></div>}
-          <p className="pronunciation-recorder__privacy"><span aria-hidden="true">▣</span> Vocea este trimisă către ElevenLabs doar pentru transcriere și nu este salvată de aplicație.</p>
+          <p className="pronunciation-recorder__privacy"><span aria-hidden="true">▣</span> Vocea este analizată prin Azure Speech; ElevenLabs și browserul rămân variante de rezervă. Aplicația nu salvează înregistrarea.</p>
         </div>
       </div>
 
@@ -298,10 +351,10 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
             <span className="pronunciation-result__eyebrow">Rezultatul încercării</span>
             <h3>{result.feedback.title}</h3>
             <p>{result.feedback.text}</p>
-            <div className="pronunciation-result__metrics"><div><span>Claritate</span><strong>{result.accuracy}%</strong></div><div><span>Frază completă</span><strong>{result.completeness}%</strong></div><div><span>Ritm</span><strong>{result.rhythm}%</strong></div></div>
+            <div className="pronunciation-result__metrics"><div><span>Claritate</span><strong>{result.accuracy}%</strong></div><div><span>Frază completă</span><strong>{result.completeness}%</strong></div><div><span>Fluență</span><strong>{result.rhythm}%</strong></div></div>
           </div>
           <div className="pronunciation-result__transcript">
-            <div><span>Ce am recunoscut</span><small>{result.provider === 'elevenlabs-scribe-v2' ? 'ElevenLabs Scribe v2' : 'Evaluare din browser'}</small></div>
+            <div><span>Ce am recunoscut</span><small>{result.provider === 'azure-speech-pronunciation' ? 'Azure Speech · norvegiană nb-NO' : result.provider === 'elevenlabs-scribe-v2' ? 'ElevenLabs Scribe v2 · rezervă' : 'Evaluare din browser · rezervă'}</small></div>
             <blockquote lang="no">„{result.transcript}”</blockquote>
             <div className="pronunciation-result__words" aria-label="Evaluare pe cuvinte">
               {result.alignment.filter((item) => item.expected).map((item, index) => <span className={`is-${item.status}`} title={item.status === 'correct' ? 'Pronunțat clar' : item.status === 'close' ? `Aproape · recunoscut „${item.spoken}”` : item.status === 'missing' ? 'Cuvânt lipsă' : `Recunoscut „${item.spoken}”`} key={`${item.expected}-${index}`}>{item.expected}</span>)}

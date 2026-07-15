@@ -1,0 +1,46 @@
+CONFIGURARE VOCI ELEVENLABS PENTRU NETLIFY
+==========================================
+
+Adauga urmatoarele variabile in:
+Netlify -> Site configuration -> Environment variables
+
+1. Cheia secreta ElevenLabs
+
+ELEVENLABS_API_KEY=INTRODU_AICI_CHEIA_DIN_CONTUL_ELEVENLABS
+
+Important:
+- Exista o singura cheie API pentru toate vocile.
+- Din motive de siguranta, cheia reala nu este scrisa in acest fisier.
+- Copiaza valoarea din fisierul local .env sau creeaza o cheie noua in ElevenLabs.
+
+2. Vocea masculina (Lars si personajele masculine)
+
+ELEVENLABS_VOICE_ID=JBFqnCBsd6RMkjVDRZzb
+
+3. Vocea feminina (Anna si personajele feminine)
+
+ELEVENLABS_FEMALE_VOICE_ID=Xb7hH8MSUJpSbSDYk0k2
+
+4. Modelul audio
+
+ELEVENLABS_MODEL_ID=eleven_flash_v2_5
+
+LISTA COMPLETA PENTRU COPIERE
+-----------------------------
+
+ELEVENLABS_API_KEY=INTRODU_AICI_CHEIA_DIN_CONTUL_ELEVENLABS
+ELEVENLABS_VOICE_ID=JBFqnCBsd6RMkjVDRZzb
+ELEVENLABS_FEMALE_VOICE_ID=Xb7hH8MSUJpSbSDYk0k2
+ELEVENLABS_MODEL_ID=eleven_flash_v2_5
+
+Dupa salvarea variabilelor
+--------------------------
+
+1. Verifica sa nu existe spatii inainte sau dupa valori.
+2. Variabilele trebuie sa fie disponibile pentru Production.
+3. La urmatorul deploy, functia speech va folosi aceste valori.
+4. Nu publica si nu trimite nimanui cheia ELEVENLABS_API_KEY.
+
+Observatie:
+Azure Speech foloseste separat AZURE_SPEECH_KEY si AZURE_SPEECH_REGION pentru
+evaluarea pronuntiei. Acestea nu aleg vocile Anna si Lars.

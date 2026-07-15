@@ -1,3 +1,5 @@
+import { syncStudyActivity } from './supabaseLearning';
+
 export const ACTIVITY_STORAGE_KEY = 'norwegian_learning_activity';
 export const DAILY_GOAL_KEY = 'norwegian_daily_goal';
 
@@ -36,6 +38,9 @@ export const recordStudyActivity = ({ type, level = 'A1', minutes = 1, score = n
   };
   const next = [...readStudyActivity(), event].slice(-500);
   localStorage.setItem(ACTIVITY_STORAGE_KEY, JSON.stringify(next));
+  void syncStudyActivity(event).catch((error) => {
+    console.warn('Activitatea a rămas salvată local; sincronizarea Supabase va fi reîncercată la următoarea activitate.', error.message);
+  });
   return event;
 };
 

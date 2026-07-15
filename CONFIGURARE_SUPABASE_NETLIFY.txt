@@ -1,0 +1,36 @@
+CONFIGURARE SUPABASE PENTRU NETLIFY
+===================================
+
+Adauga aceste variabile in:
+Netlify -> Site configuration -> Environment variables
+
+VITE_SUPABASE_URL=https://sgoyfhwqldyqktkmkryc.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_ZQMERWGy3QMAOxlLzN-DnA_necUwcBi
+
+CONFIGURARE URL IN SUPABASE
+===========================
+
+Authentication -> URL Configuration
+
+Site URL:
+https://learn-norwegian-personal-project.netlify.app
+
+Redirect URLs:
+https://learn-norwegian-personal-project.netlify.app/**
+http://localhost:4173/**
+
+CONFIGURARE GOOGLE CLOUD
+========================
+
+Authorized redirect URI:
+https://sgoyfhwqldyqktkmkryc.supabase.co/auth/v1/callback
+
+IMPORTANT
+=========
+
+- Cheia de mai sus este cheia publica destinata frontendului.
+- Nu adauga SUPABASE_SERVICE_ROLE_KEY in Netlify pentru acest frontend.
+- Nu adauga parola bazei de date in frontend.
+- Dupa configurarea variabilelor va fi necesar un deploy nou pentru ca Vite sa
+  le includa in aplicatie.
+- Deploy-ul trebuie facut doar cand este solicitat explicit.
