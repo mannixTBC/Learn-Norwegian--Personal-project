@@ -26,7 +26,9 @@ const LearningHub = () => {
     const requested = new URLSearchParams(window.location.search).get('nivel');
     return requested || localStorage.getItem(ACTIVE_LEVEL_KEY) || 'A1';
   });
+  const [showAllLessons, setShowAllLessons] = useState(false);
   const activeLessons = levelLessons[activeLevel] || [];
+  const visibleLessons = showAllLessons ? activeLessons : activeLessons.slice(0, 4);
   const activeDetails = levelDetails[activeLevel];
   const activeLevelInfo = levels.find((level) => level.code === activeLevel);
   const progress = readProgress(activeLevel);
@@ -39,7 +41,10 @@ const LearningHub = () => {
   const careerProfile = getCareerProfile(user) || { pathId: 'general' };
   const careerPath = getCareerPath(careerProfile.pathId);
 
-  useEffect(() => { localStorage.setItem(ACTIVE_LEVEL_KEY, activeLevel); }, [activeLevel]);
+  useEffect(() => {
+    localStorage.setItem(ACTIVE_LEVEL_KEY, activeLevel);
+    setShowAllLessons(false);
+  }, [activeLevel]);
 
   return (
     <div className="learn-page">
@@ -88,8 +93,8 @@ const LearningHub = () => {
         {activeLevelInfo && activeLevelInfo.available ? (
           <div className="course-block">
             <div className="course-block__header"><div><span className="level-pill">{activeLevel} · {activeLevelInfo.title}</span><h2>{activeDetails.heading}</h2><p>{activeDetails.outcome}</p></div><div className="course-stats"><span><strong>{activeLessons.length}</strong> lecții</span><span><strong>~{activeDetails.minutes}</strong> minute</span><span><strong>{activeDetails.words}</strong> cuvinte</span></div></div>
-            <div className="lesson-list">
-              {activeLessons.map((lesson) => {
+            <div className="lesson-list" id="active-lesson-list">
+              {visibleLessons.map((lesson) => {
                 const completed = progress.completed.includes(lesson.id);
                 const unlocked = true;
                 return (
@@ -101,6 +106,20 @@ const LearningHub = () => {
                 );
               })}
             </div>
+            {activeLessons.length > 4 && (
+              <div className="lesson-list-toggle-wrap">
+                <button
+                  type="button"
+                  className="lesson-list-toggle"
+                  aria-expanded={showAllLessons}
+                  aria-controls="active-lesson-list"
+                  onClick={() => setShowAllLessons((current) => !current)}
+                >
+                  <span>{showAllLessons ? 'Arată mai puține lecții' : `Vezi toate cele ${activeLessons.length} lecții`}</span>
+                  <i aria-hidden="true">{showAllLessons ? '↑' : '↓'}</i>
+                </button>
+              </div>
+            )}
             <section className="final-test-card"><div className="final-test-card__icon">{finalTestPassed ? '✓' : '10'}</div><div><span>Evaluarea nivelului {activeLevel}</span><h3>Test final interactiv</h3><p>12 întrebări din toate lecțiile: vocabular, gramatică, propoziții și ascultare ElevenLabs.</p><small>{finalTestBest ? `Cel mai bun rezultat: ${finalTestBest}%` : 'Testul nu blochează accesul la următorul nivel.'}</small></div><Link to={`/test-final/${activeLevel.toLowerCase()}`}>{finalTestPassed ? 'Repetă testul' : 'Începe testul'} →</Link></section>
           </div>
         ) : (

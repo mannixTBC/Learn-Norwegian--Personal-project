@@ -1,192 +1,207 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './News.css';
 
-const PLACEHOLDER_IMAGE = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400&h=220&fit=crop';
+const PLACEHOLDER_IMAGE = 'https://images.unsplash.com/photo-1520769945061-0a448c463865?w=900&h=600&fit=crop';
 
 const formatDate = (dateString) => {
   if (!dateString) return '';
-  const date = new Date(dateString);
-  const options = { day: 'numeric', month: 'long', year: 'numeric' };
-  return date.toLocaleDateString('ro-RO', options);
+  return new Date(dateString).toLocaleDateString('ro-RO', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
 };
 
 const translateText = async (text, toLang) => {
   if (!text || text.trim().length === 0) return text;
+
   const tryLang = async (fromLang) => {
     try {
-      const res = await fetch('/api/translate', {
+      const response = await fetch('/api/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, fromLang, toLang }),
       });
-      const data = await res.json();
-      if (res.ok && data.translated) {
-        return data.translated;
-      }
-    } catch (e) {
+      const data = await response.json();
+      return response.ok && data.translated ? data.translated : null;
+    } catch (error) {
       return null;
     }
-    return null;
   };
-  const fromNorwegian = await tryLang('no');
-  if (fromNorwegian) return fromNorwegian;
-  const fromEnglish = await tryLang('en');
-  return fromEnglish || text;
+
+  return (await tryLang('no')) || (await tryLang('en')) || text;
 };
 
-const truncateExcerpt = (text, maxWords = 12) => {
+const truncateExcerpt = (text, maxWords = 18) => {
   if (!text) return '';
   const words = text.trim().split(/\s+/);
-  return words.length > maxWords ? words.slice(0, maxWords).join(' ') + '...' : text;
+  return words.length > maxWords ? `${words.slice(0, maxWords).join(' ')}…` : text;
 };
 
-const NewsCard = ({ item }) => {
-  const content = (
-    <>
+const NewsArrow = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </svg>
+);
+
+const NewsCard = ({ item, featured = false }) => (
+  <article className={`news-card${featured ? ' news-card--featured' : ''}`}>
+    <a href={item.url} target="_blank" rel="noopener noreferrer" className="news-card__link">
       <div className="news-card__image-wrapper">
         <img
           src={item.image || PLACEHOLDER_IMAGE}
-          alt={item.title}
+          alt=""
           className="news-card__image"
-          onError={(e) => { e.target.src = PLACEHOLDER_IMAGE; }}
+          onError={(event) => { event.currentTarget.src = PLACEHOLDER_IMAGE; }}
         />
         <span className="news-card__category">{item.source}</span>
       </div>
       <div className="news-card__content">
+        <time className="news-card__date">{item.date}</time>
         <h3 className="news-card__title">{item.title}</h3>
         <p className="news-card__excerpt">{item.description}</p>
-        <time className="news-card__date">{item.date}</time>
+        <span className="news-card__action">
+          Citește articolul <NewsArrow />
+        </span>
       </div>
-    </>
-  );
+    </a>
+  </article>
+);
 
-  return (
-    <article className="news-card">
-      {item.url ? (
-        <a
-          href={item.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="news-card__link"
-        >
-          {content}
-        </a>
-      ) : (
-        <div className="news-card__link">{content}</div>
-      )}
-    </article>
-  );
-};
+const NewsState = ({ type, title, message, onRetry }) => (
+  <main className="news-page">
+    <section className={`news-state news-state--${type}`}>
+      <span className="news-state__icon" aria-hidden="true">
+        {type === 'loading' ? <i /> : '!'}
+      </span>
+      <p className="news-eyebrow">Actualitate din Norvegia</p>
+      <h1>{title}</h1>
+      <p>{message}</p>
+      {onRetry && <button type="button" onClick={onRetry}>Încearcă din nou</button>}
+    </section>
+  </main>
+);
 
 const News = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [translating, setTranslating] = useState(false);
+  const [requestId, setRequestId] = useState(0);
 
   useEffect(() => {
+    let active = true;
+
     const fetchAndTranslate = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
-        const res = await fetch('/api/news/headlines');
-        const data = await res.json();
+        const response = await fetch('/api/news/headlines');
+        const data = await response.json();
 
-        if (!res.ok) {
-          throw new Error(data.error || 'Eroare la încărcarea știrilor');
-        }
+        if (!response.ok) throw new Error(data.error || 'Știrile nu au putut fi încărcate.');
+        if (data.errors?.length) throw new Error(data.errors[0]?.message || 'Știrile nu au putut fi încărcate.');
+        if (!data.articles?.length) throw new Error('Nu am găsit articole noi momentan.');
 
-        if (data.errors && data.errors.length > 0) {
-          throw new Error((data.errors[0] && data.errors[0].message) || 'Eroare la încărcarea știrilor');
-        }
+        const rawArticles = data.articles.map((article) => ({
+          id: article.url || `${article.title}-${article.publishedAt}`,
+          title: article.title,
+          description: truncateExcerpt(article.description || article.title),
+          image: article.image,
+          url: article.url,
+          source: article.source?.name || 'Știri',
+          date: formatDate(article.publishedAt),
+        }));
 
-        if (data.articles && data.articles.length > 0) {
-          const raw = data.articles.map((a) => ({
-            id: a.url || Math.random(),
-            title: a.title,
-            description: a.description || a.title,
-            image: a.image,
-            url: a.url,
-            source: (a.source && a.source.name) || 'Știri',
-            date: formatDate(a.publishedAt),
-          }));
-
-          setArticles(raw);
-          setLoading(false);
-          setTranslating(true);
-
-          const translated = await Promise.all(
-            raw.map(async (a) => {
-              const [titleRo, descRo] = await Promise.all([
-                translateText(a.title, 'ro'),
-                translateText(truncateExcerpt(a.description, 12), 'ro'),
-              ]);
-              return {
-                ...a,
-                title: titleRo || a.title,
-                description: descRo || truncateExcerpt(a.description, 12),
-              };
-            })
-          );
-
-          setArticles(translated);
-        } else {
-          setError('Nu s-au găsit știri.');
-        }
-      } catch (err) {
-        setError(err.message || 'Eroare la încărcarea știrilor. Verifică cheia API.');
-      } finally {
+        if (!active) return;
+        setArticles(rawArticles);
         setLoading(false);
-        setTranslating(false);
+        setTranslating(true);
+
+        const translatedArticles = await Promise.all(rawArticles.map(async (article) => {
+          const [title, description] = await Promise.all([
+            translateText(article.title, 'ro'),
+            translateText(article.description, 'ro'),
+          ]);
+          return { ...article, title, description };
+        }));
+
+        if (active) setArticles(translatedArticles);
+      } catch (requestError) {
+        if (active) setError(requestError.message || 'Știrile nu au putut fi încărcate.');
+      } finally {
+        if (active) {
+          setLoading(false);
+          setTranslating(false);
+        }
       }
     };
 
     fetchAndTranslate();
-  }, []);
+    return () => { active = false; };
+  }, [requestId]);
 
   if (loading) {
-    return (
-      <div className="news-container">
-        <header className="news-header">
-          <h1>Știri din Norvegia</h1>
-          <p className="news-subtitle">Se încarcă știrile...</p>
-        </header>
-      </div>
-    );
+    return <NewsState type="loading" title="Pregătim știrile zilei" message="Selectăm cele mai recente noutăți din Norvegia." />;
   }
 
   if (error) {
     return (
-      <div className="news-container">
-        <header className="news-header">
-          <h1>Știri din Norvegia</h1>
-          <p className="news-subtitle news-error">{error}</p>
-          <p className="news-help">
-            Pentru știri reale, obține o cheie gratuită la{' '}
-            <a href="https://gnews.io/register" target="_blank" rel="noopener noreferrer">
-              gnews.io
-            </a>{' '}
-            și configurează variabila <code>GNEWS_API_KEY</code> în Netlify
-          </p>
-        </header>
-      </div>
+      <NewsState
+        type="error"
+        title="Știrile nu sunt disponibile momentan"
+        message={error}
+        onRetry={() => setRequestId((value) => value + 1)}
+      />
     );
   }
 
-  return (
-    <div className="news-container">
-      <header className="news-header">
-        <h1>Știri din Norvegia</h1>
-        <p className="news-subtitle">
-          Fi la curent cu cele mai recente noutăți din Norvegia. Apasă pe un card pentru a citi articolul complet în limba originală.
-          {translating && <span className="news-translating-inline"> Se traduc cardurile...</span>}
-        </p>
-      </header>
+  const [featuredArticle, ...otherArticles] = articles;
 
-      <div className="news-grid">
-        {articles.map((item) => (
-          <NewsCard key={item.id} item={item} />
-        ))}
+  return (
+    <main className="news-page">
+      <div className="news-shell">
+        <header className="news-hero">
+          <div className="news-hero__copy">
+            <span className="news-eyebrow"><i /> Actualitate din Norvegia</span>
+            <h1>Știrile zilei,<br />pe scurt.</h1>
+            <p>Descoperă ce se întâmplă în Norvegia și continuă lectura în limba originală.</p>
+          </div>
+          <div className="news-hero__summary">
+            <span>Selecția de astăzi</span>
+            <strong>{articles.length}</strong>
+            <small>articole recente</small>
+          </div>
+        </header>
+
+        <section className="news-content" aria-labelledby="news-latest-title">
+          <div className="news-heading">
+            <div>
+              <span>De citit acum</span>
+              <h2 id="news-latest-title">Cele mai recente noutăți</h2>
+              <p>O selecție actualizată din publicațiile norvegiene.</p>
+            </div>
+            {translating && <span className="news-translation-status"><i /> Traducem în română</span>}
+          </div>
+
+          {featuredArticle && <NewsCard item={featuredArticle} featured />}
+
+          <div className="news-grid">
+            {otherArticles.map((article) => <NewsCard key={article.id} item={article} />)}
+          </div>
+        </section>
+
+        <aside className="news-note">
+          <span className="news-note__icon" aria-hidden="true">N</span>
+          <div>
+            <small>Norvegiana în context</small>
+            <h2>Învață din lucruri care se întâmplă acum</h2>
+            <p>Deschide articolul original și observă cuvintele pe care le recunoști înainte să folosești traducerea.</p>
+          </div>
+        </aside>
       </div>
-    </div>
+    </main>
   );
 };
 

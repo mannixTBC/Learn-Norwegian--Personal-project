@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { speakNorwegian } from '../../services/norwegianSpeech';
+import { speakPronunciationModel } from '../../services/azurePronunciationSpeech';
 import { assessPronunciation } from '../../services/pronunciationAssessment';
 import { recordStudyActivity } from '../../services/learningActivity';
 import './PronunciationLab.css';
@@ -319,8 +319,8 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
           <blockquote lang="no">{phrase.example}</blockquote>
           <p><span>RO</span>{phrase.translation}</p>
           <div className="pronunciation-lab__model-actions">
-            <button type="button" onClick={() => speakNorwegian(phrase.example)}><span aria-hidden="true">▶</span> Ascultă modelul</button>
-            <button type="button" onClick={() => speakNorwegian(phrase.example, { slow: true })}><span aria-hidden="true">◷</span> Mai lent</button>
+            <button type="button" onClick={() => speakPronunciationModel(phrase.example)}><span aria-hidden="true">▶</span> Ascultă modelul</button>
+            <button type="button" onClick={() => speakPronunciationModel(phrase.example, { slow: true })}><span aria-hidden="true">◷</span> Mai lent</button>
           </div>
           <div className="pronunciation-lab__tip"><span aria-hidden="true">◎</span><p><strong>Sfat:</strong> ascultă întâi ritmul frazei, nu doar fiecare sunet separat.</p></div>
         </div>
@@ -340,7 +340,7 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
           )}
           {audioUrl && status !== 'recording' && <audio className="pronunciation-recorder__playback" src={audioUrl} controls preload="metadata">Browserul tău nu poate reda înregistrarea.</audio>}
           {error && <div className="pronunciation-recorder__error" role="alert"><strong>Nu am putut finaliza evaluarea</strong><p>{error}</p><small>Poți continua fără nicio restricție folosind butoanele „Ascultă modelul” și „Mai lent”.</small><button type="button" onClick={resetAttempt}>Încearcă din nou</button></div>}
-          <p className="pronunciation-recorder__privacy"><span aria-hidden="true">▣</span> Vocea este analizată prin Azure Speech; ElevenLabs și browserul rămân variante de rezervă. Aplicația nu salvează înregistrarea.</p>
+          <p className="pronunciation-recorder__privacy"><span aria-hidden="true">▣</span> Vocea-model și evaluarea folosesc Azure Speech; ElevenLabs și browserul rămân variante de rezervă. Aplicația nu salvează înregistrarea.</p>
         </div>
       </div>
 

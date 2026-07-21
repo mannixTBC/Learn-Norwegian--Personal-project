@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { courseCatalog } from '../lessons/norwegian-program/lessonContent';
 import { getLearningLevel, levelName } from '../lessons/learningLevel';
-import { speakNorwegian } from '../../services/norwegianSpeech';
+import { speakPronunciationModel } from '../../services/azurePronunciationSpeech';
 import PronunciationLab from './PronunciationLab';
 import './Pronunciation.css';
 import './PronunciationEnhancements.css';
@@ -56,7 +56,7 @@ const Pronunciation = () => {
               <div className="pronuntie__phrase-top"><span>Expresia {String(index + 1).padStart(2, '0')}</span><strong>{item.word}</strong><small>{item.meaning}</small></div>
               <blockquote lang="no">{item.example}</blockquote>
               <p><span>RO</span>{item.translation}</p>
-              <div className="pronuntie__actions"><button type="button" onClick={() => speakNorwegian(item.example)} aria-label={`Ascultă: ${item.example}`}><span aria-hidden="true">▶</span> Normal</button><button type="button" onClick={() => speakNorwegian(item.example, { slow: true })} aria-label={`Ascultă lent: ${item.example}`}><span aria-hidden="true">◷</span> Lent</button><button type="button" className="pronuntie__practice-button" onClick={() => openInLab(index)} aria-label={`Exersează în laborator: ${item.example}`}><span aria-hidden="true">●</span> Exersează</button></div>
+              <div className="pronuntie__actions"><button type="button" onClick={() => speakPronunciationModel(item.example)} aria-label={`Ascultă: ${item.example}`}><span aria-hidden="true">▶</span> Normal</button><button type="button" onClick={() => speakPronunciationModel(item.example, { slow: true })} aria-label={`Ascultă lent: ${item.example}`}><span aria-hidden="true">◷</span> Lent</button><button type="button" className="pronuntie__practice-button" onClick={() => openInLab(index)} aria-label={`Exersează în laborator: ${item.example}`}><span aria-hidden="true">●</span> Exersează</button></div>
             </article>
           ))}
         </div>

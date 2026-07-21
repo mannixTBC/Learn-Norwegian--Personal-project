@@ -14,8 +14,8 @@ export const a1Lessons = [
 export const levels = [
   { code: 'A1', title: 'Începător', description: 'Primele conversații și vocabularul esențial.', available: true },
   { code: 'A2', title: 'Elementar', description: 'Situații cotidiene și propoziții mai dezvoltate.', available: true },
-  { code: 'B1', title: 'Intermediar', description: 'Conversații independente despre subiecte familiare.', available: true },
-  { code: 'B2', title: 'Avansat', description: 'Comunicare fluentă pentru studiu și muncă.', available: true },
+  { code: 'B1', title: 'Intermediar', description: 'Dezvoltă situațiile A2 în conversații independente pentru viață și muncă.', available: true },
+  { code: 'B2', title: 'Avansat', description: 'Transformă comunicarea B1 într-un limbaj fluent, critic și nuanțat.', available: true },
 ];
 
 export const a2Lessons = [
@@ -32,29 +32,29 @@ export const a2Lessons = [
 ];
 
 export const b1Lessons = [
-  { id: 1, number: '01', title: 'Experiențe și povești', description: 'Povestește evenimente în ordine firească și descrie reacții și sentimente.', duration: '30 min', vocabulary: 8, topics: ['Povestire', 'Trecut', 'Conectori'] },
-  { id: 2, number: '02', title: 'Opinii și justificări', description: 'Exprimă o părere, oferă motive și răspunde politicos altor puncte de vedere.', duration: '31 min', vocabulary: 8, topics: ['Opinii', 'Argumente', 'Contrast'] },
-  { id: 3, number: '03', title: 'Responsabilități la serviciu', description: 'Clarifică sarcini, termene și responsabilități într-o echipă.', duration: '32 min', vocabulary: 8, topics: ['Muncă', 'Responsabilități', 'Pasiv'] },
-  { id: 4, number: '04', title: 'Căutarea unui loc de muncă', description: 'Înțelege anunțuri, prezintă-ți experiența și răspunde la interviu.', duration: '34 min', vocabulary: 8, topics: ['CV', 'Interviu', 'Experiență'] },
-  { id: 5, number: '05', title: 'Sănătate și comunicarea cu medicul', description: 'Descrie simptome mai precis și cere explicații despre investigații și tratament.', duration: '33 min', vocabulary: 8, topics: ['Sănătate', 'Recomandări', 'Vorbire indirectă'] },
-  { id: 6, number: '06', title: 'Locuință, contract și reclamații', description: 'Înțelege un contract și semnalează în scris problemele locuinței.', duration: '34 min', vocabulary: 8, topics: ['Chirie', 'Contract', 'Mesaj formal'] },
-  { id: 7, number: '07', title: 'Știri și societate', description: 'Rezumă o știre, verifică sursa și separă faptele de opinii.', duration: '35 min', vocabulary: 8, topics: ['Știri', 'Surse', 'Rezumat'] },
-  { id: 8, number: '08', title: 'Cultură, relații și integrare', description: 'Discută despre obiceiuri, apartenență și situații interculturale.', duration: '33 min', vocabulary: 8, topics: ['Cultură', 'Integrare', 'Reflexive'] },
-  { id: 9, number: '09', title: 'Servicii publice și comunicare formală', description: 'Urmărește o cerere și formulează întrebări indirecte într-un mesaj formal.', duration: '35 min', vocabulary: 8, topics: ['Servicii', 'Cereri', 'Întrebări indirecte'] },
-  { id: 10, number: '10', title: 'Prezentare, argumentare și planuri', description: 'Construiește o prezentare coerentă, justifică ideile și formulează o concluzie.', duration: '38 min', vocabulary: 8, topics: ['Prezentare', 'Argumentare', 'Sinteză'] },
+  { id: 1, number: '01', title: 'Experiențe și povești coerente', description: 'Continuă trecutul din A2 și leagă evenimentele într-o poveste ușor de urmărit.', duration: '30 min', vocabulary: 6, topics: ['Povestire', 'Trecut', 'Conectori'] },
+  { id: 2, number: '02', title: 'Opinii, motive și soluții', description: 'Extinde „fordi” din A2 cu rezultate, contraste și răspunsuri politicoase.', duration: '31 min', vocabulary: 6, topics: ['Opinii', 'Justificare', 'Contrast'] },
+  { id: 3, number: '03', title: 'Probleme, reclamații și rezolvări', description: 'Treci de la descrierea unei probleme la o reclamație clară și o soluție concretă.', duration: '34 min', vocabulary: 6, topics: ['Locuință', 'Reclamații', 'Mesaj formal'] },
+  { id: 4, number: '04', title: 'Colaborare și responsabilități la serviciu', description: 'Clarifică sarcini, termene și procese într-o echipă.', duration: '32 min', vocabulary: 6, topics: ['Muncă', 'Responsabilități', 'Pasiv'] },
+  { id: 5, number: '05', title: 'Competențe, CV și interviu', description: 'Leagă experiențele trecute de competențe și răspunsuri convingătoare la interviu.', duration: '34 min', vocabulary: 6, topics: ['CV', 'Interviu', 'Experiență'] },
+  { id: 6, number: '06', title: 'Sănătate și recomandări explicate', description: 'Descrie evoluția simptomelor și redă mai clar recomandările medicului.', duration: '33 min', vocabulary: 6, topics: ['Sănătate', 'Recomandări', 'Vorbire indirectă'] },
+  { id: 7, number: '07', title: 'Servicii publice și mesaje formale', description: 'Urmărește o cerere și formulează întrebări indirecte într-un mesaj politicos.', duration: '35 min', vocabulary: 6, topics: ['Servicii', 'Cereri', 'Întrebări indirecte'] },
+  { id: 8, number: '08', title: 'Știri, surse și rezumate', description: 'Rezumă o informație, indică sursa și separă faptele de interpretări.', duration: '35 min', vocabulary: 6, topics: ['Știri', 'Surse', 'Rezumat'] },
+  { id: 9, number: '09', title: 'Cultură, relații și integrare', description: 'Discută despre adaptare, apartenență și experiențe interculturale.', duration: '33 min', vocabulary: 6, topics: ['Cultură', 'Integrare', 'Reflexive'] },
+  { id: 10, number: '10', title: 'B1 în viața reală', description: 'Recapitulează întregul nivel prin povestire, argumentare și prezentare, fără reguli noi obligatorii.', duration: '38 min', vocabulary: 6, topics: ['Recapitulare', 'Prezentare', 'Sinteză'] },
 ];
 
 export const b2Lessons = [
-  { id: 1, number: '01', title: 'Opinii și argumentare', description: 'Construiește argumente clare, exprimă nuanțe și răspunde la contraargumente.', duration: '32 min', vocabulary: 6, topics: ['Argumentare', 'Nuanțe', 'Dezbatere'] },
-  { id: 2, number: '02', title: 'Comunicare profesională', description: 'Participă eficient la ședințe, negociază și formulează feedback constructiv.', duration: '34 min', vocabulary: 6, topics: ['Ședințe', 'Negociere', 'Feedback'] },
-  { id: 3, number: '03', title: 'Societate și media', description: 'Analizează informații, surse și felul în care sunt prezentate știrile.', duration: '35 min', vocabulary: 6, topics: ['Media', 'Surse', 'Analiză critică'] },
-  { id: 4, number: '04', title: 'Climă și sustenabilitate', description: 'Discută soluții de mediu și compară consecințe pe termen lung.', duration: '36 min', vocabulary: 6, topics: ['Climă', 'Soluții', 'Consecințe'] },
-  { id: 5, number: '05', title: 'Exprimare academică și formală', description: 'Structurează texte și prezentări cu un limbaj precis și convingător.', duration: '38 min', vocabulary: 6, topics: ['Registru formal', 'Structură', 'Prezentări'] },
-  { id: 6, number: '06', title: 'Leadership și gestionarea conflictelor', description: 'Mediază dezacorduri și formulează soluții într-un registru diplomatic.', duration: '38 min', vocabulary: 6, topics: ['Leadership', 'Conflicte', 'Diplomație'] },
-  { id: 7, number: '07', title: 'Economie și viața profesională', description: 'Analizează piața muncii, tendințe și relații dintre cauze și efecte.', duration: '37 min', vocabulary: 6, topics: ['Economie', 'Muncă', 'Cauză–efect'] },
-  { id: 8, number: '08', title: 'Cultură, limbă și identitate', description: 'Discută apartenența, diversitatea și rolul limbii în societate.', duration: '36 min', vocabulary: 6, topics: ['Identitate', 'Cultură', 'Diversitate'] },
-  { id: 9, number: '09', title: 'Tehnologie, confidențialitate și etică', description: 'Evaluează riscuri tehnologice și argumentează limite etice.', duration: '39 min', vocabulary: 6, topics: ['Tehnologie', 'Etică', 'Condițional'] },
-  { id: 10, number: '10', title: 'Prezentare și dezbatere finală', description: 'Construiește o prezentare și susține o poziție într-o dezbatere complexă.', duration: '42 min', vocabulary: 6, topics: ['Prezentare', 'Dezbatere', 'Sinteză'] },
+  { id: 1, number: '01', title: 'Argumente echilibrate și contraargumente', description: 'Transformă opiniile B1 în argumente nuanțate, cu perspective și rezerve.', duration: '32 min', vocabulary: 6, topics: ['Argumentare', 'Nuanțe', 'Contraargumente'] },
+  { id: 2, number: '02', title: 'Ședințe, negocieri și feedback', description: 'Adaptează comunicarea profesională la ședințe, termene și negocieri.', duration: '34 min', vocabulary: 6, topics: ['Ședințe', 'Negociere', 'Feedback'] },
+  { id: 3, number: '03', title: 'Conflicte și soluții diplomatice', description: 'Atenuează dezacordul, recunoaște alte perspective și negociază un compromis.', duration: '38 min', vocabulary: 6, topics: ['Conflicte', 'Mediere', 'Diplomație'] },
+  { id: 4, number: '04', title: 'Media, surse și analiză critică', description: 'Treci de la rezumatul B1 la evaluarea credibilității și a perspectivei.', duration: '35 min', vocabulary: 6, topics: ['Media', 'Surse', 'Analiză critică'] },
+  { id: 5, number: '05', title: 'Economie, muncă și tendințe', description: 'Interpretează schimbări și explică relații precise dintre cauze și consecințe.', duration: '37 min', vocabulary: 6, topics: ['Economie', 'Muncă', 'Cauză–efect'] },
+  { id: 6, number: '06', title: 'Climă, sustenabilitate și decizii', description: 'Compară soluții, compromisuri și consecințe pe termen lung.', duration: '36 min', vocabulary: 6, topics: ['Climă', 'Compromisuri', 'Consecințe'] },
+  { id: 7, number: '07', title: 'Texte și prezentări formale', description: 'Sintetizează surse și structurează o analiză într-un registru precis.', duration: '38 min', vocabulary: 6, topics: ['Registru formal', 'Surse', 'Prezentări'] },
+  { id: 8, number: '08', title: 'Cultură, limbă și identitate', description: 'Analizează apartenența și diversitatea prin comparații nuanțate.', duration: '36 min', vocabulary: 6, topics: ['Identitate', 'Cultură', 'Diversitate'] },
+  { id: 9, number: '09', title: 'Tehnologie, confidențialitate și etică', description: 'Evaluează riscuri și formulează condiții, ipoteze și limite etice.', duration: '39 min', vocabulary: 6, topics: ['Tehnologie', 'Etică', 'Condițional'] },
+  { id: 10, number: '10', title: 'B2 în viața reală', description: 'Integrează argumentarea, analiza și registrul formal într-o sinteză fără reguli noi obligatorii.', duration: '42 min', vocabulary: 6, topics: ['Recapitulare', 'Dezbatere', 'Sinteză'] },
 ];
 
 export const levelLessons = { A1: a1Lessons, A2: a2Lessons, B1: b1Lessons, B2: b2Lessons };
@@ -62,6 +62,6 @@ export const levelLessons = { A1: a1Lessons, A2: a2Lessons, B1: b1Lessons, B2: b
 export const levelDetails = {
   A1: { heading: 'Bazele limbii norvegiene', outcome: 'La final vei putea purta conversații simple în situații cotidiene și vei cunoaște formule utile pentru prima zi la serviciu.', minutes: 219, words: 60 },
   A2: { heading: 'De la propoziții simple la conversații reale', outcome: 'La final vei putea gestiona situații cotidiene, explica probleme simple și vorbi despre trecut, experiențe și planuri.', minutes: 266, words: 60 },
-  B1: { heading: 'Norvegiana pentru viață și muncă', outcome: 'La final vei putea comunica independent, povesti coerent și susține opinii în situații familiare.', minutes: 335, words: 80 },
-  B2: { heading: 'Comunicare fluentă și nuanțată', outcome: 'La final vei putea argumenta, analiza și comunica profesionist în norvegiană.', minutes: 367, words: 60 },
+  B1: { heading: 'De la conversații familiare la comunicare independentă', outcome: 'La final vei putea rezolva situații reale, povesti coerent, explica motive și comunica independent în viața de zi cu zi și la serviciu.', minutes: 335, words: 60 },
+  B2: { heading: 'De la comunicare independentă la limbaj nuanțat', outcome: 'La final vei putea evalua surse, negocia, media dezacorduri și susține argumente complexe într-un registru potrivit situației.', minutes: 367, words: 60 },
 };
