@@ -1,9 +1,7 @@
 import { a2Lessons } from './a2Content';
-import { b1Lessons } from './b1Content';
-import { b2Lessons } from './b2Content';
 import { a1ExtraLessons } from './a1ExtraContent';
 import { a2ExtraLessons } from './a2ExtraContent';
-import { b2ExtraLessons } from './b2ExtraContent';
+import { progressiveB1Lessons, progressiveB2Lessons } from './progressiveCourseContent';
 
 const baseA1Lessons = [
   {
@@ -64,6 +62,6 @@ export const courseLessons = [...baseA1Lessons, ...a1ExtraLessons];
 export const courseCatalog = {
   A1: { code: 'A1', title: 'Începător', lessons: courseLessons },
   A2: { code: 'A2', title: 'Elementar', lessons: [...a2Lessons, ...a2ExtraLessons] },
-  B1: { code: 'B1', title: 'Intermediar', lessons: b1Lessons },
-  B2: { code: 'B2', title: 'Avansat', lessons: [...b2Lessons, ...b2ExtraLessons] },
+  B1: { code: 'B1', title: 'Intermediar', lessons: progressiveB1Lessons },
+  B2: { code: 'B2', title: 'Avansat', lessons: progressiveB2Lessons },
 };
