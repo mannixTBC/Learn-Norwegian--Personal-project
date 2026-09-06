@@ -17,11 +17,13 @@
     "howler": "^2.1.2",
     "node-fetch": "^2.7.0",
     "normalize.css": "^8.0.1",
+    "openai": "^4.77.0",
     "react": "^18.3.1",
     "react-beautiful-dnd": "^13.0.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^5.1.2",
     "serverless-http": "^3.2.0",
+    "stripe": "^18.4.0",
     "styled-components": "^6.4.3",
     "weather-icons": "git+https://github.com/erikflowers/weather-icons.git"
   },
@@ -46,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
     "@vitejs/plugin-react": "latest",
     "concurrently": "latest",
     "vite": "latest"

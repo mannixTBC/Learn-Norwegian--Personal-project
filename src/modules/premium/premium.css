@@ -1,0 +1,331 @@
+/* Stiluri pentru stratul Premium (PremiumGate, UpgradeCard, PricingPage). */
+/* Folosește variabilele globale din App.css pentru consistență vizuală. */
+
+/* ── PremiumGate ──────────────────────────────────────────────────── */
+.premium-gate {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+}
+
+/* ── UpgradeCard ──────────────────────────────────────────────────── */
+.upgrade-card {
+  position: relative;
+  max-width: 26rem;
+  width: 100%;
+  background: linear-gradient(160deg, var(--fjord-soft) 0%, var(--color-surface) 65%);
+  border: 1px solid var(--fjord-light);
+  border-radius: 1.25rem;
+  padding: var(--space-6) var(--space-5);
+  text-align: center;
+  box-shadow: 0 10px 30px -18px rgba(15, 76, 117, 0.45);
+}
+
+.upgrade-card--compact {
+  max-width: 22rem;
+  padding: var(--space-5) var(--space-4);
+}
+
+.upgrade-card__badge {
+  display: inline-block;
+  background: var(--fjord-deep);
+  color: #fff;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  margin-bottom: var(--space-3);
+}
+
+.upgrade-card__title {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.upgrade-card__benefits {
+  list-style: none;
+  margin: 0 0 var(--space-5);
+  padding: 0;
+  text-align: left;
+}
+
+.upgrade-card__benefits li {
+  position: relative;
+  padding: var(--space-2) 0 var(--space-2) var(--space-5);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  border-bottom: 1px solid var(--fjord-ice);
+}
+
+.upgrade-card__benefits li:last-child {
+  border-bottom: none;
+}
+
+.upgrade-card__benefits li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: var(--space-2);
+  color: var(--fjord-deep);
+  font-weight: var(--font-weight-bold);
+}
+
+.upgrade-card__cta {
+  display: inline-block;
+  width: 100%;
+  background: var(--fjord-deep);
+  color: #fff;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  padding: var(--space-3) var(--space-4);
+  border-radius: 0.75rem;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.upgrade-card__cta:hover {
+  background: var(--fjord);
+  color: #fff;
+}
+
+/* ── PricingPage ──────────────────────────────────────────────────── */
+.pricing-page {
+  max-width: 70rem;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4) var(--space-8);
+}
+
+.pricing-page__header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.pricing-page__eyebrow {
+  display: inline-block;
+  color: var(--fjord-deep);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-3);
+}
+
+.pricing-page__header h1 {
+  margin: 0 0 var(--space-3);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-text-primary);
+}
+
+.pricing-page__subtitle {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pricing-page__benefits {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.pricing-page__benefit {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  padding: var(--space-5) var(--space-4);
+  text-align: center;
+}
+
+.pricing-page__benefit-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.5rem;
+  background: var(--fjord-soft);
+  border-radius: 50%;
+  margin-bottom: var(--space-3);
+}
+
+.pricing-page__benefit h3 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.pricing-page__benefit p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  line-height: 1.5;
+}
+
+.pricing-page__card {
+  max-width: 28rem;
+  margin: 0 auto;
+  background: linear-gradient(160deg, var(--fjord-soft) 0%, var(--color-surface) 70%);
+  border: 1px solid var(--fjord-light);
+  border-radius: 1.5rem;
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.pricing-page__status {
+  margin-bottom: var(--space-4);
+}
+
+.pricing-page__status-badge {
+  display: inline-block;
+  background: var(--color-success);
+  color: #fff;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  padding: var(--space-2) var(--space-4);
+  border-radius: 999px;
+}
+
+.pricing-page__dev-note {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
+}
+
+.pricing-page__price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.pricing-page__price-amount {
+  font-size: 2.75rem;
+  font-weight: var(--font-weight-extrabold);
+  color: var(--fjord-deep);
+  line-height: 1;
+}
+
+.pricing-page__price-period {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+}
+
+.pricing-page__price-note {
+  margin: 0 0 var(--space-5);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+}
+
+.pricing-page__cta {
+  display: inline-block;
+  width: 100%;
+  background: var(--fjord-deep);
+  color: #fff;
+  border: none;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-lg);
+  padding: var(--space-3) var(--space-5);
+  border-radius: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.pricing-page__cta:hover:not(:disabled) {
+  background: var(--fjord);
+}
+
+.pricing-page__cta:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.pricing-page__cta--secondary {
+  background: var(--color-surface-muted);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-base);
+}
+
+.pricing-page__cta--secondary:hover:not(:disabled) {
+  background: var(--fjord-ice);
+}
+
+.pricing-page__auth-note {
+  margin: var(--space-4) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+}
+
+.pricing-page__auth-note a {
+  color: var(--fjord-deep);
+  font-weight: var(--font-weight-semibold);
+}
+
+.pricing-page__error {
+  margin: var(--space-4) 0 0;
+  padding: var(--space-3);
+  background: var(--color-error-bg);
+  color: var(--color-error);
+  border-radius: 0.5rem;
+  font-size: var(--font-size-sm);
+}
+
+/* ── Badge Premium în Navbar ──────────────────────────────────────── */
+.navbar__premium {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: var(--fjord-deep);
+  color: #fff;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.03em;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.navbar__premium:hover {
+  background: var(--fjord);
+  color: #fff;
+}
+
+.navbar__premium--dev {
+  background: var(--color-warning);
+  color: #fff;
+}
+
+.navbar__premium--upgrade {
+  background: transparent;
+  color: var(--fjord-deep);
+  border: 1px solid var(--fjord-light);
+}
+
+.navbar__premium--upgrade:hover {
+  background: var(--fjord-soft);
+}
+
+@media (max-width: 860px) {
+  .navbar__premium--desktop {
+    display: none;
+  }
+}
+
+@media (min-width: 861px) {
+  .navbar__premium--mobile {
+    display: none;
+  }
+}

@@ -1,5 +1,6 @@
 import { defineConfig, transformWithOxc } from 'vite';
 import react from '@vitejs/plugin-react';
+import basicSsl from '@vitejs/plugin-basic-ssl';
 
 const sourceJsAsJsx = () => ({
   name: 'source-js-as-jsx',
@@ -12,7 +13,7 @@ const sourceJsAsJsx = () => ({
 });
 
 export default defineConfig({
-  plugins: [sourceJsAsJsx(), react()],
+  plugins: [sourceJsAsJsx(), react(), basicSsl()],
   optimizeDeps: {
     noDiscovery: true,
     include: [

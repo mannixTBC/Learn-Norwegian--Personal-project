@@ -1,11 +1,15 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { isSupabaseConfigured, supabase } from '../../services/supabaseClient';
+import { fetchEntitlements, isDevBypassActive } from '../../services/entitlements';
 
 const SESSION_KEY = 'norwegiata_frontend_session';
 const GUEST_SESSION = '__norwegiata_guest__';
 const AuthContext = createContext(null);
 
 const guestUser = { id: 'guest', name: 'Vizitator', avatarUrl: '', isGuest: true };
+
+/** Entitlements default pentru utilizatori neautentificați. */
+const FREE_ENTITLEMENTS = { plan: 'free', isPremium: false, premiumUntil: null, entitlementSource: 'db' };
 
 const formatUser = (authUser) => {
   if (!authUser) return null;
@@ -39,6 +43,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [initializing, setInitializing] = useState(true);
   const [passwordRecovery, setPasswordRecovery] = useState(false);
+  const [entitlements, setEntitlements] = useState(FREE_ENTITLEMENTS);
 
   useEffect(() => {
     if (!supabase) {
@@ -68,6 +73,22 @@ export const AuthProvider = ({ children }) => {
     };
   }, []);
 
+  // Reîncarcă entitlement-urile când se schimbă utilizatorul.
+  // În dev bypass, fetchEntitlements returnează constant premium (fără apel DB).
+  useEffect(() => {
+    let cancelled = false;
+    fetchEntitlements(user).then((result) => {
+      if (cancelled) return;
+      setEntitlements({
+        plan: result.plan,
+        isPremium: result.isPremium,
+        premiumUntil: result.premiumUntil,
+        entitlementSource: result.source,
+      });
+    });
+    return () => { cancelled = true; };
+  }, [user]);
+
   const register = async ({ name, email, password }) => {
     ensureSupabase();
     const { data, error } = await supabase.auth.signUp({
@@ -91,9 +112,19 @@ export const AuthProvider = ({ children }) => {
 
   const loginAsGuest = async () => {
     if (supabase) {
-      const { data, error } = await supabase.auth.signInAnonymously();
-      if (error) throw new Error(authMessage(error));
-      return formatUser(data.user);
+      try {
+        const { data, error } = await supabase.auth.signInAnonymously();
+        if (error) throw new Error(authMessage(error));
+        return formatUser(data.user);
+      } catch (err) {
+        // „Continuă ca vizitator" trebuie să funcționeze mereu. Dacă auth-ul
+        // Supabase e indisponibil (eroare de rețea, proiect pauzat, anonim
+        // dezactivat în dashboard), cădem transparent pe o sesiune locală
+        // de vizitator, ca să poată folosi aplicația fără cont.
+        localStorage.setItem(SESSION_KEY, GUEST_SESSION);
+        setUser(guestUser);
+        return guestUser;
+      }
     }
     localStorage.setItem(SESSION_KEY, GUEST_SESSION);
     setUser(guestUser);
@@ -133,6 +164,17 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  // Reîncarcă forțat entitlement-urile (ex. după întoarcerea din Stripe Checkout).
+  const refreshEntitlements = async () => {
+    const result = await fetchEntitlements(user);
+    setEntitlements({
+      plan: result.plan,
+      isPremium: result.isPremium,
+      premiumUntil: result.premiumUntil,
+      entitlementSource: result.source,
+    });
+  };
+
   const value = useMemo(() => ({
     user,
     isAuthenticated: Boolean(user),
@@ -147,7 +189,14 @@ export const AuthProvider = ({ children }) => {
     requestPasswordReset,
     updatePassword,
     logout,
-  }), [initializing, passwordRecovery, user]);
+    // Entitlements Premium
+    plan: entitlements.plan,
+    isPremium: entitlements.isPremium,
+    premiumUntil: entitlements.premiumUntil,
+    entitlementSource: entitlements.entitlementSource,
+    isDevBypass: isDevBypassActive(),
+    refreshEntitlements,
+  }), [entitlements, initializing, passwordRecovery, user]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

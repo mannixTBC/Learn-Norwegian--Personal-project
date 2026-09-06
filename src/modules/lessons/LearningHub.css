@@ -30,15 +30,15 @@
 @media(max-width:540px){
   .learn-page{display:flex;width:min(100% - 24px,1180px);max-width:none;flex-direction:column;margin:0 auto;padding:14px 0 64px}
 
-  .learn-hero{order:1;display:block;padding:20px;border-radius:20px;box-shadow:0 14px 34px rgba(20,33,61,.14)}
-  .learn-hero .learn-kicker{margin-bottom:5px;font-size:.62rem}
-  .learn-hero h1{max-width:300px;margin:0;font-size:clamp(1.7rem,8.3vw,2.1rem);line-height:1.08}
+  .learn-hero{order:1;display:block;padding:14px 16px;border-radius:18px;box-shadow:0 14px 34px rgba(20,33,61,.14)}
+  .learn-hero .learn-kicker{display:none}
+  .learn-hero h1{max-width:300px;margin:0;font-size:clamp(1.45rem,7vw,1.8rem);line-height:1.08}
   .learn-hero>div:first-child>p:last-child{display:none}
-  .learn-progress{margin-top:17px;padding:14px 15px;border-radius:13px}
-  .learn-progress__top{margin-bottom:8px;font-size:.72rem}
-  .learn-progress__top strong{font-size:1rem}
-  .learn-progress__track{height:7px;margin-bottom:7px}
-  .learn-progress small{font-size:.65rem}
+  .learn-progress{margin-top:11px;padding:10px 12px;border-radius:11px}
+  .learn-progress__top{margin-bottom:6px;font-size:.68rem}
+  .learn-progress__top strong{font-size:.95rem}
+  .learn-progress__track{height:6px;margin-bottom:5px}
+  .learn-progress small{font-size:.6rem}
 
   .continue-card{order:2;display:block;margin:12px 0 0;padding:18px;border-color:#cfe3e5;border-radius:20px;background:linear-gradient(150deg,#fff 0%,#f4fbfb 100%);box-shadow:0 12px 30px rgba(20,33,61,.08)}
   .continue-card__number{display:none}
@@ -49,7 +49,7 @@
   .continue-card .learn-button:hover{color:#14213d;background:linear-gradient(135deg,#ffe59d,#ffd066)}
   .continue-card .learn-button:active{box-shadow:none;transform:scale(.985)}
 
-  .career-track-card{order:3;grid-template-columns:auto 1fr;margin:22px 0 0;padding:15px;gap:11px;border-radius:16px}
+  .career-track-card{order:3;display:none;margin:22px 0 0;padding:15px;gap:11px;border-radius:16px}
   .career-track-card__icon{width:38px;height:38px;border-radius:10px}
   .career-track-card>div>small{font-size:.58rem}
   .career-track-card h2{font-size:.96rem}

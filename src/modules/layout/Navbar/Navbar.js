@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import NorwegianFlagIcon from './NorwegianFlagIcon';
 import { useAuth } from '../../auth/AuthContext';
+import '../../premium/premium.css';
 import './Navbar.css';
 
 const navigation = [
@@ -54,7 +55,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navbarRef = useRef(null);
   const toggleRef = useRef(null);
-  const { user, logout } = useAuth();
+  const { user, logout, isPremium, isDevBypass } = useAuth();
   const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
@@ -109,6 +110,13 @@ export default function Navbar() {
               {item.label}
             </NavLink>
           ))}
+          {user && <Link
+            to="/premium"
+            className={`navbar__premium navbar__premium--mobile${isDevBypass ? ' navbar__premium--dev' : isPremium ? '' : ' navbar__premium--upgrade'}`}
+            onClick={closeMenu}
+          >
+            {isDevBypass ? '★ Premium (dev)' : isPremium ? '★ Premium' : '★ Treci la Premium'}
+          </Link>}
           <div className="navbar__mobile-account">
             {user ? (
               <>
@@ -133,6 +141,13 @@ export default function Navbar() {
         </nav>
 
         <div className="navbar__account">
+          {user && <Link
+            to="/premium"
+            className={`navbar__premium navbar__premium--desktop${isDevBypass ? ' navbar__premium--dev' : isPremium ? '' : ' navbar__premium--upgrade'}`}
+            onClick={closeMenu}
+          >
+            {isDevBypass ? '★ Premium (dev)' : isPremium ? '★ Premium' : '★ Treci la Premium'}
+          </Link>}
           {user ? <><Link className="navbar__user" to="/dashboard" onClick={closeMenu} aria-label="Deschide profilul"><UserAvatar user={user} /><div><small>{user.isGuest ? 'Mod anonim' : 'Conectat'}</small><strong>{user.name}</strong></div></Link><button type="button" className="navbar__logout" onClick={() => { logout(); closeMenu(); }}>Ieșire</button></> : <Link className="navbar__login" to="/autentificare" onClick={closeMenu}>Conectare</Link>}
         </div>
 

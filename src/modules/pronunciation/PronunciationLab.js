@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { speakPronunciationModel } from '../../services/azurePronunciationSpeech';
 import { assessPronunciation } from '../../services/pronunciationAssessment';
 import { recordStudyActivity } from '../../services/learningActivity';
+import PremiumGate from '../premium/PremiumGate';
 import './PronunciationLab.css';
 
 const MAX_SECONDS = 30;
@@ -128,6 +129,13 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
   const timerRef = useRef(null);
   const timeoutRef = useRef(null);
   const audioUrlRef = useRef('');
+  // Ține fraza pentru care se rulează evaluarea curentă. Dacă utilizatorul
+  // schimbă fraza în timp ce analiza Azure e în curs, rezultatul (care sosește
+  // asincron) este ignorat ca să nu afișăm un scor pentru fraza greșită.
+  const evaluatingPhraseRef = useRef(phrase.example);
+  // Distinge modul „press-and-hold" de click clasic, ca să evităm dubla
+  // declanșare (pointerdown pornește, click ar porni din nou).
+  const holdActiveRef = useRef(false);
 
   const bestScore = attempts.reduce((best, attempt) => Math.max(best, attempt.score || 0), 0);
 
@@ -156,12 +164,17 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
   };
 
   const evaluateRecording = async (blob, duration) => {
+    // Marcăm fraza pentru care evaluăm acum. Dacă utilizatorul schimbă fraza
+    // înainte să sosească rezultatul (Azure răspunde asincron), ignorăm rezultatul.
+    const targetPhrase = phrase.example;
+    evaluatingPhraseRef.current = targetPhrase;
     setStatus('analyzing');
     setError('');
     try {
-      const transcription = await sendForEvaluation(blob, phrase.example);
+      const transcription = await sendForEvaluation(blob, targetPhrase);
+      if (evaluatingPhraseRef.current !== targetPhrase) return;
       const assessment = assessPronunciation({
-        referenceText: phrase.example,
+        referenceText: targetPhrase,
         transcript: transcription.text,
         words: transcription.words,
         duration,
@@ -173,10 +186,11 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
       rememberAttempt(assessment, duration);
       setStatus('result');
     } catch (assessmentError) {
+      if (evaluatingPhraseRef.current !== targetPhrase) return;
       const browserTranscript = browserTranscriptRef.current.trim();
       if (browserTranscript) {
         const assessment = assessPronunciation({
-          referenceText: phrase.example,
+          referenceText: targetPhrase,
           transcript: browserTranscript,
           duration,
           provider: 'browser',
@@ -280,7 +294,43 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
     setStatus('ready');
   };
 
+  // ── Press-and-hold pentru înregistrare (ca WhatsApp/Telegram) ──────────
+  // Ții apăsat butonul → înregistrează; eliberezi → oprește și analizează.
+  // Suportă mouse, touch și tastatură (Space/Enter).
+  const isInteractive = status !== 'analyzing' && status !== 'processing';
+
+  const handleHoldStart = (e) => {
+    // Acceptăm pointer (mouse/touch/stylus) și tastatură.
+    if (e.type === 'keydown' && e.key !== ' ' && e.key !== 'Enter') return;
+    if (e.type === 'keydown' && e.repeat) return;
+    if (!isInteractive || status === 'recording') return;
+    e.preventDefault();
+    holdActiveRef.current = true;
+    startRecording();
+  };
+
+  const handleHoldEnd = (e) => {
+    if (!holdActiveRef.current) return;
+    if (e.type === 'keyup' && e.key !== ' ' && e.key !== 'Enter') return;
+    e.preventDefault();
+    holdActiveRef.current = false;
+    if (status === 'recording') stopRecording();
+  };
+
+  const handleHoldClick = () => {
+    // Dacă pornirea a venit deja de la pointerdown (mod hold), ignorăm click-ul
+    // ca să nu declanșăm o a doua înregistrare.
+    if (holdActiveRef.current) return;
+    // Pe dispozitive fără pointer events robuste, click-ul pornește/oprește.
+    if (!isInteractive) return;
+    if (status === 'recording') stopRecording();
+    else startRecording();
+  };
+
   useEffect(() => {
+    // Schimbarea frazei invalidează orice evaluare în curs: rezultatul async
+    // (de la Azure) va vedea că targetPhrase nu mai corespunde și se va opri.
+    evaluatingPhraseRef.current = phrase.example;
     clearTimers();
     if (recorderRef.current && recorderRef.current.state !== 'inactive') {
       recorderRef.current.onstop = null;
@@ -319,50 +369,77 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
           <blockquote lang="no">{phrase.example}</blockquote>
           <p><span>RO</span>{phrase.translation}</p>
           <div className="pronunciation-lab__model-actions">
-            <button type="button" onClick={() => speakPronunciationModel(phrase.example)}><span aria-hidden="true">▶</span> Ascultă modelul</button>
-            <button type="button" onClick={() => speakPronunciationModel(phrase.example, { slow: true })}><span aria-hidden="true">◷</span> Mai lent</button>
+            <button type="button" onClick={() => speakPronunciationModel(phrase.example)} aria-label="Ascultă modelul"><span aria-hidden="true">▶</span> Ascultă</button>
+            <button type="button" onClick={() => speakPronunciationModel(phrase.example, { slow: true })} aria-label="Ascultă mai lent"><span aria-hidden="true">◷</span> Lent</button>
           </div>
           <div className="pronunciation-lab__tip"><span aria-hidden="true">◎</span><p><strong>Sfat:</strong> ascultă întâi ritmul frazei, nu doar fiecare sunet separat.</p></div>
         </div>
 
         <div className={`pronunciation-recorder pronunciation-recorder--${status}`}>
-          <div className="pronunciation-recorder__status" aria-live="polite">
-            <span>{status === 'recording' ? 'Înregistrare în curs' : status === 'analyzing' || status === 'processing' ? 'Analizăm pronunția' : status === 'result' ? 'Evaluare finalizată' : status === 'error' ? 'Este nevoie de atenție' : 'Microfon pregătit'}</span>
-            <strong>{status === 'recording' ? formatTime(elapsed) : 'max. 0:30'}</strong>
-          </div>
-          <div className="pronunciation-recorder__visual" aria-hidden="true">
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((bar) => <i key={bar} style={{ '--bar': bar }} />)}
-          </div>
-          {status === 'recording' ? (
-            <button className="pronunciation-recorder__button is-recording" type="button" onClick={stopRecording}><span aria-hidden="true">■</span><strong>Oprește înregistrarea</strong><small>Apasă când ai terminat fraza</small></button>
-          ) : (
-            <button className="pronunciation-recorder__button" type="button" onClick={startRecording} disabled={status === 'analyzing' || status === 'processing'}><span aria-hidden="true">●</span><strong>{status === 'analyzing' || status === 'processing' ? 'Se analizează…' : result ? 'Înregistrează din nou' : 'Începe înregistrarea'}</strong><small>Vei putea asculta vocea înainte de o nouă încercare</small></button>
-          )}
-          {audioUrl && status !== 'recording' && <audio className="pronunciation-recorder__playback" src={audioUrl} controls preload="metadata">Browserul tău nu poate reda înregistrarea.</audio>}
-          {error && <div className="pronunciation-recorder__error" role="alert"><strong>Nu am putut finaliza evaluarea</strong><p>{error}</p><small>Poți continua fără nicio restricție folosind butoanele „Ascultă modelul” și „Mai lent”.</small><button type="button" onClick={resetAttempt}>Încearcă din nou</button></div>}
-          <p className="pronunciation-recorder__privacy"><span aria-hidden="true">▣</span> Vocea-model și evaluarea folosesc Azure Speech; ElevenLabs și browserul rămân variante de rezervă. Aplicația nu salvează înregistrarea.</p>
+          <PremiumGate feature="Evaluarea pronunției cu Azure Speech">
+            {result ? (
+              <div className={`pronunciation-result pronunciation-result--${result.feedback.tone}`}>
+                <div className="pronunciation-result__score" style={{ '--score': `${result.score * 3.6}deg` }}><div><strong>{result.score}</strong><span>din 100</span></div></div>
+                <div className="pronunciation-result__content">
+                  <span className="pronunciation-result__eyebrow">Rezultatul încercării</span>
+                  <h3>{result.feedback.title}</h3>
+                  <p>{result.feedback.text}</p>
+                  <div className="pronunciation-result__metrics"><div><span>Claritate</span><strong>{result.accuracy}%</strong></div><div><span>Frază completă</span><strong>{result.completeness}%</strong></div><div><span>Fluență</span><strong>{result.rhythm}%</strong></div></div>
+                </div>
+                <div className="pronunciation-result__transcript">
+                  <div><span>Ce am recunoscut</span><small>{result.provider === 'azure-speech-pronunciation' ? 'Azure Speech · norvegiană nb-NO' : result.provider === 'elevenlabs-scribe-v2' ? 'ElevenLabs Scribe v2 · rezervă' : 'Evaluare din browser · rezervă'}</small></div>
+                  <blockquote lang="no">„{result.transcript}”</blockquote>
+                  <div className="pronunciation-result__words" aria-label="Evaluare pe cuvinte">
+                    {result.alignment.filter((item) => item.expected).map((item, index) => <span className={`is-${item.status}`} title={item.status === 'correct' ? 'Pronunțat clar' : item.status === 'close' ? `Aproape · recunoscut „${item.spoken}”` : item.status === 'missing' ? 'Cuvânt lipsă' : `Recunoscut „${item.spoken}”`} key={`${item.expected}-${index}`}>{item.expected}</span>)}
+                  </div>
+                  <div className="pronunciation-result__legend"><span><i className="correct" />clar</span><span><i className="close" />aproape</span><span><i className="different" />de repetat</span></div>
+                </div>
+                <button type="button" className="pronunciation-result__retry" onClick={resetAttempt}>↻ Înregistrează din nou</button>
+              </div>
+            ) : (
+              <>
+                <div className="pronunciation-recorder__status" aria-live="polite">
+                  <span>{status === 'recording' ? 'Înregistrare în curs' : status === 'analyzing' || status === 'processing' ? 'Analizăm pronunția' : status === 'error' ? 'Este nevoie de atenție' : 'Microfon pregătit'}</span>
+                  <strong>{status === 'recording' ? formatTime(elapsed) : 'max. 0:30'}</strong>
+                </div>
+                <div className="pronunciation-recorder__visual" aria-hidden="true">
+                  {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((bar) => <i key={bar} style={{ '--bar': bar }} />)}
+                </div>
+                {(() => {
+                  const isBusy = status === 'analyzing' || status === 'processing';
+                  const label = status === 'recording' ? 'Eliberează pentru a opri' : isBusy ? 'Se analizează…' : 'Ține apăsat pentru a înregistra';
+                  const hint = status === 'recording' ? 'Înregistrare în curs — vorbește acum' : isBusy ? 'Analizăm pronunția cu Azure Speech' : 'Vorbește cât timp ții apăsat butonul';
+                  return (
+                    <button
+                      className={`pronunciation-recorder__button${status === 'recording' ? ' is-recording' : ''}`}
+                      type="button"
+                      onPointerDown={handleHoldStart}
+                      onPointerUp={handleHoldEnd}
+                      onPointerLeave={handleHoldEnd}
+                      onPointerCancel={handleHoldEnd}
+                      onKeyDown={handleHoldStart}
+                      onKeyUp={handleHoldEnd}
+                      onClick={handleHoldClick}
+                      onContextMenu={(e) => e.preventDefault()}
+                      disabled={isBusy}
+                      aria-label={label}
+                    >
+                      <span aria-hidden="true">{status === 'recording' ? '■' : '●'}</span>
+                      <strong>{label}</strong>
+                      <small>{hint}</small>
+                    </button>
+                  );
+                })()}
+                {audioUrl && status !== 'recording' && <audio className="pronunciation-recorder__playback" src={audioUrl} controls preload="metadata">Browserul tău nu poate reda înregistrarea.</audio>}
+                {error && <div className="pronunciation-recorder__error" role="alert"><strong>Nu am putut finaliza evaluarea</strong><p>{error}</p><small>Poți continua fără nicio restricție folosind butoanele „Ascultă modelul” și „Mai lent”.</small><button type="button" onClick={resetAttempt}>Încearcă din nou</button></div>}
+                <p className="pronunciation-recorder__privacy"><span aria-hidden="true">▣</span> Vocea-model și evaluarea folosesc Azure Speech; ElevenLabs și browserul rămân variante de rezervă. Aplicația nu salvează înregistrarea.</p>
+              </>
+            )}
+          </PremiumGate>
         </div>
       </div>
 
-      {result ? (
-        <div className={`pronunciation-result pronunciation-result--${result.feedback.tone}`}>
-          <div className="pronunciation-result__score" style={{ '--score': `${result.score * 3.6}deg` }}><div><strong>{result.score}</strong><span>din 100</span></div></div>
-          <div className="pronunciation-result__content">
-            <span className="pronunciation-result__eyebrow">Rezultatul încercării</span>
-            <h3>{result.feedback.title}</h3>
-            <p>{result.feedback.text}</p>
-            <div className="pronunciation-result__metrics"><div><span>Claritate</span><strong>{result.accuracy}%</strong></div><div><span>Frază completă</span><strong>{result.completeness}%</strong></div><div><span>Fluență</span><strong>{result.rhythm}%</strong></div></div>
-          </div>
-          <div className="pronunciation-result__transcript">
-            <div><span>Ce am recunoscut</span><small>{result.provider === 'azure-speech-pronunciation' ? 'Azure Speech · norvegiană nb-NO' : result.provider === 'elevenlabs-scribe-v2' ? 'ElevenLabs Scribe v2 · rezervă' : 'Evaluare din browser · rezervă'}</small></div>
-            <blockquote lang="no">„{result.transcript}”</blockquote>
-            <div className="pronunciation-result__words" aria-label="Evaluare pe cuvinte">
-              {result.alignment.filter((item) => item.expected).map((item, index) => <span className={`is-${item.status}`} title={item.status === 'correct' ? 'Pronunțat clar' : item.status === 'close' ? `Aproape · recunoscut „${item.spoken}”` : item.status === 'missing' ? 'Cuvânt lipsă' : `Recunoscut „${item.spoken}”`} key={`${item.expected}-${index}`}>{item.expected}</span>)}
-            </div>
-            <div className="pronunciation-result__legend"><span><i className="correct" />clar</span><span><i className="close" />aproape</span><span><i className="different" />de repetat</span></div>
-          </div>
-        </div>
-      ) : (
+      {!result && (
         <div className="pronunciation-lab__steps"><div><span>1</span><p><strong>Ascultă</strong> modelul normal sau lent.</p></div><div><span>2</span><p><strong>Înregistrează</strong> fraza într-un loc liniștit.</p></div><div><span>3</span><p><strong>Corectează</strong> cuvintele evidențiate.</p></div></div>
       )}
       <p className="pronunciation-lab__disclaimer"><strong>Exercițiu opțional:</strong> rezultatul nu blochează lecții, teste sau niveluri. Scorul estimează claritatea pe baza transcrierii automate și nu înlocuiește evaluarea fonetică realizată de un profesor.</p>
