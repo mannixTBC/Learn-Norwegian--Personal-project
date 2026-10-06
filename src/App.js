@@ -8,7 +8,7 @@ import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './modules/auth/AuthContext';
 
 /**
- * Componenta rădăcină a aplicației „NorvegiaTa”.
+ * Componenta rădăcină a aplicației „NordLingo”.
  *
  * Structura paginii:
  *   1. Navbar  — bara de navigare (mereu vizibilă)

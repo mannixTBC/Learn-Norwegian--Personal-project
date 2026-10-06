@@ -1,5 +1,5 @@
 /**
- * Configurația rutelor aplicației „NorvegiaTa”.
+ * Configurația rutelor aplicației „NordLingo”.
  *
  * Fiecare rută definește:
  *   - path      → adresa URL din browser

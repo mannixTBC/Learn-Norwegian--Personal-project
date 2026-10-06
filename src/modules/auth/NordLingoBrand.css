@@ -1,0 +1,15 @@
+.auth-story__brand {
+  gap: 0;
+  padding: 5px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.auth-story__brand img {
+  display: block;
+  width: 170px !important;
+  height: auto !important;
+  margin: 0 !important;
+  border-radius: 0;
+  object-fit: contain;
+}

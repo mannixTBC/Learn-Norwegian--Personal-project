@@ -42,7 +42,7 @@
 
 .navbar__logo:hover { color: #ba0c2f; text-decoration: none; }
 .navbar__logo-icon { display: inline-flex; align-items: center; margin: 0 !important; }
-.navbar__logo-icon img { width: 27px; height: 20px; object-fit: cover; border-radius: 3px; }
+.navbar__logo-icon img { display: block; width: 158px; height: auto; object-fit: contain; }
 
 .navbar__nav { display: flex; align-items: center; justify-content: center; gap: 4px; }
 .navbar__account { justify-self: end; display: flex; align-items: center; gap: 9px; }
@@ -132,6 +132,7 @@
   .navbar__user>div,.navbar__logout { display: none; }
   .navbar__user>.navbar__avatar { width: 32px; height: 32px; flex-basis: 32px; }
   .navbar__login { padding: 8px 10px; font-size: .75rem; }
+  .navbar__logo-icon img { width: 136px; }
   .navbar__mobile-account {
     display: grid;
     grid-template-columns: 1fr auto;

@@ -91,7 +91,6 @@ export default function Navbar() {
         <div className="navbar__inner">
         <Link to="/" className="navbar__logo" onClick={closeMenu}>
           <NorwegianFlagIcon className="navbar__logo-icon" />
-          <span>NorvegiaTa</span>
         </Link>
 
         <nav

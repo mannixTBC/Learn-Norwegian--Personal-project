@@ -1,17 +1,13 @@
 import React from 'react';
-import flagImage from './icons/norway.png';
-import styled from 'styled-components';
 import './NorwegianFlagIcon.css';
 
-const Container = styled.div`
-  margin-left: auto;
-`;
+const logoImage = '/branding/nordlingo-selected-color.png';
 
-/** Iconița steagului norvegian din logo */
+/** Identitatea vizuală NordLingo. */
 const NorwegianFlagIcon = ({ className }) => (
-  <Container className={className}>
-    <img src={flagImage} alt="NorvegiaTa" />
-  </Container>
+  <span className={className}>
+    <img src={logoImage} alt="NordLingo" />
+  </span>
 );
 
 export default NorwegianFlagIcon;
