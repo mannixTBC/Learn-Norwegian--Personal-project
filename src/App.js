@@ -6,6 +6,7 @@ import Navbar from './modules/layout/Navbar/Navbar';
 import Footer from './modules/layout/Footer/Footer';
 import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './modules/auth/AuthContext';
+import SeoManager from './seo/SeoManager';
 
 /**
  * Componenta rădăcină a aplicației „NordLingo”.
@@ -15,20 +16,23 @@ import { AuthProvider } from './modules/auth/AuthContext';
  *   2. Main    — conținutul dinamic, schimbat de React Router
  *   3. Footer  — subsolul paginii (mereu vizibil)
  */
-function App() {
+export function AppContent() {
   return (
-    <Router>
-      <AuthProvider>
-        <div className="App">
-          <Navbar />
-          <main className="App__main">
-            <AppRoutes />
-          </main>
-          <Footer />
-        </div>
-      </AuthProvider>
-    </Router>
+    <AuthProvider>
+      <SeoManager />
+      <div className="App">
+        <Navbar />
+        <main className="App__main">
+          <AppRoutes />
+        </main>
+        <Footer />
+      </div>
+    </AuthProvider>
   );
+}
+
+function App() {
+  return <Router><AppContent /></Router>;
 }
 
 export default App;
