@@ -32,3 +32,29 @@
  color:#fff;
  background:#176b5b;
 }
+
+/* Set vizual Descoperă v2. Regulile originale rămân mai sus pentru revenire rapidă. */
+.travel-hero{background-image:linear-gradient(0deg,rgba(7,22,43,.9),rgba(7,22,43,.12)),url('/images/discover-legacy/hero-and-fjord-original.jpg')}
+.experience-card--fjord{background-image:url('/images/discover-v2/fjord-v2.webp')}
+.experience-card--aurora{background-image:url('/images/discover-v2/aurora-v2.webp')}
+.experience-card--nature{background-image:url('/images/discover-v2/nature-v2.webp')}
+.experience-card--culture{background-image:url('/images/discover-v2/culture-v2.webp')}
+
+/* Hero compact: păstrează atmosfera, dar aduce conținutul principal mai sus. */
+@media(min-width:601px){
+ .travel-hero{min-height:470px;padding:42px 48px;background-position:center 42%}
+ .travel-hero>div{max-width:700px}
+ .travel-hero h1{max-width:680px;margin-bottom:13px;font-size:clamp(2.6rem,5vw,4rem);line-height:1.03}
+ .travel-hero span{max-width:610px;font-size:1.02rem;line-height:1.55}
+ .travel-hero a{margin-top:20px}
+ .travel-intro{padding:42px 0 24px}
+}
+
+@media(max-width:600px){
+ .travel-hero{min-height:310px;padding:20px;border-radius:16px;background-position:center}
+ .travel-hero p{margin-bottom:6px;font-size:.64rem}
+ .travel-hero h1{max-width:290px;margin-bottom:9px;font-size:2rem;line-height:1.02}
+ .travel-hero span{display:-webkit-box;max-width:315px;overflow:hidden;font-size:.9rem;line-height:1.4;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+ .travel-hero a{width:auto;min-height:40px;display:inline-flex;align-items:center;margin-top:13px;padding:9px 13px}
+ .travel-intro{padding:24px 3px 14px}
+}

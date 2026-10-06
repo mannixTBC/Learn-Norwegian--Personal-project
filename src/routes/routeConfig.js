@@ -38,6 +38,7 @@ import AuthPage from '../modules/auth/AuthPage';
 import Dashboard from '../modules/dashboard/Dashboard';
 import CareerOnboarding from '../modules/onboarding/CareerOnboarding';
 import withCareerProfile from '../modules/onboarding/CareerProfileGate';
+import PricingPage from '../modules/premium/PricingPage';
 
 const PersonalizedLearningHub = withCareerProfile(LearningHub);
 const PersonalizedLessonProgram = withCareerProfile(LessonProgram);
@@ -154,6 +155,11 @@ const routes = [
     path: '/autentificare',
     exact: true,
     component: AuthPage,
+  },
+  {
+    path: '/premium',
+    exact: true,
+    component: PricingPage,
   },
   {
     path: '/test-final/:level',

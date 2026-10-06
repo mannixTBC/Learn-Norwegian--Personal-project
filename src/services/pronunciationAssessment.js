@@ -100,9 +100,14 @@ const feedbackFor = (score, focusWords) => {
   return { tone: 'retry', title: 'Încearcă încă o dată, mai rar', text: 'Apropie-te de microfon, ascultă modelul lent și pronunță fiecare cuvânt separat.' };
 };
 
-const validProviderScore = (value) => (Number.isFinite(Number(value))
-  ? Math.max(0, Math.min(100, Math.round(Number(value))))
-  : null);
+const validProviderScore = (value) => {
+  if (!Number.isFinite(Number(value))) return null;
+  const rounded = Math.max(0, Math.min(100, Math.round(Number(value))));
+  // Un scor de exact 0 de la provider înseamnă de obicei că evaluarea automată
+  // a eșuat (recunoaștere slabă / audio prea scurt). Îl tratăm ca „lipsă" ca să
+  // cadem pe estimarea noastră bazată pe alinierea cuvintelor, care e mai reliable.
+  return rounded > 0 ? rounded : null;
+};
 
 export const assessPronunciation = ({
   referenceText,

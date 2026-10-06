@@ -143,7 +143,6 @@ const AuthPage = () => {
       <section className="auth-story">
         <Link to="/" className="auth-story__brand"><NorwegianFlagIcon /><span>NorvegiaTa</span></Link>
         <div><span className="auth-story__eyebrow">Spațiul tău de învățare</span><h1>Norvegiana ta,<br />pas cu pas.</h1><p>Învață printr-un curs modern, construit pentru situațiile reale pe care le vei întâlni în Norvegia.</p><div className="auth-story__features"><span>✓ Programă structurată pe niveluri A1–B2</span><span>✓ Lecții practice pentru viața din Norvegia</span><span>✓ Audio, exerciții și feedback personalizat</span><span>✓ Recapitulare inteligentă prin repetare spațiată și reamintire activă</span></div></div>
-        <small>Contul și progresul tău rămân protejate.</small>
       </section>
       <main className="auth-panel">
         <div className="auth-panel__inner">
@@ -153,8 +152,6 @@ const AuthPage = () => {
 
           <header>
             <span>{isRecovery ? 'Securitatea contului' : mode === 'login' ? 'Bine ai revenit' : 'Începe gratuit'}</span>
-            <h2>{isRecovery ? 'Alege o parolă nouă' : mode === 'login' ? 'Continuă de unde ai rămas' : 'Creează-ți spațiul de studiu'}</h2>
-            <p>{isRecovery ? 'Folosește minimum 8 caractere și nu reutiliza o parolă importantă.' : mode === 'login' ? 'Conectează-te cu e-mailul și parola contului tău.' : 'Progresul tău va putea fi accesat de pe orice dispozitiv.'}</p>
           </header>
 
           <form onSubmit={submit}>
@@ -181,7 +178,6 @@ const AuthPage = () => {
               <span className="auth-guest__arrow" aria-hidden="true">→</span>
             </button>
             <p className="auth-switch">{mode === 'login' ? 'Nu ai încă un cont?' : 'Ai deja un cont?'} <button type="button" onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}>{mode === 'login' ? 'Creează unul' : 'Conectează-te'}</button></p>
-            <div className="auth-note"><strong>Autentificare securizată</strong><p>Datele contului sunt protejate, iar sesiunea ta rămâne activă doar pe dispozitivele pe care alegi să te conectezi.</p></div>
           </>}
         </div>
       </main>

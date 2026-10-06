@@ -2,10 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import articles, { articleList } from './discoverArticles';
 import './DiscoverArticle.css';
+import './DiscoverArticleExtended.css';
 
 const DiscoverArticle = ({ articleKey }) => {
   const article = articles[articleKey];
   const related = articleList.filter((item) => item.key !== articleKey).slice(0, 3);
+  const checklistTitleId = `${articleKey}-checklist-title`;
 
   return (
     <div className="discover-article">
@@ -20,7 +22,7 @@ const DiscoverArticle = ({ articleKey }) => {
           <h1>{article.title}</h1>
           <span>{article.lead}</span>
         </div>
-        <p className="discover-article__image-alt">{article.imageAlt}</p>
+        {article.imageAlt && <p className="discover-article__image-alt">{article.imageAlt}</p>}
       </header>
 
       <section className="discover-article__stats" aria-label="Repere rapide">
@@ -49,6 +51,21 @@ const DiscoverArticle = ({ articleKey }) => {
         </aside>
 
         <article className="discover-article__content">
+          {article.opening && (
+            <section className="discover-article__opening">
+              <div className="discover-article__opening-copy">
+                <p>{article.opening.eyebrow}</p>
+                <h2>{article.opening.title}</h2>
+                {article.opening.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+              </div>
+              <div className="discover-article__opening-highlights">
+                {article.opening.highlights.map(([title, text], index) => (
+                  <div key={title}><span>{String(index + 1).padStart(2, '0')}</span><strong>{title}</strong><p>{text}</p></div>
+                ))}
+              </div>
+            </section>
+          )}
+
           <section className="discover-article__quick">
             {article.quick.map(([title, text]) => (
               <div key={title}>
@@ -71,6 +88,17 @@ const DiscoverArticle = ({ articleKey }) => {
               )}
             </section>
           ))}
+
+          {article.checklist && (
+            <section className="discover-article__checklist" aria-labelledby={checklistTitleId}>
+              <div>
+                <p>{article.checklistEyebrow || 'Înainte să pleci'}</p>
+                <h2 id={checklistTitleId}>{article.checklistTitle || 'Checklist pentru un oaspete bun'}</h2>
+                <span>{article.checklistDescription || 'Șase verificări simple care păstrează libertatea și pentru cei care vin după tine.'}</span>
+              </div>
+              <ul>{article.checklist.map((item) => <li key={item}>{item}</li>)}</ul>
+            </section>
+          )}
 
           <section className="discover-article__language">
             <div>

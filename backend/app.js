@@ -5,6 +5,8 @@ const newsRouter = require('./routes/news');
 const translateRouter = require('./routes/translate');
 const speechRouter = require('./routes/speech');
 const pronunciationRouter = require('./routes/pronunciation');
+const billingRouter = require('./routes/billing');
+const chatRouter = require('./routes/chat');
 
 const app = express();
 
@@ -19,6 +21,8 @@ app.use('/api/news', newsRouter);
 app.use('/api/translate', translateRouter);
 app.use('/api/speech', speechRouter);
 app.use('/api/pronunciation', pronunciationRouter);
+app.use('/api/billing', billingRouter);
+app.use('/api/chat', chatRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

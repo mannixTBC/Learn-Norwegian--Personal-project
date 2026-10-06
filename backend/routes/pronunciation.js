@@ -4,6 +4,7 @@ const router = express.Router();
 
 const AZURE_SPEECH_KEY = process.env.AZURE_SPEECH_KEY;
 const AZURE_SPEECH_REGION = process.env.AZURE_SPEECH_REGION;
+const AZURE_SPEECH_VOICE = process.env.AZURE_SPEECH_VOICE || 'nb-NO-PernilleNeural';
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const MAX_REFERENCE_LENGTH = 500;
 const MAX_AUDIO_BYTES = 4 * 1024 * 1024;
@@ -26,6 +27,19 @@ const extensionFor = (mimeType) => {
   if (mimeType.includes('wav')) return 'wav';
   return 'webm';
 };
+
+const validAzureRegion = () => Boolean(
+  AZURE_SPEECH_KEY
+  && AZURE_SPEECH_REGION
+  && /^[a-z0-9-]+$/i.test(AZURE_SPEECH_REGION),
+);
+
+const escapeXml = (value = '') => String(value)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&apos;');
 
 const secondsFromTicks = (ticks = 0) => Number(ticks) / 10000000;
 
@@ -105,6 +119,36 @@ const evaluateWithAzure = async ({ audio, mimeType, referenceText }) => {
   return normalizeAzureResult(payload);
 };
 
+const synthesizeWithAzure = async ({ text, slow }) => {
+  if (!validAzureRegion()) return null;
+
+  const endpoint = `https://${AZURE_SPEECH_REGION}.tts.speech.microsoft.com/cognitiveservices/v1`;
+  const ssml = [
+    '<speak version="1.0" xml:lang="nb-NO">',
+    `<voice name="${escapeXml(AZURE_SPEECH_VOICE)}">`,
+    `<prosody rate="${slow ? '-25%' : '0%'}">${escapeXml(text)}</prosody>`,
+    '</voice>',
+    '</speak>',
+  ].join('');
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Ocp-Apim-Subscription-Key': AZURE_SPEECH_KEY,
+      'Content-Type': 'application/ssml+xml',
+      'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3',
+      'User-Agent': 'NorvegiaTa-Pronunciation',
+    },
+    body: ssml,
+  });
+
+  if (!response.ok) {
+    const details = await response.text();
+    throw new Error(`Azure Speech TTS a răspuns cu ${response.status}: ${details.slice(0, 300)}`);
+  }
+
+  return Buffer.from(await response.arrayBuffer());
+};
+
 const transcribeWithElevenLabs = async ({ audio, mimeType }) => {
   if (!ELEVENLABS_API_KEY) return null;
   if (typeof FormData !== 'function' || typeof Blob !== 'function') return null;
@@ -144,6 +188,45 @@ const transcribeWithElevenLabs = async ({ audio, mimeType }) => {
     provider: 'elevenlabs-scribe-v2',
   };
 };
+
+router.get('/status', (req, res) => res.json({
+  azureConfigured: validAzureRegion(),
+  provider: 'azure-speech',
+  language: AZURE_LANGUAGE,
+  voice: AZURE_SPEECH_VOICE,
+}));
+
+router.post('/model', async (req, res) => {
+  const { text = '', slow = false } = req.body || {};
+  const normalizedText = typeof text === 'string' ? text.trim() : '';
+
+  if (!normalizedText || normalizedText.length > MAX_REFERENCE_LENGTH) {
+    return res.status(400).json({ error: 'Textul pentru modelul de pronunție nu este valid.' });
+  }
+  if (!validAzureRegion()) {
+    return res.status(503).json({
+      error: 'Azure Speech nu este configurat încă.',
+      fallback: true,
+    });
+  }
+
+  try {
+    const audio = await synthesizeWithAzure({ text: normalizedText, slow: Boolean(slow) });
+    res.set({
+      'Content-Type': 'audio/mpeg',
+      'Cache-Control': 'public, max-age=86400',
+      'X-Speech-Provider': 'azure-speech',
+      'X-Speech-Voice': AZURE_SPEECH_VOICE,
+    });
+    return res.send(audio);
+  } catch (error) {
+    console.warn('[pronunciation] Vocea Azure Speech este indisponibilă:', error.message);
+    return res.status(502).json({
+      error: 'Azure Speech nu a putut genera modelul audio.',
+      fallback: true,
+    });
+  }
+});
 
 router.post('/evaluate', async (req, res) => {
   const { audioBase64, mimeType = 'audio/webm', referenceText = '' } = req.body || {};

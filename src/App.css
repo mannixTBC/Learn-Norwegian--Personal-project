@@ -14,6 +14,16 @@ body{
     flex: 1;
 }
 
+/* Reduced motion: oprește toate animațiile și tranzițiile când utilizatorul a activat preferința */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 :root {
     --fjord-deep: #14213d;
     --fjord: #1f6f78;
@@ -23,4 +33,72 @@ body{
     --fjord-soft-strong: #d1e8ea;
     --fjord-light: #9ed8dc;
     --fjord-ice: #f4f9fa;
+
+    /* Culori semantice */
+    --color-accent: var(--fjord);
+    --color-accent-hover: var(--fjord-hover);
+    --color-success: #226149;
+    --color-success-bg: #e9f7f1;
+    --color-warning: #b26a2f;
+    --color-warning-bg: #fef3e2;
+    --color-error: #ba0c2f;
+    --color-error-bg: #fff0f2;
+
+    /* Text */
+    --color-text-primary: #14213d;
+    --color-text-secondary: #526071;
+    --color-text-tertiary: #5e6d7e;
+
+    /* Surface & borduri */
+    --color-surface: #ffffff;
+    --color-surface-muted: #f8fafc;
+    --color-border: #e2e8f0;
+
+    /* Scară tipografică */
+    --font-size-xs: 0.72rem;
+    --font-size-sm: 0.84rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.16rem;
+    --font-size-xl: 1.4rem;
+    --font-size-2xl: 1.75rem;
+    --font-size-3xl: clamp(2rem, 5vw, 3.5rem);
+
+    /* Greutăți font */
+    --font-weight-normal: 400;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+
+    /* Scară spațiere (multiplu de 4px) */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+
+    /* Radii */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 50%;
+
+    /* Umbre */
+    --shadow-sm: 0 4px 12px rgba(20, 33, 61, 0.05);
+    --shadow-md: 0 8px 24px rgba(20, 33, 61, 0.07);
+    --shadow-lg: 0 14px 32px rgba(20, 33, 61, 0.10);
+
+    /* Container */
+    --container-max: 1180px;
+
+    /* Motion */
+    --duration-fast: 0.16s;
+    --duration-normal: 0.18s;
+    --duration-slow: 0.25s;
+    --ease: ease;
 }

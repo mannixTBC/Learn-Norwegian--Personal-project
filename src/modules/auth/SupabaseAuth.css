@@ -34,8 +34,9 @@
   cursor: pointer;
 }
 
-.auth-forgot:hover { text-decoration: underline; }
-.auth-submit:disabled, .auth-forgot:disabled { opacity: 0.58; cursor: wait; }
+	.auth-forgot:hover { text-decoration: underline; }
+	.auth-forgot:focus-visible { outline: 3px solid; outline-offset: 2px; }
+	.auth-submit:disabled, .auth-forgot:disabled { opacity: 0.58; cursor: wait; }
 .auth-panel input:focus { border-color: #1f6f78; box-shadow: 0 0 0 3px rgba(31, 111, 120, 0.1); }
 
 .auth-route-loading {
@@ -178,7 +179,8 @@
     padding: 6px 4px;
   }
 
-  .auth-submit {
+	.auth-submit:focus-visible { outline: 3px solid; outline-offset: 2px; }
+	.auth-submit {
     height: 52px;
     border-radius: 13px;
     background: var(--fjord);

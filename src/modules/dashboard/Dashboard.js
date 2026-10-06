@@ -66,6 +66,30 @@ const RecommendationVisual = ({ type, fallback, pathId }) => {
     );
   }
 
+  if (type === 'pronunciation') {
+    return (
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="11" y="5.5" width="10" height="15" rx="5" />
+        <path d="M7.8 15.7a8.2 8.2 0 0 0 16.4 0M16 24v3.2M12.2 27.2h7.6" />
+        <path d="M25.8 9.5c1.7 1.5 1.7 4.2 0 5.8" />
+        <circle cx="27.3" cy="7" r="2.1" className="dashboard-recommendation__accent" />
+      </svg>
+    );
+  }
+
+  if (type === 'verbs') {
+    return (
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="4.5" y="6" width="9" height="7" rx="2" />
+        <rect x="18.5" y="19" width="9" height="7" rx="2" />
+        <path d="M13.5 9.5h4.3c4 0 5.2 2.2 5.2 5.7v1.5M20.4 14.3l2.6 2.6 2.6-2.6" />
+        <path d="M8 9.5h2M21.7 22.5h2.6" className="dashboard-recommendation__verb-lines" />
+        <circle cx="8" cy="22.5" r="3.2" className="dashboard-recommendation__accent" />
+        <path d="m6.8 22.5.9.9 1.7-1.8" className="dashboard-recommendation__verb-check" />
+      </svg>
+    );
+  }
+
   return fallback;
 };
 
@@ -113,11 +137,11 @@ const Dashboard = () => {
       ? { icon: 'R', visual: 'review', title: `Repetă ${reviews.due} ${reviews.due === 1 ? 'element' : 'elemente'} astăzi`, text: difficultItems.length ? `Începe cu „${difficultItems[0].prompt}”, unde ai avut cele mai multe ezitări.` : 'Recapitularea este pregătită pentru sesiunea de astăzi.', to: `/recapitulare?nivel=${activeLevel}`, action: 'Începe recapitularea' }
       : { icon: 'L', visual: 'lesson', title: `Continuă lecția ${nextLesson.id}`, text: `„${nextLesson.title}” este următorul pas potrivit pentru nivelul ${activeLevel}.`, to: `/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`, action: 'Deschide lecția' },
     pronunciationBest < 75
-      ? { icon: 'P', title: '5 minute de pronunție', text: pronunciationAttempts.length ? `Cel mai bun scor este ${pronunciationBest}%. Repetă o frază la viteză lentă.` : 'Ascultă o frază, înregistreaz-o și verifică ce cuvinte sunt clare.', to: `/pronuntie?nivel=${activeLevel}`, action: 'Deschide laboratorul' }
-      : { icon: 'P', title: 'Pronunția este pe drumul bun', text: `Ai atins ${pronunciationBest}%. Încearcă acum o frază din lecția următoare.`, to: `/pronuntie?nivel=${activeLevel}`, action: 'Continuă antrenamentul' },
+      ? { icon: 'P', visual: 'pronunciation', title: '5 minute de pronunție', text: pronunciationAttempts.length ? `Cel mai bun scor este ${pronunciationBest}%. Repetă o frază la viteză lentă.` : 'Ascultă o frază, înregistreaz-o și verifică ce cuvinte sunt clare.', to: `/pronuntie?nivel=${activeLevel}`, action: 'Deschide laboratorul' }
+      : { icon: 'P', visual: 'pronunciation', title: 'Pronunția este pe drumul bun', text: `Ai atins ${pronunciationBest}%. Încearcă acum o frază din lecția următoare.`, to: `/pronuntie?nivel=${activeLevel}`, action: 'Continuă antrenamentul' },
     activeLevelProgress === 100 && !finalPassed
       ? { icon: 'T', title: `Verifică nivelul ${activeLevel}`, text: finalBest ? `Cel mai bun scor este ${finalBest}%. Pragul de promovare este 70%.` : 'Ai terminat lecțiile. Testul final rămâne opțional și oferă feedback complet.', to: `/test-final/${activeLevel.toLowerCase()}`, action: 'Deschide testul' }
-      : { icon: 'V', title: `Sesiunea ${Math.min(challengeProgress.day || 1, 10)} de verbe`, text: 'Fixează trei verbe prin asociere, propoziții și completare.', to: `/challenge30?nivel=${activeLevel}`, action: 'Exersează verbele' },
+      : { icon: 'V', visual: 'verbs', title: `Sesiunea ${Math.min(challengeProgress.day || 1, 10)} de verbe`, text: 'Fixează trei verbe prin asociere, propoziții și completare.', to: `/challenge30?nivel=${activeLevel}`, action: 'Exersează verbele' },
   ];
 
   return (
