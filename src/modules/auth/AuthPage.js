@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import NorwegianFlagIcon from '../layout/Navbar/NorwegianFlagIcon';
 import { useAuth } from './AuthContext';
 import './AuthPage.css';
-import './NordLingoBrand.css';
 import './GuestAuth.css';
 import './SupabaseAuth.css';
 
@@ -142,7 +140,6 @@ const AuthPage = () => {
   return (
     <div className="auth-page">
       <section className="auth-story">
-        <Link to="/" className="auth-story__brand"><NorwegianFlagIcon /></Link>
         <div><span className="auth-story__eyebrow">Spațiul tău de învățare</span><h1>Norvegiana ta,<br />pas cu pas.</h1><p>Învață printr-un curs modern, construit pentru situațiile reale pe care le vei întâlni în Norvegia.</p><div className="auth-story__features"><span>✓ Programă structurată pe niveluri A1–B2</span><span>✓ Lecții practice pentru viața din Norvegia</span><span>✓ Audio, exerciții și feedback personalizat</span><span>✓ Recapitulare inteligentă prin repetare spațiată și reamintire activă</span></div></div>
       </section>
       <main className="auth-panel">
