@@ -59,7 +59,15 @@ const speechSettings = (input, language) => ({ model: process.env.OPENAI_VOICE_T
 const wrap = (handler) => async (req, res) => {
   res.set('Cache-Control', 'no-store');
   try { prune(); await handler(req, res); }
-  catch (error) { res.status(error.status || 502).json({ error: error.status ? error.message : 'Serviciul vocal nu răspunde momentan. Încearcă din nou.' }); }
+  catch (error) {
+    // Keep diagnostic context without logging audio, transcripts, tokens or provider bodies.
+    console.warn('voice-practice-failure', { operation: req.path, kind: error.name, code: error.code, status: error.status || 502 });
+    const fallback = req.path === '/question'
+      ? 'Vocea întrebării nu a putut fi încărcată. Încearcă din nou.'
+      : req.path === '/transcribe' ? 'Răspunsul vocal nu a putut fi transcris. Încearcă să îl retrimiți.'
+        : 'Feedbackul nu a putut fi pregătit. Încearcă din nou.';
+    res.status(error.status || 502).json({ error: error.status ? error.message : fallback });
+  }
 };
 
 router.use((req, res, next) => {

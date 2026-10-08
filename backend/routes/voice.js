@@ -2,6 +2,7 @@ const express = require('express');
 const crypto = require('node:crypto');
 const { requireAuth } = require('../middleware/authSupabaseUser');
 const { getVoiceLesson, buildVoiceSession } = require('../voiceTutor');
+const { isNetlifyRuntime } = require('../voiceAudioCache');
 const router = express.Router();
 const attempts = new Map();
 
@@ -9,7 +10,10 @@ const isLocalBypass = (req) => process.env.VITE_PREMIUM_DEV_BYPASS === 'true'
   && process.env.NODE_ENV !== 'production' && !process.env.NETLIFY
   && ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress);
 
-router.get('/status', (req, res) => res.json({ configured: Boolean(process.env.OPENAI_API_KEY) }));
+router.get('/status', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.json({ configured: Boolean(process.env.OPENAI_API_KEY), questionAudioCache: isNetlifyRuntime() ? 'netlify' : 'local' });
+});
 
 router.post('/session', async (req, res, next) => {
   res.set('Cache-Control', 'no-store');

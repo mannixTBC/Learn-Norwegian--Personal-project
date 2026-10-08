@@ -4,12 +4,15 @@ const path = require('node:path');
 const { getStore } = require('@netlify/blobs');
 const pending = new Map();
 const directory = path.join(__dirname, '../node_modules/.cache/lesson-question-audio');
+// NETLIFY is a build flag. Functions expose SITE_ID and/or a Blobs context.
+const isNetlifyRuntime = () => Boolean(process.env.NETLIFY || process.env.SITE_ID
+  || process.env.NETLIFY_BLOBS_CONTEXT || globalThis.netlifyBlobsContext);
 
 const getQuestionAudio = async (settings, generate) => {
   const key = crypto.createHash('sha256').update(JSON.stringify(settings)).digest('hex');
   if (pending.has(key)) return pending.get(key);
   const task = (async () => {
-    if (!process.env.NETLIFY) {
+    if (!isNetlifyRuntime()) {
       const filename = path.join(directory, `${key}.mp3`);
       try { return await fs.readFile(filename); } catch (error) { if (error.code !== 'ENOENT') throw error; }
       const audio = await generate(settings);
@@ -39,4 +42,4 @@ const getQuestionAudio = async (settings, generate) => {
   pending.set(key, task);
   try { return await task; } finally { pending.delete(key); }
 };
-module.exports = { getQuestionAudio };
+module.exports = { getQuestionAudio, isNetlifyRuntime };

@@ -6,7 +6,8 @@ test('Netlify cache persists audio across cold functions and arbitrates concurre
   const saved = { netlify: process.env.NETLIFY, context: process.env.NETLIFY_BLOBS_CONTEXT, fetch: global.fetch };
   const entries = new Map();
   let serial = 0;
-  process.env.NETLIFY = 'true';
+  // NETLIFY is a build variable, not guaranteed in deployed Functions.
+  delete process.env.NETLIFY;
   setEnvironmentContext({ edgeURL: 'https://test-blobs.invalid', siteID: 'test-site', token: 'test-token' });
   global.fetch = async (url, options) => {
     const key = new URL(url).pathname;
@@ -26,6 +27,7 @@ test('Netlify cache persists audio across cold functions and arbitrates concurre
     const settings = { model: 'test-tts', voice: 'marin', input: 'Hva heter du?' };
     const audio = await freshCache()(settings, generate);
     assert.equal(audio.toString(), 'shared-question-audio');
+    assert.ok(entries.size > 0, 'Runtime Blobs context must select cloud storage without the NETLIFY build flag');
     assert.equal((await freshCache()(settings, generate)).toString(), audio.toString());
     assert.equal(generations, 1);
     let resolveGeneration;

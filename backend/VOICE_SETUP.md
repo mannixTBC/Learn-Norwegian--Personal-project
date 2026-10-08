@@ -24,6 +24,8 @@ Etapa și rezultatele exercițiilor sunt păstrate la rotirea telefonului și re
 - În Netlify, variabilele trebuie să fie disponibile pentru Functions. Biblioteca
   `@netlify/blobs` folosește contextul proiectului, fără altă cheie introdusă manual.
 - Cache-ul întrebărilor este site-wide în Netlify Blobs și persistă între publicări.
+  Alegerea cache-ului folosește `SITE_ID` sau contextul Blobs din Functions;
+  variabila de build `NETLIFY` nu este necesară la rulare.
   Scrierile condiționale previn generarea concurentă; o întrebare aflată în pregătire
   poate cere reîncercare. Local, audio se salvează în `node_modules/.cache/lesson-question-audio`.
 - Autentificarea Supabase este obligatorie în producție. Bypass-ul local existent
