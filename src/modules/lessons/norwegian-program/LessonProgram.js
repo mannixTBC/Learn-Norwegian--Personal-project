@@ -14,10 +14,18 @@ import './LessonProgram.css';
 
 const getProgressKey = (levelCode) => levelCode === 'A1' ? 'lesson_prog_progress' : `lesson_prog_progress_${levelCode.toLowerCase()}`;
 const getLessonStepKey = (levelCode, lessonId, user) => `lesson_resume_${user && user.id ? user.id : 'guest'}_${levelCode.toLowerCase()}_${lessonId}`;
-const defaultSteps = ['Introducere', 'Vocabular', 'Direcția ta', 'Dialog', 'Gramatică', 'Exerciții', 'Rezultat'];
+const steps = ['Introducere', 'Vocabular', 'Direcția ta', 'Dialog', 'Gramatică', 'Exerciții', 'Dialog vocal', 'Rezultat'];
 
 const readStorage = (key, fallback) => {
-  try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch (_) { return fallback; }
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch (_) { return fallback; }
+};
+
+const readLessonStep = (key, legacyKey) => {
+  const current = readStorage(key, null);
+  // The old mobile flow used step 6 for the result. Resume at exercises rather
+  // than treating an old result as the new voice stage with no saved answers.
+  const value = current === null ? Math.min(5, Number(readStorage(legacyKey, 0))) : Number(current);
+  return Number.isFinite(value) ? Math.min(steps.length - 1, Math.max(0, Math.trunc(value))) : 0;
 };
 
 const AudioButton = ({ text, slow = false, voice = 'male', label }) => (
@@ -164,7 +172,7 @@ const MobileExerciseNavigation = ({ current, total, answeredCurrent, onPrevious,
       <div>{Array.from({ length: total }, (_, index) => <i className={index === current ? 'active' : ''} key={index}/>)}</div>
     </div>
     <button type="button" className="primary" disabled={!answeredCurrent} onClick={current === total - 1 ? onComplete : onNext}>
-      {current === total - 1 ? 'Vezi rezultatul' : 'Următoarea'} <span aria-hidden="true">→</span>
+      {current === total - 1 ? 'Dialog vocal' : 'Următoarea'} <span aria-hidden="true">→</span>
     </button>
   </nav>
 );
@@ -237,20 +245,20 @@ const LessonProgram = ({ match }) => {
     query.addEventListener('change', update);
     return () => query.removeEventListener('change', update);
   }, []);
-  const steps = desktop ? [...defaultSteps.slice(0, 6), 'Dialog vocal', 'Rezultat'] : defaultSteps;
   const resultStep = steps.length - 1;
-  const lessonStepKey = getLessonStepKey(levelCode, lesson.id, user) + (desktop ? '_voice_v1' : '');
+  const legacyStepKey = getLessonStepKey(levelCode, lesson.id, user);
+  const lessonStepKey = `${legacyStepKey}_voice_v1`;
   const careerProfile = getCareerProfile(user) || { pathId: 'general' };
   const careerModule = useMemo(() => getCareerLessonModule(careerProfile.pathId, levelCode, lesson.id), [careerProfile.pathId, lesson.id, levelCode]);
   const lessonExercises = useMemo(() => [...lesson.exercises, careerModule.exercise], [careerModule, lesson.exercises]);
   const lessonStartedAt = useRef(Date.now());
   const skipStepSave = useRef(true);
-  const [step, setStep] = useState(() => Math.min(resultStep, Math.max(0, Number(readStorage(lessonStepKey, 0)) || 0)));
+  const [step, setStep] = useState(() => readLessonStep(lessonStepKey, legacyStepKey));
   const [vocabularyIndex, setVocabularyIndex] = useState(0);
   const [careerPhraseIndex, setCareerPhraseIndex] = useState(0);
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [showTranslations, setShowTranslations] = useState({});
-  const [answers, setAnswers] = useState(() => desktop ? readStorage(`${lessonStepKey}_answers`, {}) : {});
+  const [answers, setAnswers] = useState(() => readStorage(`${lessonStepKey}_answers`, {}));
   const [progress, setProgress] = useState(() => readStorage(progressKey, { unlocked: 1, completed: [] }));
   const score = Object.values(answers).filter(Boolean).length;
   const answered = Object.keys(answers).length;
@@ -259,17 +267,17 @@ const LessonProgram = ({ match }) => {
   useEffect(() => {
     lessonStartedAt.current = Date.now();
     skipStepSave.current = true;
-    setStep(Math.min(resultStep, Math.max(0, Number(readStorage(lessonStepKey, 0)) || 0)));
+    setStep(readLessonStep(lessonStepKey, legacyStepKey));
     setVocabularyIndex(0);
     setCareerPhraseIndex(0);
     setExerciseIndex(0);
-    setAnswers(desktop ? readStorage(`${lessonStepKey}_answers`, {}) : {});
+    setAnswers(readStorage(`${lessonStepKey}_answers`, {}));
     setShowTranslations({});
     window.scrollTo(0, 0);
-  }, [lesson.id, lessonStepKey, levelCode, resultStep]);
+  }, [lesson.id, lessonStepKey, legacyStepKey, levelCode, resultStep]);
   useEffect(() => {
-    if (desktop && !skipStepSave.current) localStorage.setItem(`${lessonStepKey}_answers`, JSON.stringify(answers));
-  }, [answers, desktop, lessonStepKey]);
+    if (!skipStepSave.current) localStorage.setItem(`${lessonStepKey}_answers`, JSON.stringify(answers));
+  }, [answers, lessonStepKey]);
   useEffect(() => {
     if (skipStepSave.current) {
       skipStepSave.current = false;
@@ -313,7 +321,7 @@ const LessonProgram = ({ match }) => {
 
   const next = () => {
     if (step === 5 && !canFinish) return;
-    if ((step === 5 && !desktop) || (step === 6 && desktop)) finishLesson();
+    if (step === 6) finishLesson();
     else { setStep((current) => Math.min(current + 1, resultStep)); window.scrollTo(0, 0); }
   };
   const previous = () => { setStep((current) => Math.max(current - 1, 0)); window.scrollTo(0, 0); };
@@ -327,7 +335,7 @@ const LessonProgram = ({ match }) => {
 
       </div>
       <main className="lesson-content">
-        {desktop && step === 6 && <PremiumGate feature="Dialogul vocal cu AI"><VoiceLessonConversation key={`${levelCode}-${lesson.id}-${careerProfile.pathId}`} level={levelCode} lessonId={lesson.id} pathId={careerProfile.pathId} lessonTitle={lesson.title} /></PremiumGate>}
+        {step === 6 && <PremiumGate feature="Dialogul vocal cu AI"><VoiceLessonConversation key={`${levelCode}-${lesson.id}-${careerProfile.pathId}`} level={levelCode} lessonId={lesson.id} pathId={careerProfile.pathId} lessonTitle={lesson.title} /></PremiumGate>}
         {step === 0 && <section className="lesson-intro"><p className="lesson-eyebrow">Lecția {lesson.id} · Nivel {levelCode} {course.title}</p><h1>{lesson.title}</h1><p className="lesson-lead">O lecție practică pe care o poți finaliza în aproximativ {lesson.duration} minute.</p>{lesson.buildsOn && <aside className="lesson-bridge"><span>Legătura cu ce știi deja</span><p>{lesson.buildsOn}</p></aside>}<div className="objectives"><h2>După această lecție vei putea:</h2>{lesson.objectives.map((objective) => <div key={objective}><span>✓</span><p>{objective}</p></div>)}</div></section>}
         {step === 1 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 2</p><h1>Vocabular esențial</h1><p>Ascultă fraza completă în ritm lent, observă cuvântul evidențiat și compară traducerea.</p></div><div className="vocabulary-grid">{lesson.vocabulary.map(([word, wordTranslation, example, sentenceTranslation, highlight], index) => <article className={`vocabulary-card ${index === vocabularyIndex ? 'mobile-expression-card--active' : ''}`} key={word}><header><div><span className="vocabulary-card__label">Expresia {String(index + 1).padStart(2, '0')}</span><h2>{word}</h2></div><span className="vocabulary-card__meaning">{wordTranslation}</span></header><div className="vocabulary-card__example"><span>Exemplu în context</span><div className="vocabulary-card__example-row"><blockquote lang="no"><HighlightedSentence sentence={example} word={word} highlight={highlight}/></blockquote><CompactSlowAudioButton text={example}/></div></div><div className="vocabulary-card__translation" lang="ro"><span>RO</span><p>{sentenceTranslation}</p></div></article>)}</div><MobileExpressionNavigation current={vocabularyIndex} total={lesson.vocabulary.length} onPrevious={() => setVocabularyIndex((current) => Math.max(0, current - 1))} onNext={() => setVocabularyIndex((current) => Math.min(lesson.vocabulary.length - 1, current + 1))} onComplete={() => { setStep(2); window.scrollTo(0, 0); }}/></section>}
         {step === 2 && <section className="career-lesson">
@@ -341,7 +349,7 @@ const LessonProgram = ({ match }) => {
         {step === resultStep && <section className="lesson-result"><div className="result-icon">✓</div><p className="lesson-eyebrow">Lecție finalizată</p><h1>Bravo! Ai terminat „{lesson.title}”</h1><p>Ai răspuns corect la {score} din {lessonExercises.length} întrebări.</p><div className="result-score"><strong>{Math.round((score/lessonExercises.length)*100)}%</strong><span>scorul lecției</span></div>{reviewItems.length > 0 && <div className="review-box"><h2>De repetat</h2><p>Am salvat {reviewItems.length} {reviewItems.length === 1 ? 'răspuns' : 'răspunsuri'} pentru recapitulare.</p><button type="button" onClick={() => {setAnswers({});setStep(5);}}>Repetă exercițiile</button></div>}<div className="result-actions">{lesson.id < courseLessons.length ? <button type="button" className="primary" onClick={goNextLesson}>Continuă cu lecția {lesson.id + 1} →</button> : <Link className="primary" to="/invata">Înapoi la curs</Link>}<button type="button" onClick={() => setStep(1)}>Revezi vocabularul</button></div></section>}
       </main>
 
-      {step < resultStep && <footer className={`lesson-navigation ${step === 1 || step === 2 ? 'lesson-navigation--expressions' : ''} ${step === 5 ? 'lesson-navigation--exercises' : ''}`}><button type="button" onClick={previous} disabled={step === 0}>← Înapoi</button><span>Pasul {step + 1} din {steps.length}</span><button type="button" className="primary" onClick={next} disabled={step === 5 && !canFinish}>{step === 5 ? (canFinish ? (desktop ? 'Dialog vocal →' : 'Finalizează lecția') : 'Răspunde la toate întrebările') : desktop && step === 6 ? 'Finalizează lecția' : 'Continuă →'}</button></footer>}
+      {step < resultStep && <footer className={`lesson-navigation ${step === 1 || step === 2 ? 'lesson-navigation--expressions' : ''} ${step === 5 ? 'lesson-navigation--exercises' : ''} ${step === 6 ? 'lesson-navigation--voice' : ''}`}><button type="button" onClick={previous} disabled={step === 0}>← Înapoi</button><span>Pasul {step + 1} din {steps.length}</span><button type="button" className="primary" onClick={next} disabled={step === 5 && !canFinish}>{step === 5 ? (canFinish ? 'Dialog vocal →' : 'Răspunde la toate întrebările') : step === 6 ? 'Finalizează lecția' : 'Continuă →'}</button></footer>}
     </div>
   );
 };

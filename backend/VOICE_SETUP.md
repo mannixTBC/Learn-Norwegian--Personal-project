@@ -1,7 +1,8 @@
 # Practică vocală modulară în lecții
 
-Pe desktop (peste 860 px), după exerciții apare un pas opțional de practică vocală.
-Mobilul rămâne neschimbat. Nu este necesar un abonament Premium.
+Pe desktop și mobil, după exerciții apare un pas opțional de practică vocală.
+Pe telefon, controalele sunt afișate pe o singură coloană. Nu este necesar Premium.
+Etapa și rezultatele exercițiilor sunt păstrate la rotirea telefonului și reîncărcare.
 
 ## Flux
 

@@ -26,3 +26,18 @@
 .voice-lesson__error,.voice-lesson__notice{margin:18px 0;padding:12px 15px;border-radius:10px;line-height:1.5;font-size:.85rem}
 .voice-lesson__error{color:#973c42;background:#fff0f1}
 .voice-lesson__notice{color:#63777f;background:#edf3f4}
+@media(max-width:520px){
+  .voice-lesson__card{margin-top:20px;padding:18px;border-radius:16px}
+  .voice-lesson__partner{gap:10px}
+  .voice-lesson__avatar{width:42px;height:42px;border-radius:12px}
+  .voice-lesson__status{flex-basis:100%;box-sizing:border-box;margin-left:0;line-height:1.5;overflow-wrap:anywhere}
+  .voice-lesson__question{margin-top:18px;padding:16px}
+  .voice-lesson__question p{font-size:1.1rem;overflow-wrap:anywhere}
+  .voice-lesson__transcript{max-height:260px;margin:18px 0}
+  .voice-lesson__message{max-width:100%;box-sizing:border-box;padding:12px;overflow-wrap:anywhere}
+  .voice-lesson__controls{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:18px}
+  .voice-lesson__controls button{width:100%;min-height:48px;box-sizing:border-box;padding:12px;font-size:.85rem;touch-action:manipulation}
+  .voice-lesson__hint{font-size:.8rem}
+  .lesson-navigation--voice{padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+  .lesson-content:has(.voice-lesson){padding-bottom:calc(115px + env(safe-area-inset-bottom,0px))}
+}
