@@ -9,6 +9,7 @@
   "dependencies": {
     "@material-ui/core": "^4.7.0",
     "@material-ui/icons": "^4.5.1",
+    "@netlify/blobs": "^11.1.4",
     "@supabase/supabase-js": "^2.110.5",
     "bootstrap": "^4.4.1",
     "cors": "^2.8.5",

@@ -1,55 +1,60 @@
-# Dialog vocal în lecții
+# Practică vocală modulară în lecții
 
-Pe desktop (peste 860 px), după exerciții apare un pas opțional „Dialog vocal”.
-Pe mobil, fluxul existent rămâne neschimbat. Dialogul nu cere abonament Premium.
+Pe desktop (peste 860 px), după exerciții apare un pas opțional de practică vocală.
+Mobilul rămâne neschimbat. Nu este necesar un abonament Premium.
+
+## Flux
+
+1. `backend/voiceQuestions.js` conține trei întrebări Bokmål pregătite pentru fiecare dintre cele 40 de lecții.
+2. Vocea fiecărei întrebări este generată la prima utilizare, apoi reutilizată. Modelul,
+   vocea, textul și instrucțiunile definesc cheia cache-ului; schimbarea lor generează o versiune nouă.
+3. Elevul apasă „Răspunde”, vorbește maximum 20 de secunde, apoi apasă „Am terminat răspunsul”.
+   Microfonul este eliberat imediat. Audio merge pe server numai pentru transcriere.
+4. După trei răspunsuri (sau încheiere după două), o singură cerere LLM analizează toate răspunsurile.
+5. Feedbackul românesc este limitat la 25 de cuvinte și citit vocal. Dacă TTS eșuează,
+   textul rămâne vizibil. Reascultarea audio deja primit nu face alte cereri AI.
 
 ## Configurare
 
-- `OPENAI_API_KEY`: cheie secretă pe server, cu acces și credit pentru Realtime.
-- `OPENAI_REALTIME_MODEL`: opțional; implicit `gpt-realtime`.
-- Local, serverul citește `.env` și apoi `.env.local`, fără a suprascrie variabile existente.
-- În Netlify, configurează aceste variabile în mediul serverului și publică aplicația.
-- Autentificarea Supabase trebuie să fie configurată pentru verificarea identității.
-- Pentru testare locală fără abonament, opțiunea existentă `VITE_PREMIUM_DEV_BYPASS=true`
-  este acceptată numai în dezvoltare pe loopback, niciodată în Netlify/producție.
+- `OPENAI_API_KEY`: secret pe server, cu acces la transcriere, Chat Completions și Speech.
+- `OPENAI_VOICE_STT_MODEL`: implicit `gpt-4o-mini-transcribe`.
+- `OPENAI_VOICE_FEEDBACK_MODEL`: implicit `gpt-4o-mini`.
+- `OPENAI_VOICE_TTS_MODEL`: implicit `gpt-4o-mini-tts`, voce `marin`.
+- În Netlify, variabilele trebuie să fie disponibile pentru Functions. Biblioteca
+  `@netlify/blobs` folosește contextul proiectului, fără altă cheie introdusă manual.
+- Cache-ul întrebărilor este site-wide în Netlify Blobs și persistă între publicări.
+  Scrierile condiționale previn generarea concurentă; o întrebare aflată în pregătire
+  poate cere reîncercare. Local, audio se salvează în `node_modules/.cache/lesson-question-audio`.
+- Autentificarea Supabase este obligatorie în producție. Bypass-ul local existent
+  este permis doar în dezvoltare pe loopback, fără `NETLIFY`.
 
-Cheia permanentă nu ajunge în browser. `/api/voice/session` verifică identitatea,
-validează lecția și emite un token temporar cu expirare de 60 de secunde.
-Vocea merge direct din browser la OpenAI prin WebRTC. Înregistrările și transcrierile
-nu sunt salvate de aplicație; transcrierea rămâne doar în memoria pasului curent.
-Microfonul este eliberat la oprire, ieșire, eroare, după feedback sau după 3 minute.
-Limitarea pornirilor este locală procesului (o pornire/minut/utilizator); în serverless
-nu este un plafon global de consum. Configurează și limite de buget în contul OpenAI.
+Tokenul de practică expiră după 10 minute, este semnat pe server și legat de utilizator,
+lecție și direcție. Transcrierile au dovezi semnate; clientul nu poate înlocui răspunsurile
+cu texte arbitrare înainte de analiză. Înregistrările nu sunt salvate. Transcrierile și
+feedbackul sunt păstrate temporar în memoria procesului pentru retrimiteri, maximum
+durata sesiunii; sunt curățate la cererile următoare. Nu sunt scrise în Blobs.
+Doar audio public al întrebărilor este salvat durabil.
 
-## Material didactic
+Limitarea pornirilor (o pornire/minut/utilizator), a transcrierii per întrebare și
+deduplicarea feedbackului sunt locale procesului. În funcții serverless diferite,
+retrimiterea unei cereri poate produce o nouă transcriere/analiză. Acestea nu sunt
+limite globale de buget; configurează limite și în contul OpenAI.
 
-`npm run build:voice-context` generează `backend/voiceCatalog.json` din sursele reale
-ale cursului și direcțiilor. Este inclus și în `npm run build`. Rulează-l din nou dacă
-modifici lecții înainte de a reporni serverul local.
-`backend/voiceTutor.js` definește ritmul pe nivel, un context curricular redus,
-trei întrebări de maximum 12 cuvinte și feedback final de maximum 25 de cuvinte.
-Clientul numără transcrierile ne-goale distincte; după al treilea răspuns cere feedback
-și închide conexiunea doar după redarea sa. Se poate cere feedback mai devreme.
-Comenzile scurte de ajutor nu se numără. Limitele de cuvinte sunt instrucțiuni pentru model.
-Răspunsurile sunt cerute explicit (`create_response: false`), fără întrerupere automată
-la zgomot (`interrupt_response: false`). Microfonul ascultă numai între replicile AI.
-Bugetul de generare audio este 1024 tokeni pentru a evita tăierea propozițiilor;
-economia vine din conversația și contextul scurt, nu dintr-un plafon audio foarte mic.
-Detecția semantică cu `eagerness: low`
-lasă timp cursantului să ezite. Parametrii sunt puncte de pornire pentru evaluare,
-nu garantează perfect comportamentul modelului.
+`backend/voiceCatalog.json` se generează din lecțiile reale prin `npm run build:voice-context`.
+Contextul canonic al lecției și direcției este folosit pentru feedback; întrebările
+sunt comune direcțiilor aceleiași lecții. Ruta și clientul Realtime anterior sunt
+păstrate pentru compatibilitate, dar componenta desktop nu le mai folosește.
 
 ## Verificări
 
 ```
-node --test backend/voiceTutor.test.js backend/routes/voice.test.js
-node scripts/test-voice-client.mjs
+node --test backend/routes/voicePractice.test.js backend/voiceAudioCache.test.js
+node scripts/test-voice-practice-client.mjs
 npm run build
 ```
 
-Pentru proba reală: completează exercițiile pe desktop, pornește dialogul,
-permite microfonul, răspunde în norvegiană de trei ori și verifică feedbackul automat,
-„mai lent”, ajutorul și încheierea anticipată. Verifică închiderea microfonului la plecare.
-Pentru A1/A2/B1/B2 și cel puțin două direcții, ascultă dacă dificultatea,
-corectările și situația respectă lecția. Testele automate folosesc un transport simulat;
-nu certifică calitatea vocii sau conversația reală.
+Testele simulează OpenAI și Netlify Blobs, fără consum de credit. Pentru proba reală:
+reascultă o întrebare, răspunde de trei ori, verifică feedbackul final și oprirea
+microfonului la plecare. Testează și încheierea după două răspunsuri, permisiunea
+refuzată și redarea blocată de browser. Calitatea pronunției și transcrierii trebuie
+evaluată cu voce reală, inclusiv cu accent românesc.
