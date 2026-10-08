@@ -9,6 +9,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   const [messages, setMessages] = useState([]);
   const [muted, setMuted] = useState(false);
   const [playbackBlocked, setPlaybackBlocked] = useState(false);
+  const [answers, setAnswers] = useState(0);
   const connection = useRef(null);
   const controller = useRef(null);
   const ending = useRef(false);
@@ -29,6 +30,8 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
 
   const receive = (event) => {
     if (!mounted.current) return;
+    if (event.type === 'practice.progress') setAnswers(event.answers);
+    if (event.type === 'practice.feedback_started') { ending.current = true; setMuted(true); setStatus('feedback'); }
     if (event.type === 'error') {
       setError('Partenerul vocal a întâmpinat o problemă. Oprește dialogul și încearcă din nou.');
       busy.current = false;
@@ -41,12 +44,14 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     if (event.type === 'output_audio_buffer.started') setStatus(ending.current ? 'feedback' : 'speaking');
     if (event.type === 'response.done') {
       busy.current = false;
-      if (event.response?.status === 'failed') {
+      if (['failed', 'incomplete', 'cancelled'].includes(event.response?.status)) {
         ending.current = false;
         connection.current?.mute(false);
         setMuted(false);
         setStatus('listening');
-        setError('Răspunsul vocal nu a putut fi generat. Poți încerca din nou sau opri dialogul.');
+        setError(event.response?.status_details?.reason === 'max_output_tokens'
+          ? 'Răspunsul a atins limita audio. Poți încheia cu un feedback scurt.'
+          : 'Răspunsul vocal a fost întrerupt. Poți încheia cu feedback sau opri dialogul.');
       }
     }
     if (event.type === 'output_audio_buffer.stopped' || event.type === 'output_audio_buffer.cleared') {
@@ -70,7 +75,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   const start = async () => {
     controller.current?.abort(); connection.current?.close();
     const abort = new AbortController(); controller.current = abort;
-    setError(''); setMessages([]); setMuted(false); setPlaybackBlocked(false); setStatus('connecting');
+    setError(''); setMessages([]); setAnswers(0); setMuted(false); setPlaybackBlocked(false); setStatus('connecting');
     ending.current = false; busy.current = false;
     try {
       const session = await createVoiceConversation({ level, lessonId, pathId, signal: abort.signal, onEvent: receive,
@@ -97,7 +102,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   return <section className="voice-lesson" aria-labelledby="voice-lesson-title">
     <p className="lesson-eyebrow">Pasul 7 · Practică vocală</p>
     <h1 id="voice-lesson-title">Hai să vorbim în norvegiană</h1>
-    <p className="lesson-lead">Aplică ce ai învățat în „{lessonTitle}”. Nora te ascultă, răspunde și te ajută când ai nevoie.</p>
+    <p className="lesson-lead">Aplică ce ai învățat în „{lessonTitle}”: trei întrebări scurte, apoi un feedback pe scurt.</p>
     <div className="voice-lesson__card">
       <div className="voice-lesson__partner"><span className="voice-lesson__avatar" aria-hidden="true">N</span><div><strong>Nora</strong><span>Partener virtual · {level}</span></div><span className={`voice-lesson__status ${active ? 'voice-lesson__status--active' : ''}`} role="status">{labels[status]}</span></div>
       {configured === false && <p className="voice-lesson__notice">Dialogul vocal nu este disponibil momentan. Poți finaliza lecția și reveni mai târziu.</p>}
@@ -111,8 +116,8 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
         {active && <><button type="button" disabled={status === 'feedback'} aria-pressed={muted} onClick={() => { connection.current?.mute(!muted); setMuted(!muted); }}>{muted ? 'Pornește microfonul' : 'Oprește microfonul'}</button><button type="button" disabled={!canRequest} onClick={() => request('help')}>Am nevoie de ajutor</button><button type="button" className="voice-lesson__primary" disabled={!canRequest} onClick={() => request('feedback')}>Încheie și oferă feedback</button></>}
         {playbackBlocked && active && <button type="button" onClick={() => connection.current?.play().then(() => setPlaybackBlocked(false)).catch(() => setError('Permite redarea audio în browser.'))}>Redă vocea</button>}
       </div>
-      <p className="voice-lesson__hint">Poți spune „mai lent”, „repetă” sau poți pune propriile întrebări. Dialogul este opțional.</p>
-      <p className="voice-lesson__privacy">Microfonul pornește doar la cererea ta. Vocea este transmisă către OpenAI pentru conversație; aplicația nu salvează înregistrarea. Sesiunea durează cel mult 10 minute.</p>
+      <p className="voice-lesson__hint">{active ? `${answers}/3 răspunsuri · ` : ''}Ascultă întrebarea, apoi răspunde scurt. Poți cere ajutor sau încheia după două răspunsuri. Dialogul este opțional.</p>
+      <p className="voice-lesson__privacy">Microfonul pornește doar la cererea ta și ascultă între replicile Norei. Vocea este transmisă către OpenAI; aplicația nu salvează înregistrarea. Maximum 3 minute.</p>
     </div>
   </section>;
 }

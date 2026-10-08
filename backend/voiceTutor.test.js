@@ -28,6 +28,12 @@ test('sesiunea respectă nivelul, permite ezitările și include contextul real 
   const b2 = buildVoiceSession(getVoiceLesson({ level: 'B2', lessonId: 4, pathId: 'transport' }));
   assert.ok(a1.audio.output.speed < b2.audio.output.speed);
   assert.equal(a1.audio.input.turn_detection.eagerness, 'low');
+  assert.equal(a1.audio.input.turn_detection.create_response, false);
+  assert.equal(a1.audio.input.turn_detection.interrupt_response, false);
+  assert.equal(a1.max_output_tokens, 1024);
+  assert.match(a1.instructions, /exact trei întrebări/);
+  assert.match(a1.instructions, /25 de cuvinte/);
+  assert.doesNotMatch(a1.instructions, /6–10|80 de cuvinte|35 de cuvinte/);
   assert.match(a1.instructions, /Salutări și prezentări/);
   assert.match(a1.instructions, /Sănătate și îngrijire/);
   assert.match(b2.instructions, /Transport și logistică/);
