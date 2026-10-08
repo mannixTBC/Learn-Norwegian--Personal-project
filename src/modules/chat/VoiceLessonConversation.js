@@ -146,8 +146,10 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     <p className="lesson-eyebrow">Pasul 7 · Practică vocală</p>
     <h1 id="voice-lesson-title">Hai să vorbim în norvegiană</h1>
     <p className="lesson-lead">Trei întrebări din „{lessonTitle}”. Răspunzi vocal, apoi primești un feedback scurt.</p>
-    <div className="voice-lesson__card">
-      <div className="voice-lesson__partner"><span className="voice-lesson__avatar" aria-hidden="true">N</span><div><strong>Nora</strong><span>Voce AI · {level}</span></div><span className={`voice-lesson__status ${active ? 'voice-lesson__status--active' : ''}`} role="status">{labels[status]}</span></div>
+    <div className={`voice-lesson__card ${status === 'idle' ? 'voice-lesson__card--welcome' : ''}`}>
+      {status === 'idle' && <div className="voice-lesson__art" aria-hidden="true" />}
+      <div className="voice-lesson__partner"><span className="voice-lesson__avatar" aria-hidden="true"><span className="voice-lesson__avatar-letter">N</span><picture className="voice-lesson__portrait"><source media="(min-width: 861px)" srcSet="/images/voice/nora-avatar.webp" /><img alt="" width="56" height="56" /></picture></span><div><strong>Nora</strong><span>Voce AI · {level}</span></div><span className={`voice-lesson__status ${active ? 'voice-lesson__status--active' : ''}`} role="status">{labels[status]}</span></div>
+      {status === 'idle' && <div className="voice-lesson__welcome"><h2>Exersează ce ai învățat</h2><p>Ascultă trei întrebări, răspunde în norvegiană și primește un feedback scurt.</p><ul><li>3 întrebări</li><li>Răspunsuri scurte</li><li>Feedback final</li></ul></div>}
       {configured === false && <p className="voice-lesson__notice">Practica vocală nu este disponibilă momentan. Poți finaliza lecția și reveni mai târziu.</p>}
       {error && <p className="voice-lesson__error" role="alert">{error}</p>}
       {session && active && !['evaluating', 'feedbackAudio'].includes(status) && <div className="voice-lesson__question"><small>Întrebarea {index + 1} din 3</small><p lang="nb">{session.questions[index]}</p></div>}
@@ -170,6 +172,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
         {feedback?.audioBase64 && status === 'ended' && <button type="button" onClick={() => play(feedback, true)}>Ascultă feedbackul</button>}
         {active && <button type="button" onClick={stop}>Oprește practica</button>}
       </div>
+      {status === 'idle' && <p className="voice-lesson__start-caption">Microfonul pornește doar când apeși „Răspunde”.</p>}
       <p className="voice-lesson__hint">Ascultă, apasă „Răspunde” și vorbește scurt. Apasă „Am terminat răspunsul” când ai încheiat. Poți cere feedback după două răspunsuri.</p>
       <p className="voice-lesson__privacy">Vocea este generată de AI. Microfonul pornește doar la apăsarea ta, maximum 20 de secunde pe răspuns. Răspunsurile sunt trimise către OpenAI; înregistrările nu sunt salvate de aplicație.</p>
     </div>

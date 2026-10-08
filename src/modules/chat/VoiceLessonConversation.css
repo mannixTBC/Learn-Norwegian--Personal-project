@@ -26,6 +26,30 @@
 .voice-lesson__error,.voice-lesson__notice{margin:18px 0;padding:12px 15px;border-radius:10px;line-height:1.5;font-size:.85rem}
 .voice-lesson__error{color:#973c42;background:#fff0f1}
 .voice-lesson__notice{color:#63777f;background:#edf3f4}
+.voice-lesson__portrait,.voice-lesson__art,.voice-lesson__welcome,.voice-lesson__start-caption{display:none}
+@media(min-width:861px){
+  .voice-lesson__portrait{display:block;width:56px;height:56px}
+  .voice-lesson__portrait img{display:block;width:100%;height:100%;object-fit:cover}
+  .voice-lesson__avatar{width:56px;height:56px;border-radius:50%;overflow:hidden;flex-shrink:0}
+  .voice-lesson__avatar-letter{display:none}
+  .voice-lesson__card--welcome{position:relative;isolation:isolate;overflow:hidden;min-height:340px;padding:32px;background:#fff}
+  .voice-lesson__card--welcome>.voice-lesson__art{display:block;position:absolute;z-index:-1;inset:0 0 0 49%;background:url('/images/voice/voice-fjord.webp') center / cover no-repeat;pointer-events:none}
+  .voice-lesson__art::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#fff,rgba(255,255,255,.8) 8%,transparent 32%)}
+  .voice-lesson__card--welcome>.voice-lesson__partner,.voice-lesson__card--welcome>.voice-lesson__welcome,.voice-lesson__card--welcome>.voice-lesson__controls,.voice-lesson__card--welcome>.voice-lesson__start-caption,.voice-lesson__card--welcome>.voice-lesson__notice,.voice-lesson__card--welcome>.voice-lesson__error{max-width:56%}
+  .voice-lesson__card--welcome .voice-lesson__partner{gap:12px}
+  .voice-lesson__card--welcome .voice-lesson__status{margin-left:0;color:#23755c;background:#e2f6ec}
+  .voice-lesson__card--welcome .voice-lesson__status::before{content:'';display:inline-block;width:7px;height:7px;margin-right:6px;border-radius:50%;background:#279469}
+  .voice-lesson__welcome{display:block;margin-top:26px}
+  .voice-lesson__welcome h2{margin:0;color:#153b46;font-size:clamp(1.4rem,2vw,1.85rem);font-weight:800;line-height:1.2}
+  .voice-lesson__welcome p{margin:13px 0 0;color:#526f79;font-size:.93rem;line-height:1.6;max-width:430px}
+  .voice-lesson__welcome ul{display:flex;flex-wrap:wrap;gap:8px 16px;margin:20px 0 0;padding:0;list-style:none;color:#637e88;font-size:.75rem}
+  .voice-lesson__welcome li+li::before{content:'·';margin-right:16px}
+  .voice-lesson__card--welcome .voice-lesson__controls{margin-top:24px}
+  .voice-lesson__card--welcome .voice-lesson__primary{width:100%;max-width:430px;min-height:48px;font-size:.88rem;border-radius:12px}
+  .voice-lesson__start-caption{display:block;margin:12px 0 0;color:#637e88;font-size:.74rem;line-height:1.5}
+  .voice-lesson__card--welcome .voice-lesson__hint{display:none}
+  .voice-lesson__card--welcome .voice-lesson__privacy{max-width:50%;margin-top:22px;font-size:.66rem}
+}
 @media(max-width:520px){
   .voice-lesson__card{margin-top:20px;padding:18px;border-radius:16px}
   .voice-lesson__partner{gap:10px}
