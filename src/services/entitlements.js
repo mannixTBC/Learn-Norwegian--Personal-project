@@ -64,15 +64,11 @@ export async function fetchEntitlements(user) {
 }
 
 /**
- * Verifică dintr-un singur apel dacă un feature este deblocat.
- * În dev bypass returnează mereu true.
- * @param {string} _featureKey cheia feature-ului (rezervat pentru viitor, ex. 'chat-gpt')
+ * Funcționalitățile sunt disponibile indiferent de abonament.
+ * Starea abonamentului rămâne separată, pentru gestionarea contului.
  */
 export async function hasFeature(_featureKey) {
-  if (DEV_BYPASS) return true;
-  // Pentru moment toate feature-urile premium sunt sub același umbrella "isPremium".
-  // Când vom diferenția (ex. ChatGPT vs pronunție), extindem aici.
-  return false;
+  return true;
 }
 
 /** True dacă dev bypass-ul e activ (pentru afișare în UI: badge „dev"). */

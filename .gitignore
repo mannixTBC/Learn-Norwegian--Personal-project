@@ -27,6 +27,10 @@ yarn-debug.log*
 yarn-error.log*
 /local-server.log
 /local-server-error.log
+/frontend-local.log
+/frontend-local-error.log
+/backend-local.log
+/backend-local-error.log
 /*-local-server.log
 /*-local-server-error.log
 /.codex-dev-server.err.log

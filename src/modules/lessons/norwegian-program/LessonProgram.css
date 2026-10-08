@@ -140,3 +140,24 @@
   .mobile-exercise-navigation{margin-top:18px}
   .mobile-exercise-navigation>button:last-child{white-space:nowrap}
 }
+
+/* Coloana de context si progres, exclusiv pe desktop. */
+.lesson-sidebar{display:contents}
+@media(min-width:861px){
+  .lesson-shell{display:grid;grid-template-columns:240px minmax(0,780px);justify-content:center;align-items:start;gap:32px;padding:28px 28px 0}
+  .lesson-sidebar{display:block;position:sticky;top:96px;overflow:hidden;border:1px solid #dce6eb;border-radius:20px;background:#fff;box-shadow:0 12px 30px rgba(20,33,61,.06)}
+  .lesson-topbar{position:static;display:flex;min-height:0;flex-direction:column;align-items:stretch;gap:18px;padding:24px;border-bottom:1px solid #dce6eb;background:linear-gradient(145deg,#f7fcfb,#edf7f7);backdrop-filter:none}
+  .lesson-topbar>a{width:fit-content;color:var(--fjord);font-size:.85rem}
+  .lesson-topbar>a:hover{color:var(--fjord-hover)}
+  .lesson-topbar>a:focus-visible{outline:3px solid #7acbd0;outline-offset:4px;border-radius:4px}
+  .lesson-topbar>div{gap:7px;text-align:left}
+  .lesson-topbar>div strong{color:#153b46;font-size:1.25rem;line-height:1.3}
+  .lesson-topbar>span{text-align:left;font-size:.75rem}
+  .lesson-stepper{flex-direction:column;gap:14px;padding:22px 24px;border-bottom:0}
+  .lesson-stepper button{width:100%;min-height:36px;flex-direction:row;gap:12px;text-align:left}
+  .lesson-stepper button>span{flex:0 0 32px;box-sizing:border-box}
+  .lesson-stepper button small{font-size:.78rem}
+  .lesson-stepper button:not(:last-child):after{top:34px;left:15px;width:2px;height:16px}
+  .lesson-content{width:100%;min-width:0;margin:0;padding:4px 0 110px}
+  .lesson-content h1{font-size:clamp(2rem,3vw,3.2rem)}
+}

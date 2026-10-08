@@ -1,4 +1,5 @@
 require('dotenv').config();
+if (process.env.NODE_ENV !== 'production' && !process.env.NETLIFY) require('dotenv').config({ path: '.env.local' });
 const express = require('express');
 const cors = require('cors');
 const newsRouter = require('./routes/news');
@@ -7,6 +8,7 @@ const speechRouter = require('./routes/speech');
 const pronunciationRouter = require('./routes/pronunciation');
 const billingRouter = require('./routes/billing');
 const chatRouter = require('./routes/chat');
+const voiceRouter = require('./routes/voice');
 
 const app = express();
 
@@ -23,6 +25,7 @@ app.use('/api/speech', speechRouter);
 app.use('/api/pronunciation', pronunciationRouter);
 app.use('/api/billing', billingRouter);
 app.use('/api/chat', chatRouter);
+app.use('/api/voice', voiceRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

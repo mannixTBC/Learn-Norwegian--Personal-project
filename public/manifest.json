@@ -1,6 +1,14 @@
 {
   "short_name": "NordLingo",
   "name": "NordLingo - Învață norvegiana",
+  "icons": [
+    {
+      "src": "/branding/nordlingo-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#123c4a",

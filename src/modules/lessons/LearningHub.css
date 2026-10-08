@@ -120,3 +120,35 @@
 @media(prefers-reduced-motion:reduce){
   .lesson-list-toggle{transition:none}
 }
+
+/* Progres integrat in directia cursului, exclusiv pe desktop. */
+.career-track-card>.career-track-progress{display:none}
+.career-track-card__icon>.career-path-visual{display:none}
+@media(min-width:851px){
+  .learn-hero{display:none}
+  .continue-card{display:none}
+  .learn-page{padding-top:28px}
+  .career-track-card{grid-template-columns:50px minmax(0,1fr) minmax(220px,280px);gap:12px 22px;margin-top:0;padding:24px 28px;color:#153b46;border:1px solid #cfe3e5;border-radius:20px;background:linear-gradient(135deg,#fff,#f0f9f8);box-shadow:0 8px 24px rgba(20,33,61,.05)}
+  .career-track-card__icon{grid-column:1;grid-row:1/3;align-self:start;border:0;background:transparent}
+  .career-track-card__icon>.career-track-card__initials{display:none}
+  .career-track-card__icon>.career-path-visual{display:grid;width:50px;height:50px;border-radius:13px;box-sizing:border-box}
+  .career-track-card>div:not(.career-track-progress){grid-column:2;grid-row:1/3}
+  .career-track-card>div>small{color:var(--fjord);font-size:.65rem}
+  .career-track-card h2{margin:5px 0 7px;font-size:1.35rem;line-height:1.25;letter-spacing:-.02em}
+  .career-track-card p{max-width:520px;color:#63777f;font-size:.84rem;line-height:1.5}
+  .career-track-card>div:not(.career-track-progress)>div{margin-top:12px;gap:6px}
+  .career-track-card>div:not(.career-track-progress)>div>span{padding:5px 8px;color:#4f747b;background:#e8f2f2;font-size:.65rem;border-radius:6px}
+  .career-track-card>a{grid-column:3;grid-row:2;justify-self:start;padding:0;color:var(--fjord);background:transparent;font-size:.75rem;line-height:1.5}
+  .career-track-card>a:hover{color:var(--fjord-hover);text-decoration:underline}
+  .career-track-card>a:focus-visible{outline:3px solid var(--fjord-light);outline-offset:4px;border-radius:4px}
+  .career-track-card>.career-track-progress{grid-column:3;grid-row:1;display:block;width:100%;margin:0;padding:0 0 12px;border:0;align-self:end}
+  .career-track-card .career-track-progress__summary{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:nowrap;gap:12px;margin:0 0 8px;color:#63777f;font-size:.73rem}
+  .career-track-progress__summary strong{flex-shrink:0;color:var(--fjord);font-size:.95rem}
+  .career-track-card .career-track-progress__summary>span{padding:0;background:transparent;font-size:inherit}
+  .career-track-card .career-track-progress__track{display:block;height:6px;overflow:hidden;margin:0;border-radius:99px;background:#deeaeb}
+  .career-track-card .career-track-progress__track>span{display:block;height:100%;padding:0;border-radius:inherit;background:linear-gradient(90deg,var(--fjord),#62b9be)}
+  .career-track-progress__start{display:flex;min-height:44px;justify-content:center;align-items:center;gap:8px;margin-top:14px;padding:0 18px;color:#14213d;border:1px solid #f0bd3f;border-radius:11px;background:linear-gradient(135deg,#ffd978,#f6c453);box-shadow:0 6px 16px rgba(91,63,8,.14);font-size:.8rem;font-weight:850;text-decoration:none;transition:background .18s ease,box-shadow .18s ease}
+  .career-track-progress__start:visited{color:#14213d}
+  .career-track-progress__start:hover{color:#14213d;background:linear-gradient(135deg,#ffe59d,#ffd066);box-shadow:0 8px 20px rgba(91,63,8,.2);text-decoration:none}
+  .career-track-progress__start:focus-visible{outline:3px solid var(--fjord-light);outline-offset:3px}
+}

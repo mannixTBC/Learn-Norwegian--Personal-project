@@ -45,6 +45,12 @@
 .career-path-card__icon--general{--icon-color:#174e59;--icon-bg:#e8f5f5;--icon-border:#badbdd}
 .career-path-card--current .career-path-card__icon{color:var(--icon-color);border-color:var(--icon-border);background:var(--icon-bg);box-shadow:0 0 0 3px rgba(31,111,120,.1)}
 
+/* Pe desktop, alegerea directiei incepe direct cu optiunile. */
+@media(min-width:851px){
+  .career-onboarding__hero{display:none}
+  .career-onboarding main{padding-top:0}
+}
+
 /* Introducere mai luminoasă și mai compactă exclusiv pe telefon. */
 @media(max-width:560px){
   .career-onboarding__hero{

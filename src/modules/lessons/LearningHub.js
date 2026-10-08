@@ -4,6 +4,7 @@ import { levelDetails, levelLessons, levels } from './courseData';
 import { getReviewStats } from '../../services/spacedReview';
 import { getCareerPath, getCareerProfile } from '../../services/careerProfile';
 import { useAuth } from '../auth/AuthContext';
+import CareerPathVisual from '../onboarding/CareerPathVisual';
 import './LearningHub.css';
 import './FinalTestCard.css';
 import './ReviewBadge.css';
@@ -62,9 +63,14 @@ const LearningHub = () => {
       </header>
 
       <section className="career-track-card" aria-label={`Direcția cursului: ${careerPath.title}`}>
-        <span className="career-track-card__icon" aria-hidden="true">{careerPath.icon}</span>
+        <span className="career-track-card__icon" aria-hidden="true"><span className="career-track-card__initials">{careerPath.icon}</span><CareerPathVisual pathId={careerPath.id} /></span>
         <div><small>Direcția ta personalizată</small><h2>{careerPath.title}</h2><p>{careerPath.outcome}</p><div>{careerPath.phrases.slice(0, 3).map((phrase) => <span key={phrase[0]}>{phrase[0]}</span>)}</div></div>
         <Link to={`/alege-directia?redirect=${encodeURIComponent(`/invata?nivel=${activeLevel}`)}`}>Schimbă direcția →</Link>
+        <div className="career-track-progress" aria-label={`Progres nivel ${activeLevel}`}>
+          <div className="career-track-progress__summary"><span>Nivel {activeLevel} · {completedCount} din {activeLessons.length} lecții finalizate</span><strong>{progressPercent}%</strong></div>
+          <div className="career-track-progress__track" role="progressbar" aria-label={`Progres la nivelul ${activeLevel}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressPercent}><span style={{ width: `${progressPercent}%` }} /></div>
+          {nextLesson && <Link className="career-track-progress__start" to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>{completedCount ? 'Continuă lecția' : 'Începe cursul'} <span aria-hidden="true">→</span></Link>}
+        </div>
       </section>
 
       {nextLesson && <section className="continue-card">

@@ -152,6 +152,20 @@ const Dashboard = () => {
           <h1>{user && user.isGuest ? greeting() : `${greeting()}, ${user ? user.name.split(' ')[0] : 'prietene'}`}</h1>
           <p>Ai un plan simplu pentru astăzi. Fiecare minut se adună în progresul tău.</p>
           <div><span>Nivel activ</span><strong>{activeLevel} · {levelName[activeLevel]}</strong><Link to={`/invata?nivel=${activeLevel}`}>Vezi cursul →</Link></div>
+          <section className="dashboard-desktop-progress" aria-label={`Progres nivel ${activeLevel}`}>
+            <div><span>{activeProgress.completed.length} din {course.lessons.length} lecții finalizate</span><strong>{activeLevelProgress}%</strong></div>
+            <div className="dashboard-desktop-progress__track" role="progressbar" aria-label={`Progres la nivelul ${activeLevel}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={activeLevelProgress}><span style={{ width: `${activeLevelProgress}%` }} /></div>
+            <p className="dashboard-desktop-progress__streak">{activity.streak ? <>Serie curentă: <strong>{activity.streak} {activity.streak === 1 ? 'zi' : 'zile'}</strong> · Continuă și astăzi</> : 'Începe astăzi seria ta de zile de studiu.'}</p>
+          </section>
+        </div>
+        <div className="dashboard-desktop-start">
+          <div>
+            <span>Următoarea lecție · {nextLesson.duration} min</span>
+            <strong>Lecția {nextLesson.id}: {nextLesson.title}</strong>
+          </div>
+          <Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>
+            {activeProgress.completed.length ? 'Continuă lecția' : 'Începe lecția'} <span aria-hidden="true">→</span>
+          </Link>
         </div>
         <div className="daily-goal">
           <div className="daily-goal__ring" style={{ '--goal-progress': `${goalPercent * 3.6}deg` }}><div><strong>{activity.todayMinutes}</strong><span>din {dailyGoal} min</span></div></div>
@@ -191,7 +205,7 @@ const Dashboard = () => {
       )}
 
       <section className="dashboard-section dashboard-today" aria-labelledby="today-plan-title">
-        <div className="dashboard-section__heading"><div><span>Plan personalizat</span><h2 id="today-plan-title">Ce faci astăzi</h2></div><small>Recomandări pentru nivelul {activeLevel}</small></div>
+        <div className="dashboard-section__heading"><div><span>Plan personalizat · {activeLevel}</span><h2 id="today-plan-title">Ce faci astăzi</h2></div><Link to={`/invata?nivel=${activeLevel}`}>Vezi toate lecțiile →</Link></div>
         <div className="dashboard-today__grid">
           <article className="today-task today-task--primary"><div className="today-task__top"><span>01</span><small>Activitatea principală</small></div><h3>Continuă lecția {nextLesson.id}</h3><p>{nextLesson.title}</p><div className="today-task__meta"><span>◷ {nextLesson.duration} min</span><span>○ {nextLesson.vocabulary.length + (careerModule ? careerModule.phrases.length : 0)} expresii</span></div><Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>{activeProgress.completed.length ? 'Continuă lecția' : 'Începe lecția'} →</Link></article>
           <article className="today-task"><div className="today-task__top"><span>02</span><small>Memorie</small></div><h3>{reviews.due ? `Repetă ${reviews.due} elemente` : 'Recapitularea este la zi'}</h3><p>{reviews.due ? 'Greșelile recente sunt pregătite pentru repetare spațiată.' : reviews.total ? 'Următoarele elemente vor apărea când este momentul potrivit.' : 'Greșelile din lecții vor fi salvate automat aici.'}</p><Link to={`/recapitulare?nivel=${activeLevel}`}>{reviews.due ? 'Începe recapitularea' : 'Recapitulează'} →</Link></article>
@@ -224,7 +238,7 @@ const Dashboard = () => {
       </div>
 
       <section className="dashboard-section dashboard-recommendations" aria-labelledby="recommendations-title">
-        <div className="dashboard-section__heading"><div><span>Următorii pași</span><h2 id="recommendations-title">Recomandări pentru tine</h2></div><small>Bazate pe nivel, direcție și greșelile recente</small></div>
+        <div className="dashboard-section__heading"><div><span>Următorii pași</span><h2 id="recommendations-title">Recomandări pentru tine</h2><p className="dashboard-recommendations__subtitle">Bazate pe nivel, direcție și greșelile recente</p></div></div>
         <div className="dashboard-recommendations__grid">{recommendations.map((item) => <article className={item.visual ? `dashboard-recommendation dashboard-recommendation--${item.visual}` : 'dashboard-recommendation'} key={item.title}><span className={item.visual ? `dashboard-recommendation__visual dashboard-recommendation__visual--${item.visual}` : 'dashboard-recommendation__visual'} aria-hidden="true"><RecommendationVisual type={item.visual} fallback={item.icon} pathId={item.pathId} /></span><div><h3>{item.title}</h3><p>{item.text}</p><Link to={item.to}>{item.action} →</Link></div></article>)}</div>
       </section>
 

@@ -140,13 +140,6 @@ export default function Navbar() {
         </nav>
 
         <div className="navbar__account">
-          {user && <Link
-            to="/premium"
-            className={`navbar__premium navbar__premium--desktop${isDevBypass ? ' navbar__premium--dev' : isPremium ? '' : ' navbar__premium--upgrade'}`}
-            onClick={closeMenu}
-          >
-            {isDevBypass ? '★ Premium (dev)' : isPremium ? '★ Premium' : '★ Treci la Premium'}
-          </Link>}
           {user ? <><Link className="navbar__user" to="/dashboard" onClick={closeMenu} aria-label="Deschide profilul"><UserAvatar user={user} /><div><small>{user.isGuest ? 'Mod anonim' : 'Conectat'}</small><strong>{user.name}</strong></div></Link><button type="button" className="navbar__logout" onClick={() => { logout(); closeMenu(); }}>Ieșire</button></> : <Link className="navbar__login" to="/autentificare" onClick={closeMenu}>Conectare</Link>}
         </div>
 

@@ -109,6 +109,20 @@
 
 @media(max-width:680px){.dashboard-career>a,.dashboard-section__heading>a{width:100%}}
 
+.dashboard-recommendations__subtitle{margin:8px 0 0;color:#7c8999;font-size:.85rem;line-height:1.5}
+
+/* Pe desktop, lectiile sunt accesibile din planul zilei. */
+@media(min-width:681px){
+  .daily-dashboard{display:flex;flex-direction:column}
+  .daily-dashboard__hero{order:1}
+  .dashboard-career{order:2}
+  .dashboard-today{order:3}
+  .dashboard-recommendations{order:4}
+  .dashboard-stats{display:none}
+  .dashboard-levels{display:none}
+  .dashboard-main-grid{display:none}
+}
+
 /* Rezumat mobil: progresul si urmatoarea lectie apar in primul ecran. */
 .dashboard-mobile-start{display:none}
 
@@ -163,6 +177,7 @@
 
   .dashboard-recommendations{order:6;margin-top:28px}
   .dashboard-recommendations .dashboard-section__heading>small{display:none}
+  .dashboard-recommendations__subtitle{display:none}
   .dashboard-recommendations article{padding:16px}
   .dashboard-recommendations article:nth-child(n+3){display:none}
   .dashboard-recommendations p{display:none}
@@ -178,4 +193,32 @@
   .daily-dashboard__welcome>div>a{width:100%;margin-left:0}
   .dashboard-mobile-start{padding:16px}
   .dashboard-mobile-start__top{align-items:flex-start;flex-direction:column;gap:4px}
+}
+
+/* Pornire directa dintr-un antet compact, exclusiv pe desktop. */
+.dashboard-desktop-start{display:none}
+.dashboard-desktop-progress{display:none}
+@media(min-width:681px){
+  .daily-dashboard__hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;padding:24px 28px;border:1px solid #cfe3e5;border-radius:20px;background:linear-gradient(135deg,#fff,#f0f9f8);box-shadow:0 8px 24px rgba(20,33,61,.05);align-items:center}
+  .daily-dashboard__hero .daily-goal,.daily-dashboard__welcome>span,.daily-dashboard__welcome>p,.daily-dashboard__welcome>div>a{display:none}
+  .daily-dashboard__welcome h1{color:#153b46;font-size:clamp(1.4rem,2.2vw,1.8rem);line-height:1.15}
+  .daily-dashboard__welcome>div{margin-top:10px;padding:0;border:0;background:transparent}
+  .daily-dashboard__welcome>div>span{display:none}
+  .daily-dashboard__welcome>div>strong{color:var(--fjord);font-size:.78rem}
+  .dashboard-desktop-progress{display:block;max-width:420px;margin-top:14px}
+  .dashboard-desktop-progress>div:first-child{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:7px;color:#63777f;font-size:.75rem}
+  .dashboard-desktop-progress strong{color:var(--fjord);font-size:.85rem}
+  .dashboard-desktop-progress__track{height:7px;overflow:hidden;border-radius:99px;background:#deeaeb}
+  .dashboard-desktop-progress__track>span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--fjord),#62b9be)}
+  .dashboard-desktop-progress__streak{margin:9px 0 0;color:#63777f;font-size:.73rem;line-height:1.5}
+  .dashboard-desktop-progress__streak strong{font-size:inherit}
+  .dashboard-desktop-start{display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding-left:32px;border-left:1px solid #d4e5e6}
+  .dashboard-desktop-start>div{display:grid;gap:5px}
+  .dashboard-desktop-start>div>span{color:#63777f;font-size:.74rem}
+  .dashboard-desktop-start strong{color:#153b46;font-size:1.05rem;line-height:1.4}
+  .dashboard-desktop-start>a{display:inline-flex;justify-content:center;align-items:center;gap:10px;min-height:46px;padding:0 24px;color:#14213d;border:1px solid #f6c453;border-radius:12px;background:linear-gradient(135deg,#ffd978,#f6c453);box-shadow:0 8px 20px rgba(8,42,48,.18);font-size:.85rem;font-weight:900;transition:background .18s ease,transform .18s ease}
+  .dashboard-desktop-start>a:visited{color:#14213d}
+  .dashboard-desktop-start>a:hover{color:#14213d;background:linear-gradient(135deg,#ffe59d,#ffd066);transform:translateY(-2px)}
+  .dashboard-today__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dashboard-today .today-task--primary{display:none}
 }
