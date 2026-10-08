@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import App from './App';
+import { registerServiceWorker } from './serviceWorker';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 /**
@@ -11,4 +12,4 @@ const container = document.getElementById('root');
 if (container.hasChildNodes()) hydrateRoot(container, <App />);
 else createRoot(container).render(<App />);
 
-// Service worker dezactivat — activează register() dacă vrei funcționare offline (PWA)
+registerServiceWorker();

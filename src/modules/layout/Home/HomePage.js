@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PWAInstallButton from '../../pwa/PWAInstallButton';
 import './HomePage.css';
 
 const sections = [
@@ -17,6 +18,7 @@ const HomePage = () => (
         <p className="landing__subtitle">Învață norvegiana pas cu pas și găsește informațiile practice de care ai nevoie.</p>
         <div className="landing__actions">
           <Link to="/dashboard" className="landing__button landing__button--primary">Începe să înveți</Link>
+          <PWAInstallButton className="landing__button landing__button--install" />
           <Link to="/viata-in-norvegia" className="landing__button landing__button--secondary">Explorează ghidurile</Link>
         </div>
       </div>
