@@ -1,7 +1,7 @@
 // Prepared Bokmål questions. Audio is shared by all learners; no LLM call is needed here.
 const questions = {
   A1: [
-    ['Hva heter du?', 'Hvordan har du det?', 'Kan du presentere deg?'],
+    ['Hva heter du?', 'Hvordan har du det?', 'Hva sier du når du møter noen?'],
     ['Hva vil du bestille?', 'Vil du ha kaffe eller te?', 'Vil du ha et smørbrød?'],
     ['Hvor er kaffen?', 'Hvor mye koster den?', 'Vil du ha en kvittering?'],
     ['Når står du opp?', 'Hva spiser du til frokost?', 'Hva gjør du om kvelden?'],

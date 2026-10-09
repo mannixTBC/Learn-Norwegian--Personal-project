@@ -15,7 +15,7 @@ const {
   localTurn,
   buildCompletionRequest,
   parseCompletion,
-  fallbackTurn,
+  finalizeTurn,
   nextSession,
   publicUsage,
 } = require('../chatTutor');
@@ -115,7 +115,7 @@ router.post('/turn', wrap(async (req, res) => {
       buildCompletionRequest(context, session, message),
       { timeout: 15_000 },
     );
-    result = parseCompletion(completion) || fallbackTurn(session, context);
+    result = finalizeTurn(parseCompletion(completion), session, context);
   } catch (error) {
     throw fail('Asistentul nu răspunde momentan. Încearcă din nou.', 502);
   } finally {

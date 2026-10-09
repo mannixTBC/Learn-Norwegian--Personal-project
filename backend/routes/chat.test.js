@@ -106,6 +106,27 @@ test('catalogul complet poate porni sesiuni semnate pentru fiecare lecție și d
 
     const context = tutor.lessonFor({ level: 'A1', lessonId: 1, pathId: 'general' });
     let session = tutor.newSession(context, 'turn-limit-user').session;
+    assert.deepEqual(session.askedQuestions, ['Hva heter du?']);
+
+    const guarded = tutor.finalizeTurn({
+      reply: 'Hei, jeg heter ChatGPT. Hva heter du? Hvordan har du det? Bra, takk.',
+      question: 'Hva heter du?',
+      correction: null,
+      memory: null,
+    }, session, context);
+    assert.equal(guarded.reply, 'Hyggelig å møte deg!');
+    assert.equal(guarded.question, 'Hvordan har du det?');
+    assert.doesNotMatch(`${guarded.reply} ${guarded.question}`, /ChatGPT|Hva heter du\?/i);
+
+    const afterGuard = tutor.nextSession(session, 'Peter Theofir.', guarded);
+    assert.deepEqual(afterGuard.askedQuestions, ['Hva heter du?', 'Hvordan har du det?']);
+    assert.equal(tutor.finalizeTurn({
+      reply: 'Bra, takk. Hva heter du?',
+      question: 'Kan du fortelle meg hva du heter?',
+      correction: null,
+      memory: null,
+    }, afterGuard, context).question, 'Hva sier du når du møter noen?');
+
     for (let index = 0; index < tutor.MAX_TURNS; index += 1) {
       session = tutor.nextSession(session, `Svar ${index + 1}`, {
         reply: 'Fint.', question: 'Kan du fortsette?', correction: null, memory: null,
@@ -219,18 +240,22 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     assert.ok(sent.messages.length <= 6, 'system + no more than four previous messages + current user');
     assert.match(sent.messages[0].content, /B2/);
     assert.match(sent.messages[0].content, /Transport și logistică/);
+    assert.match(sent.messages[0].content, /Nu juca niciodată rolul cursantului/);
+    assert.match(sent.messages[0].content, /nu trebuie repetate sau reformulate/);
     assert.doesNotMatch(sent.messages[0].content, /Salutări și prezentări/);
 
     const afterFirst = decodeSession(first.sessionToken);
     assert.ok(afterFirst.history.length <= 4);
     assert.equal(afterFirst.turn, 1);
+    assert.equal(afterFirst.askedQuestions.length, 2);
+    assert.notEqual(afterFirst.askedQuestions[0], afterFirst.askedQuestions[1]);
     assert.deepEqual(afterFirst.memory, ['Eleven synes kunstig intelligens er nyttig.']);
 
     providerMode = 'refusal';
     const refused = await (await request('turn', { sessionToken: first.sessionToken, message: 'La oss fortsette.' })).json();
     assert.equal(providerCalls.length, 2, 'a refusal is not retried');
     assert.equal(refused.turn, 2);
-    assert.match(refused.reply, /La oss/);
+    assert.equal(refused.reply, 'Takk for svaret.');
     assert.equal(refused.correction, null);
     assert.ok(decodeSession(refused.sessionToken).history.length <= 4);
 
