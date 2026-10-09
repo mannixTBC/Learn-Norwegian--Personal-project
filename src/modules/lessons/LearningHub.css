@@ -105,6 +105,9 @@
   .practice-tool b{padding-top:10px;font-size:.75rem}
 }
 
+.learn-progress__track span,.career-track-progress__track>span{transition:width .3s ease}
+.in-progress-label{color:var(--fjord);font-weight:800}
+
 .lesson-list-toggle-wrap{padding:5px 30px 25px;background:#fff}
 .lesson-list-toggle{display:flex;width:100%;min-height:48px;align-items:center;justify-content:center;gap:10px;padding:0 18px;color:var(--fjord-hover);border:1px solid #bddbd8;border-radius:12px;background:#eff7f5;font:inherit;font-size:.82rem;font-weight:850;cursor:pointer;transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease}
 .lesson-list-toggle:hover{border-color:#91c4bf;background:#e5f2ef;box-shadow:0 8px 18px rgba(31,111,120,.1);transform:translateY(-1px)}

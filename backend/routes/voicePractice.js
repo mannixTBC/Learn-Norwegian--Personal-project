@@ -8,6 +8,7 @@ const router = express.Router();
 const starts = new Map();
 const operations = new Map();
 const lifetimes = new Map();
+const MAX_RECORDING_SECONDS = 30;
 const audioTypes = { 'audio/webm': 'webm', 'audio/ogg': 'ogg', 'audio/mp4': 'm4a', 'audio/wav': 'wav' };
 const fail = (message, status = 400) => Object.assign(new Error(message), { status });
 const signature = (payload) => crypto.createHmac('sha256', process.env.OPENAI_API_KEY).update(`lesson-practice-v1:${payload}`).digest('base64url');
@@ -100,7 +101,7 @@ router.post('/transcribe', wrap(async (req, res) => {
   const extension = audioTypes[mimeType?.split(';')[0]];
   if (!Number.isInteger(index) || index < 0 || index > 2 || !extension || typeof audioBase64 !== 'string'
     || audioBase64.length > 1_400_000 || !/^[A-Za-z0-9+/]+={0,2}$/.test(audioBase64)
-    || !Number.isFinite(duration) || duration < 0.4 || duration > 21) throw fail('Înregistrează un răspuns de maximum 20 de secunde.');
+    || !Number.isFinite(duration) || duration < 0.4 || duration > MAX_RECORDING_SECONDS + 1) throw fail(`Înregistrează un răspuns de maximum ${MAX_RECORDING_SECONDS} de secunde.`);
   const bytes = Buffer.from(audioBase64, 'base64');
   if (bytes.length < 100 || bytes.length > 1_000_000) throw fail('Înregistrarea nu este validă.');
   const digest = crypto.createHash('sha256').update(bytes).digest('hex');

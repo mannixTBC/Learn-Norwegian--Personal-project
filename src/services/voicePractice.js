@@ -1,5 +1,8 @@
 import { supabase } from './supabaseClient';
 
+const MAX_RECORDING_SECONDS = 30;
+const SILENCE_BEFORE_SUBMIT_MS = 4_000;
+
 export const practiceRequest = async (operation, payload, signal) => {
   const session = supabase ? await supabase.auth.getSession() : null;
   const token = session?.data?.session?.access_token;
@@ -34,9 +37,21 @@ export const recordPracticeAnswer = async ({ signal, onComplete, onError }) => {
   if (signal?.aborted) { stream.getTracks().forEach((track) => track.stop()); throw new DOMException('Cancelled', 'AbortError'); }
   let recorder;
   let timer;
+  let silenceTimer;
+  let audioContext;
+  let analyser;
+  let levelData;
   let cancelled = false;
+  let heardSpeech = false;
+  let lastSpeechAt = 0;
   const parts = [];
-  const release = () => { clearTimeout(timer); stream.getTracks().forEach((track) => track.stop()); signal?.removeEventListener('abort', cancel); };
+  const release = () => {
+    clearTimeout(timer);
+    clearInterval(silenceTimer);
+    stream.getTracks().forEach((track) => track.stop());
+    audioContext?.close().catch(() => {});
+    signal?.removeEventListener('abort', cancel);
+  };
   const stop = () => { if (recorder?.state === 'recording') recorder.stop(); };
   const cancel = () => { cancelled = true; stop(); release(); };
   try {
@@ -46,13 +61,28 @@ export const recordPracticeAnswer = async ({ signal, onComplete, onError }) => {
     recorder.ondataavailable = ({ data }) => { if (data.size) parts.push(data); };
     recorder.onerror = () => { cancelled = true; stop(); release(); onError(new Error('Înregistrarea s-a întrerupt. Încearcă din nou.')); };
     recorder.onstop = () => {
-      const duration = Math.min((Date.now() - started) / 1000, 20);
+      const duration = Math.min((Date.now() - started) / 1000, MAX_RECORDING_SECONDS);
       release();
       if (!cancelled && !signal?.aborted) onComplete(new Blob(parts, { type: recorder.mimeType }), duration);
     };
     signal?.addEventListener('abort', cancel, { once: true });
     recorder.start();
-    timer = setTimeout(stop, 20_000);
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (AudioContext) {
+      audioContext = new AudioContext();
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = 1024;
+      levelData = new Float32Array(analyser.fftSize);
+      audioContext.createMediaStreamSource(stream).connect(analyser);
+      silenceTimer = setInterval(() => {
+        if (recorder.state !== 'recording') return;
+        analyser.getFloatTimeDomainData(levelData);
+        const rms = Math.sqrt(levelData.reduce((sum, sample) => sum + sample * sample, 0) / levelData.length);
+        if (rms >= 0.025) { heardSpeech = true; lastSpeechAt = Date.now(); }
+        else if (heardSpeech && Date.now() - lastSpeechAt >= SILENCE_BEFORE_SUBMIT_MS) stop();
+      }, 120);
+    }
+    timer = setTimeout(stop, MAX_RECORDING_SECONDS * 1000);
     return { stop, cancel };
   } catch (error) { release(); throw error; }
 };

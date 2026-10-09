@@ -73,9 +73,10 @@ test('flux modular: autentificare, voce reutilizată, trei transcrieri, o singur
     assert.equal(calls.speech, 1, 'Question replay uses persistent audio cache');
     assert.equal((await request('question', { ...questionBody, index: 4 })).status, 400);
     assert.equal((await request('transcribe', { ...questionBody, audioBase64: 'invalid', mimeType: 'text/plain', duration: 20 })).status, 400);
+    assert.equal((await request('transcribe', { ...questionBody, audioBase64: Buffer.alloc(120, 9).toString('base64'), mimeType: 'audio/webm', duration: 31.1 })).status, 400);
     const answers = [];
     for (let index = 0; index < 3; index += 1) {
-      const body = { sessionToken: session.sessionToken, index, audioBase64: Buffer.alloc(120, index + 1).toString('base64'), mimeType: 'audio/webm;codecs=opus', duration: 5 };
+      const body = { sessionToken: session.sessionToken, index, audioBase64: Buffer.alloc(120, index + 1).toString('base64'), mimeType: 'audio/webm;codecs=opus', duration: index === 0 ? 30 : 5 };
       const response = await request('transcribe', body);
       assert.equal(response.status, 200);
       answers.push(await response.json());

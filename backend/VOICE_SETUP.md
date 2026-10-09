@@ -9,7 +9,8 @@ Etapa și rezultatele exercițiilor sunt păstrate la rotirea telefonului și re
 1. `backend/voiceQuestions.js` conține trei întrebări Bokmål pregătite pentru fiecare dintre cele 40 de lecții.
 2. Vocea fiecărei întrebări este generată la prima utilizare, apoi reutilizată. Modelul,
    vocea, textul și instrucțiunile definesc cheia cache-ului; schimbarea lor generează o versiune nouă.
-3. Elevul apasă „Răspunde”, vorbește maximum 20 de secunde, apoi apasă „Am terminat răspunsul”.
+3. În modul automat, microfonul pornește după întrebare și trimite răspunsul după 4 secunde de liniște,
+   cu o limită de 30 de secunde. Elevul poate opri răspunsul mai repede sau poate folosi modul manual.
    Microfonul este eliberat imediat. Audio merge pe server numai pentru transcriere.
 4. După trei răspunsuri (sau încheiere după două), o singură cerere LLM analizează toate răspunsurile.
 5. Feedbackul românesc este limitat la 25 de cuvinte și citit vocal. Dacă TTS eșuează,

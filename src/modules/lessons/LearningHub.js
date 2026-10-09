@@ -11,6 +11,29 @@ import './ReviewBadge.css';
 
 const getStorageKey = (levelCode) => levelCode === 'A1' ? 'lesson_prog_progress' : `lesson_prog_progress_${levelCode.toLowerCase()}`;
 const ACTIVE_LEVEL_KEY = 'norwegian_active_level';
+const LESSON_PROGRESS_STEPS = 7;
+
+const getLessonResumeKey = (levelCode, lessonId, user) => `lesson_resume_${user && user.id ? user.id : 'guest'}_${levelCode.toLowerCase()}_${lessonId}`;
+
+const readStoredNumber = (key) => {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw === null) return null;
+    const value = Number(JSON.parse(raw));
+    return Number.isFinite(value) ? value : null;
+  } catch (_) {
+    return null;
+  }
+};
+
+const readLessonSteps = (levelCode, lessonId, user) => {
+  const legacyKey = getLessonResumeKey(levelCode, lessonId, user);
+  const current = readStoredNumber(`${legacyKey}_voice_v1`);
+  // În versiunea veche, pasul 6 era deja rezultatul; îl tratăm ca 5 pași
+  // finalizați pentru a nu raporta dialogul vocal drept parcurs accidental.
+  const value = current === null ? Math.min(5, readStoredNumber(legacyKey) || 0) : current;
+  return Math.min(LESSON_PROGRESS_STEPS, Math.max(0, Math.trunc(value)));
+};
 
 const readProgress = (levelCode) => {
   try {
@@ -34,8 +57,14 @@ const LearningHub = () => {
   const activeLevelInfo = levels.find((level) => level.code === activeLevel);
   const progress = readProgress(activeLevel);
   const completedCount = progress.completed.filter((id) => id <= activeLessons.length).length;
-  const progressPercent = activeLessons.length ? Math.round((completedCount / activeLessons.length) * 100) : 0;
+  const lessonStepProgress = new Map(activeLessons.map((lesson) => [lesson.id, readLessonSteps(activeLevel, lesson.id, user)]));
+  const completedStepUnits = activeLessons.reduce((total, lesson) => total + (progress.completed.includes(lesson.id) ? LESSON_PROGRESS_STEPS : lessonStepProgress.get(lesson.id)), 0);
+  const totalStepUnits = activeLessons.length * LESSON_PROGRESS_STEPS;
+  const progressPercent = totalStepUnits ? Math.round((completedStepUnits / totalStepUnits) * 100) : 0;
   const nextLesson = activeLessons.find((lesson) => !progress.completed.includes(lesson.id)) || activeLessons[activeLessons.length - 1];
+  const currentLessonSteps = nextLesson && !progress.completed.includes(nextLesson.id) ? lessonStepProgress.get(nextLesson.id) : 0;
+  const hasLearningProgress = completedStepUnits > 0;
+  const progressSummary = `${completedCount} din ${activeLessons.length || 5} lecții finalizate${currentLessonSteps ? ` · ${currentLessonSteps} din ${LESSON_PROGRESS_STEPS} pași în lecția curentă` : ''}`;
   const finalTestPassed = localStorage.getItem(`final_test_passed_${activeLevel.toLowerCase()}`) === 'true';
   const finalTestBest = Number(localStorage.getItem(`final_test_best_${activeLevel.toLowerCase()}`)) || 0;
   const reviewStats = getReviewStats(activeLevel);
@@ -58,7 +87,7 @@ const LearningHub = () => {
         <div className="learn-progress" aria-label={`Progres ${activeLevel}: ${progressPercent}%`}>
           <div className="learn-progress__top"><span>Progres nivel {activeLevel}</span><strong>{progressPercent}%</strong></div>
           <div className="learn-progress__track"><span style={{ width: `${progressPercent}%` }} /></div>
-          <small>{completedCount} din {activeLessons.length || 5} lecții finalizate</small>
+          <small>{progressSummary}</small>
         </div>
       </header>
 
@@ -67,9 +96,9 @@ const LearningHub = () => {
         <div><small>Direcția ta personalizată</small><h2>{careerPath.title}</h2><p>{careerPath.outcome}</p><div>{careerPath.phrases.slice(0, 3).map((phrase) => <span key={phrase[0]}>{phrase[0]}</span>)}</div></div>
         <Link to={`/alege-directia?redirect=${encodeURIComponent(`/invata?nivel=${activeLevel}`)}`}>Schimbă direcția →</Link>
         <div className="career-track-progress" aria-label={`Progres nivel ${activeLevel}`}>
-          <div className="career-track-progress__summary"><span>Nivel {activeLevel} · {completedCount} din {activeLessons.length} lecții finalizate</span><strong>{progressPercent}%</strong></div>
+          <div className="career-track-progress__summary"><span>Nivel {activeLevel} · {progressSummary}</span><strong>{progressPercent}%</strong></div>
           <div className="career-track-progress__track" role="progressbar" aria-label={`Progres la nivelul ${activeLevel}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressPercent}><span style={{ width: `${progressPercent}%` }} /></div>
-          {nextLesson && <Link className="career-track-progress__start" to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>{completedCount ? 'Continuă lecția' : 'Începe cursul'} <span aria-hidden="true">→</span></Link>}
+          {nextLesson && <Link className="career-track-progress__start" to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>{hasLearningProgress ? 'Continuă lecția' : 'Începe cursul'} <span aria-hidden="true">→</span></Link>}
         </div>
       </section>
 
@@ -80,7 +109,7 @@ const LearningHub = () => {
           <h2>{nextLesson.title}</h2>
           <p>{nextLesson.description}</p>
         </div>
-        <Link className="learn-button" to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>{completedCount ? 'Continuă lecția' : 'Începe cursul'} →</Link>
+        <Link className="learn-button" to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>{hasLearningProgress ? 'Continuă lecția' : 'Începe cursul'} →</Link>
       </section>}
 
       <section className="level-section">
@@ -102,11 +131,12 @@ const LearningHub = () => {
             <div className="lesson-list" id="active-lesson-list">
               {visibleLessons.map((lesson) => {
                 const completed = progress.completed.includes(lesson.id);
+                const completedSteps = lessonStepProgress.get(lesson.id);
                 const unlocked = true;
                 return (
                   <article className={`course-lesson ${!unlocked ? 'course-lesson--locked' : ''}`} key={lesson.id}>
                     <div className="course-lesson__number">{completed ? '✓' : lesson.number}</div>
-                    <div className="course-lesson__body"><div className="course-lesson__meta"><span>{lesson.duration}</span><span>{lesson.vocabulary} cuvinte</span><span>+ 3 expresii personalizate</span>{completed && <span className="completed-label">Finalizată</span>}</div><h3>{lesson.title}</h3><p>{lesson.description}</p><div className="topic-list">{lesson.topics.map((topic) => <span key={topic}>{topic}</span>)}<span className="personalized-topic">+ {careerPath.shortTitle}</span></div></div>
+                    <div className="course-lesson__body"><div className="course-lesson__meta"><span>{lesson.duration}</span><span>{lesson.vocabulary} cuvinte</span><span>+ 3 expresii personalizate</span>{completed ? <span className="completed-label">Finalizată</span> : completedSteps > 0 && <span className="in-progress-label">{completedSteps} din {LESSON_PROGRESS_STEPS} pași</span>}</div><h3>{lesson.title}</h3><p>{lesson.description}</p><div className="topic-list">{lesson.topics.map((topic) => <span key={topic}>{topic}</span>)}<span className="personalized-topic">+ {careerPath.shortTitle}</span></div></div>
                     {unlocked ? <Link className="lesson-action" to={`/curs/${activeLevel.toLowerCase()}/${lesson.id}`} aria-label={`Deschide lecția ${lesson.title}`}>Deschide →</Link> : <span className="lesson-locked"><span role="img" aria-label="Blocat">🔒</span> Termină lecția anterioară</span>}
                   </article>
                 );
