@@ -1,8 +1,10 @@
 /**
- * Middleware de autentificare pentru rutele de billing.
+ * Middleware de autentificare pentru rutele protejate ale backend-ului.
  *
  * Extrage JWT-ul din antetul `Authorization: Bearer <token>`, îl verifică
- * prin `supabase.auth.getUser(token)`, și atașează `req.userId` + `req.userEmail`.
+ * prin `supabase.auth.getUser(token)`, și atașează identitatea plus token-ul
+ * verificat pe cerere. Token-ul este folosit numai server-side pentru apeluri
+ * Supabase care trebuie să ruleze cu `auth.uid()` al utilizatorului.
  * Respinge cu 401 dacă token-ul lipsește sau este invalid.
  *
  * Folosește o instanță Supabase separată (server-side) cu anon key — nu are
@@ -22,6 +24,21 @@ if (SUPABASE_URL && SUPABASE_ANON_KEY) {
 
 /** Returnează clientul Supabase server-side sau null dacă nu e configurat. */
 const getSupabase = () => supabaseAdmin;
+
+/**
+ * Creează un client izolat pentru un singur utilizator autentificat.
+ *
+ * Nu folosim `auth.setSession()` pe clientul comun: două cereri simultane ar
+ * putea schimba sesiunea una alteia. Antetul este fixat pe această instanță și
+ * permite funcțiilor RPC să citească în siguranță `auth.uid()` din JWT.
+ */
+const getSupabaseForAccessToken = (accessToken) => {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY || typeof accessToken !== 'string' || !accessToken) return null;
+  return createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+    global: { headers: { Authorization: `Bearer ${accessToken}` } },
+  });
+};
 
 /** True dacă Supabase este configurat pentru verificarea pe server. */
 const isSupabaseServerConfigured = () => Boolean(supabaseAdmin);
@@ -48,10 +65,16 @@ const requireAuth = async (req, res, next) => {
     }
     req.userId = data.user.id;
     req.userEmail = data.user.email || null;
+    req.accessToken = token;
     return next();
   } catch (err) {
     return res.status(401).json({ error: 'Nu am putut verifica identitatea.' });
   }
 };
 
-module.exports = { requireAuth, getSupabase, isSupabaseServerConfigured };
+module.exports = {
+  requireAuth,
+  getSupabase,
+  getSupabaseForAccessToken,
+  isSupabaseServerConfigured,
+};

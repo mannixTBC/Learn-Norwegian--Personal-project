@@ -2,6 +2,8 @@
 
 1. Creează un proiect în Supabase.
 2. Deschide `SQL Editor`, copiază conținutul din `schema.sql` și rulează-l o singură dată.
+   Pentru un proiect Supabase creat anterior acestei funcționalități, rulează și
+   `schema_chat.sql`; instalările noi primesc deja cota de chat prin `schema.sql`.
 3. În `Authentication > Providers`, păstrează activ `Email`.
 4. Activează `Anonymous Sign-Ins` pentru butonul „Continuă ca vizitator”.
 5. Opțional, activează Google și completează datele OAuth cerute de Supabase.

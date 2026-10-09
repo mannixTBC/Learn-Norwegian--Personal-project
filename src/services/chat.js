@@ -1,30 +1,39 @@
-/**
- * Chat — wrapper pentru endpoint-ul /api/chat.
- *
- * Trimite istoricul conversației + contextul lecției către backend, care
- * apelează OpenAI (cheia e doar pe server, niciodată în frontend).
- */
+import { supabase } from './supabaseClient';
 
-/** Rezolvă URL-ul bazei pentru API (localhost:5000 în dev, same-origin în producție). */
-const apiBase = () => {
-  const local = typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost';
-  return local ? 'http://localhost:5000' : '';
+const chatRequest = async (operation, payload, signal) => {
+  const session = supabase ? await supabase.auth.getSession() : null;
+  const token = session?.data?.session?.access_token;
+
+  if (signal?.aborted) throw new DOMException('Cancelled', 'AbortError');
+
+  let response;
+  try {
+    response = await fetch(`/api/chat/${operation}`, {
+      method: 'POST',
+      signal,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch (error) {
+    if (error?.name === 'AbortError') throw error;
+    throw new Error('Nu ne-am putut conecta la asistent. Verifică conexiunea și încearcă din nou.');
+  }
+
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(result.error || 'Asistentul nu a putut răspunde momentan.');
+  }
+
+  return result;
 };
 
-/**
- * Trimite un mesaj către asistentul virtual și primește răspunsul.
- * @param {{ messages: Array<{role: string, content: string}>, level: string, lessonId: number }} params
- * @returns {Promise<{ reply: string }>}
- */
-export const sendChatMessage = async ({ messages, level, lessonId }) => {
-  const response = await fetch(`${apiBase()}/api/chat`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages, level, lessonId }),
-  });
+export const startChatSession = ({ level, lessonId, pathId }, signal) => (
+  chatRequest('start', { level, lessonId, pathId }, signal)
+);
 
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.error || 'Asistentul nu a putut răspunde.');
-
-  return { reply: data.reply };
-};
+export const sendChatTurn = ({ sessionToken, message }, signal) => (
+  chatRequest('turn', { sessionToken, message }, signal)
+);
