@@ -31,6 +31,7 @@ test('flux modular: autentificare, voce reutilizată, trei transcrieri, o singur
   process.env.OPENAI_VOICE_TTS_MODEL = `test-tts-${Date.now()}`;
   let analysis;
   let failFeedbackAudio = false;
+  let lowConfidenceNext = false;
   global.fetch = async (url, options) => {
     assert.ok(options.headers.Authorization.endsWith('test-key-not-exposed'));
     if (url.endsWith('/audio/speech')) {
@@ -42,7 +43,16 @@ test('flux modular: autentificare, voce reutilizată, trei transcrieri, o singur
     if (url.endsWith('/audio/transcriptions')) {
       calls.transcription += 1;
       assert.ok(options.body.get('file') instanceof Blob);
-      return { ok: true, json: async () => ({ text: `Jeg heter Anna ${calls.transcription}.` }) };
+      assert.equal(options.body.get('language'), 'no');
+      assert.equal(options.body.get('temperature'), '0');
+      assert.equal(options.body.get('include[]'), 'logprobs');
+      assert.match(options.body.get('prompt'), /norsk bokmål/i);
+      assert.doesNotMatch(options.body.get('prompt'), /Vocabulary:/i);
+      if (lowConfidenceNext) {
+        lowConfidenceNext = false;
+        return { ok: true, json: async () => ({ text: 'Uklart svar', logprobs: [{ token: 'Uklart', logprob: -1.8 }, { token: ' svar', logprob: -1.4 }] }) };
+      }
+      return { ok: true, json: async () => ({ text: `Jeg heter Anna ${calls.transcription}.`, logprobs: [{ token: 'Jeg', logprob: -0.02 }] }) };
     }
     assert.ok(url.endsWith('/chat/completions'));
     calls.feedback += 1; analysis = JSON.parse(options.body);
@@ -94,6 +104,12 @@ test('flux modular: autentificare, voce reutilizată, trei transcrieri, o singur
     // A second learner can finish after two answers and still see text if TTS fails.
     const second = await (await request('start', lesson, 'other-user')).json();
     const secondAnswers = [];
+    lowConfidenceNext = true;
+    const unclear = await request('transcribe', {
+      sessionToken: second.sessionToken, index: 0, audioBase64: Buffer.alloc(120, 5).toString('base64'), mimeType: 'audio/mp4', duration: 5,
+    }, 'other-user');
+    assert.equal(unclear.status, 400);
+    assert.match((await unclear.json()).error, /suficient de clar/i);
     for (let index = 0; index < 2; index += 1) secondAnswers.push(await (await request('transcribe', {
       sessionToken: second.sessionToken, index, audioBase64: Buffer.alloc(120, 5).toString('base64'), mimeType: 'audio/mp4', duration: 5,
     }, 'other-user')).json());

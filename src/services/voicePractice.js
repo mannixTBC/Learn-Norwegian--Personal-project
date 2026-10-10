@@ -29,7 +29,7 @@ export const recordingPayload = (blob, signal) => new Promise((resolve, reject) 
   signal?.addEventListener('abort', abort, { once: true });
   reader.readAsDataURL(blob);
 });
-export const recordPracticeAnswer = async ({ signal, onComplete, onError }) => {
+export const recordPracticeAnswer = async ({ signal, onComplete, onError, onNoSpeech }) => {
   if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) throw new Error('Browserul nu permite înregistrarea vocală. Folosește un browser actualizat și HTTPS.');
   let stream;
   try { stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }); }
@@ -43,6 +43,7 @@ export const recordPracticeAnswer = async ({ signal, onComplete, onError }) => {
   let levelData;
   let cancelled = false;
   let heardSpeech = false;
+  let speechStartedAt = 0;
   let lastSpeechAt = 0;
   const parts = [];
   const release = () => {
@@ -78,11 +79,25 @@ export const recordPracticeAnswer = async ({ signal, onComplete, onError }) => {
         if (recorder.state !== 'recording') return;
         analyser.getFloatTimeDomainData(levelData);
         const rms = Math.sqrt(levelData.reduce((sum, sample) => sum + sample * sample, 0) / levelData.length);
-        if (rms >= 0.025) { heardSpeech = true; lastSpeechAt = Date.now(); }
-        else if (heardSpeech && Date.now() - lastSpeechAt >= SILENCE_BEFORE_SUBMIT_MS) stop();
+        if (rms >= 0.035) {
+          const now = Date.now();
+          if (!speechStartedAt) speechStartedAt = now;
+          if (now - speechStartedAt >= 450) heardSpeech = true;
+          lastSpeechAt = now;
+        } else {
+          if (!heardSpeech) speechStartedAt = 0;
+          if (heardSpeech && Date.now() - lastSpeechAt >= SILENCE_BEFORE_SUBMIT_MS) stop();
+        }
       }, 120);
     }
-    timer = setTimeout(stop, MAX_RECORDING_SECONDS * 1000);
+    timer = setTimeout(() => {
+      if (heardSpeech) stop();
+      else {
+        cancelled = true;
+        stop();
+        onNoSpeech?.();
+      }
+    }, MAX_RECORDING_SECONDS * 1000);
     return { stop, cancel };
   } catch (error) { release(); throw error; }
 };
