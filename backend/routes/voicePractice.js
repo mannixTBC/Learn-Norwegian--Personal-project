@@ -4,14 +4,18 @@ const { requireAuth } = require('../middleware/authSupabaseUser');
 const { getVoiceLesson } = require('../voiceTutor');
 const { getPreparedQuestions } = require('../voiceQuestions');
 const { getQuestionAudio } = require('../voiceAudioCache');
-const { MAX_TURNS, verifySession: verifyChatSession } = require('../chatTutor');
+const { MAX_TURNS, verifySession: verifyChatSession, commandFor } = require('../chatTutor');
 const { createVoiceStreamTicket } = require('../voiceStreamTicket');
 const { cartesiaConfigured } = require('../cartesiaSpeech');
+const { decidePrimaryTranscript, decideAmbiguousTranscript } = require('../voiceTranscriptDecision');
 const router = express.Router();
 const starts = new Map();
 const operations = new Map();
 const lifetimes = new Map();
+const transcriptionAttempts = new Map();
 const MAX_RECORDING_SECONDS = 30;
+const MAX_TRANSCRIPTION_ATTEMPTS_PER_TURN = 5;
+const MAX_TRANSCRIPTIONS_PER_TURN = 12;
 const audioTypes = { 'audio/webm': 'webm', 'audio/ogg': 'ogg', 'audio/mp4': 'm4a', 'audio/wav': 'wav' };
 const fail = (message, status = 400) => Object.assign(new Error(message), { status });
 const signature = (payload) => crypto.createHmac('sha256', process.env.OPENAI_API_KEY).update(`lesson-practice-v1:${payload}`).digest('base64url');
@@ -32,6 +36,7 @@ const sessionFor = (req) => {
 const prune = () => {
   for (const [key, time] of starts) if (Date.now() - time >= 60_000) starts.delete(key);
   for (const [key, expires] of lifetimes) if (expires < Date.now()) { operations.delete(key); lifetimes.delete(key); }
+  for (const [key, value] of transcriptionAttempts) if (value.expires < Date.now()) transcriptionAttempts.delete(key);
 };
 const once = (key, expires, run) => {
   if (!operations.has(key)) {
@@ -110,13 +115,47 @@ const dialogueSpeechText = (session) => {
   if (!question || latestAssistant.endsWith(question)) return latestAssistant;
   return `${latestAssistant} ${question}`;
 };
-const transcriptionLanguageIsReliable = (languages) => {
-  if (!Array.isArray(languages)) return true;
-  return languages.some((language) => {
-    const code = typeof language === 'string' ? language : language?.code;
-    return typeof code === 'string' && /^(no|nb|nor)(-|$)/i.test(code);
-  });
+const matchingDialogSession = (req, voiceSession, index) => {
+  const { session } = verifyChatSession(req.body?.dialogToken, req.userId);
+  const sameLesson = session.level === voiceSession.level
+    && session.lessonId === voiceSession.lessonId
+    && session.pathId === voiceSession.pathId;
+  if (!sameLesson) throw fail('Dialogul nu corespunde lecției vocale.', 401);
+  if (session.done || session.turn >= MAX_TURNS) throw fail('Conversația s-a încheiat. Pornește o sesiune nouă.', 409);
+  if (session.turn !== index) throw fail('Răspunsul nu corespunde întrebării curente.', 409);
+  return session;
 };
+
+const transcribeAudio = async ({ bytes, mimeType, extension, languages = [] }) => {
+  const form = new FormData();
+  form.append('file', new Blob([bytes], { type: mimeType }), `answer.${extension}`);
+  form.append('model', process.env.OPENAI_VOICE_STT_MODEL || 'gpt-transcribe');
+  form.append('response_format', 'json');
+  languages.forEach((language) => form.append('languages[]', language));
+  form.append('temperature', '0');
+  const data = await (await openAI('audio/transcriptions', form, false)).json();
+  return {
+    text: typeof data.text === 'string' ? data.text.trim().slice(0, 800) : '',
+    languages: Array.isArray(data.languages) ? data.languages : [],
+  };
+};
+
+const answerProof = ({ voiceSession, dialogSession, index, text }) => sign({
+  kind: 'answer',
+  session: voiceSession.id,
+  dialog: dialogSession.id,
+  turn: dialogSession.turn,
+  index,
+  text,
+});
+
+const acceptedTranscript = ({ voiceSession, dialogSession, index, text }) => ({
+  index,
+  text,
+  decision: 'accept',
+  consumeTurn: true,
+  proof: answerProof({ voiceSession, dialogSession, index, text }),
+});
 const wrap = (handler) => async (req, res) => {
   res.set('Cache-Control', 'no-store');
   try { prune(); await handler(req, res); }
@@ -125,7 +164,7 @@ const wrap = (handler) => async (req, res) => {
     console.warn('voice-practice-failure', { operation: req.path, kind: error.name, code: error.code, status: error.status || 502 });
     const fallback = ['/question', '/speak'].includes(req.path)
       ? 'Vocea replicii nu a putut fi încărcată. Încearcă din nou.'
-      : req.path === '/transcribe' ? 'Răspunsul vocal nu a putut fi transcris. Încearcă să îl retrimiți.'
+      : ['/transcribe', '/confirm'].includes(req.path) ? 'Răspunsul vocal nu a putut fi verificat. Încearcă să îl retrimiți.'
         : 'Feedbackul nu a putut fi pregătit. Încearcă din nou.';
     res.status(error.status || 502).json({ error: error.status ? error.message : fallback });
   }
@@ -160,7 +199,8 @@ router.post('/speak', wrap(async (req, res) => {
   const { session } = verifyChatSession(req.body?.dialogToken, req.userId);
   const latest = dialogueSpeechText(session);
   if (!latest) throw fail('Replica nu este validă.');
-  const result = await once(`${session.id}:speech:${session.turn}`, session.expires, () => dialogueSpeech(latest));
+  const speechDigest = crypto.createHash('sha256').update(latest).digest('base64url');
+  const result = await once(`${session.id}:speech:${session.turn}:${speechDigest}`, session.expires, () => dialogueSpeech(latest));
   res.json({ audioBase64: result.audio.toString('base64'), mimeType: 'audio/mpeg', provider: result.provider });
 }));
 router.post('/stream-ticket', wrap(async (req, res) => {
@@ -181,36 +221,90 @@ router.post('/transcribe', wrap(async (req, res) => {
     || !Number.isFinite(duration) || duration < 0.4 || duration > MAX_RECORDING_SECONDS + 1) throw fail(`Înregistrează un răspuns de maximum ${MAX_RECORDING_SECONDS} de secunde.`);
   const bytes = Buffer.from(audioBase64, 'base64');
   if (bytes.length < 100 || bytes.length > 1_000_000) throw fail('Înregistrarea nu este validă.');
+  const dialogSession = matchingDialogSession(req, session, index);
   const digest = crypto.createHash('sha256').update(bytes).digest('hex');
-  const slot = `${session.id}:transcript:${index}`;
+  const attemptKey = `${session.id}:${dialogSession.id}:${dialogSession.turn}`;
+  if (!transcriptionAttempts.has(attemptKey)) {
+    transcriptionAttempts.set(attemptKey, { expires: session.expires, digests: new Set(), answerDigests: new Set() });
+  }
+  const attempts = transcriptionAttempts.get(attemptKey);
+  if (!attempts.digests.has(digest) && attempts.digests.size >= MAX_TRANSCRIPTIONS_PER_TURN) {
+    throw fail('Ai ajuns la limita de înregistrări pentru această întrebare. Pornește un dialog nou.', 429);
+  }
+  attempts.digests.add(digest);
+  const slot = `${session.id}:transcript:${dialogSession.id}:${dialogSession.turn}:${digest}`;
   const result = await once(slot, session.expires, async () => {
-    const form = new FormData();
-    form.append('file', new Blob([bytes], { type: mimeType }), `answer.${extension}`);
-    form.append('model', process.env.OPENAI_VOICE_STT_MODEL || 'gpt-transcribe');
-    form.append('response_format', 'json');
-    form.append('languages[]', 'no');
-    form.append('temperature', '0');
-    form.append('prompt', 'En kort muntlig øvelse i norsk bokmål for en språkelev.');
-    const data = await (await openAI('audio/transcriptions', form, false)).json();
-    const text = typeof data.text === 'string' ? data.text.trim().slice(0, 800) : '';
-    if (!text) throw fail('Nu am auzit un răspuns clar. Încearcă din nou.');
-    if (!transcriptionLanguageIsReliable(data.languages)) throw fail('Nu am identificat clar un răspuns în norvegiană. Încearcă din nou, puțin mai aproape de microfon.');
-    return { text, digest, proof: sign({ kind: 'answer', session: session.id, index, text }) };
+    const primary = await transcribeAudio({ bytes, mimeType, extension, languages: ['no', 'ro'] });
+    if (!primary.text) return { index, decision: 'retry', message: 'Nu am auzit un răspuns clar. Încearcă din nou; întrebarea rămâne aceeași.' };
+
+    const primaryCommand = commandFor(primary.text);
+    if (primaryCommand) return { index, text: primary.text, decision: 'accept', consumeTurn: false, command: primaryCommand };
+
+    let decision = decidePrimaryTranscript(primary);
+    if (!decision) {
+      const secondary = await transcribeAudio({ bytes, mimeType, extension });
+      const secondaryCommand = commandFor(secondary.text);
+      if (secondaryCommand) return { index, text: secondary.text, decision: 'accept', consumeTurn: false, command: secondaryCommand };
+      decision = decideAmbiguousTranscript({ primary, secondary, question: dialogSession.lastQuestion });
+    }
+
+    if (decision.decision === 'retry') return { index, decision: 'retry', message: decision.message };
+    if (decision.decision === 'confirm') {
+      const confirmationToken = sign({
+        kind: 'transcript-confirmation',
+        session: session.id,
+        dialog: dialogSession.id,
+        turn: dialogSession.turn,
+        index,
+        text: decision.text,
+        digest,
+        expires: Math.min(session.expires, Date.now() + 2 * 60_000),
+      });
+      return { index, text: decision.text, decision: 'confirm', message: decision.message, confirmationToken };
+    }
+    return acceptedTranscript({ voiceSession: session, dialogSession, index, text: decision.text });
   });
-  if (result.digest !== digest) throw fail('Răspunsul la această întrebare a fost deja transcris.', 409);
-  res.json({ index, text: result.text, proof: result.proof });
+  if (result.consumeTurn !== false) {
+    if (!attempts.answerDigests.has(digest) && attempts.answerDigests.size >= MAX_TRANSCRIPTION_ATTEMPTS_PER_TURN) {
+      throw fail('Ai ajuns la limita de încercări pentru această întrebare. Pornește un dialog nou.', 429);
+    }
+    attempts.answerDigests.add(digest);
+  }
+  res.json(result);
+}));
+router.post('/confirm', wrap(async (req, res) => {
+  const session = sessionFor(req);
+  const confirmation = verify(req.body?.confirmationToken);
+  if (confirmation.kind !== 'transcript-confirmation' || confirmation.session !== session.id
+    || !Number.isInteger(confirmation.index) || typeof confirmation.text !== 'string'
+    || !Number.isFinite(confirmation.expires) || confirmation.expires < Date.now()) throw fail('Confirmarea transcrierii a expirat.', 401);
+  const dialogSession = matchingDialogSession(req, session, confirmation.index);
+  if (confirmation.dialog !== dialogSession.id || confirmation.turn !== dialogSession.turn) {
+    throw fail('Confirmarea nu corespunde întrebării curente.', 409);
+  }
+  res.json(acceptedTranscript({
+    voiceSession: session,
+    dialogSession,
+    index: confirmation.index,
+    text: confirmation.text,
+  }));
 }));
 router.post('/feedback', wrap(async (req, res) => {
   const session = sessionFor(req);
   const answers = req.body.answers;
   if (!Array.isArray(answers) || answers.length < 2 || answers.length > MAX_TURNS) throw fail('Răspunde de cel puțin două ori pentru feedback.');
+  let dialogId = null;
   const verified = answers.map((answer, index) => {
     const proof = verify(answer.proof);
-    if (proof.kind !== 'answer' || proof.session !== session.id || proof.index !== index || proof.text !== answer.text) throw fail('Răspunsurile nu sunt valide.');
+    if (proof.kind !== 'answer' || proof.session !== session.id || proof.turn !== index
+      || proof.index !== index || typeof proof.dialog !== 'string' || !proof.dialog
+      || proof.text !== answer.text) throw fail('Răspunsurile nu sunt valide.');
+    if (dialogId === null) dialogId = proof.dialog;
+    else if (proof.dialog !== dialogId) throw fail('Răspunsurile nu aparțin aceluiași dialog.');
     return { answer: proof.text };
   });
   const context = getVoiceLesson(session);
-  const result = await once(`${session.id}:feedback`, session.expires, async () => {
+  const result = await once(`${session.id}:feedback:${dialogId}`, session.expires, async () => {
     const response = await (await openAI('chat/completions', {
       model: process.env.OPENAI_VOICE_FEEDBACK_MODEL || 'gpt-4o-mini', temperature: 0.2, max_completion_tokens: 180, store: false,
       messages: [{ role: 'system', content: `Ești un profesor de norvegiană Bokmål pentru un elev român de nivel ${session.level}.

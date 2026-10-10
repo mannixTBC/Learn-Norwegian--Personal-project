@@ -16,6 +16,7 @@ const {
   buildCompletionRequest,
   parseCompletion,
   finalizeTurn,
+  sessionWithAssistantResponse,
   nextSession,
   publicUsage,
 } = require('../chatTutor');
@@ -132,7 +133,9 @@ router.post('/turn', wrap(async (req, res) => {
     }
   }
 
-  const updated = nextSession(session, message, result);
+  const updated = result.accepted === false
+    ? sessionWithAssistantResponse(session, result)
+    : nextSession(session, message, result);
   res.json(commonResponse({
     session: updated,
     reply: result.reply,

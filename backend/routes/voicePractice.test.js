@@ -44,6 +44,7 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
   const calls = { speech: 0, elevenSpeech: 0, transcription: 0, feedback: 0 };
   const speechRequests = [];
   const elevenSpeechRequests = [];
+  const transcriptionRequests = [];
   process.env.OPENAI_API_KEY = 'test-key-not-exposed';
   process.env.NODE_ENV = 'production'; delete process.env.NETLIFY;
   delete process.env.OPENAI_VOICE_STT_MODEL;
@@ -57,7 +58,7 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
   process.env.OPENAI_VOICE_TTS_MODEL = `test-tts-${Date.now()}`;
   let analysis;
   let failFeedbackAudio = false;
-  let lowConfidenceNext = false;
+  const transcriptionResponses = [];
   global.fetch = async (url, options) => {
     if (url.includes('api.elevenlabs.io/v1/text-to-speech/')) {
       calls.elevenSpeech += 1;
@@ -78,16 +79,15 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
       calls.transcription += 1;
       assert.ok(options.body.get('file') instanceof Blob);
       assert.equal(options.body.get('model'), 'gpt-transcribe');
-      assert.equal(options.body.get('languages[]'), 'no');
       assert.equal(options.body.get('language'), null);
       assert.equal(options.body.get('temperature'), '0');
       assert.equal(options.body.get('include[]'), null);
-      assert.match(options.body.get('prompt'), /norsk bokmål/i);
-      assert.doesNotMatch(options.body.get('prompt'), /Vocabulary:/i);
-      if (lowConfidenceNext) {
-        lowConfidenceNext = false;
-        return { ok: true, json: async () => ({ text: 'Uklart svar', languages: [] }) };
-      }
+      assert.equal(options.body.get('prompt'), null);
+      const languageHints = options.body.getAll('languages[]');
+      assert.ok(languageHints.length === 0 || languageHints.join(',') === 'no,ro');
+      transcriptionRequests.push(languageHints);
+      const scripted = transcriptionResponses.shift();
+      if (scripted) return { ok: true, json: async () => scripted };
       return { ok: true, json: async () => ({ text: `Jeg heter Anna ${calls.transcription}.`, languages: [{ code: 'no' }] }) };
     }
     assert.ok(url.endsWith('/chat/completions'));
@@ -140,6 +140,14 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     assert.match(speechRequests.at(-1).instructions, /do not omit the final question/i);
     await request('speak', { sessionToken: session.sessionToken, dialogToken });
     assert.equal(calls.speech, 2, 'Dialog replay does not synthesize the same turn twice');
+    const helped = chatTutor.localTurn(chatSession, chatContext, 'help');
+    const helpedToken = chatTutor.signSession(helped.session);
+    const helpedSpoken = await (await request('speak', { sessionToken: session.sessionToken, dialogToken: helpedToken })).json();
+    assert.ok(helpedSpoken.audioBase64);
+    assert.equal(calls.speech, 3, 'A new same-turn assistant reply gets its own audio');
+    assert.equal(speechRequests.at(-1).input, `${helped.reply} ${helped.question}`);
+    await request('speak', { sessionToken: session.sessionToken, dialogToken: helpedToken });
+    assert.equal(calls.speech, 3, 'The new same-turn reply is still deduplicated');
     process.env.ELEVENLABS_API_KEY = 'test-elevenlabs-key';
     process.env.ELEVENLABS_FEMALE_VOICE_ID = 'anna-test-voice';
     process.env.ELEVENLABS_MODEL_ID = 'eleven_flash_v2_5';
@@ -158,35 +166,170 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     assert.equal((await request('question', { ...questionBody, index: 4 })).status, 400);
     assert.equal((await request('transcribe', { ...questionBody, audioBase64: 'invalid', mimeType: 'text/plain', duration: 20 })).status, 400);
     assert.equal((await request('transcribe', { ...questionBody, audioBase64: Buffer.alloc(120, 9).toString('base64'), mimeType: 'audio/webm', duration: 31.1 })).status, 400);
+    assert.equal((await request('transcribe', {
+      sessionToken: session.sessionToken,
+      index: 0,
+      audioBase64: Buffer.alloc(120, 9).toString('base64'),
+      mimeType: 'audio/webm',
+      duration: 5,
+    })).status, 401, 'A valid dialogue token is required before transcription');
     const answers = [];
+    let currentChatSession = chatSession;
     for (let index = 0; index < 8; index += 1) {
-      const body = { sessionToken: session.sessionToken, index, audioBase64: Buffer.alloc(120, index + 1).toString('base64'), mimeType: 'audio/webm;codecs=opus', duration: index === 0 ? 30 : 5 };
+      const body = {
+        sessionToken: session.sessionToken,
+        dialogToken: chatTutor.signSession(currentChatSession),
+        index,
+        audioBase64: Buffer.alloc(120, index + 1).toString('base64'),
+        mimeType: 'audio/webm;codecs=opus',
+        duration: index === 0 ? 30 : 5,
+      };
       const response = await request('transcribe', body);
       assert.equal(response.status, 200);
-      answers.push(await response.json());
+      const answer = await response.json();
+      assert.equal(answer.decision, 'accept');
+      assert.ok(answer.proof);
+      answers.push(answer);
       await request('transcribe', body);
+      if (index < 7) currentChatSession = chatTutor.nextSession(currentChatSession, answer.text, {
+        reply: 'Bra.',
+        question: `Hva svarer du nå ${index + 2}?`,
+        memory: null,
+      });
     }
     assert.equal(calls.transcription, 8, 'Network replay does not retranscribe');
+    assert.ok(transcriptionRequests.every((hints) => hints.join(',') === 'no,ro'));
     assert.equal(calls.feedback, 0, 'No evaluation between answers');
     assert.equal((await request('feedback', { sessionToken: session.sessionToken, answers: [{ ...answers[0], text: 'tampered' }, answers[1]] })).status, 400);
+    let forkedChatSession = chatTutor.newSession(chatContext, 'Bearer modular-free-user').session;
+    forkedChatSession = chatTutor.nextSession(forkedChatSession, 'Jeg heter Anna.', {
+      reply: 'Hyggelig å møte deg!', question: 'Hvordan har du det?', memory: null,
+    });
+    const forkedAnswer = await (await request('transcribe', {
+      sessionToken: session.sessionToken,
+      dialogToken: chatTutor.signSession(forkedChatSession),
+      index: 1,
+      audioBase64: Buffer.alloc(120, 50).toString('base64'),
+      mimeType: 'audio/webm',
+      duration: 5,
+    })).json();
+    assert.equal((await request('feedback', {
+      sessionToken: session.sessionToken,
+      answers: [answers[0], forkedAnswer],
+    })).status, 400, 'Answers from forked dialogues cannot be mixed');
     const result = await (await request('feedback', { sessionToken: session.sessionToken, answers })).json();
     assert.ok(result.text.split(/\s+/).length <= 25); assert.ok(result.audioBase64);
     assert.equal(JSON.parse(analysis.messages[1].content).length, 8);
     assert.equal(analysis.store, false);
     await request('feedback', { sessionToken: session.sessionToken, answers });
-    assert.equal(calls.feedback, 1); assert.equal(calls.speech, 3);
+    assert.equal(calls.feedback, 1); assert.equal(calls.speech, 4);
     // A second learner can finish after two answers and still see text if TTS fails.
     const second = await (await request('start', lesson, 'other-user')).json();
     const secondAnswers = [];
-    lowConfidenceNext = true;
-    const unclear = await request('transcribe', {
-      sessionToken: second.sessionToken, index: 0, audioBase64: Buffer.alloc(120, 5).toString('base64'), mimeType: 'audio/mp4', duration: 5,
+    let secondChatSession = chatTutor.newSession(chatContext, 'Bearer other-user').session;
+    assert.equal((await request('transcribe', {
+      sessionToken: second.sessionToken,
+      dialogToken,
+      index: 0,
+      audioBase64: Buffer.alloc(120, 70).toString('base64'),
+      mimeType: 'audio/mp4',
+      duration: 5,
+    }, 'other-user')).status, 401, 'A dialogue owned by another learner is rejected');
+
+    transcriptionResponses.push({ text: 'Mă cheamă Mihai.', languages: [{ code: 'ro' }] });
+    const romanianBody = {
+      sessionToken: second.sessionToken,
+      dialogToken: chatTutor.signSession(secondChatSession),
+      index: 0,
+      audioBase64: Buffer.alloc(120, 71).toString('base64'),
+      mimeType: 'audio/mp4',
+      duration: 5,
+    };
+    const romanian = await request('transcribe', romanianBody, 'other-user');
+    assert.equal(romanian.status, 200);
+    const retryResult = await romanian.json();
+    assert.equal(retryResult.decision, 'retry');
+    assert.equal(retryResult.proof, undefined);
+    const afterRomanian = calls.transcription;
+    await request('transcribe', romanianBody, 'other-user');
+    assert.equal(calls.transcription, afterRomanian, 'The same rejected audio is served from the digest cache');
+
+    transcriptionResponses.push(
+      { text: 'Mihai', languages: [] },
+      { text: 'Mihai', languages: [] },
+    );
+    const nameResponse = await request('transcribe', {
+      sessionToken: second.sessionToken,
+      dialogToken: chatTutor.signSession(secondChatSession),
+      index: 0,
+      audioBase64: Buffer.alloc(120, 72).toString('base64'),
+      mimeType: 'audio/mp4',
+      duration: 5,
     }, 'other-user');
-    assert.equal(unclear.status, 400);
-    assert.match((await unclear.json()).error, /norvegiană/i);
-    for (let index = 0; index < 2; index += 1) secondAnswers.push(await (await request('transcribe', {
-      sessionToken: second.sessionToken, index, audioBase64: Buffer.alloc(120, 5).toString('base64'), mimeType: 'audio/mp4', duration: 5,
-    }, 'other-user')).json());
+    const nameAnswer = await nameResponse.json();
+    assert.equal(nameAnswer.decision, 'accept', 'A stable name is valid after “Hva heter du?”');
+    secondAnswers.push(nameAnswer);
+    secondChatSession = chatTutor.nextSession(secondChatSession, nameAnswer.text, {
+      reply: 'Hyggelig å møte deg!',
+      question: 'Hvordan har du det?',
+      memory: null,
+    });
+
+    transcriptionResponses.push({ text: 'repetă', languages: [{ code: 'ro' }] });
+    const command = await (await request('transcribe', {
+      sessionToken: second.sessionToken,
+      dialogToken: chatTutor.signSession(secondChatSession),
+      index: 1,
+      audioBase64: Buffer.alloc(120, 73).toString('base64'),
+      mimeType: 'audio/mp4',
+      duration: 5,
+    }, 'other-user')).json();
+    assert.equal(command.decision, 'accept');
+    assert.equal(command.consumeTurn, false);
+    assert.equal(command.proof, undefined, 'A local command is not counted as a lesson answer');
+
+    transcriptionResponses.push(
+      { text: 'Kanskje', languages: [] },
+      { text: 'Kanskje', languages: [] },
+    );
+    const uncertain = await (await request('transcribe', {
+      sessionToken: second.sessionToken,
+      dialogToken: chatTutor.signSession(secondChatSession),
+      index: 1,
+      audioBase64: Buffer.alloc(120, 74).toString('base64'),
+      mimeType: 'audio/mp4',
+      duration: 5,
+    }, 'other-user')).json();
+    assert.equal(uncertain.decision, 'confirm');
+    assert.equal(uncertain.proof, undefined);
+    assert.ok(uncertain.confirmationToken);
+    const confirmed = await (await request('confirm', {
+      sessionToken: second.sessionToken,
+      dialogToken: chatTutor.signSession(secondChatSession),
+      confirmationToken: uncertain.confirmationToken,
+    }, 'other-user')).json();
+    assert.equal(confirmed.decision, 'accept');
+    assert.ok(confirmed.proof);
+    secondAnswers.push(confirmed);
+    assert.ok(transcriptionRequests.some((hints) => hints.length === 0), 'Ambiguous audio receives a neutral second pass');
+    for (let value = 75; value <= 78; value += 1) {
+      assert.equal((await request('transcribe', {
+        sessionToken: second.sessionToken,
+        dialogToken: chatTutor.signSession(secondChatSession),
+        index: 1,
+        audioBase64: Buffer.alloc(120, value).toString('base64'),
+        mimeType: 'audio/mp4',
+        duration: 5,
+      }, 'other-user')).status, 200);
+    }
+    assert.equal((await request('transcribe', {
+      sessionToken: second.sessionToken,
+      dialogToken: chatTutor.signSession(secondChatSession),
+      index: 1,
+      audioBase64: Buffer.alloc(120, 79).toString('base64'),
+      mimeType: 'audio/mp4',
+      duration: 5,
+    }, 'other-user')).status, 429, 'Distinct recordings are capped per turn');
     failFeedbackAudio = true;
     const textOnly = await (await request('feedback', { sessionToken: second.sessionToken, answers: secondAnswers }, 'other-user')).json();
     assert.ok(textOnly.text); assert.equal(textOnly.audioBase64, null);

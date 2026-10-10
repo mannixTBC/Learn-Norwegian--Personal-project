@@ -43,11 +43,30 @@ openai.getOpenAI = () => ({
           choices: [{ finish_reason: 'length', message: { content: '{' } }],
           usage: { prompt_tokens: 20, completion_tokens: 2, total_tokens: 22 },
         };
+        if (providerMode === 'reject') return {
+          choices: [{
+            finish_reason: 'stop',
+            message: { content: JSON.stringify({
+              accepted: false,
+              reply: 'Jeg forstod ikke helt. Prøv igjen.',
+              question: 'Hva heter du?',
+              questionTranslation: 'Cum te numești?',
+              suggestions: [
+                { answer: 'Jeg heter Ana.', translation: 'Mă numesc Ana.' },
+                { answer: 'Navnet mitt er Mihai.', translation: 'Numele meu este Mihai.' },
+              ],
+              correction: null,
+              memory: null,
+            }) },
+          }],
+          usage: { prompt_tokens: 80, completion_tokens: 14, total_tokens: 94 },
+        };
         return {
           choices: [{
             finish_reason: 'stop',
             message: {
               content: JSON.stringify({
+                accepted: true,
                 reply: 'Det høres bra ut.',
                 question: 'Hva er en risiko for personvernet?',
                 questionTranslation: 'Care este un risc pentru viața privată?',
@@ -114,6 +133,28 @@ test('catalogul complet poate porni sesiuni semnate pentru fiecare lecție și d
     const context = tutor.lessonFor({ level: 'A1', lessonId: 1, pathId: 'general' });
     let session = tutor.newSession(context, 'turn-limit-user').session;
     assert.deepEqual(session.askedQuestions, ['Hva heter du?']);
+
+    const rejected = tutor.finalizeTurn({
+      accepted: false,
+      reply: 'Jeg forstod ikke helt. Prøv igjen.',
+      question: 'Hva spiser du?',
+      questionTranslation: 'Traducere greșită',
+      suggestions: [{ answer: 'Feil svar', translation: 'Răspuns greșit' }],
+      correction: null,
+      memory: null,
+    }, session, context);
+    assert.equal(rejected.accepted, false);
+    assert.equal(rejected.question, session.lastQuestion);
+    assert.notEqual(rejected.questionTranslation, 'Traducere greșită');
+    assert.notEqual(rejected.suggestions[0]?.answer, 'Feil svar');
+    const retrySession = tutor.sessionWithAssistantResponse(session, rejected);
+    assert.equal(retrySession.turn, 0);
+    assert.equal(retrySession.lastQuestion, session.lastQuestion);
+    assert.match(retrySession.history.at(-1).content, /Prøv igjen/);
+
+    const helpedLocally = tutor.localTurn(session, context, 'help');
+    assert.equal(helpedLocally.session.turn, 0);
+    assert.match(helpedLocally.session.history.at(-1).content, /Du kan si/);
 
     const guarded = tutor.finalizeTurn({
       reply: 'Hei, jeg heter ChatGPT. Hva heter du? Hvordan har du det? Bra, takk.',
@@ -267,6 +308,7 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     assert.equal(sent.response_format.json_schema.strict, true);
     assert.equal(sent.response_format.json_schema.schema.additionalProperties, false);
     assert.ok(sent.response_format.json_schema.schema.required.includes('memory'));
+    assert.ok(sent.response_format.json_schema.schema.required.includes('accepted'));
     assert.ok(sent.response_format.json_schema.schema.required.includes('questionTranslation'));
     assert.ok(sent.response_format.json_schema.schema.required.includes('suggestions'));
     assert.deepEqual(providerOptions[0], { timeout: 15_000 });
@@ -291,15 +333,17 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     providerMode = 'refusal';
     const refused = await (await request('turn', { sessionToken: first.sessionToken, message: 'La oss fortsette.' })).json();
     assert.equal(providerCalls.length, 2, 'a refusal is not retried');
-    assert.equal(refused.turn, 2);
-    assert.equal(refused.reply, 'Takk for svaret.');
+    assert.equal(refused.turn, 1, 'A refusal cannot bypass semantic validation');
+    assert.equal(refused.reply, 'Jeg forstod ikke helt. Prøv igjen.');
+    assert.equal(refused.question, first.question);
     assert.equal(refused.correction, null);
     assert.ok(decodeSession(refused.sessionToken).history.length <= 4);
 
     providerMode = 'invalid';
     const invalid = await (await request('turn', { sessionToken: refused.sessionToken, message: 'Et svar til.' })).json();
     assert.equal(providerCalls.length, 3, 'truncated JSON is not retried');
-    assert.equal(invalid.turn, 3);
+    assert.equal(invalid.turn, 1, 'Malformed validation output keeps the current turn');
+    assert.equal(invalid.question, first.question);
 
     const beforeFailureUsageCalls = usageCalls.length;
     providerMode = 'throw';
@@ -311,9 +355,20 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     const stopped = await (await request('turn', { sessionToken: invalid.sessionToken, message: 'Stop' })).json();
     assert.equal(stopped.done, true);
     assert.equal(stopped.question, null);
-    assert.equal(stopped.turn, 3);
+    assert.equal(stopped.turn, 1);
     assert.equal(stopped.remainingTurns, 0);
     assert.equal((await request('turn', { sessionToken: stopped.sessionToken, message: 'Hei' })).status, 409);
+
+    providerMode = 'reject';
+    const semanticStart = await (await request('start', { level: 'A1', lessonId: 1 })).json();
+    const semanticRetry = await (await request('turn', {
+      sessionToken: semanticStart.sessionToken,
+      message: 'Tilfeldige ord uten mening.',
+    })).json();
+    assert.equal(semanticRetry.turn, 0, 'A semantically invalid reply does not consume the turn');
+    assert.equal(semanticRetry.question, semanticStart.question);
+    assert.equal(semanticRetry.done, false);
+    assert.match(decodeSession(semanticRetry.sessionToken).history.at(-1).content, /Prøv igjen/);
   } finally {
     await new Promise((resolve) => server.close(resolve));
     for (const [key, value] of Object.entries({

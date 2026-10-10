@@ -33,6 +33,8 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   const [messages, setMessages] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [feedback, setFeedback] = useState(null);
+  const [pendingTranscript, setPendingTranscript] = useState(null);
+  const [transcriptNotice, setTranscriptNotice] = useState('');
   const [revealedHelp, setRevealedHelp] = useState({});
   const [error, setError] = useState('');
   const controller = useRef(null);
@@ -116,6 +118,8 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     recording.current = null;
     stopPlayback();
     busy.current = false;
+    setPendingTranscript(null);
+    setTranscriptNotice('');
     setStatus('ended');
   };
 
@@ -154,7 +158,8 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       clearTimeout(autoStartTimer.current);
       autoStartTimer.current = setTimeout(() => {
         if (!mounted.current || signal.aborted) return;
-        if (currentDialog.done) finish(currentAnswers, currentVoiceSession);
+        if (currentDialog.done && currentAnswers.length >= 2) finish(currentAnswers, currentVoiceSession);
+        else if (currentDialog.done) setStatus('ended');
         else record(currentVoiceSession, currentDialog, currentAnswers);
       }, currentDialog.done ? 450 : 1_000);
     };
@@ -194,6 +199,8 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     setMessages([]);
     setAnswers([]);
     setFeedback(null);
+    setPendingTranscript(null);
+    setTranscriptNotice('');
     setRevealedHelp({});
     setError('');
     setStatus('loading');
@@ -220,9 +227,13 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
 
   const continueDialog = async (transcript, currentVoiceSession, currentDialog, currentAnswers) => {
     const signal = controller.current.signal;
-    const nextAnswers = [...currentAnswers, transcript];
-    setAnswers(nextAnswers);
-    setMessages((current) => [...current, { role: 'user', content: transcript.text, turn: currentDialog.turn + 1 }]);
+    setPendingTranscript(null);
+    setTranscriptNotice('');
+    setMessages((current) => [...current, {
+      role: 'user',
+      content: transcript.text,
+      turn: currentDialog.turn + (transcript.consumeTurn === false ? 0 : 1),
+    }]);
     setStatus('thinking');
     const response = await sendChatTurn({
       sessionToken: currentDialog.sessionToken,
@@ -230,6 +241,9 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     }, signal);
     if (signal.aborted || !mounted.current) return;
     const nextDialog = normalizeDialog(response, currentDialog.sessionToken);
+    const consumeTurn = transcript.consumeTurn !== false && nextDialog.turn === currentDialog.turn + 1;
+    const nextAnswers = consumeTurn ? [...currentAnswers, transcript] : currentAnswers;
+    if (consumeTurn) setAnswers(nextAnswers);
     setDialog(nextDialog);
     setMessages((current) => [...current, assistantMessage(nextDialog)]);
     await speak(currentVoiceSession, nextDialog, nextAnswers);
@@ -242,6 +256,24 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     try {
       const transcript = await practiceRequest('transcribe', payload, signal);
       if (signal.aborted || !mounted.current) return;
+      if (transcript.decision === 'retry') {
+        setTranscriptNotice(transcript.message || 'Încearcă din nou; întrebarea rămâne aceeași.');
+        setStatus('retrying');
+        busy.current = false;
+        clearTimeout(autoStartTimer.current);
+        autoStartTimer.current = setTimeout(() => {
+          if (mounted.current && !signal.aborted) record(currentVoiceSession, currentDialog, currentAnswers);
+        }, 1_400);
+        return;
+      }
+      if (transcript.decision === 'confirm') {
+        setPendingTranscript({ transcript, currentVoiceSession, currentDialog, currentAnswers });
+        setTranscriptNotice('');
+        setStatus('confirming');
+        busy.current = false;
+        return;
+      }
+      if (transcript.decision !== 'accept' && !transcript.proof) throw new Error('Transcrierea nu a putut fi verificată. Încearcă din nou.');
       await continueDialog(transcript, currentVoiceSession, currentDialog, currentAnswers);
     } catch (err) {
       if (!signal.aborted && mounted.current) {
@@ -262,6 +294,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       if (signal.aborted || !mounted.current) return;
       await uploadAnswer({
         sessionToken: currentVoiceSession.sessionToken,
+        dialogToken: currentDialog.sessionToken,
         index: currentAnswers.length,
         duration,
         ...payload,
@@ -312,6 +345,42 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     }
   };
 
+  const acceptPendingTranscript = async () => {
+    if (busy.current || !pendingTranscript) return;
+    busy.current = true;
+    const { transcript, currentVoiceSession, currentDialog, currentAnswers } = pendingTranscript;
+    const signal = controller.current.signal;
+    setError('');
+    setStatus('transcribing');
+    try {
+      const accepted = await practiceRequest('confirm', {
+        sessionToken: currentVoiceSession.sessionToken,
+        dialogToken: currentDialog.sessionToken,
+        confirmationToken: transcript.confirmationToken,
+      }, signal);
+      if (signal.aborted || !mounted.current) return;
+      await continueDialog(accepted, currentVoiceSession, currentDialog, currentAnswers);
+    } catch (err) {
+      if (!signal.aborted && mounted.current) {
+        setError(err.message);
+        setStatus('confirming');
+      }
+    } finally {
+      if (!signal.aborted) busy.current = false;
+    }
+  };
+
+  const retryPendingTranscript = () => {
+    if (busy.current || !pendingTranscript) return;
+    const { currentVoiceSession, currentDialog, currentAnswers } = pendingTranscript;
+    setPendingTranscript(null);
+    setTranscriptNotice('');
+    setError('');
+    setStatus('question');
+    busy.current = false;
+    record(currentVoiceSession, currentDialog, currentAnswers);
+  };
+
   const active = !['idle', 'ended'].includes(status);
   const labels = {
     idle: 'Pregătit de practică',
@@ -321,6 +390,8 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     microphone: 'Pornim microfonul…',
     recording: 'Te ascult · maximum 30 de secunde',
     transcribing: 'Transcriem răspunsul…',
+    confirming: 'Verifică ce am auzit',
+    retrying: 'Mai încearcă o dată…',
     thinking: 'Nora pregătește răspunsul…',
     evaluating: 'Pregătim feedbackul…',
     feedbackAudio: 'Feedbackul tău',
@@ -337,6 +408,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       {status === 'idle' && <div className="voice-lesson__welcome"><h2>Exersează printr-un dialog real</h2><p>Nora răspunde natural și continuă conversația în limitele lecției curente.</p><ul><li>Până la 8 răspunsuri</li><li>Dialog adaptiv</li><li>Feedback final</li></ul></div>}
       {configured === false && <p className="voice-lesson__notice">Practica vocală nu este disponibilă momentan. Poți finaliza lecția și reveni mai târziu.</p>}
       {error && <p className="voice-lesson__error" role="alert">{error}</p>}
+      {transcriptNotice && <p className="voice-lesson__notice" role="status">{transcriptNotice}</p>}
       {dialog && active && <div className="voice-lesson__progress"><span>Dialogul lecției</span><small>Replica {Math.min(dialog.turn + 1, dialog.maxTurns)} din {dialog.maxTurns}</small></div>}
       {messages.length > 0 && <div className="voice-lesson__transcript" role="log" aria-label="Dialogul în norvegiană">
         {messages.map((message, messageIndex) => message.role === 'user'
@@ -367,9 +439,15 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
           </div>)}
       </div>}
       {feedback && <div className="voice-lesson__message voice-lesson__feedback"><small>Feedbackul tău</small><p>{feedback.text}</p></div>}
+      {pendingTranscript && <div className="voice-lesson__confirmation" role="status">
+        <small>Verificare rapidă</small>
+        <p>{pendingTranscript.transcript.message}</p>
+      </div>}
       <div className="voice-lesson__controls">
         {!active && <button type="button" className="voice-lesson__primary" disabled={configured !== true} onClick={start}>{status === 'ended' ? 'Pornește un dialog nou' : 'Pornește dialogul'}</button>}
         {status === 'recording' && <button type="button" className="voice-lesson__primary" onClick={() => recording.current?.stop()}>Am terminat răspunsul</button>}
+        {status === 'confirming' && <button type="button" className="voice-lesson__primary" onClick={acceptPendingTranscript}>Da, continuă</button>}
+        {status === 'confirming' && <button type="button" onClick={retryPendingTranscript}>Mai încerc</button>}
         {active && <button type="button" onClick={stop}>Oprește conversația</button>}
       </div>
       {status === 'idle' && <p className="voice-lesson__start-caption">O singură apăsare pornește dialogul.</p>}

@@ -15,8 +15,14 @@ Etapa și rezultatele exercițiilor sunt păstrate la rotirea telefonului și re
 4. În modul automat, microfonul pornește după întrebare și trimite răspunsul după aproximativ 2 secunde de liniște,
    cu o limită de 30 de secunde. Elevul poate opri răspunsul mai repede sau poate folosi modul manual.
    Microfonul este eliberat imediat. Audio merge pe server numai pentru transcriere.
-5. După opt răspunsuri, o singură cerere LLM analizează dialogul și pregătește feedbackul final.
-6. Feedbackul românesc este limitat la 25 de cuvinte și citit vocal. Dacă TTS eșuează,
+5. Transcrierea primește norvegiana și româna ca limbi posibile, fără un prompt care să forțeze
+   cuvinte norvegiene. Un rezultat clar este acceptat sau respins; numai cazurile ambigue primesc
+   o a doua trecere neutră. Răspunsurile scurte sunt verificate față de întrebarea curentă.
+   Dacă rezultatul rămâne incert, elevul confirmă textul sau înregistrează din nou fără a avansa dialogul.
+   În plus, răspunsul este verificat semantic în aceeași cerere care generează reacția Norei;
+   un șir fără sens sau fără legătură păstrează întrebarea și nu intră în feedback.
+6. După opt răspunsuri, o singură cerere LLM analizează dialogul și pregătește feedbackul final.
+7. Feedbackul românesc este limitat la 25 de cuvinte și citit vocal. Dacă TTS eșuează,
    textul rămâne vizibil. Reascultarea audio deja primit nu face alte cereri AI.
 
 ## Configurare
@@ -41,7 +47,8 @@ Etapa și rezultatele exercițiilor sunt păstrate la rotirea telefonului și re
   este permis doar în dezvoltare pe loopback, fără `NETLIFY`.
 
 Tokenul de practică expiră după 10 minute, este semnat pe server și legat de utilizator,
-lecție și direcție. Transcrierile au dovezi semnate; clientul nu poate înlocui răspunsurile
+lecție și direcție. Fiecare transcriere este legată și de dialogul, întrebarea și tura curentă.
+Transcrierile acceptate au dovezi semnate; clientul nu poate înlocui răspunsurile
 cu texte arbitrare înainte de analiză. Înregistrările nu sunt salvate. Transcrierile și
 feedbackul sunt păstrate temporar în memoria procesului pentru retrimiteri, maximum
 durata sesiunii; sunt curățate la cererile următoare. Nu sunt scrise în Blobs.
@@ -52,7 +59,7 @@ temporar, astfel încât textul și cheia Cartesia nu sunt expuse browserului sa
 Funcția Netlify dedicată transmite direct corpul răspunsului Cartesia și nu îl convertește
 în Base64 și nu îl păstrează în memorie integral.
 
-Limitarea pornirilor (o pornire/minut/utilizator), a transcrierii per întrebare și
+Limitarea pornirilor (o pornire/minut/utilizator), maximum cinci încercări de răspuns și douăsprezece înregistrări totale pe tură, deduplicarea aceleiași înregistrări și
 deduplicarea feedbackului sunt locale procesului. În funcții serverless diferite,
 retrimiterea unei cereri poate produce o nouă transcriere/analiză. Acestea nu sunt
 limite globale de buget; configurează limite și în contul OpenAI.
@@ -65,7 +72,7 @@ păstrate pentru compatibilitate, dar componenta desktop nu le mai folosește.
 ## Verificări
 
 ```
-node --test backend/routes/voicePractice.test.js backend/voiceAudioCache.test.js backend/voiceStreamTicket.test.js backend/voiceStreamFunction.test.mjs
+node --test backend/voiceTranscriptDecision.test.js backend/routes/voicePractice.test.js backend/voiceAudioCache.test.js backend/voiceStreamTicket.test.js backend/voiceStreamFunction.test.mjs
 node scripts/test-voice-practice-client.mjs
 npm run build
 ```

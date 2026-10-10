@@ -39,6 +39,9 @@
 .voice-lesson__question small{color:#63777f;font-size:.76rem;font-weight:700}
 .voice-lesson__question p{margin:10px 0 0;color:var(--fjord);font-size:1.25rem;font-weight:750;line-height:1.5}
 .voice-lesson__feedback{max-width:100%;margin-top:20px;background:#fff8e4;border-color:#efdca7}
+.voice-lesson__confirmation{margin-top:18px;padding:14px 16px;border:1px solid #efdca7;border-radius:12px;background:#fff8e4;color:#5f512b}
+.voice-lesson__confirmation small{display:block;color:#7c692e;font-size:.68rem;font-weight:850;text-transform:uppercase;letter-spacing:.04em}
+.voice-lesson__confirmation p{margin:6px 0 0;font-size:.86rem;line-height:1.55}
 .voice-lesson__error,.voice-lesson__notice{margin:18px 0;padding:12px 15px;border-radius:10px;line-height:1.5;font-size:.85rem}
 .voice-lesson__error{color:#973c42;background:#fff0f1}
 .voice-lesson__notice{color:#63777f;background:#edf3f4}
