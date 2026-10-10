@@ -22,11 +22,12 @@ test('toate lecțiile au trei întrebări scurte pregătite în Bokmål', () => 
   }
 });
 test('flux modular: autentificare, voce reutilizată, trei transcrieri, o singură analiză și o singură voce finală', async () => {
-  const saved = { key: process.env.OPENAI_API_KEY, env: process.env.NODE_ENV, netlify: process.env.NETLIFY, tts: process.env.OPENAI_VOICE_TTS_MODEL };
+  const saved = { key: process.env.OPENAI_API_KEY, env: process.env.NODE_ENV, netlify: process.env.NETLIFY, tts: process.env.OPENAI_VOICE_TTS_MODEL, stt: process.env.OPENAI_VOICE_STT_MODEL };
   const realFetch = global.fetch;
   const calls = { speech: 0, transcription: 0, feedback: 0 };
   process.env.OPENAI_API_KEY = 'test-key-not-exposed';
   process.env.NODE_ENV = 'production'; delete process.env.NETLIFY;
+  delete process.env.OPENAI_VOICE_STT_MODEL;
   // Unique cache version for this test, never sent to a real provider.
   process.env.OPENAI_VOICE_TTS_MODEL = `test-tts-${Date.now()}`;
   let analysis;
@@ -43,16 +44,18 @@ test('flux modular: autentificare, voce reutilizată, trei transcrieri, o singur
     if (url.endsWith('/audio/transcriptions')) {
       calls.transcription += 1;
       assert.ok(options.body.get('file') instanceof Blob);
-      assert.equal(options.body.get('language'), 'no');
+      assert.equal(options.body.get('model'), 'gpt-transcribe');
+      assert.equal(options.body.get('languages[]'), 'no');
+      assert.equal(options.body.get('language'), null);
       assert.equal(options.body.get('temperature'), '0');
-      assert.equal(options.body.get('include[]'), 'logprobs');
+      assert.equal(options.body.get('include[]'), null);
       assert.match(options.body.get('prompt'), /norsk bokmål/i);
       assert.doesNotMatch(options.body.get('prompt'), /Vocabulary:/i);
       if (lowConfidenceNext) {
         lowConfidenceNext = false;
-        return { ok: true, json: async () => ({ text: 'Uklart svar', logprobs: [{ token: 'Uklart', logprob: -1.8 }, { token: ' svar', logprob: -1.4 }] }) };
+        return { ok: true, json: async () => ({ text: 'Uklart svar', languages: [] }) };
       }
-      return { ok: true, json: async () => ({ text: `Jeg heter Anna ${calls.transcription}.`, logprobs: [{ token: 'Jeg', logprob: -0.02 }] }) };
+      return { ok: true, json: async () => ({ text: `Jeg heter Anna ${calls.transcription}.`, languages: [{ code: 'no' }] }) };
     }
     assert.ok(url.endsWith('/chat/completions'));
     calls.feedback += 1; analysis = JSON.parse(options.body);
@@ -109,7 +112,7 @@ test('flux modular: autentificare, voce reutilizată, trei transcrieri, o singur
       sessionToken: second.sessionToken, index: 0, audioBase64: Buffer.alloc(120, 5).toString('base64'), mimeType: 'audio/mp4', duration: 5,
     }, 'other-user');
     assert.equal(unclear.status, 400);
-    assert.match((await unclear.json()).error, /suficient de clar/i);
+    assert.match((await unclear.json()).error, /norvegiană/i);
     for (let index = 0; index < 2; index += 1) secondAnswers.push(await (await request('transcribe', {
       sessionToken: second.sessionToken, index, audioBase64: Buffer.alloc(120, 5).toString('base64'), mimeType: 'audio/mp4', duration: 5,
     }, 'other-user')).json());
@@ -121,7 +124,7 @@ test('flux modular: autentificare, voce reutilizată, trei transcrieri, o singur
     assert.equal(calls.feedback, 2, 'Audio failure does not repeat evaluation');
   } finally {
     global.fetch = realFetch;
-    for (const [key, value] of Object.entries({ OPENAI_API_KEY: saved.key, NODE_ENV: saved.env, NETLIFY: saved.netlify, OPENAI_VOICE_TTS_MODEL: saved.tts })) {
+    for (const [key, value] of Object.entries({ OPENAI_API_KEY: saved.key, NODE_ENV: saved.env, NETLIFY: saved.netlify, OPENAI_VOICE_TTS_MODEL: saved.tts, OPENAI_VOICE_STT_MODEL: saved.stt })) {
       if (value === undefined) delete process.env[key]; else process.env[key] = value;
     }
     await new Promise((resolve) => server.close(resolve));

@@ -19,7 +19,7 @@ Etapa și rezultatele exercițiilor sunt păstrate la rotirea telefonului și re
 ## Configurare
 
 - `OPENAI_API_KEY`: secret pe server, cu acces la transcriere, Chat Completions și Speech.
-- `OPENAI_VOICE_STT_MODEL`: implicit `gpt-4o-mini-transcribe`.
+- `OPENAI_VOICE_STT_MODEL`: implicit `gpt-transcribe`.
 - `OPENAI_VOICE_FEEDBACK_MODEL`: implicit `gpt-4o-mini`.
 - `OPENAI_VOICE_TTS_MODEL`: implicit `gpt-4o-mini-tts`, voce `marin`.
 - În Netlify, variabilele trebuie să fie disponibile pentru Functions. Biblioteca

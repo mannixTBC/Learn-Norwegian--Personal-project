@@ -70,7 +70,7 @@ const buildVoiceSession = (context) => ({
   audio: {
     input: {
       noise_reduction: { type: 'near_field' },
-      transcription: { model: 'gpt-4o-mini-transcribe', prompt: 'Norwegian language practice with occasional Romanian explanations.' },
+      transcription: { model: 'gpt-transcribe', languages: ['no'], prompt: 'En muntlig norsktime med korte svar på norsk bokmål.' },
       turn_detection: { type: 'semantic_vad', eagerness: 'low', create_response: false, interrupt_response: false },
     },
     output: { voice: 'marin', speed: context.level === 'A1' ? 0.85 : context.level === 'A2' ? 0.95 : 1 },
