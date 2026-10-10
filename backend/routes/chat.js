@@ -133,9 +133,9 @@ router.post('/turn', wrap(async (req, res) => {
     }
   }
 
-  const updated = result.accepted === false
-    ? sessionWithAssistantResponse(session, result)
-    : nextSession(session, message, result);
+  const updated = result.advanceTurn === true
+    ? nextSession(session, message, result)
+    : sessionWithAssistantResponse(session, result, result.understood ? message : null);
   res.json(commonResponse({
     session: updated,
     reply: result.reply,

@@ -47,7 +47,9 @@ openai.getOpenAI = () => ({
           choices: [{
             finish_reason: 'stop',
             message: { content: JSON.stringify({
-              accepted: false,
+              understood: false,
+              intent: 'unclear',
+              advanceTurn: false,
               reply: 'Jeg forstod ikke helt. Prøv igjen.',
               question: 'Hva heter du?',
               questionTranslation: 'Cum te numești?',
@@ -61,12 +63,51 @@ openai.getOpenAI = () => ({
           }],
           usage: { prompt_tokens: 80, completion_tokens: 14, total_tokens: 94 },
         };
+        if (providerMode === 'stay') return {
+          choices: [{
+            finish_reason: 'stop',
+            message: { content: JSON.stringify({
+              understood: true,
+              intent: 'other',
+              advanceTurn: false,
+              reply: 'Jeg forstår. Ta den tiden du trenger.',
+              question: 'Hva heter du?',
+              questionTranslation: 'Cum te numești?',
+              suggestions: [
+                { answer: 'Jeg heter Ana.', translation: 'Mă numesc Ana.' },
+                { answer: 'Navnet mitt er Mihai.', translation: 'Numele meu este Mihai.' },
+              ],
+              correction: null,
+              memory: null,
+            }) },
+          }],
+          usage: { prompt_tokens: 80, completion_tokens: 18, total_tokens: 98 },
+        };
+        if (providerMode === 'semantic-stop') return {
+          choices: [{
+            finish_reason: 'stop',
+            message: { content: JSON.stringify({
+              understood: true,
+              intent: 'stop',
+              advanceTurn: false,
+              reply: 'Det er helt greit. Vi avslutter her.',
+              question: null,
+              questionTranslation: null,
+              suggestions: [],
+              correction: null,
+              memory: null,
+            }) },
+          }],
+          usage: { prompt_tokens: 80, completion_tokens: 12, total_tokens: 92 },
+        };
         return {
           choices: [{
             finish_reason: 'stop',
             message: {
               content: JSON.stringify({
-                accepted: true,
+                understood: true,
+                intent: 'answer',
+                advanceTurn: true,
                 reply: 'Det høres bra ut.',
                 question: 'Hva er en risiko for personvernet?',
                 questionTranslation: 'Care este un risc pentru viața privată?',
@@ -135,7 +176,9 @@ test('catalogul complet poate porni sesiuni semnate pentru fiecare lecție și d
     assert.deepEqual(session.askedQuestions, ['Hva heter du?']);
 
     const rejected = tutor.finalizeTurn({
-      accepted: false,
+      understood: false,
+      intent: 'unclear',
+      advanceTurn: false,
       reply: 'Jeg forstod ikke helt. Prøv igjen.',
       question: 'Hva spiser du?',
       questionTranslation: 'Traducere greșită',
@@ -143,7 +186,8 @@ test('catalogul complet poate porni sesiuni semnate pentru fiecare lecție și d
       correction: null,
       memory: null,
     }, session, context);
-    assert.equal(rejected.accepted, false);
+    assert.equal(rejected.understood, false);
+    assert.equal(rejected.advanceTurn, false);
     assert.equal(rejected.question, session.lastQuestion);
     assert.notEqual(rejected.questionTranslation, 'Traducere greșită');
     assert.notEqual(rejected.suggestions[0]?.answer, 'Feil svar');
@@ -157,6 +201,9 @@ test('catalogul complet poate porni sesiuni semnate pentru fiecare lecție și d
     assert.match(helpedLocally.session.history.at(-1).content, /Du kan si/);
 
     const guarded = tutor.finalizeTurn({
+      understood: true,
+      intent: 'answer',
+      advanceTurn: true,
       reply: 'Hei, jeg heter ChatGPT. Hva heter du? Hvordan har du det? Bra, takk.',
       question: 'Hva heter du?',
       correction: null,
@@ -169,6 +216,9 @@ test('catalogul complet poate porni sesiuni semnate pentru fiecare lecție și d
     const afterGuard = tutor.nextSession(session, 'Peter Theofir.', guarded);
     assert.deepEqual(afterGuard.askedQuestions, ['Hva heter du?', 'Hvordan har du det?']);
     assert.equal(tutor.finalizeTurn({
+      understood: true,
+      intent: 'answer',
+      advanceTurn: true,
       reply: 'Bra, takk. Hva heter du?',
       question: 'Kan du fortelle meg hva du heter?',
       correction: null,
@@ -181,6 +231,9 @@ test('catalogul complet poate porni sesiuni semnate pentru fiecare lecție și d
       askedQuestions: ['Hva heter du?', 'Hvordan har du det?', 'Hva sier du når du møter noen?'],
     };
     const guardedLessonBoundary = tutor.finalizeTurn({
+      understood: true,
+      intent: 'answer',
+      advanceTurn: true,
       reply: 'Fint.',
       question: 'Hva vil du bestille?',
       correction: null,
@@ -190,6 +243,9 @@ test('catalogul complet poate porni sesiuni semnate pentru fiecare lecție și d
     assert.notEqual(guardedLessonBoundary.question, 'Hva vil du bestille?');
 
     const safeLessonFollowUp = tutor.finalizeTurn({
+      understood: true,
+      intent: 'answer',
+      advanceTurn: true,
       reply: 'Fint.',
       question: 'Kan du fortelle litt om det?',
       correction: null,
@@ -308,7 +364,9 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     assert.equal(sent.response_format.json_schema.strict, true);
     assert.equal(sent.response_format.json_schema.schema.additionalProperties, false);
     assert.ok(sent.response_format.json_schema.schema.required.includes('memory'));
-    assert.ok(sent.response_format.json_schema.schema.required.includes('accepted'));
+    assert.ok(sent.response_format.json_schema.schema.required.includes('understood'));
+    assert.ok(sent.response_format.json_schema.schema.required.includes('intent'));
+    assert.ok(sent.response_format.json_schema.schema.required.includes('advanceTurn'));
     assert.ok(sent.response_format.json_schema.schema.required.includes('questionTranslation'));
     assert.ok(sent.response_format.json_schema.schema.required.includes('suggestions'));
     assert.deepEqual(providerOptions[0], { timeout: 15_000 });
@@ -319,6 +377,7 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     assert.match(sent.messages[0].content, /nu trebuie repetate sau reformulate/);
     assert.match(sent.messages[0].content, /rămâi strict la tema, vocabularul și gramatica lecției de bază/);
     assert.match(sent.messages[0].content, /Menționează concret un detaliu sau sens din ultima replică/);
+    assert.match(sent.messages[0].content, /nu confunda relevanța cu înțelegerea/i);
     assert.doesNotMatch(sent.messages[0].content, /Salutări și prezentări/);
 
     const afterFirst = decodeSession(first.sessionToken);
@@ -358,6 +417,31 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     assert.equal(stopped.turn, 1);
     assert.equal(stopped.remainingTurns, 0);
     assert.equal((await request('turn', { sessionToken: stopped.sessionToken, message: 'Hei' })).status, 409);
+
+    providerMode = 'stay';
+    const understoodStart = await (await request('start', { level: 'A1', lessonId: 1 })).json();
+    const understoodStay = await (await request('turn', {
+      sessionToken: understoodStart.sessionToken,
+      message: 'Jeg må tenke litt.',
+    })).json();
+    assert.equal(understoodStay.turn, 0, 'A clear Norwegian aside can keep the current turn');
+    assert.equal(understoodStay.done, false);
+    assert.equal(understoodStay.reply, 'Jeg forstår. Ta den tiden du trenger.');
+    assert.equal(understoodStay.question, understoodStart.question);
+    assert.doesNotMatch(understoodStay.reply, /forstod ikke/i);
+    assert.equal(decodeSession(understoodStay.sessionToken).history.at(-2).content, 'Jeg må tenke litt.');
+
+    providerMode = 'semantic-stop';
+    const refusalStart = await (await request('start', { level: 'A1', lessonId: 1 })).json();
+    const naturalStop = await (await request('turn', {
+      sessionToken: refusalStart.sessionToken,
+      message: 'Jeg skal ikke prøve igjen.',
+    })).json();
+    assert.equal(naturalStop.turn, 0);
+    assert.equal(naturalStop.done, true, 'An understood refusal to continue ends naturally');
+    assert.equal(naturalStop.question, null);
+    assert.equal(naturalStop.reply, 'Det er helt greit. Vi avslutter her.');
+    assert.equal(decodeSession(naturalStop.sessionToken).history.at(-2).content, 'Jeg skal ikke prøve igjen.');
 
     providerMode = 'reject';
     const semanticStart = await (await request('start', { level: 'A1', lessonId: 1 })).json();

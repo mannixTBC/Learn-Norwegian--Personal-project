@@ -19,8 +19,9 @@ Etapa și rezultatele exercițiilor sunt păstrate la rotirea telefonului și re
    cuvinte norvegiene. Un rezultat clar este acceptat sau respins; numai cazurile ambigue primesc
    o a doua trecere neutră. Răspunsurile scurte sunt verificate față de întrebarea curentă.
    Dacă rezultatul rămâne incert, elevul confirmă textul sau înregistrează din nou fără a avansa dialogul.
-   În plus, răspunsul este verificat semantic în aceeași cerere care generează reacția Norei;
-   un șir fără sens sau fără legătură păstrează întrebarea și nu intră în feedback.
+   În plus, aceeași cerere care generează reacția Norei separă înțelegerea limbii de
+   avansarea lecției: o replică norvegiană clară primește un răspuns natural chiar dacă
+   refuză sau nu răspunde direct. Numai un șir realmente neinteligibil cere repetarea.
 6. După opt răspunsuri, o singură cerere LLM analizează dialogul și pregătește feedbackul final.
 7. Feedbackul românesc este limitat la 25 de cuvinte și citit vocal. Dacă TTS eșuează,
    textul rămâne vizibil. Reascultarea audio deja primit nu face alte cereri AI.
