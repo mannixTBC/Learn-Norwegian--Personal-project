@@ -61,7 +61,7 @@ const speechSettings = (input, language, dialogue = false) => ({ model: process.
       ? 'Speak clear Norwegian Bokmål with a neutral eastern Norwegian accent, slowly and naturally. Read the entire input verbatim, from beginning to end. It contains a reply followed by a question: speak both parts and do not omit the final question.'
       : 'Speak clear Norwegian Bokmål with a neutral eastern Norwegian accent, slowly and naturally. Read only the question.'
     : 'Citește numai textul, clar și natural în română. Pronunță corect eventualele expresii Bokmål.',
-  speed: language === 'no' ? 0.9 : 1 });
+  speed: language === 'no' ? (dialogue ? 0.82 : 0.9) : 1 });
 
 const elevenLabsDialogueSpeech = async (input) => {
   const apiKey = process.env.ELEVENLABS_API_KEY;
@@ -82,7 +82,7 @@ const elevenLabsDialogueSpeech = async (input) => {
         similarity_boost: 0.78,
         style: 0.12,
         use_speaker_boost: true,
-        speed: 0.94,
+        speed: 0.82,
       },
     }),
   });

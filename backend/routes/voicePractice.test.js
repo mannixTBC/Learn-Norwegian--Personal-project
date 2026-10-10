@@ -133,6 +133,7 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     assert.equal(elevenSpeechRequests[0].text, 'Hei! La oss øve sammen. Hva heter du?');
     assert.equal(elevenSpeechRequests[0].model_id, 'eleven_flash_v2_5');
     assert.equal(elevenSpeechRequests[0].language_code, 'no');
+    assert.equal(elevenSpeechRequests[0].voice_settings.speed, 0.82);
     delete process.env.ELEVENLABS_API_KEY;
     delete process.env.ELEVENLABS_FEMALE_VOICE_ID;
     delete process.env.ELEVENLABS_MODEL_ID;
