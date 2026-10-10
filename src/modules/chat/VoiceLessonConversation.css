@@ -35,7 +35,6 @@
 .voice-lesson__controls button:disabled{opacity:.5;cursor:not-allowed}
 .voice-lesson__controls button:focus-visible{outline:3px solid var(--fjord-light);outline-offset:3px}
 .voice-lesson__hint{margin:18px 0 0;color:#63777f;font-size:.8rem;line-height:1.55}
-.voice-lesson__privacy{margin:10px 0 0;color:#70848a;font-size:.72rem;line-height:1.5}
 .voice-lesson__question{margin-top:24px;padding:22px;border:1px solid #cfe3e5;border-radius:14px;background:#fff}
 .voice-lesson__question small{color:#63777f;font-size:.76rem;font-weight:700}
 .voice-lesson__question p{margin:10px 0 0;color:var(--fjord);font-size:1.25rem;font-weight:750;line-height:1.5}
@@ -70,7 +69,6 @@
   .voice-lesson__card--welcome .voice-lesson__primary{width:100%;max-width:430px;min-height:48px;font-size:.88rem;border-radius:12px}
   .voice-lesson__start-caption{display:block;margin:12px 0 0;color:#637e88;font-size:.74rem;line-height:1.5}
   .voice-lesson__card--welcome .voice-lesson__hint{display:none}
-  .voice-lesson__card--welcome .voice-lesson__privacy{max-width:50%;margin-top:22px;font-size:.66rem}
 }
 @media(max-width:860px){
   .voice-lesson__card--welcome{overflow:hidden;background:#fff}
