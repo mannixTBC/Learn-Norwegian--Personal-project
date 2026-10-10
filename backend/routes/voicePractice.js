@@ -63,6 +63,43 @@ const speechSettings = (input, language, dialogue = false) => ({ model: process.
     : 'Citește numai textul, clar și natural în română. Pronunță corect eventualele expresii Bokmål.',
   speed: language === 'no' ? 0.9 : 1 });
 
+const elevenLabsDialogueSpeech = async (input) => {
+  const apiKey = process.env.ELEVENLABS_API_KEY;
+  const voiceId = process.env.ELEVENLABS_FEMALE_VOICE_ID || 'Xb7hH8MSUJpSbSDYk0k2';
+  if (!apiKey || !voiceId) return null;
+  const modelId = process.env.ELEVENLABS_MODEL_ID || 'eleven_flash_v2_5';
+  const endpoint = `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voiceId)}?output_format=mp3_44100_128`;
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    signal: AbortSignal.timeout(20_000),
+    headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
+    body: JSON.stringify({
+      text: input,
+      model_id: modelId,
+      language_code: 'no',
+      voice_settings: {
+        stability: 0.58,
+        similarity_boost: 0.78,
+        style: 0.12,
+        use_speaker_boost: true,
+        speed: 0.94,
+      },
+    }),
+  });
+  if (!response.ok) throw fail('ElevenLabs nu a putut genera vocea Norei.', 502);
+  return Buffer.from(await response.arrayBuffer());
+};
+
+const dialogueSpeech = async (input) => {
+  try {
+    const elevenLabsAudio = await elevenLabsDialogueSpeech(input);
+    if (elevenLabsAudio) return { audio: elevenLabsAudio, provider: 'elevenlabs' };
+  } catch (error) {
+    console.warn('voice-practice-elevenlabs-fallback', { kind: error.name, status: error.status || 502 });
+  }
+  return { audio: await speech(speechSettings(input, 'no', true)), provider: 'openai' };
+};
+
 const dialogueSpeechText = (session) => {
   const latestAssistant = [...session.history].reverse()
     .find((message) => message.role === 'assistant')?.content?.trim();
@@ -121,8 +158,8 @@ router.post('/speak', wrap(async (req, res) => {
   const { session } = verifyChatSession(req.body?.dialogToken, req.userId);
   const latest = dialogueSpeechText(session);
   if (!latest) throw fail('Replica nu este validă.');
-  const audio = await once(`${session.id}:speech:${session.turn}`, session.expires, () => speech(speechSettings(latest, 'no', true)));
-  res.json({ audioBase64: audio.toString('base64'), mimeType: 'audio/mpeg' });
+  const result = await once(`${session.id}:speech:${session.turn}`, session.expires, () => dialogueSpeech(latest));
+  res.json({ audioBase64: result.audio.toString('base64'), mimeType: 'audio/mpeg', provider: result.provider });
 }));
 router.post('/transcribe', wrap(async (req, res) => {
   const session = sessionFor(req);

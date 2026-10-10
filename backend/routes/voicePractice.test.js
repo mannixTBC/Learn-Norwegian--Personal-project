@@ -31,19 +31,35 @@ test('toate lecțiile au trei întrebări scurte pregătite în Bokmål', () => 
   }
 });
 test('flux modular: dialog de opt replici, voce securizată și feedback final unic', async () => {
-  const saved = { key: process.env.OPENAI_API_KEY, env: process.env.NODE_ENV, netlify: process.env.NETLIFY, tts: process.env.OPENAI_VOICE_TTS_MODEL, stt: process.env.OPENAI_VOICE_STT_MODEL };
+  const saved = {
+    key: process.env.OPENAI_API_KEY, env: process.env.NODE_ENV, netlify: process.env.NETLIFY,
+    tts: process.env.OPENAI_VOICE_TTS_MODEL, stt: process.env.OPENAI_VOICE_STT_MODEL,
+    elevenKey: process.env.ELEVENLABS_API_KEY, elevenVoice: process.env.ELEVENLABS_FEMALE_VOICE_ID,
+    elevenModel: process.env.ELEVENLABS_MODEL_ID,
+  };
   const realFetch = global.fetch;
-  const calls = { speech: 0, transcription: 0, feedback: 0 };
+  const calls = { speech: 0, elevenSpeech: 0, transcription: 0, feedback: 0 };
   const speechRequests = [];
+  const elevenSpeechRequests = [];
   process.env.OPENAI_API_KEY = 'test-key-not-exposed';
   process.env.NODE_ENV = 'production'; delete process.env.NETLIFY;
   delete process.env.OPENAI_VOICE_STT_MODEL;
+  delete process.env.ELEVENLABS_API_KEY;
+  delete process.env.ELEVENLABS_FEMALE_VOICE_ID;
+  delete process.env.ELEVENLABS_MODEL_ID;
   // Unique cache version for this test, never sent to a real provider.
   process.env.OPENAI_VOICE_TTS_MODEL = `test-tts-${Date.now()}`;
   let analysis;
   let failFeedbackAudio = false;
   let lowConfidenceNext = false;
   global.fetch = async (url, options) => {
+    if (url.includes('api.elevenlabs.io/v1/text-to-speech/')) {
+      calls.elevenSpeech += 1;
+      assert.equal(options.headers['xi-api-key'], 'test-elevenlabs-key');
+      const data = JSON.parse(options.body);
+      elevenSpeechRequests.push(data);
+      return { ok: true, arrayBuffer: async () => new Uint8Array([4, 5, 6]).buffer };
+    }
     assert.ok(options.headers.Authorization.endsWith('test-key-not-exposed'));
     if (url.endsWith('/audio/speech')) {
       calls.speech += 1;
@@ -87,7 +103,7 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     const session = await started.json();
     assert.equal(session.questions.length, 3);
     assert.equal(JSON.stringify(session).includes('test-key-not-exposed'), false);
-    assert.deepEqual(calls, { speech: 0, transcription: 0, feedback: 0 });
+    assert.deepEqual(calls, { speech: 0, elevenSpeech: 0, transcription: 0, feedback: 0 });
     assert.equal((await request('start', lesson)).status, 429);
     assert.equal((await request('question', { sessionToken: session.sessionToken, index: 0 }, 'other-user')).status, 401);
     const questionBody = { sessionToken: session.sessionToken, index: 0 };
@@ -100,11 +116,26 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     const dialogToken = chatTutor.signSession(chatSession);
     const spoken = await (await request('speak', { sessionToken: session.sessionToken, dialogToken })).json();
     assert.ok(spoken.audioBase64);
+    assert.equal(spoken.provider, 'openai');
     assert.equal(speechRequests.at(-1).input, 'Hei! La oss øve sammen. Hva heter du?');
     assert.match(speechRequests.at(-1).instructions, /speak both parts/i);
     assert.match(speechRequests.at(-1).instructions, /do not omit the final question/i);
     await request('speak', { sessionToken: session.sessionToken, dialogToken });
     assert.equal(calls.speech, 2, 'Dialog replay does not synthesize the same turn twice');
+    process.env.ELEVENLABS_API_KEY = 'test-elevenlabs-key';
+    process.env.ELEVENLABS_FEMALE_VOICE_ID = 'anna-test-voice';
+    process.env.ELEVENLABS_MODEL_ID = 'eleven_flash_v2_5';
+    const annaChatSession = chatTutor.newSession(chatContext, 'Bearer modular-free-user').session;
+    const annaDialogToken = chatTutor.signSession(annaChatSession);
+    const annaSpoken = await (await request('speak', { sessionToken: session.sessionToken, dialogToken: annaDialogToken })).json();
+    assert.equal(annaSpoken.provider, 'elevenlabs');
+    assert.equal(calls.elevenSpeech, 1);
+    assert.equal(elevenSpeechRequests[0].text, 'Hei! La oss øve sammen. Hva heter du?');
+    assert.equal(elevenSpeechRequests[0].model_id, 'eleven_flash_v2_5');
+    assert.equal(elevenSpeechRequests[0].language_code, 'no');
+    delete process.env.ELEVENLABS_API_KEY;
+    delete process.env.ELEVENLABS_FEMALE_VOICE_ID;
+    delete process.env.ELEVENLABS_MODEL_ID;
     assert.equal((await request('question', { ...questionBody, index: 4 })).status, 400);
     assert.equal((await request('transcribe', { ...questionBody, audioBase64: 'invalid', mimeType: 'text/plain', duration: 20 })).status, 400);
     assert.equal((await request('transcribe', { ...questionBody, audioBase64: Buffer.alloc(120, 9).toString('base64'), mimeType: 'audio/webm', duration: 31.1 })).status, 400);
@@ -145,7 +176,12 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     assert.equal(calls.feedback, 2, 'Audio failure does not repeat evaluation');
   } finally {
     global.fetch = realFetch;
-    for (const [key, value] of Object.entries({ OPENAI_API_KEY: saved.key, NODE_ENV: saved.env, NETLIFY: saved.netlify, OPENAI_VOICE_TTS_MODEL: saved.tts, OPENAI_VOICE_STT_MODEL: saved.stt })) {
+    for (const [key, value] of Object.entries({
+      OPENAI_API_KEY: saved.key, NODE_ENV: saved.env, NETLIFY: saved.netlify,
+      OPENAI_VOICE_TTS_MODEL: saved.tts, OPENAI_VOICE_STT_MODEL: saved.stt,
+      ELEVENLABS_API_KEY: saved.elevenKey, ELEVENLABS_FEMALE_VOICE_ID: saved.elevenVoice,
+      ELEVENLABS_MODEL_ID: saved.elevenModel,
+    })) {
       if (value === undefined) delete process.env[key]; else process.env[key] = value;
     }
     await new Promise((resolve) => server.close(resolve));
