@@ -34,6 +34,7 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
   const saved = { key: process.env.OPENAI_API_KEY, env: process.env.NODE_ENV, netlify: process.env.NETLIFY, tts: process.env.OPENAI_VOICE_TTS_MODEL, stt: process.env.OPENAI_VOICE_STT_MODEL };
   const realFetch = global.fetch;
   const calls = { speech: 0, transcription: 0, feedback: 0 };
+  const speechRequests = [];
   process.env.OPENAI_API_KEY = 'test-key-not-exposed';
   process.env.NODE_ENV = 'production'; delete process.env.NETLIFY;
   delete process.env.OPENAI_VOICE_STT_MODEL;
@@ -47,6 +48,7 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     if (url.endsWith('/audio/speech')) {
       calls.speech += 1;
       const data = JSON.parse(options.body);
+      speechRequests.push(data);
       if (failFeedbackAudio && data.input.includes('repetă')) return { ok: false, status: 503, json: async () => ({}) };
       return { ok: true, arrayBuffer: async () => new Uint8Array([1, 2, 3]).buffer };
     }
@@ -98,6 +100,9 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     const dialogToken = chatTutor.signSession(chatSession);
     const spoken = await (await request('speak', { sessionToken: session.sessionToken, dialogToken })).json();
     assert.ok(spoken.audioBase64);
+    assert.equal(speechRequests.at(-1).input, 'Hei! La oss øve sammen. Hva heter du?');
+    assert.match(speechRequests.at(-1).instructions, /speak both parts/i);
+    assert.match(speechRequests.at(-1).instructions, /do not omit the final question/i);
     await request('speak', { sessionToken: session.sessionToken, dialogToken });
     assert.equal(calls.speech, 2, 'Dialog replay does not synthesize the same turn twice');
     assert.equal((await request('question', { ...questionBody, index: 4 })).status, 400);

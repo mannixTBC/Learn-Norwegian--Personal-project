@@ -7,7 +7,7 @@ const outDir = resolve(root, 'node_modules/.cache/voice-practice-client-tests');
 await build({ configFile: false, logLevel: 'error', define: {
   'import.meta.env.VITE_SUPABASE_URL': 'undefined', 'import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY': 'undefined', 'import.meta.env.VITE_SUPABASE_ANON_KEY': 'undefined',
 }, build: { ssr: resolve(root, 'src/services/voicePractice.js'), outDir, emptyOutDir: false, rollupOptions: { output: { entryFileNames: 'client.mjs' } } } });
-const { recordPracticeAnswer, practiceRequest, recordingPayload, audioBlob } = await import(pathToFileURL(resolve(outDir, 'client.mjs')));
+const { recordPracticeAnswer, practiceRequest, recordingPayload, audioBlob, nextSpeechActivity } = await import(pathToFileURL(resolve(outDir, 'client.mjs')));
 const names = ['navigator', 'window', 'MediaRecorder', 'FileReader', 'fetch'];
 const saved = Object.fromEntries(names.map((key) => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
 let stopped = 0;
@@ -21,6 +21,14 @@ class FakeRecorder {
   stop() { this.state = 'inactive'; this.ondataavailable({ data: new Blob(['test-audio'], { type: this.mimeType }) }); this.onstop(); }
 }
 try {
+  let activity = { evidenceMs: 0, heardSpeech: false, lastSpeechAt: 0 };
+  activity = nextSpeechActivity(activity, 0.018, 120);
+  assert.equal(activity.heardSpeech, false);
+  activity = nextSpeechActivity(activity, 0.004, 240);
+  activity = nextSpeechActivity(activity, 0.018, 360);
+  activity = nextSpeechActivity(activity, 0.018, 480);
+  assert.equal(activity.heardSpeech, true, 'Natural short pauses must not erase detected speech');
+  assert.equal(activity.lastSpeechAt, 480);
   Object.defineProperty(globalThis, 'navigator', { configurable: true, value: { mediaDevices: { getUserMedia: () => media() } } });
   globalThis.MediaRecorder = FakeRecorder;
   globalThis.window = { MediaRecorder: FakeRecorder };

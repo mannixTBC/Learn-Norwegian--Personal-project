@@ -3,6 +3,21 @@ import { supabase } from './supabaseClient';
 const MAX_RECORDING_SECONDS = 30;
 // Keeps short learner pauses while making the exchange feel conversational.
 const SILENCE_BEFORE_SUBMIT_MS = 1_800;
+const SPEECH_SAMPLE_MS = 120;
+const SPEECH_RMS_THRESHOLD = 0.012;
+const SPEECH_CONFIRMATION_MS = 240;
+
+export const nextSpeechActivity = (current, rms, now) => {
+  const voiced = rms >= SPEECH_RMS_THRESHOLD;
+  const evidenceMs = voiced
+    ? Math.min(SPEECH_CONFIRMATION_MS, current.evidenceMs + SPEECH_SAMPLE_MS)
+    : Math.max(0, current.evidenceMs - (SPEECH_SAMPLE_MS / 2));
+  return {
+    evidenceMs,
+    heardSpeech: current.heardSpeech || evidenceMs >= SPEECH_CONFIRMATION_MS,
+    lastSpeechAt: voiced ? now : current.lastSpeechAt,
+  };
+};
 
 export const practiceRequest = async (operation, payload, signal) => {
   const session = supabase ? await supabase.auth.getSession() : null;
@@ -43,9 +58,7 @@ export const recordPracticeAnswer = async ({ signal, onComplete, onError, onNoSp
   let analyser;
   let levelData;
   let cancelled = false;
-  let heardSpeech = false;
-  let speechStartedAt = 0;
-  let lastSpeechAt = 0;
+  let speechActivity = { evidenceMs: 0, heardSpeech: false, lastSpeechAt: 0 };
   const parts = [];
   const release = () => {
     clearTimeout(timer);
@@ -80,19 +93,14 @@ export const recordPracticeAnswer = async ({ signal, onComplete, onError, onNoSp
         if (recorder.state !== 'recording') return;
         analyser.getFloatTimeDomainData(levelData);
         const rms = Math.sqrt(levelData.reduce((sum, sample) => sum + sample * sample, 0) / levelData.length);
-        if (rms >= 0.035) {
-          const now = Date.now();
-          if (!speechStartedAt) speechStartedAt = now;
-          if (now - speechStartedAt >= 450) heardSpeech = true;
-          lastSpeechAt = now;
-        } else {
-          if (!heardSpeech) speechStartedAt = 0;
-          if (heardSpeech && Date.now() - lastSpeechAt >= SILENCE_BEFORE_SUBMIT_MS) stop();
-        }
-      }, 120);
+        const now = Date.now();
+        speechActivity = nextSpeechActivity(speechActivity, rms, now);
+        if (speechActivity.heardSpeech && !speechActivity.lastSpeechAt) speechActivity.lastSpeechAt = now;
+        if (speechActivity.heardSpeech && now - speechActivity.lastSpeechAt >= SILENCE_BEFORE_SUBMIT_MS) stop();
+      }, SPEECH_SAMPLE_MS);
     }
     timer = setTimeout(() => {
-      if (heardSpeech) stop();
+      if (speechActivity.heardSpeech) stop();
       else {
         cancelled = true;
         stop();

@@ -341,6 +341,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       {feedback && <div className="voice-lesson__message voice-lesson__feedback"><small>Feedbackul tău</small><p>{feedback.text}</p></div>}
       <div className="voice-lesson__controls">
         {!active && <button type="button" className="voice-lesson__primary" disabled={configured !== true} onClick={start}>{status === 'ended' ? 'Pornește un dialog nou' : 'Pornește dialogul'}</button>}
+        {status === 'recording' && <button type="button" className="voice-lesson__primary" onClick={() => recording.current?.stop()}>Am terminat răspunsul</button>}
         {active && <button type="button" onClick={stop}>Oprește conversația</button>}
       </div>
       {status === 'idle' && <p className="voice-lesson__start-caption">O singură apăsare pornește dialogul.</p>}

@@ -57,9 +57,20 @@ const openAI = async (endpoint, body, json = true) => {
 const speech = async (settings) => Buffer.from(await (await openAI('audio/speech', { ...settings, response_format: 'mp3' })).arrayBuffer());
 const speechSettings = (input, language, dialogue = false) => ({ model: process.env.OPENAI_VOICE_TTS_MODEL || 'gpt-4o-mini-tts', voice: 'marin', input,
   instructions: language === 'no'
-    ? `Speak clear Norwegian Bokmål with a neutral eastern Norwegian accent, slowly and naturally. Read only the ${dialogue ? 'dialogue reply and question' : 'question'}.`
+    ? dialogue
+      ? 'Speak clear Norwegian Bokmål with a neutral eastern Norwegian accent, slowly and naturally. Read the entire input verbatim, from beginning to end. It contains a reply followed by a question: speak both parts and do not omit the final question.'
+      : 'Speak clear Norwegian Bokmål with a neutral eastern Norwegian accent, slowly and naturally. Read only the question.'
     : 'Citește numai textul, clar și natural în română. Pronunță corect eventualele expresii Bokmål.',
   speed: language === 'no' ? 0.9 : 1 });
+
+const dialogueSpeechText = (session) => {
+  const latestAssistant = [...session.history].reverse()
+    .find((message) => message.role === 'assistant')?.content?.trim();
+  const question = typeof session.lastQuestion === 'string' ? session.lastQuestion.trim() : '';
+  if (!latestAssistant) return '';
+  if (!question || latestAssistant.endsWith(question)) return latestAssistant;
+  return `${latestAssistant} ${question}`;
+};
 const transcriptionLanguageIsReliable = (languages) => {
   if (!Array.isArray(languages)) return true;
   return languages.some((language) => {
@@ -108,7 +119,7 @@ router.post('/question', wrap(async (req, res) => {
 router.post('/speak', wrap(async (req, res) => {
   sessionFor(req);
   const { session } = verifyChatSession(req.body?.dialogToken, req.userId);
-  const latest = [...session.history].reverse().find((message) => message.role === 'assistant')?.content?.trim();
+  const latest = dialogueSpeechText(session);
   if (!latest) throw fail('Replica nu este validă.');
   const audio = await once(`${session.id}:speech:${session.turn}`, session.expires, () => speech(speechSettings(latest, 'no', true)));
   res.json({ audioBase64: audio.toString('base64'), mimeType: 'audio/mpeg' });
