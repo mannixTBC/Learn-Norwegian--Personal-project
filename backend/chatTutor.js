@@ -28,6 +28,14 @@ const GENERIC_FOLLOW_UPS = {
   ],
 };
 
+const BEGINNER_SAFE_WORDS = new Set([
+  'hva', 'hvordan', 'hvem', 'hvor', 'når', 'hvorfor', 'hvilken', 'hvilket', 'hvilke',
+  'kan', 'vil', 'skal', 'er', 'har', 'gjør', 'gjorde', 'du', 'deg', 'din', 'ditt', 'dine',
+  'jeg', 'vi', 'dere', 'de', 'det', 'den', 'dette', 'en', 'et', 'og', 'eller', 'men', 'i',
+  'på', 'til', 'fra', 'med', 'om', 'å', 'ikke', 'ja', 'nei', 'litt', 'mer', 'si', 'fortelle',
+  'gi', 'eksempel', 'synes', 'liker', 'best', 'videre', 'også', 'dag', 'noen', 'nå',
+]);
+
 const fail = (message, status = 400) => Object.assign(new Error(message), { status });
 
 const getSessionSecret = () => process.env.CHAT_SESSION_SECRET || process.env.OPENAI_API_KEY || '';
@@ -134,6 +142,22 @@ const isUsableQuestion = (question, askedQuestions, level) => {
     && isNewQuestion(trimmed, askedQuestions);
 };
 
+const beginnerLessonWords = (context) => {
+  const source = [
+    ...context.lesson.vocabulary.flatMap((entry) => [entry?.[0], entry?.[2]]),
+    ...context.lesson.dialogue.map((entry) => entry?.[1]),
+    ...(context.lesson.grammar?.examples || []),
+    ...(getPreparedQuestions(context.level, context.lessonId) || []),
+  ].filter(Boolean).join(' ');
+  return new Set(normalizeQuestion(source).split(' ').filter(Boolean));
+};
+
+const staysInsideBeginnerLesson = (question, context) => {
+  const lessonWords = beginnerLessonWords(context);
+  return normalizeQuestion(question).split(' ').filter(Boolean)
+    .every((word) => BEGINNER_SAFE_WORDS.has(word) || lessonWords.has(word));
+};
+
 const nextQuestionFor = (session, context, candidate = null) => {
   if (session.turn + 1 >= MAX_TURNS) return null;
   const askedQuestions = session.askedQuestions || [firstQuestionFor(context)];
@@ -141,9 +165,10 @@ const nextQuestionFor = (session, context, candidate = null) => {
   const preparedQuestion = prepared.find((question) => isNewQuestion(question, askedQuestions));
   if (preparedQuestion) return preparedQuestion;
   const group = ['A1', 'A2'].includes(context.level) ? 'beginner' : 'independent';
-  // Beginners stay inside the curated lesson questions. An unconstrained model
-  // question can introduce vocabulary or situations from later lessons.
-  if (group === 'independent' && isUsableQuestion(candidate, askedQuestions, context.level)) return candidate.trim();
+  const usableCandidate = isUsableQuestion(candidate, askedQuestions, context.level);
+  // Beginner follow-ups may vary naturally, but every word must come from the
+  // current core lesson or a small neutral conversation vocabulary.
+  if (usableCandidate && (group === 'independent' || staysInsideBeginnerLesson(candidate, context))) return candidate.trim();
   return GENERIC_FOLLOW_UPS[group].find((question) => isNewQuestion(question, askedQuestions)) || null;
 };
 
@@ -304,6 +329,8 @@ question: o singură întrebare nouă și scurtă în norvegiană; ${isFinalTurn
 correction: null dacă sensul este clar; altfel o singură corectare importantă și scurtă în română.
 memory: un singur fapt scurt în Bokmål, maximum 80 de caractere, util pentru dialogul următor; altfel null. Nu memora date personale sensibile.
 Introdu maximum ${newWordLimit} ${newWordLimit === 1 ? 'cuvânt nou necesar' : 'cuvinte noi necesare'} în replică. Dacă utilizatorul se abate de la temă, răspunde foarte scurt și revino natural la obiectiv.
+Pentru nivelurile A1–A2, rămâi strict la tema, vocabularul și gramatica lecției de bază. Direcția profesională este doar decor; nu preda expresiile ei dacă nu apar și în lecția de bază.
+Conversația trebuie să curgă natural: reacționează concret la răspuns, apoi pune o continuare relevantă pentru același obiectiv, nu o listă de întrebări independente.
 Nu juca niciodată rolul cursantului și nu răspunde la propria întrebare. Nu concatena expresiile sau exemplele din vocabular.
 Nu te numi ChatGPT sau OpenAI. Numele tău este Nora și îl menționezi numai dacă ești întrebată.
 Un fapt deja oferit de cursant este cunoscut: confirmă-l natural și nu îl cere din nou.

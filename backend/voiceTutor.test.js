@@ -31,7 +31,7 @@ test('sesiunea respectă nivelul, permite ezitările și include contextul real 
   assert.equal(a1.audio.input.turn_detection.create_response, false);
   assert.equal(a1.audio.input.turn_detection.interrupt_response, false);
   assert.equal(a1.max_output_tokens, 1024);
-  assert.match(a1.instructions, /exact trei întrebări/);
+  assert.match(a1.instructions, /maximum opt răspunsuri/);
   assert.match(a1.instructions, /25 de cuvinte/);
   assert.doesNotMatch(a1.instructions, /6–10|80 de cuvinte|35 de cuvinte/);
   assert.match(a1.instructions, /Salutări și prezentări/);

@@ -141,6 +141,14 @@ test('catalogul complet poate porni sesiuni semnate pentru fiecare lecție și d
     assert.equal(guardedLessonBoundary.question, 'Kan du si litt mer?');
     assert.notEqual(guardedLessonBoundary.question, 'Hva vil du bestille?');
 
+    const safeLessonFollowUp = tutor.finalizeTurn({
+      reply: 'Fint.',
+      question: 'Kan du fortelle litt om det?',
+      correction: null,
+      memory: null,
+    }, beginnerAfterPreparedQuestions, context);
+    assert.equal(safeLessonFollowUp.question, 'Kan du fortelle litt om det?');
+
     for (let index = 0; index < tutor.MAX_TURNS; index += 1) {
       session = tutor.nextSession(session, `Svar ${index + 1}`, {
         reply: 'Fint.', question: 'Kan du fortsette?', correction: null, memory: null,
@@ -256,6 +264,7 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     assert.match(sent.messages[0].content, /Transport și logistică/);
     assert.match(sent.messages[0].content, /Nu juca niciodată rolul cursantului/);
     assert.match(sent.messages[0].content, /nu trebuie repetate sau reformulate/);
+    assert.match(sent.messages[0].content, /rămâi strict la tema, vocabularul și gramatica lecției de bază/);
     assert.doesNotMatch(sent.messages[0].content, /Salutări și prezentări/);
 
     const afterFirst = decodeSession(first.sessionToken);

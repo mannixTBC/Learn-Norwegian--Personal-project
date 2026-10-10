@@ -11,6 +11,7 @@ auth.requireAuth = (req, res, next) => {
 const router = require('./voicePractice');
 auth.requireAuth = realAuth;
 const { getPreparedQuestions } = require('../voiceQuestions');
+const chatTutor = require('../chatTutor');
 const catalog = require('../voiceCatalog.json');
 
 test('toate lecțiile au trei întrebări scurte pregătite în Bokmål', () => {
@@ -26,7 +27,7 @@ test('toate lecțiile au trei întrebări scurte pregătite în Bokmål', () => 
     questions.forEach((question) => assert.ok(question.split(/\s+/).length <= 12));
   }
 });
-test('flux modular: autentificare, voce reutilizată, trei transcrieri, o singură analiză și o singură voce finală', async () => {
+test('flux modular: dialog de opt replici, voce securizată și feedback final unic', async () => {
   const saved = { key: process.env.OPENAI_API_KEY, env: process.env.NODE_ENV, netlify: process.env.NETLIFY, tts: process.env.OPENAI_VOICE_TTS_MODEL, stt: process.env.OPENAI_VOICE_STT_MODEL };
   const realFetch = global.fetch;
   const calls = { speech: 0, transcription: 0, feedback: 0 };
@@ -89,26 +90,33 @@ test('flux modular: autentificare, voce reutilizată, trei transcrieri, o singur
     assert.ok(audio.audioBase64);
     await request('question', questionBody);
     assert.equal(calls.speech, 1, 'Question replay uses persistent audio cache');
+    const chatContext = chatTutor.lessonFor(lesson);
+    const chatSession = chatTutor.newSession(chatContext, 'Bearer modular-free-user').session;
+    const dialogToken = chatTutor.signSession(chatSession);
+    const spoken = await (await request('speak', { sessionToken: session.sessionToken, dialogToken })).json();
+    assert.ok(spoken.audioBase64);
+    await request('speak', { sessionToken: session.sessionToken, dialogToken });
+    assert.equal(calls.speech, 2, 'Dialog replay does not synthesize the same turn twice');
     assert.equal((await request('question', { ...questionBody, index: 4 })).status, 400);
     assert.equal((await request('transcribe', { ...questionBody, audioBase64: 'invalid', mimeType: 'text/plain', duration: 20 })).status, 400);
     assert.equal((await request('transcribe', { ...questionBody, audioBase64: Buffer.alloc(120, 9).toString('base64'), mimeType: 'audio/webm', duration: 31.1 })).status, 400);
     const answers = [];
-    for (let index = 0; index < 3; index += 1) {
+    for (let index = 0; index < 8; index += 1) {
       const body = { sessionToken: session.sessionToken, index, audioBase64: Buffer.alloc(120, index + 1).toString('base64'), mimeType: 'audio/webm;codecs=opus', duration: index === 0 ? 30 : 5 };
       const response = await request('transcribe', body);
       assert.equal(response.status, 200);
       answers.push(await response.json());
       await request('transcribe', body);
     }
-    assert.equal(calls.transcription, 3, 'Network replay does not retranscribe');
+    assert.equal(calls.transcription, 8, 'Network replay does not retranscribe');
     assert.equal(calls.feedback, 0, 'No evaluation between answers');
     assert.equal((await request('feedback', { sessionToken: session.sessionToken, answers: [{ ...answers[0], text: 'tampered' }, answers[1]] })).status, 400);
     const result = await (await request('feedback', { sessionToken: session.sessionToken, answers })).json();
     assert.ok(result.text.split(/\s+/).length <= 25); assert.ok(result.audioBase64);
-    assert.equal(JSON.parse(analysis.messages[1].content).length, 3);
+    assert.equal(JSON.parse(analysis.messages[1].content).length, 8);
     assert.equal(analysis.store, false);
     await request('feedback', { sessionToken: session.sessionToken, answers });
-    assert.equal(calls.feedback, 1); assert.equal(calls.speech, 2);
+    assert.equal(calls.feedback, 1); assert.equal(calls.speech, 3);
     // A second learner can finish after two answers and still see text if TTS fails.
     const second = await (await request('start', lesson, 'other-user')).json();
     const secondAnswers = [];

@@ -6,13 +6,13 @@ Etapa și rezultatele exercițiilor sunt păstrate la rotirea telefonului și re
 
 ## Flux
 
-1. `backend/voiceQuestions.js` conține trei întrebări Bokmål pregătite pentru fiecare dintre cele 40 de lecții.
+1. `backend/voiceQuestions.js` conține trei obiective inițiale Bokmål pentru fiecare dintre cele 40 de lecții; dialogul continuă adaptiv până la opt răspunsuri.
 2. Vocea fiecărei întrebări este generată la prima utilizare, apoi reutilizată. Modelul,
    vocea, textul și instrucțiunile definesc cheia cache-ului; schimbarea lor generează o versiune nouă.
 3. În modul automat, microfonul pornește după întrebare și trimite răspunsul după 4 secunde de liniște,
    cu o limită de 30 de secunde. Elevul poate opri răspunsul mai repede sau poate folosi modul manual.
    Microfonul este eliberat imediat. Audio merge pe server numai pentru transcriere.
-4. După trei răspunsuri (sau încheiere după două), o singură cerere LLM analizează toate răspunsurile.
+4. După opt răspunsuri, o singură cerere LLM analizează dialogul și pregătește feedbackul final.
 5. Feedbackul românesc este limitat la 25 de cuvinte și citit vocal. Dacă TTS eșuează,
    textul rămâne vizibil. Reascultarea audio deja primit nu face alte cereri AI.
 
@@ -58,7 +58,7 @@ npm run build
 ```
 
 Testele simulează OpenAI și Netlify Blobs, fără consum de credit. Pentru proba reală:
-reascultă o întrebare, răspunde de trei ori, verifică feedbackul final și oprirea
+parcurge un dialog de opt replici, verifică reacțiile adaptive, feedbackul final și oprirea
 microfonului la plecare. Testează și încheierea după două răspunsuri, permisiunea
 refuzată și redarea blocată de browser. Calitatea pronunției și transcrierii trebuie
 evaluată cu voce reală, inclusiv cu accent românesc.

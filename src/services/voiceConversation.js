@@ -120,9 +120,9 @@ export const createVoiceConversation = async ({ level, lessonId, pathId, onEvent
         return;
       }
       answers += 1;
-      onEvent({ type: 'practice.progress', answers, total: 3 });
-      if (answers >= 3) feedback();
-      else respond(`Pune acum întrebarea ${answers + 1} din 3, în aceeași situație a lecției. O singură întrebare în norvegiană, maximum 12 cuvinte. Fără explicații sau feedback. Așteaptă răspunsul.`);
+      onEvent({ type: 'practice.progress', answers, total: 8 });
+      if (answers >= 8) feedback();
+      else respond(`Reacționează natural la răspuns și continuă dialogul cu replica ${answers + 1} din 8, strict în tema lecției. O singură întrebare scurtă în norvegiană. Așteaptă răspunsul.`);
     };
     peer.onconnectionstatechange = () => {
       if (closed) return;
@@ -153,10 +153,10 @@ export const createVoiceConversation = async ({ level, lessonId, pathId, onEvent
     await peer.setRemoteDescription({ type: 'answer', sdp: await answer.text() });
     await opened;
     checkCancelled();
-    timer = setTimeout(() => { close(); onDisconnect('Sesiunea de practică s-a încheiat după 3 minute. Poți porni alta.'); }, 3 * 60_000);
+    timer = setTimeout(() => { close(); onDisconnect('Sesiunea de practică s-a încheiat după 7 minute. Poți porni alta.'); }, 7 * 60_000);
     return {
       close,
-      start: () => respond('Salută și pune prima întrebare din 3 în norvegiană, folosind lecția curentă. Maximum 12 cuvinte în total. Fără introducere sau explicații. Așteaptă răspunsul.'),
+      start: () => respond('Salută și deschide un dialog de 8 schimburi în norvegiană, strict din lecția curentă. Pune o singură întrebare scurtă și așteaptă răspunsul.'),
       mute: (muted) => { userMuted = muted; updateMicrophone(); },
       play: () => audio.play(),
       help: () => {
