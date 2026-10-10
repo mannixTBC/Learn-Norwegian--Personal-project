@@ -7,6 +7,8 @@ const normalizeDialog = (data, previousToken = null) => ({
   sessionToken: data?.sessionToken || previousToken,
   reply: typeof data?.reply === 'string' ? data.reply.trim() : '',
   question: typeof data?.question === 'string' && data.question.trim() ? data.question.trim() : null,
+  questionTranslation: typeof data?.questionTranslation === 'string' && data.questionTranslation.trim() ? data.questionTranslation.trim() : null,
+  suggestions: Array.isArray(data?.suggestions) ? data.suggestions.filter((entry) => entry?.answer && entry?.translation).slice(0, 2) : [],
   correction: typeof data?.correction === 'string' && data.correction.trim() ? data.correction.trim() : null,
   done: data?.done === true,
   turn: Number.isFinite(Number(data?.turn)) ? Number(data.turn) : 0,
@@ -17,33 +19,11 @@ const assistantMessage = (dialog) => ({
   role: 'assistant',
   reply: dialog.reply,
   question: dialog.question,
+  questionTranslation: dialog.questionTranslation,
+  suggestions: dialog.suggestions,
   correction: dialog.correction,
   turn: dialog.turn,
 });
-
-function NoraAvatar({ isSpeaking }) {
-  return (
-    <div
-      className={`voice-lesson__nora ${isSpeaking ? 'voice-lesson__nora--speaking' : ''}`}
-      aria-hidden="true"
-    >
-      <span className="voice-lesson__sound-wave voice-lesson__sound-wave--left"><i /><i /><i /></span>
-      <span className="voice-lesson__nora-hair voice-lesson__nora-hair--back" />
-      <span className="voice-lesson__nora-neck" />
-      <span className="voice-lesson__nora-body" />
-      <span className="voice-lesson__nora-head">
-        <span className="voice-lesson__nora-hair voice-lesson__nora-hair--front" />
-        <span className="voice-lesson__nora-brow voice-lesson__nora-brow--left" />
-        <span className="voice-lesson__nora-brow voice-lesson__nora-brow--right" />
-        <span className="voice-lesson__nora-eye voice-lesson__nora-eye--left" />
-        <span className="voice-lesson__nora-eye voice-lesson__nora-eye--right" />
-        <span className="voice-lesson__nora-nose" />
-        <span className="voice-lesson__nora-mouth" />
-      </span>
-      <span className="voice-lesson__sound-wave voice-lesson__sound-wave--right"><i /><i /><i /></span>
-    </div>
-  );
-}
 
 export default function VoiceLessonConversation({ level, lessonId, pathId, lessonTitle }) {
   const [configured, setConfigured] = useState(null);
@@ -53,6 +33,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   const [messages, setMessages] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [feedback, setFeedback] = useState(null);
+  const [revealedHelp, setRevealedHelp] = useState({});
   const [error, setError] = useState('');
   const controller = useRef(null);
   const recording = useRef(null);
@@ -185,6 +166,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     setMessages([]);
     setAnswers([]);
     setFeedback(null);
+    setRevealedHelp({});
     setError('');
     setStatus('loading');
     try {
@@ -303,7 +285,6 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   };
 
   const active = !['idle', 'ended'].includes(status);
-  const noraIsSpeaking = ['speaking', 'feedbackAudio'].includes(status);
   const labels = {
     idle: 'Pregătit de practică',
     loading: 'Pregătim replica…',
@@ -326,14 +307,36 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       {status === 'idle' && <div className="voice-lesson__art" aria-hidden="true" />}
       <div className="voice-lesson__partner"><span className="voice-lesson__avatar" aria-hidden="true"><span className="voice-lesson__avatar-letter">N</span><picture className="voice-lesson__portrait"><source media="(min-width: 861px)" srcSet="/images/voice/nora-avatar.webp" /><img alt="" width="56" height="56" /></picture></span><div><strong>Nora</strong><span>Voce AI · {level}</span></div><span className={`voice-lesson__status ${active ? 'voice-lesson__status--active' : ''}`} role="status">{labels[status]}</span></div>
       {status === 'idle' && <div className="voice-lesson__welcome"><h2>Exersează printr-un dialog real</h2><p>Nora răspunde natural și continuă conversația în limitele lecției curente.</p><ul><li>Până la 8 răspunsuri</li><li>Dialog adaptiv</li><li>Feedback final</li></ul></div>}
-      {status !== 'idle' && <div className={`voice-lesson__nora-stage ${noraIsSpeaking ? 'voice-lesson__nora-stage--speaking' : ''}`}><NoraAvatar isSpeaking={noraIsSpeaking} /><span>{noraIsSpeaking ? 'Nora vorbește' : labels[status]}</span></div>}
       {configured === false && <p className="voice-lesson__notice">Practica vocală nu este disponibilă momentan. Poți finaliza lecția și reveni mai târziu.</p>}
       {error && <p className="voice-lesson__error" role="alert">{error}</p>}
       {dialog && active && <div className="voice-lesson__progress"><span>Dialogul lecției</span><small>Replica {Math.min(dialog.turn + 1, dialog.maxTurns)} din {dialog.maxTurns}</small></div>}
       {messages.length > 0 && <div className="voice-lesson__transcript" role="log" aria-label="Dialogul în norvegiană">
         {messages.map((message, messageIndex) => message.role === 'user'
           ? <div key={`${message.role}-${message.turn}-${messageIndex}`} className="voice-lesson__message voice-lesson__message--user"><small>Tu</small><p lang="nb">{message.content}</p></div>
-          : <div key={`${message.role}-${message.turn}-${messageIndex}`} className="voice-lesson__exchange"><div className="voice-lesson__message voice-lesson__message--assistant"><small>Nora</small>{message.reply && <p lang="nb">{message.reply}</p>}{message.question && <p className="voice-lesson__dialog-question" lang="nb">{message.question}</p>}</div>{message.correction && <aside className="voice-lesson__correction"><strong>Corectare scurtă</strong><p>{message.correction}</p></aside>}</div>)}
+          : <div key={`${message.role}-${message.turn}-${messageIndex}`} className="voice-lesson__exchange">
+            <div className="voice-lesson__message voice-lesson__message--assistant">
+              <small>Nora</small>
+              {message.reply && <p lang="nb">{message.reply}</p>}
+              {message.question && <p className="voice-lesson__dialog-question" lang="nb">{message.question}</p>}
+              {message.questionTranslation && <p className="voice-lesson__question-translation"><span aria-hidden="true">RO</span>{message.questionTranslation}</p>}
+              {message.suggestions?.length > 0 && <div className="voice-lesson__answer-help">
+                <button
+                  type="button"
+                  aria-expanded={revealedHelp[messageIndex] === true}
+                  onClick={() => setRevealedHelp((current) => ({ ...current, [messageIndex]: !current[messageIndex] }))}
+                >
+                  {revealedHelp[messageIndex] ? 'Ascunde răspunsurile' : 'Ajută-mă să răspund'}
+                </button>
+                {revealedHelp[messageIndex] && <div className="voice-lesson__suggestions">
+                  {message.suggestions.map((suggestion, suggestionIndex) => <div key={`${suggestion.answer}-${suggestionIndex}`}>
+                    <strong lang="nb">{suggestion.answer}</strong>
+                    <span>{suggestion.translation}</span>
+                  </div>)}
+                </div>}
+              </div>}
+            </div>
+            {message.correction && <aside className="voice-lesson__correction"><strong>Corectare scurtă</strong><p>{message.correction}</p></aside>}
+          </div>)}
       </div>}
       {feedback && <div className="voice-lesson__message voice-lesson__feedback"><small>Feedbackul tău</small><p>{feedback.text}</p></div>}
       <div className="voice-lesson__controls">

@@ -44,10 +44,12 @@ const validateKeys = (body, allowed, required = allowed) => {
   if (keys.some((key) => !allowed.includes(key)) || required.some((key) => !keys.includes(key))) throw fail('Cererea nu este validă.');
 };
 
-const commonResponse = ({ session, reply, question, correction = null, quotaRemaining, usage = null }) => ({
+const commonResponse = ({ session, reply, question, questionTranslation = null, suggestions = [], correction = null, quotaRemaining, usage = null }) => ({
   sessionToken: signSession(session),
   reply,
   question,
+  questionTranslation,
+  suggestions,
   correction,
   done: session.done,
   turn: session.turn,
@@ -78,6 +80,8 @@ router.post('/start', wrap(async (req, res) => {
     session,
     reply: opening.reply,
     question: opening.question,
+    questionTranslation: opening.questionTranslation,
+    suggestions: opening.suggestions,
   }));
 }));
 
@@ -101,6 +105,8 @@ router.post('/turn', wrap(async (req, res) => {
       session: result.session,
       reply: result.reply,
       question: result.question,
+      questionTranslation: result.questionTranslation,
+      suggestions: result.suggestions,
       correction: result.correction,
     }));
   }
@@ -131,6 +137,8 @@ router.post('/turn', wrap(async (req, res) => {
     session: updated,
     reply: result.reply,
     question: updated.lastQuestion,
+    questionTranslation: result.questionTranslation,
+    suggestions: result.suggestions,
     correction: result.correction,
     quotaRemaining: quota?.remaining,
     usage: publicUsage(completion?.usage),

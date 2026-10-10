@@ -10,7 +10,7 @@ auth.requireAuth = (req, res, next) => {
 };
 const router = require('./voicePractice');
 auth.requireAuth = realAuth;
-const { getPreparedQuestions } = require('../voiceQuestions');
+const { getPreparedQuestions, getPreparedQuestionTranslation } = require('../voiceQuestions');
 const chatTutor = require('../chatTutor');
 const catalog = require('../voiceCatalog.json');
 
@@ -24,7 +24,10 @@ test('toate lecțiile au trei întrebări scurte pregătite în Bokmål', () => 
     const questions = getPreparedQuestions(level, Number(id));
     assert.equal(questions.length, 3);
     assert.equal(new Set(questions).size, 3);
-    questions.forEach((question) => assert.ok(question.split(/\s+/).length <= 12));
+    questions.forEach((question) => {
+      assert.ok(question.split(/\s+/).length <= 12);
+      assert.ok(getPreparedQuestionTranslation(level, Number(id), question));
+    });
   }
 });
 test('flux modular: dialog de opt replici, voce securizată și feedback final unic', async () => {

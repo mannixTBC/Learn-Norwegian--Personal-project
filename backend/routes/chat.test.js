@@ -49,7 +49,12 @@ openai.getOpenAI = () => ({
             message: {
               content: JSON.stringify({
                 reply: 'Det høres bra ut.',
-                question: 'Hva vil du gjøre videre?',
+                question: 'Hva er en risiko for personvernet?',
+                questionTranslation: 'Care este un risc pentru viața privată?',
+                suggestions: [
+                  { answer: 'Data kan bli misbrukt.', translation: 'Datele pot fi folosite abuziv.' },
+                  { answer: 'Noen kan miste kontroll over dataene sine.', translation: 'Unii pot pierde controlul asupra datelor lor.' },
+                ],
                 correction: null,
                 memory: 'Eleven synes kunstig intelligens er nyttig.',
               }),
@@ -99,6 +104,8 @@ test('catalogul complet poate porni sesiuni semnate pentru fiecare lecție și d
           const { session, opening } = tutor.newSession(context, 'catalog-user');
           assert.ok(opening.reply);
           assert.ok(opening.question.endsWith('?'));
+          assert.ok(opening.questionTranslation);
+          assert.equal(opening.suggestions.length, 2);
           assert.equal(tutor.verifySession(tutor.signSession(session), 'catalog-user').context.direction.title, lesson.directions[pathId].title);
         }
       }
@@ -213,6 +220,8 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     assert.equal(started.remainingTurns, 8);
     assert.ok(started.reply);
     assert.ok(started.question);
+    assert.ok(started.questionTranslation);
+    assert.equal(started.suggestions.length, 2);
     assert.equal(started.usage, null);
     assert.equal(providerCalls.length, 0, 'start must not contact OpenAI');
     assert.equal(quotaCalls, 0, 'start must not consume message quota');
@@ -253,11 +262,13 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     const sent = providerCalls[0];
     assert.equal(sent.model, 'gpt-4o-mini');
     assert.equal(sent.store, false);
-    assert.equal(sent.max_tokens, 150);
+    assert.equal(sent.max_tokens, 260);
     assert.equal(sent.response_format.type, 'json_schema');
     assert.equal(sent.response_format.json_schema.strict, true);
     assert.equal(sent.response_format.json_schema.schema.additionalProperties, false);
     assert.ok(sent.response_format.json_schema.schema.required.includes('memory'));
+    assert.ok(sent.response_format.json_schema.schema.required.includes('questionTranslation'));
+    assert.ok(sent.response_format.json_schema.schema.required.includes('suggestions'));
     assert.deepEqual(providerOptions[0], { timeout: 15_000 });
     assert.ok(sent.messages.length <= 6, 'system + no more than four previous messages + current user');
     assert.match(sent.messages[0].content, /B2/);
@@ -265,6 +276,7 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     assert.match(sent.messages[0].content, /Nu juca niciodată rolul cursantului/);
     assert.match(sent.messages[0].content, /nu trebuie repetate sau reformulate/);
     assert.match(sent.messages[0].content, /rămâi strict la tema, vocabularul și gramatica lecției de bază/);
+    assert.match(sent.messages[0].content, /Menționează concret un detaliu sau sens din ultima replică/);
     assert.doesNotMatch(sent.messages[0].content, /Salutări și prezentări/);
 
     const afterFirst = decodeSession(first.sessionToken);
@@ -273,6 +285,8 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     assert.equal(afterFirst.askedQuestions.length, 2);
     assert.notEqual(afterFirst.askedQuestions[0], afterFirst.askedQuestions[1]);
     assert.deepEqual(afterFirst.memory, ['Eleven synes kunstig intelligens er nyttig.']);
+    assert.equal(first.questionTranslation, 'Care este un risc pentru viața privată?');
+    assert.equal(first.suggestions.length, 2);
 
     providerMode = 'refusal';
     const refused = await (await request('turn', { sessionToken: first.sessionToken, message: 'La oss fortsette.' })).json();
