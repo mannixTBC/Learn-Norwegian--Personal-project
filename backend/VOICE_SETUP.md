@@ -65,7 +65,7 @@ păstrate pentru compatibilitate, dar componenta desktop nu le mai folosește.
 ## Verificări
 
 ```
-node --test backend/routes/voicePractice.test.js backend/voiceAudioCache.test.js backend/voiceStreamTicket.test.js netlify/functions/voice-stream.test.mjs
+node --test backend/routes/voicePractice.test.js backend/voiceAudioCache.test.js backend/voiceStreamTicket.test.js backend/voiceStreamFunction.test.mjs
 node scripts/test-voice-practice-client.mjs
 npm run build
 ```

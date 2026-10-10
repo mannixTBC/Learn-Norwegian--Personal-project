@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import ticketModule from '../../backend/voiceStreamTicket.js';
-import handler from './voice-stream.mjs';
+import ticketModule from './voiceStreamTicket.js';
+import handler from '../netlify/functions/voice-stream.mjs';
 
 const { createVoiceStreamTicket } = ticketModule;
 
