@@ -127,6 +127,20 @@ test('catalogul complet poate porni sesiuni semnate pentru fiecare lecție și d
       memory: null,
     }, afterGuard, context).question, 'Hva sier du når du møter noen?');
 
+    const beginnerAfterPreparedQuestions = {
+      ...session,
+      turn: 2,
+      askedQuestions: ['Hva heter du?', 'Hvordan har du det?', 'Hva sier du når du møter noen?'],
+    };
+    const guardedLessonBoundary = tutor.finalizeTurn({
+      reply: 'Fint.',
+      question: 'Hva vil du bestille?',
+      correction: null,
+      memory: null,
+    }, beginnerAfterPreparedQuestions, context);
+    assert.equal(guardedLessonBoundary.question, 'Kan du si litt mer?');
+    assert.notEqual(guardedLessonBoundary.question, 'Hva vil du bestille?');
+
     for (let index = 0; index < tutor.MAX_TURNS; index += 1) {
       session = tutor.nextSession(session, `Svar ${index + 1}`, {
         reply: 'Fint.', question: 'Kan du fortsette?', correction: null, memory: null,

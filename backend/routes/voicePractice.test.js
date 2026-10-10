@@ -14,6 +14,11 @@ const { getPreparedQuestions } = require('../voiceQuestions');
 const catalog = require('../voiceCatalog.json');
 
 test('toate lecțiile au trei întrebări scurte pregătite în Bokmål', () => {
+  assert.deepEqual(getPreparedQuestions('A1', 1), [
+    'Hva heter du?',
+    'Hvordan har du det?',
+    'Hva sier du når du møter noen?',
+  ]);
   for (const [level, lessons] of Object.entries(catalog)) for (const id of Object.keys(lessons)) {
     const questions = getPreparedQuestions(level, Number(id));
     assert.equal(questions.length, 3);

@@ -140,8 +140,10 @@ const nextQuestionFor = (session, context, candidate = null) => {
   const prepared = getPreparedQuestions(context.level, context.lessonId) || [];
   const preparedQuestion = prepared.find((question) => isNewQuestion(question, askedQuestions));
   if (preparedQuestion) return preparedQuestion;
-  if (isUsableQuestion(candidate, askedQuestions, context.level)) return candidate.trim();
   const group = ['A1', 'A2'].includes(context.level) ? 'beginner' : 'independent';
+  // Beginners stay inside the curated lesson questions. An unconstrained model
+  // question can introduce vocabulary or situations from later lessons.
+  if (group === 'independent' && isUsableQuestion(candidate, askedQuestions, context.level)) return candidate.trim();
   return GENERIC_FOLLOW_UPS[group].find((question) => isNewQuestion(question, askedQuestions)) || null;
 };
 
