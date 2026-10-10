@@ -21,6 +21,30 @@ const assistantMessage = (dialog) => ({
   turn: dialog.turn,
 });
 
+function NoraAvatar({ isSpeaking }) {
+  return (
+    <div
+      className={`voice-lesson__nora ${isSpeaking ? 'voice-lesson__nora--speaking' : ''}`}
+      aria-hidden="true"
+    >
+      <span className="voice-lesson__sound-wave voice-lesson__sound-wave--left"><i /><i /><i /></span>
+      <span className="voice-lesson__nora-hair voice-lesson__nora-hair--back" />
+      <span className="voice-lesson__nora-neck" />
+      <span className="voice-lesson__nora-body" />
+      <span className="voice-lesson__nora-head">
+        <span className="voice-lesson__nora-hair voice-lesson__nora-hair--front" />
+        <span className="voice-lesson__nora-brow voice-lesson__nora-brow--left" />
+        <span className="voice-lesson__nora-brow voice-lesson__nora-brow--right" />
+        <span className="voice-lesson__nora-eye voice-lesson__nora-eye--left" />
+        <span className="voice-lesson__nora-eye voice-lesson__nora-eye--right" />
+        <span className="voice-lesson__nora-nose" />
+        <span className="voice-lesson__nora-mouth" />
+      </span>
+      <span className="voice-lesson__sound-wave voice-lesson__sound-wave--right"><i /><i /><i /></span>
+    </div>
+  );
+}
+
 export default function VoiceLessonConversation({ level, lessonId, pathId, lessonTitle }) {
   const [configured, setConfigured] = useState(null);
   const [status, setStatus] = useState('idle');
@@ -279,6 +303,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   };
 
   const active = !['idle', 'ended'].includes(status);
+  const noraIsSpeaking = ['speaking', 'feedbackAudio'].includes(status);
   const labels = {
     idle: 'Pregătit de practică',
     loading: 'Pregătim replica…',
@@ -301,6 +326,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       {status === 'idle' && <div className="voice-lesson__art" aria-hidden="true" />}
       <div className="voice-lesson__partner"><span className="voice-lesson__avatar" aria-hidden="true"><span className="voice-lesson__avatar-letter">N</span><picture className="voice-lesson__portrait"><source media="(min-width: 861px)" srcSet="/images/voice/nora-avatar.webp" /><img alt="" width="56" height="56" /></picture></span><div><strong>Nora</strong><span>Voce AI · {level}</span></div><span className={`voice-lesson__status ${active ? 'voice-lesson__status--active' : ''}`} role="status">{labels[status]}</span></div>
       {status === 'idle' && <div className="voice-lesson__welcome"><h2>Exersează printr-un dialog real</h2><p>Nora răspunde natural și continuă conversația în limitele lecției curente.</p><ul><li>Până la 8 răspunsuri</li><li>Dialog adaptiv</li><li>Feedback final</li></ul></div>}
+      {status !== 'idle' && <div className={`voice-lesson__nora-stage ${noraIsSpeaking ? 'voice-lesson__nora-stage--speaking' : ''}`}><NoraAvatar isSpeaking={noraIsSpeaking} /><span>{noraIsSpeaking ? 'Nora vorbește' : labels[status]}</span></div>}
       {configured === false && <p className="voice-lesson__notice">Practica vocală nu este disponibilă momentan. Poți finaliza lecția și reveni mai târziu.</p>}
       {error && <p className="voice-lesson__error" role="alert">{error}</p>}
       {dialog && active && <div className="voice-lesson__progress"><span>Dialogul lecției</span><small>Replica {Math.min(dialog.turn + 1, dialog.maxTurns)} din {dialog.maxTurns}</small></div>}
