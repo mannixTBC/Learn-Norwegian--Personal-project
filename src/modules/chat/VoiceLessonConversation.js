@@ -344,7 +344,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
         {active && <button type="button" onClick={stop}>Oprește conversația</button>}
       </div>
       {status === 'idle' && <p className="voice-lesson__start-caption">O singură apăsare pornește dialogul.</p>}
-      <p className="voice-lesson__hint">După ce Nora termină replica, vorbește natural. Dialogul continuă automat după 4 secunde de liniște.</p>
+      <p className="voice-lesson__hint">După ce Nora termină replica, vorbește natural. Dialogul continuă automat după aproximativ 2 secunde de liniște.</p>
       <p className="voice-lesson__privacy">Vocea este generată de AI. Microfonul ascultă maximum 30 de secunde pentru fiecare răspuns. Răspunsurile sunt trimise către OpenAI; înregistrările nu sunt salvate de aplicație.</p>
     </div>
   </section>;

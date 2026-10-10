@@ -9,7 +9,7 @@ Etapa și rezultatele exercițiilor sunt păstrate la rotirea telefonului și re
 1. `backend/voiceQuestions.js` conține trei obiective inițiale Bokmål pentru fiecare dintre cele 40 de lecții; dialogul continuă adaptiv până la opt răspunsuri.
 2. Vocea fiecărei întrebări este generată la prima utilizare, apoi reutilizată. Modelul,
    vocea, textul și instrucțiunile definesc cheia cache-ului; schimbarea lor generează o versiune nouă.
-3. În modul automat, microfonul pornește după întrebare și trimite răspunsul după 4 secunde de liniște,
+3. În modul automat, microfonul pornește după întrebare și trimite răspunsul după aproximativ 2 secunde de liniște,
    cu o limită de 30 de secunde. Elevul poate opri răspunsul mai repede sau poate folosi modul manual.
    Microfonul este eliberat imediat. Audio merge pe server numai pentru transcriere.
 4. După opt răspunsuri, o singură cerere LLM analizează dialogul și pregătește feedbackul final.

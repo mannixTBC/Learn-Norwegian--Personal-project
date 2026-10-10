@@ -1,7 +1,8 @@
 import { supabase } from './supabaseClient';
 
 const MAX_RECORDING_SECONDS = 30;
-const SILENCE_BEFORE_SUBMIT_MS = 4_000;
+// Keeps short learner pauses while making the exchange feel conversational.
+const SILENCE_BEFORE_SUBMIT_MS = 1_800;
 
 export const practiceRequest = async (operation, payload, signal) => {
   const session = supabase ? await supabase.auth.getSession() : null;
