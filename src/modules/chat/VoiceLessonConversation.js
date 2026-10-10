@@ -49,7 +49,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       player.audio.onerror = null;
       player.audio.pause();
       player.audio.src = '';
-      URL.revokeObjectURL(player.url);
+      if (player.objectUrl) URL.revokeObjectURL(player.objectUrl);
       playback.current = null;
     }
   };
@@ -70,11 +70,12 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     };
   }, []);
 
-  const play = async (data, kind, onEnded) => {
+  const play = async (data, kind, onEnded, onStreamError) => {
     stopPlayback();
-    const url = URL.createObjectURL(audioBlob(data));
+    const objectUrl = data.streamUrl ? null : URL.createObjectURL(audioBlob(data));
+    const url = data.streamUrl || objectUrl;
     const audio = new Audio(url);
-    const player = { audio, url };
+    const player = { audio, objectUrl };
     playback.current = player;
     audio.onended = () => {
       stopPlayback();
@@ -82,10 +83,14 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       setStatus(kind === 'feedback' ? 'ended' : 'question');
       onEnded?.();
     };
-    audio.onerror = () => {
+    audio.onerror = async () => {
       if (playback.current !== player) return;
       stopPlayback();
       if (!mounted.current) return;
+      if (data.streamUrl && onStreamError) {
+        await onStreamError();
+        return;
+      }
       setError('Vocea nu a putut fi redată. Pornește din nou dialogul.');
       setStatus('ended');
     };
@@ -95,7 +100,9 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     } catch (_) {
       if (playback.current !== player) return;
       stopPlayback();
-      if (mounted.current) {
+      if (mounted.current && data.streamUrl && onStreamError) {
+        await onStreamError();
+      } else if (mounted.current) {
         setError('Redarea vocii a fost blocată de browser. Pornește din nou dialogul.');
         setStatus('ended');
       }
@@ -139,19 +146,40 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   const speak = async (currentVoiceSession, currentDialog, currentAnswers) => {
     const signal = controller.current.signal;
     setStatus('loading');
-    const data = await practiceRequest('speak', {
+    const payload = {
       sessionToken: currentVoiceSession.sessionToken,
       dialogToken: currentDialog.sessionToken,
-    }, signal);
-    if (signal.aborted || !mounted.current) return;
-    await play(data, 'dialogue', () => {
+    };
+    const afterSpeech = () => {
       clearTimeout(autoStartTimer.current);
       autoStartTimer.current = setTimeout(() => {
         if (!mounted.current || signal.aborted) return;
         if (currentDialog.done) finish(currentAnswers, currentVoiceSession);
         else record(currentVoiceSession, currentDialog, currentAnswers);
       }, currentDialog.done ? 450 : 1_000);
-    });
+    };
+    let fallbackStarted = false;
+    const playFallback = async () => {
+      if (fallbackStarted || signal.aborted || !mounted.current) return;
+      fallbackStarted = true;
+      setStatus('loading');
+      try {
+        const fallback = await practiceRequest('speak', payload, signal);
+        if (!signal.aborted && mounted.current) await play(fallback, 'dialogue', afterSpeech);
+      } catch (err) {
+        if (!signal.aborted && mounted.current) {
+          setError(err.message);
+          setStatus('ended');
+        }
+      }
+    };
+    try {
+      const stream = await practiceRequest('stream-ticket', payload, signal);
+      if (signal.aborted || !mounted.current) return;
+      await play(stream, 'dialogue', afterSpeech, playFallback);
+    } catch (_) {
+      await playFallback();
+    }
   };
 
   const start = async () => {

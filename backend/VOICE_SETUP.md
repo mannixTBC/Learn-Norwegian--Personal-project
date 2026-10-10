@@ -7,13 +7,16 @@ Etapa și rezultatele exercițiilor sunt păstrate la rotirea telefonului și re
 ## Flux
 
 1. `backend/voiceQuestions.js` conține trei obiective inițiale Bokmål pentru fiecare dintre cele 40 de lecții; dialogul continuă adaptiv până la opt răspunsuri.
-2. Vocea fiecărei întrebări este generată la prima utilizare, apoi reutilizată. Modelul,
+2. Replica Norei este redată progresiv prin Cartesia: browserul începe redarea înainte ca
+   întregul MP3 să fie generat. Dacă serviciul nu este configurat sau fluxul eșuează,
+   clientul revine automat la ElevenLabs și apoi la OpenAI.
+3. Vocea fiecărei întrebări este generată la prima utilizare, apoi reutilizată. Modelul,
    vocea, textul și instrucțiunile definesc cheia cache-ului; schimbarea lor generează o versiune nouă.
-3. În modul automat, microfonul pornește după întrebare și trimite răspunsul după aproximativ 2 secunde de liniște,
+4. În modul automat, microfonul pornește după întrebare și trimite răspunsul după aproximativ 2 secunde de liniște,
    cu o limită de 30 de secunde. Elevul poate opri răspunsul mai repede sau poate folosi modul manual.
    Microfonul este eliberat imediat. Audio merge pe server numai pentru transcriere.
-4. După opt răspunsuri, o singură cerere LLM analizează dialogul și pregătește feedbackul final.
-5. Feedbackul românesc este limitat la 25 de cuvinte și citit vocal. Dacă TTS eșuează,
+5. După opt răspunsuri, o singură cerere LLM analizează dialogul și pregătește feedbackul final.
+6. Feedbackul românesc este limitat la 25 de cuvinte și citit vocal. Dacă TTS eșuează,
    textul rămâne vizibil. Reascultarea audio deja primit nu face alte cereri AI.
 
 ## Configurare
@@ -22,6 +25,11 @@ Etapa și rezultatele exercițiilor sunt păstrate la rotirea telefonului și re
 - `OPENAI_VOICE_STT_MODEL`: implicit `gpt-transcribe`.
 - `OPENAI_VOICE_FEEDBACK_MODEL`: implicit `gpt-4o-mini`.
 - `OPENAI_VOICE_TTS_MODEL`: implicit `gpt-4o-mini-tts`, voce `marin`.
+- `CARTESIA_API_KEY` și `CARTESIA_VOICE_ID`: activează streamingul pentru replica Norei.
+- `CARTESIA_MODEL_ID`: implicit `sonic-latest`; `CARTESIA_API_VERSION`: implicit `2026-08-14`.
+- `CARTESIA_VOICE_SPEED`: implicit `0.82`, limitat pe server la intervalul acceptat `0.6–1.5`.
+- `CARTESIA_STREAM_SECRET`: opțional. Criptează linkurile audio temporare; dacă lipsește,
+  se folosește `CHAT_SESSION_SECRET`, apoi `OPENAI_API_KEY` ca ultimă rezervă.
 - În Netlify, variabilele trebuie să fie disponibile pentru Functions. Biblioteca
   `@netlify/blobs` folosește contextul proiectului, fără altă cheie introdusă manual.
 - Cache-ul întrebărilor este site-wide în Netlify Blobs și persistă între publicări.
@@ -39,6 +47,11 @@ feedbackul sunt păstrate temporar în memoria procesului pentru retrimiteri, ma
 durata sesiunii; sunt curățate la cererile următoare. Nu sunt scrise în Blobs.
 Doar audio public al întrebărilor este salvat durabil.
 
+Linkul de streaming expiră după 60 de secunde. Replica este criptată cu AES-GCM în biletul
+temporar, astfel încât textul și cheia Cartesia nu sunt expuse browserului sau URL-ului.
+Funcția Netlify dedicată transmite direct corpul răspunsului Cartesia și nu îl convertește
+în Base64 și nu îl păstrează în memorie integral.
+
 Limitarea pornirilor (o pornire/minut/utilizator), a transcrierii per întrebare și
 deduplicarea feedbackului sunt locale procesului. În funcții serverless diferite,
 retrimiterea unei cereri poate produce o nouă transcriere/analiză. Acestea nu sunt
@@ -52,7 +65,7 @@ păstrate pentru compatibilitate, dar componenta desktop nu le mai folosește.
 ## Verificări
 
 ```
-node --test backend/routes/voicePractice.test.js backend/voiceAudioCache.test.js
+node --test backend/routes/voicePractice.test.js backend/voiceAudioCache.test.js backend/voiceStreamTicket.test.js netlify/functions/voice-stream.test.mjs
 node scripts/test-voice-practice-client.mjs
 npm run build
 ```

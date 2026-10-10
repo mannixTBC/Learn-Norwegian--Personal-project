@@ -24,6 +24,12 @@
   force = true
 
 [[redirects]]
+  from = "/api/voice/stream"
+  to = "/.netlify/functions/voice-stream"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200

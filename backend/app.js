@@ -10,6 +10,7 @@ const billingRouter = require('./routes/billing');
 const chatRouter = require('./routes/chat');
 const voiceRouter = require('./routes/voice');
 const voicePracticeRouter = require('./routes/voicePractice');
+const voiceStreamRouter = require('./routes/voiceStream');
 
 const app = express();
 
@@ -29,8 +30,9 @@ app.use('/api/translate', translateRouter);
 app.use('/api/speech', speechRouter);
 app.use('/api/pronunciation', pronunciationRouter);
 app.use('/api/billing', billingRouter);
-app.use('/api/voice', voiceRouter);
+app.use('/api/voice/stream', voiceStreamRouter);
 app.use('/api/voice/practice', voicePracticeRouter);
+app.use('/api/voice', voiceRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

@@ -12,6 +12,7 @@ const router = require('./voicePractice');
 auth.requireAuth = realAuth;
 const { getPreparedQuestions, getPreparedQuestionTranslation } = require('../voiceQuestions');
 const chatTutor = require('../chatTutor');
+const { verifyVoiceStreamTicket } = require('../voiceStreamTicket');
 const catalog = require('../voiceCatalog.json');
 
 test('toate lecțiile au trei întrebări scurte pregătite în Bokmål', () => {
@@ -36,6 +37,8 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     tts: process.env.OPENAI_VOICE_TTS_MODEL, stt: process.env.OPENAI_VOICE_STT_MODEL,
     elevenKey: process.env.ELEVENLABS_API_KEY, elevenVoice: process.env.ELEVENLABS_FEMALE_VOICE_ID,
     elevenModel: process.env.ELEVENLABS_MODEL_ID,
+    cartesiaKey: process.env.CARTESIA_API_KEY, cartesiaVoice: process.env.CARTESIA_VOICE_ID,
+    cartesiaSecret: process.env.CARTESIA_STREAM_SECRET,
   };
   const realFetch = global.fetch;
   const calls = { speech: 0, elevenSpeech: 0, transcription: 0, feedback: 0 };
@@ -47,6 +50,9 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
   delete process.env.ELEVENLABS_API_KEY;
   delete process.env.ELEVENLABS_FEMALE_VOICE_ID;
   delete process.env.ELEVENLABS_MODEL_ID;
+  delete process.env.CARTESIA_API_KEY;
+  delete process.env.CARTESIA_VOICE_ID;
+  process.env.CARTESIA_STREAM_SECRET = 'test-secret-that-is-long-enough-for-streaming';
   // Unique cache version for this test, never sent to a real provider.
   process.env.OPENAI_VOICE_TTS_MODEL = `test-tts-${Date.now()}`;
   let analysis;
@@ -114,6 +120,18 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     const chatContext = chatTutor.lessonFor(lesson);
     const chatSession = chatTutor.newSession(chatContext, 'Bearer modular-free-user').session;
     const dialogToken = chatTutor.signSession(chatSession);
+    assert.equal((await request('stream-ticket', { sessionToken: session.sessionToken, dialogToken })).status, 503);
+    process.env.CARTESIA_API_KEY = 'cartesia-test-key';
+    process.env.CARTESIA_VOICE_ID = 'cartesia-anna-test';
+    const ticketResponse = await request('stream-ticket', { sessionToken: session.sessionToken, dialogToken });
+    assert.equal(ticketResponse.status, 200);
+    const stream = await ticketResponse.json();
+    assert.equal(stream.provider, 'cartesia');
+    const ticket = new URL(stream.streamUrl, 'https://nordlingo.net').searchParams.get('ticket');
+    assert.equal(ticket.includes('Hva'), false);
+    assert.equal(verifyVoiceStreamTicket(ticket).text, 'Hei! La oss øve sammen. Hva heter du?');
+    delete process.env.CARTESIA_API_KEY;
+    delete process.env.CARTESIA_VOICE_ID;
     const spoken = await (await request('speak', { sessionToken: session.sessionToken, dialogToken })).json();
     assert.ok(spoken.audioBase64);
     assert.equal(spoken.provider, 'openai');
@@ -182,6 +200,8 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
       OPENAI_VOICE_TTS_MODEL: saved.tts, OPENAI_VOICE_STT_MODEL: saved.stt,
       ELEVENLABS_API_KEY: saved.elevenKey, ELEVENLABS_FEMALE_VOICE_ID: saved.elevenVoice,
       ELEVENLABS_MODEL_ID: saved.elevenModel,
+      CARTESIA_API_KEY: saved.cartesiaKey, CARTESIA_VOICE_ID: saved.cartesiaVoice,
+      CARTESIA_STREAM_SECRET: saved.cartesiaSecret,
     })) {
       if (value === undefined) delete process.env[key]; else process.env[key] = value;
     }

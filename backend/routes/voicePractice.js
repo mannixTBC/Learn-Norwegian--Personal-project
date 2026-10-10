@@ -5,6 +5,8 @@ const { getVoiceLesson } = require('../voiceTutor');
 const { getPreparedQuestions } = require('../voiceQuestions');
 const { getQuestionAudio } = require('../voiceAudioCache');
 const { MAX_TURNS, verifySession: verifyChatSession } = require('../chatTutor');
+const { createVoiceStreamTicket } = require('../voiceStreamTicket');
+const { cartesiaConfigured } = require('../cartesiaSpeech');
 const router = express.Router();
 const starts = new Map();
 const operations = new Map();
@@ -160,6 +162,15 @@ router.post('/speak', wrap(async (req, res) => {
   if (!latest) throw fail('Replica nu este validă.');
   const result = await once(`${session.id}:speech:${session.turn}`, session.expires, () => dialogueSpeech(latest));
   res.json({ audioBase64: result.audio.toString('base64'), mimeType: 'audio/mpeg', provider: result.provider });
+}));
+router.post('/stream-ticket', wrap(async (req, res) => {
+  sessionFor(req);
+  if (!cartesiaConfigured()) throw fail('Streamingul Cartesia nu este configurat.', 503);
+  const { session } = verifyChatSession(req.body?.dialogToken, req.userId);
+  const latest = dialogueSpeechText(session);
+  if (!latest) throw fail('Replica nu este validă.');
+  const ticket = createVoiceStreamTicket({ text: latest, sessionId: session.id, turn: session.turn });
+  res.json({ streamUrl: `/api/voice/stream?ticket=${encodeURIComponent(ticket)}`, provider: 'cartesia' });
 }));
 router.post('/transcribe', wrap(async (req, res) => {
   const session = sessionFor(req);
