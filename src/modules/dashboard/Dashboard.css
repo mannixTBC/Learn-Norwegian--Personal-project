@@ -206,6 +206,22 @@
   .dashboard-mobile-nav>a:active{transform:scale(.97)}
 }
 
+/* Site-ul mobil își păstrează dashboardul web. Experiența redusă la un
+   singur pas este activată doar când PWA-ul rulează ca aplicație instalată. */
+@media(max-width:680px){
+  html:not(.is-installed-app) .daily-dashboard{min-height:0;padding:14px 0 64px}
+  html:not(.is-installed-app) .daily-dashboard__hero{order:1;display:block;padding:14px 16px;border-radius:18px;box-shadow:0 14px 34px rgba(20,33,61,.14)}
+  html:not(.is-installed-app) .dashboard-mobile-start{order:2;margin:12px 0 0;padding:18px;border-radius:20px;background:linear-gradient(150deg,#fff 0%,#f4fbfb 100%);box-shadow:0 12px 30px rgba(20,33,61,.08)}
+  html:not(.is-installed-app) .dashboard-mobile-start__welcome,
+  html:not(.is-installed-app) .dashboard-mobile-start__secondary,
+  html:not(.is-installed-app) .dashboard-mobile-nav{display:none}
+  html:not(.is-installed-app) .dashboard-career{display:grid}
+  html:not(.is-installed-app) .dashboard-stats{display:grid}
+  html:not(.is-installed-app) .dashboard-main-grid{display:grid}
+  html:not(.is-installed-app) .dashboard-recommendations,
+  html:not(.is-installed-app) .dashboard-levels{display:block}
+}
+
 @media(max-width:390px){
   .daily-dashboard__welcome>div>a{width:100%;margin-left:0}
   .dashboard-mobile-start{padding:16px}

@@ -4,6 +4,9 @@ import App from './App';
 import { registerServiceWorker } from './serviceWorker';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
+const isInstalledApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+document.documentElement.classList.toggle('is-installed-app', isInstalledApp);
+
 /**
  * Punctul de intrare al aplicației React.
  * Montează componenta App în elementul HTML cu id="root".
