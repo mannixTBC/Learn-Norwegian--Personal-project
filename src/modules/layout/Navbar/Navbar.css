@@ -61,10 +61,12 @@
 .navbar__user small { color: var(--color-text-tertiary); font-size: .6rem; text-transform: uppercase; }
 .navbar__user strong { max-width: 100px; overflow: hidden; color: #14213d; font-size: .76rem; text-overflow: ellipsis; white-space: nowrap; }
 .navbar__account-toggle { display: grid; width: 34px; height: 34px; place-content: center; padding: 0; color: #506773; border: 1px solid #d8e4e7; border-radius: 50%; background: linear-gradient(145deg,#fff,#f2f7f7); box-shadow: 0 3px 10px rgba(20,33,61,.08); cursor: pointer; transition: color .18s ease,border-color .18s ease,background-color .18s ease,box-shadow .18s ease,transform .18s ease; }
-.navbar__account-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
+.navbar__account-toggle > span { display: block; width: 15px; height: 1.7px; margin: 1.7px 0; border-radius: 99px; background: currentColor; transform-origin: center; transition: opacity .16s ease,transform .2s ease; }
 .navbar__account-toggle:hover { color: #175d64; border-color: #a9cdd0; background: #edf8f8; box-shadow: 0 6px 15px rgba(23,93,100,.14); transform: translateY(-1px); }
 .navbar__account-toggle--open { color: #fff; border-color: #175d64; background: #175d64; box-shadow: 0 6px 16px rgba(23,93,100,.22); }
-.navbar__account-toggle--open svg { transform: rotate(180deg); }
+.navbar__account-toggle--open > span:nth-child(1) { transform: translateY(5.1px) rotate(45deg); }
+.navbar__account-toggle--open > span:nth-child(2) { opacity: 0; transform: scaleX(.35); }
+.navbar__account-toggle--open > span:nth-child(3) { transform: translateY(-5.1px) rotate(-45deg); }
 .navbar__account-toggle:focus-visible { outline: 3px solid #9bd4d7; outline-offset: 2px; }
 .navbar__account-toggle:active { transform: scale(.96); }
 .navbar__account-dropdown { position: absolute; top: calc(100% + 10px); right: 0; display: grid; width: 205px; padding: 7px; border: 1px solid #dce5e9; border-radius: 14px; background: #fff; box-shadow: 0 18px 42px rgba(20,33,61,.16); animation: navbar-dropdown-in .18s ease both; }
