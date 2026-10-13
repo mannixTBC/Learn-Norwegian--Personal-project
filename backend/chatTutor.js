@@ -140,7 +140,8 @@ const normalizeQuestion = (value) => String(value || '')
 const questionTopic = (value) => {
   const normalized = normalizeQuestion(value);
   if (/\b(hva heter du|navnet ditt)\b/.test(normalized)) return 'name';
-  if (/\b(hvordan har du det|hvordan foler du deg)\b/.test(normalized)) return 'wellbeing';
+  if (/\b(hvordan har du det|hvordan f[øo]ler du deg)\b/.test(normalized)) return 'wellbeing';
+  if (/\b(hva sier du nar du m[øo]ter noen)\b/.test(normalized)) return 'greeting';
   return null;
 };
 
@@ -373,6 +374,7 @@ Obiectivul curent ales de aplicație: ${objectiveForTurn(context, session.turn)}
 understood: true dacă ultima replică are un sens clar în norvegiană, chiar dacă nu răspunde direct, cere ajutor, refuză, schimbă subiectul sau are greșeli firești de începător. understood: false numai dacă replica este realmente neinteligibilă, fără sens sau clar în altă limbă. Nu confunda relevanța cu înțelegerea și nu penaliza accentul ori gramatica imperfectă.
 intent: clasifică replica drept answer, help, repeat, refusal, stop, other sau unclear. O refuzare explicită de a continua ori de a mai încerca, precum „Jeg skal ikke prøve igjen”, are intent stop.
 advanceTurn: true numai pentru o încercare plauzibilă de a răspunde întrebării curente; false pentru ajutor, repetare, refuz, oprire sau o replică înțeleasă dar fără răspuns direct.
+O repetare literală a întrebării Norei nu este răspuns: intent repeat, advanceTurn false și păstrează aceeași întrebare.
 reply: o singură reacție naturală în norvegiană la ce a spus cursantul, fără semnul întrebării, fără listă și fără dialog-model, maximum ${wordLimit} de cuvinte. Menționează concret un detaliu sau sens din ultima replică; nu folosi o confirmare generică dacă poți răspunde specific.
 Pentru understood: false, reply cere foarte scurt repetarea, intent este unclear, advanceTurn este false, question rămâne exact ${JSON.stringify(session.lastQuestion)} și memory este null.
 Pentru understood: true și advanceTurn: false, reacționează firesc la sensul replicii, fără să pretinzi că nu ai înțeles; question rămâne exact ${JSON.stringify(session.lastQuestion)} și memory este null.
@@ -380,7 +382,7 @@ Pentru intent stop, reply încheie politicos conversația, question este null, s
 Pentru advanceTurn: true, question: ${isFinalTurn ? 'trebuie să fie null și reply încheie conversația.' : `folosește exact întrebarea selectată de aplicație: ${JSON.stringify(plannedQuestion)}.`}
 questionTranslation: pentru intent stop este null; altfel este traducerea fidelă în română a câmpului question.
 suggestions: pentru intent stop este o listă goală; altfel exact două răspunsuri scurte în Bokmål care răspund firesc la question, fiecare cu traducerea sa în română; folosește prioritar vocabularul lecției.
-correction: null dacă sensul este clar; altfel o singură corectare importantă și scurtă în română.
+correction: de regulă null. Corectează numai o greșeală norvegiană sigură: citează fragmentul original și o expresie corectată completă de minimum două cuvinte. Dacă un cuvânt pare transcris greșit sau nu îi cunoști intenția, NU inventa o corectare; ignoră-l dacă restul răspunsului este clar sau cere repetarea dacă este esențial.
 memory: un singur fapt scurt în Bokmål, maximum 80 de caractere, util pentru dialogul următor; altfel null. Nu memora date personale sensibile.
 Introdu maximum ${newWordLimit} ${newWordLimit === 1 ? 'cuvânt nou necesar' : 'cuvinte noi necesare'} în replică. Dacă utilizatorul se abate de la temă, răspunde foarte scurt și revino natural la obiectiv.
 Pentru nivelurile A1–A2, rămâi strict la tema, vocabularul și gramatica lecției de bază. Direcția profesională este doar decor; nu preda expresiile ei dacă nu apar și în lecția de bază.
@@ -491,10 +493,54 @@ const fallbackReplyFor = (session) => {
   const topic = questionTopic(session.lastQuestion);
   if (topic === 'name') return 'Hyggelig å møte deg!';
   if (topic === 'wellbeing') return 'Takk for at du forteller.';
+  if (topic === 'greeting') return 'Ja, «hei» passer fint!';
   return 'Takk for svaret.';
 };
 
-const finalizeTurn = (result, session, context) => {
+const repeatsQuestionVerbatim = (message, question) => {
+  const answer = normalizeQuestion(message);
+  const currentQuestion = normalizeQuestion(question);
+  return Boolean(answer && currentQuestion && answer === currentQuestion);
+};
+
+const safeCorrection = (result, message) => {
+  const correction = result?.correction;
+  if (!correction || result?.understood === false) return null;
+  const quoted = [...correction.matchAll(/[«“"]([^»”"]+)[»”"]/gu)].map((match) => match[1].trim());
+  if (quoted.length < 2) return null;
+  const source = normalizeQuestion(quoted[0]);
+  const corrected = normalizeQuestion(quoted.at(-1));
+  if (!source || !normalizeQuestion(message).includes(source)) return null;
+  if (corrected.split(' ').filter(Boolean).length < 2) return null;
+  return correction;
+};
+
+const acceptedReplyFor = (result, session, context, message) => {
+  const candidate = result && isUsableReply(result.reply, context) ? result.reply : fallbackReplyFor(session);
+  const generic = /^(takk for svaret|takk for at du forteller|det h[oø]res bra ut)[.!]?$/iu.test(candidate.trim());
+  if (!generic) return candidate;
+  const topic = questionTopic(session.lastQuestion);
+  const answer = normalizeQuestion(message);
+  if (topic === 'wellbeing' && /\b(bra|fint|godt)\b/.test(answer)) return 'Så fint å høre!';
+  if (topic === 'greeting' && /^(hei|hallo|god morgen|god kveld)$/.test(answer)) return 'Ja, «hei» passer fint!';
+  return candidate;
+};
+
+const finalizeTurn = (result, session, context, message = '') => {
+  if (repeatsQuestionVerbatim(message, session.lastQuestion)) {
+    const question = session.lastQuestion || firstQuestionFor(context);
+    return {
+      understood: true,
+      intent: 'repeat',
+      advanceTurn: false,
+      done: false,
+      reply: 'Du gjentok spørsmålet. Prøv å svare på det.',
+      question,
+      ...supportForQuestion(context, question),
+      correction: null,
+      memory: null,
+    };
+  }
   if (!result || result.understood === false) {
     const question = session.lastQuestion || firstQuestionFor(context);
     return {
@@ -504,7 +550,7 @@ const finalizeTurn = (result, session, context) => {
       reply: 'Jeg forstod ikke helt. Prøv igjen.',
       question,
       ...supportForQuestion(context, question, result),
-      correction: result?.correction || null,
+      correction: null,
       memory: null,
     };
   }
@@ -531,7 +577,7 @@ const finalizeTurn = (result, session, context) => {
       reply: isUsableReply(result.reply, context) ? result.reply : 'Jeg forstår. Vi kan ta det rolig.',
       question,
       ...supportForQuestion(context, question, result),
-      correction: result.correction || null,
+      correction: safeCorrection(result, message),
       memory: null,
     };
   }
@@ -546,7 +592,7 @@ const finalizeTurn = (result, session, context) => {
         : 'Bra jobbet! Du har fullført samtalen.',
       question: null,
       ...supportForQuestion(context, null),
-      correction: result?.correction || null,
+      correction: safeCorrection(result, message),
       memory: result?.memory || null,
     };
   }
@@ -555,10 +601,10 @@ const finalizeTurn = (result, session, context) => {
     understood: true,
     intent: result.intent,
     advanceTurn: true,
-    reply: result && isUsableReply(result.reply, context) ? result.reply : fallbackReplyFor(session),
+    reply: acceptedReplyFor(result, session, context, message),
     question,
     ...supportForQuestion(context, question, result),
-    correction: result?.correction || null,
+    correction: safeCorrection(result, message),
     memory: result?.memory || null,
   };
 };

@@ -7,7 +7,7 @@ const { getQuestionAudio } = require('../voiceAudioCache');
 const { MAX_TURNS, verifySession: verifyChatSession, commandFor } = require('../chatTutor');
 const { createVoiceStreamTicket } = require('../voiceStreamTicket');
 const { cartesiaConfigured } = require('../cartesiaSpeech');
-const { decidePrimaryTranscript, decideAmbiguousTranscript } = require('../voiceTranscriptDecision');
+const { decidePrimaryTranscript, decideAmbiguousTranscript, questionKind, normalizeTranscriptForQuestion } = require('../voiceTranscriptDecision');
 const router = express.Router();
 const starts = new Map();
 const operations = new Map();
@@ -126,12 +126,29 @@ const matchingDialogSession = (req, voiceSession, index) => {
   return session;
 };
 
-const transcribeAudio = async ({ bytes, mimeType, extension, languages = [] }) => {
+const transcriptionContext = (question) => {
+  const kind = questionKind(question);
+  const keywords = kind === 'name'
+    ? ['Jeg heter', 'Navnet mitt er']
+    : kind === 'yes-no'
+      ? ['Ja', 'Nei']
+      : /hvordan har du det/i.test(question || '')
+        ? ['Jeg har det bra', 'Det går bra', 'Jeg har det fint']
+        : [];
+  return {
+    prompt: `Kort muntlig svar på norsk bokmål. Læreren spurte: "${String(question || '').slice(0, 200)}".`,
+    keywords,
+  };
+};
+
+const transcribeAudio = async ({ bytes, mimeType, extension, languages = [], prompt = '', keywords = [] }) => {
   const form = new FormData();
   form.append('file', new Blob([bytes], { type: mimeType }), `answer.${extension}`);
   form.append('model', process.env.OPENAI_VOICE_STT_MODEL || 'gpt-transcribe');
   form.append('response_format', 'json');
   languages.forEach((language) => form.append('languages[]', language));
+  if (prompt) form.append('prompt', prompt);
+  keywords.forEach((keyword) => form.append('keywords[]', keyword));
   form.append('temperature', '0');
   const data = await (await openAI('audio/transcriptions', form, false)).json();
   return {
@@ -234,7 +251,9 @@ router.post('/transcribe', wrap(async (req, res) => {
   attempts.digests.add(digest);
   const slot = `${session.id}:transcript:${dialogSession.id}:${dialogSession.turn}:${digest}`;
   const result = await once(slot, session.expires, async () => {
-    const primary = await transcribeAudio({ bytes, mimeType, extension, languages: ['no', 'ro'] });
+    const context = transcriptionContext(dialogSession.lastQuestion);
+    const primary = await transcribeAudio({ bytes, mimeType, extension, languages: ['no', 'ro'], ...context });
+    primary.text = normalizeTranscriptForQuestion({ text: primary.text, question: dialogSession.lastQuestion });
     if (!primary.text) return { index, decision: 'retry', message: 'Nu am auzit un răspuns clar. Încearcă din nou; întrebarea rămâne aceeași.' };
 
     const primaryCommand = commandFor(primary.text);
@@ -242,7 +261,8 @@ router.post('/transcribe', wrap(async (req, res) => {
 
     let decision = decidePrimaryTranscript(primary);
     if (!decision) {
-      const secondary = await transcribeAudio({ bytes, mimeType, extension });
+      const secondary = await transcribeAudio({ bytes, mimeType, extension, ...context });
+      secondary.text = normalizeTranscriptForQuestion({ text: secondary.text, question: dialogSession.lastQuestion });
       const secondaryCommand = commandFor(secondary.text);
       if (secondaryCommand) return { index, text: secondary.text, decision: 'accept', consumeTurn: false, command: secondaryCommand };
       decision = decideAmbiguousTranscript({ primary, secondary, question: dialogSession.lastQuestion });

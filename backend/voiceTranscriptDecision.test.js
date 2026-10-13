@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const {
   languageSignal,
   questionKind,
+  normalizeTranscriptForQuestion,
   decidePrimaryTranscript,
   decideAmbiguousTranscript,
 } = require('./voiceTranscriptDecision');
@@ -13,6 +14,12 @@ test('identifică separat norvegiana, româna și rezultatele incerte', () => {
   assert.equal(languageSignal([{ code: 'no' }, { code: 'ro' }]), 'mixed');
   assert.equal(languageSignal([]), 'unknown');
   assert.equal(languageSignal(undefined), 'unknown');
+});
+
+test('repară numai confuzia contextuală Etter/Jeg heter', () => {
+  assert.equal(normalizeTranscriptForQuestion({ text: 'Etter Simona.', question: 'Hva heter du?' }), 'Jeg heter Simona.');
+  assert.equal(normalizeTranscriptForQuestion({ text: 'Etter jobb.', question: 'Hvordan har du det?' }), 'Etter jobb.');
+  assert.equal(normalizeTranscriptForQuestion({ text: 'Jeg heter Simona.', question: 'Hva heter du?' }), 'Jeg heter Simona.');
 });
 
 test('prima trecere acceptă norvegiana și respinge româna clară', () => {

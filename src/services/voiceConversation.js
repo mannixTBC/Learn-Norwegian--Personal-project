@@ -1,5 +1,18 @@
 import { supabase } from './supabaseClient';
 
+const normalizeSpokenText = (value) => String(value || '')
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .toLocaleLowerCase('nb-NO')
+  .replace(/[^a-zæøå0-9\s]/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+
+const lastSpokenQuestion = (transcript) => {
+  const questions = String(transcript || '').match(/[^.!?]*\?/gu);
+  return questions?.at(-1)?.trim() || '';
+};
+
 export const getVoiceConnectionError = (status, payload) => {
   const code = payload?.error?.code;
   if (['organization_spend_limit_exceeded', 'project_spend_limit_exceeded', 'billing_hard_limit_reached'].includes(code)) {
@@ -35,6 +48,7 @@ export const createVoiceConversation = async ({ level, lessonId, pathId, onEvent
   let finishing = false;
   let responding = false;
   let userMuted = false;
+  let currentQuestion = '';
   const receivedAnswers = new Set();
   const updateMicrophone = () => stream?.getAudioTracks().forEach((track) => {
     track.enabled = !userMuted && !responding && !finishing;
@@ -109,6 +123,9 @@ export const createVoiceConversation = async ({ level, lessonId, pathId, onEvent
       if (event.type === 'error' || (event.type === 'response.done' && ['failed', 'incomplete', 'cancelled'].includes(event.response?.status))) {
         responding = false; finishing = false; updateMicrophone();
       }
+      if (event.type === 'response.output_audio_transcript.done' || event.type === 'response.audio_transcript.done') {
+        currentQuestion = lastSpokenQuestion(event.transcript) || currentQuestion;
+      }
       onEvent(event);
       if (finishing && event.type === 'output_audio_buffer.stopped') { close(); return; }
       if (closed || finishing || event.type !== 'conversation.item.input_audio_transcription.completed' || !event.transcript?.trim()) return;
@@ -117,6 +134,10 @@ export const createVoiceConversation = async ({ level, lessonId, pathId, onEvent
       const command = event.transcript.trim().toLowerCase().replace(/[.!?,]/g, '');
       if (/^(mai lent|repetă|repeta|ajută-mă|ajuta-ma|nu înțeleg|nu inteleg)$/.test(command)) {
         respond('Ajută foarte scurt în română, apoi repetă aceeași întrebare în norvegiană. Maximum 18 cuvinte; nu trece la altă întrebare.');
+        return;
+      }
+      if (currentQuestion && normalizeSpokenText(event.transcript) === normalizeSpokenText(currentQuestion)) {
+        respond('Cursantul a repetat exact întrebarea. Spune foarte scurt că a repetat-o, oferă un exemplu de răspuns și repetă aceeași întrebare. Nu avansa dialogul.');
         return;
       }
       answers += 1;

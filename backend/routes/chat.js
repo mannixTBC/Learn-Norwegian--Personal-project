@@ -122,7 +122,7 @@ router.post('/turn', wrap(async (req, res) => {
       buildCompletionRequest(context, session, message),
       { timeout: 15_000 },
     );
-    result = finalizeTurn(parseCompletion(completion), session, context);
+    result = finalizeTurn(parseCompletion(completion), session, context, message);
   } catch (error) {
     throw fail('Asistentul nu răspunde momentan. Încearcă din nou.', 502);
   } finally {

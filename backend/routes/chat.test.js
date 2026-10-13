@@ -213,6 +213,47 @@ test('catalogul complet poate porni sesiuni semnate pentru fiecare lecție și d
     assert.equal(guarded.question, 'Hvordan har du det?');
     assert.doesNotMatch(`${guarded.reply} ${guarded.question}`, /ChatGPT|Hva heter du\?/i);
 
+    const repeatedQuestion = tutor.finalizeTurn({
+      understood: true,
+      intent: 'answer',
+      advanceTurn: true,
+      reply: 'Takk for svaret.',
+      question: 'Hvordan har du det?',
+      correction: null,
+      memory: null,
+    }, session, context, 'Hva heter du?');
+    assert.equal(repeatedQuestion.advanceTurn, false);
+    assert.equal(repeatedQuestion.intent, 'repeat');
+    assert.equal(repeatedQuestion.question, 'Hva heter du?');
+
+    const unsafeCorrection = tutor.finalizeTurn({
+      understood: true,
+      intent: 'answer',
+      advanceTurn: true,
+      reply: 'Takk for at du forteller.',
+      question: 'Hvordan har du det?',
+      correction: 'Corectează "legemat" la "legem".',
+      memory: null,
+    }, session, context, 'Jeg er bra, jeg er legemat.');
+    assert.equal(unsafeCorrection.correction, null);
+
+    const greetingSession = {
+      ...session,
+      turn: 2,
+      lastQuestion: 'Hva sier du når du møter noen?',
+      askedQuestions: ['Hva heter du?', 'Hvordan har du det?', 'Hva sier du når du møter noen?'],
+    };
+    const specificGreeting = tutor.finalizeTurn({
+      understood: true,
+      intent: 'answer',
+      advanceTurn: true,
+      reply: 'Takk for svaret.',
+      question: 'Kan du si litt mer?',
+      correction: null,
+      memory: null,
+    }, greetingSession, context, 'Hei.');
+    assert.equal(specificGreeting.reply, 'Ja, «hei» passer fint!');
+
     const afterGuard = tutor.nextSession(session, 'Peter Theofir.', guarded);
     assert.deepEqual(afterGuard.askedQuestions, ['Hva heter du?', 'Hvordan har du det?']);
     assert.equal(tutor.finalizeTurn({

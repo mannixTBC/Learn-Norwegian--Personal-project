@@ -30,6 +30,16 @@ const questionKind = (question) => {
   return 'open';
 };
 
+const normalizeTranscriptForQuestion = ({ text, question }) => {
+  const original = typeof text === 'string' ? text.trim() : '';
+  if (!original || questionKind(question) !== 'name') return original;
+  // A Romanian accent can make "Jeg heter" arrive as "Etter"/"Eter".
+  // Repair only this narrow pattern while the app is explicitly asking a name.
+  const match = original.match(/^(?:etter|eter|e heter)\s+([\p{L}][\p{L}' -]{0,80})[.!?]?$/iu);
+  if (!match) return original;
+  return `Jeg heter ${match[1].trim().replace(/[.!?]+$/u, '')}.`;
+};
+
 const looksRomanian = (text) => {
   const value = normalize(text);
   return /\b(ma|eu|sunt|este|cheama|numele|meu|mea|da|nu|bine|vreau|imi|place|locuiesc|lucrez|studiez|romaneste)\b/.test(value);
@@ -134,6 +144,7 @@ module.exports = {
   normalize,
   languageSignal,
   questionKind,
+  normalizeTranscriptForQuestion,
   decidePrimaryTranscript,
   decideAmbiguousTranscript,
 };

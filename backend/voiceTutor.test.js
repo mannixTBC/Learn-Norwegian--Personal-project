@@ -30,6 +30,8 @@ test('sesiunea respectă nivelul, permite ezitările și include contextul real 
   assert.equal(a1.audio.input.turn_detection.eagerness, 'medium');
   assert.equal(a1.audio.input.turn_detection.create_response, false);
   assert.equal(a1.audio.input.turn_detection.interrupt_response, false);
+  assert.match(a1.audio.input.transcription.prompt, /Salutări și prezentări/);
+  assert.ok(a1.audio.input.transcription.keywords.length > 0);
   assert.equal(a1.max_output_tokens, 1024);
   assert.match(a1.instructions, /maximum opt răspunsuri/);
   assert.match(a1.instructions, /25 de cuvinte/);

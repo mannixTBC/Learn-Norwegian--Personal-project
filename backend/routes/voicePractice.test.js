@@ -82,10 +82,11 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
       assert.equal(options.body.get('language'), null);
       assert.equal(options.body.get('temperature'), '0');
       assert.equal(options.body.get('include[]'), null);
-      assert.equal(options.body.get('prompt'), null);
+      assert.match(options.body.get('prompt'), /Kort muntlig svar på norsk bokmål/);
       const languageHints = options.body.getAll('languages[]');
+      const keywords = options.body.getAll('keywords[]');
       assert.ok(languageHints.length === 0 || languageHints.join(',') === 'no,ro');
-      transcriptionRequests.push(languageHints);
+      transcriptionRequests.push({ languageHints, keywords, prompt: options.body.get('prompt') });
       const scripted = transcriptionResponses.shift();
       if (scripted) return { ok: true, json: async () => scripted };
       return { ok: true, json: async () => ({ text: `Jeg heter Anna ${calls.transcription}.`, languages: [{ code: 'no' }] }) };
@@ -198,7 +199,9 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
       });
     }
     assert.equal(calls.transcription, 8, 'Network replay does not retranscribe');
-    assert.ok(transcriptionRequests.every((hints) => hints.join(',') === 'no,ro'));
+    assert.ok(transcriptionRequests.every(({ languageHints }) => languageHints.join(',') === 'no,ro'));
+    assert.ok(transcriptionRequests[0].keywords.includes('Jeg heter'));
+    assert.match(transcriptionRequests[0].prompt, /Hva heter du/);
     assert.equal(calls.feedback, 0, 'No evaluation between answers');
     assert.equal((await request('feedback', { sessionToken: session.sessionToken, answers: [{ ...answers[0], text: 'tampered' }, answers[1]] })).status, 400);
     let forkedChatSession = chatTutor.newSession(chatContext, 'Bearer modular-free-user').session;
@@ -311,7 +314,7 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     assert.equal(confirmed.decision, 'accept');
     assert.ok(confirmed.proof);
     secondAnswers.push(confirmed);
-    assert.ok(transcriptionRequests.some((hints) => hints.length === 0), 'Ambiguous audio receives a neutral second pass');
+    assert.ok(transcriptionRequests.some(({ languageHints }) => languageHints.length === 0), 'Ambiguous audio receives a neutral second pass');
     for (let value = 75; value <= 78; value += 1) {
       assert.equal((await request('transcribe', {
         sessionToken: second.sessionToken,
