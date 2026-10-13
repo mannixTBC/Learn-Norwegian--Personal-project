@@ -44,9 +44,13 @@ const AuthPage = () => {
   const [success, setSuccess] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [mobileEmailOpen, setMobileEmailOpen] = useState(params.get('recovery') === '1');
 
   useEffect(() => {
-    if (passwordRecovery) setMode('recovery');
+    if (passwordRecovery) {
+      setMode('recovery');
+      setMobileEmailOpen(true);
+    }
   }, [passwordRecovery]);
 
   useEffect(() => {
@@ -146,37 +150,61 @@ const AuthPage = () => {
         <div className="auth-panel__inner">
           <Link className="auth-panel__back" to="/">← Înapoi la pagina principală</Link>
 
-          {!isRecovery && <div className="auth-tabs" role="tablist"><button type="button" role="tab" aria-selected={mode === 'login'} className={mode === 'login' ? 'active' : ''} onClick={() => switchMode('login')}>Conectare</button><button type="button" role="tab" aria-selected={mode === 'register'} className={mode === 'register' ? 'active' : ''} onClick={() => switchMode('register')}>Cont nou</button></div>}
-
-          <header>
-            <span>{isRecovery ? 'Securitatea contului' : mode === 'login' ? 'Bine ai revenit' : 'Începe gratuit'}</span>
-          </header>
-
-          <form onSubmit={submit}>
-            {!isRecovery && mode === 'register' && <label><span>Numele tău</span><input value={form.name} onChange={(event) => update('name', event.target.value)} placeholder="Ex: Andrei" autoComplete="name" /></label>}
-            {!isRecovery && <label><span>Adresa de e-mail</span><input type="email" value={form.email} onChange={(event) => update('email', event.target.value)} placeholder="nume@email.com" autoComplete="email" /></label>}
-            <label><span>{isRecovery ? 'Parola nouă' : 'Parola'}</span><div className="auth-password"><input type={showPassword ? 'text' : 'password'} value={form.password} onChange={(event) => update('password', event.target.value)} placeholder="Minimum 8 caractere" autoComplete={isRecovery || mode === 'register' ? 'new-password' : 'current-password'} /><button type="button" onClick={() => setShowPassword((visible) => !visible)}>{showPassword ? 'Ascunde' : 'Arată'}</button></div></label>
-            {isRecovery && <label><span>Confirmă parola nouă</span><input type={showPassword ? 'text' : 'password'} value={form.confirmPassword} onChange={(event) => update('confirmPassword', event.target.value)} placeholder="Repetă parola" autoComplete="new-password" /></label>}
-            {mode === 'login' && <button className="auth-forgot" type="button" disabled={submitting} onClick={sendPasswordReset}>Ai uitat parola?</button>}
-            {error && <div className="auth-error" role="alert">{error}</div>}
-            {success && <div className="auth-success" role="status">{success}</div>}
-            <button className="auth-submit" type="submit" disabled={submitting || initializing}>{submitting ? 'Se procesează...' : isRecovery ? 'Salvează parola nouă' : mode === 'login' ? 'Conectează-te' : 'Creează contul'} →</button>
-          </form>
-
-          {!isRecovery && <>
-            <div className="auth-guest-separator"><span>sau</span></div>
+          {!isRecovery && <section className={`auth-mobile-quick ${mobileEmailOpen ? 'is-hidden' : ''}`} aria-label="Alege cum vrei să continui">
+            <div className="auth-mobile-quick__brand" aria-hidden="true">NO</div>
+            <span>NordLingo</span>
+            <h1>Intră și continuă lecția</h1>
+            <p>Ajungi la următorul exercițiu în câteva secunde.</p>
             <button className="auth-google" type="button" disabled={submitting} onClick={continueWithGoogle}>
               <span className="auth-google__icon"><GoogleIcon /></span>
-              <span className="auth-google__copy"><strong>Conectează-te cu Google</strong><small>Conectare rapidă și sigură</small></span>
+              <span className="auth-google__copy"><strong>Continuă cu Google</strong><small>Cea mai rapidă opțiune</small></span>
               <span className="auth-google__arrow" aria-hidden="true">→</span>
+            </button>
+            <button className="auth-mobile-email" type="button" disabled={submitting} onClick={() => { clearFeedback(); setMobileEmailOpen(true); }}>
+              Intră cu e-mail
             </button>
             <button className="auth-guest" type="button" disabled={submitting} onClick={continueAsGuest}>
               <span className="auth-guest__icon"><GuestIcon /></span>
               <span><strong>Continuă ca vizitator</strong><small>Fără cont și fără parolă</small></span>
               <span className="auth-guest__arrow" aria-hidden="true">→</span>
             </button>
-            <p className="auth-switch">{mode === 'login' ? 'Nu ai încă un cont?' : 'Ai deja un cont?'} <button type="button" onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}>{mode === 'login' ? 'Creează unul' : 'Conectează-te'}</button></p>
-          </>}
+            {error && <div className="auth-error" role="alert">{error}</div>}
+          </section>}
+
+          <div className={`auth-details ${mobileEmailOpen || isRecovery ? 'is-open' : ''}`}>
+            {!isRecovery && <button className="auth-mobile-back" type="button" onClick={() => { clearFeedback(); setMobileEmailOpen(false); }}>← Alte opțiuni</button>}
+            {!isRecovery && <div className="auth-tabs" role="tablist"><button type="button" role="tab" aria-selected={mode === 'login'} className={mode === 'login' ? 'active' : ''} onClick={() => switchMode('login')}>Conectare</button><button type="button" role="tab" aria-selected={mode === 'register'} className={mode === 'register' ? 'active' : ''} onClick={() => switchMode('register')}>Cont nou</button></div>}
+
+            <header>
+              <span>{isRecovery ? 'Securitatea contului' : mode === 'login' ? 'Bine ai revenit' : 'Începe gratuit'}</span>
+            </header>
+
+            <form onSubmit={submit}>
+              {!isRecovery && mode === 'register' && <label><span>Numele tău</span><input value={form.name} onChange={(event) => update('name', event.target.value)} placeholder="Ex: Andrei" autoComplete="name" /></label>}
+              {!isRecovery && <label><span>Adresa de e-mail</span><input type="email" value={form.email} onChange={(event) => update('email', event.target.value)} placeholder="nume@email.com" autoComplete="email" /></label>}
+              <label><span>{isRecovery ? 'Parola nouă' : 'Parola'}</span><div className="auth-password"><input type={showPassword ? 'text' : 'password'} value={form.password} onChange={(event) => update('password', event.target.value)} placeholder="Minimum 8 caractere" autoComplete={isRecovery || mode === 'register' ? 'new-password' : 'current-password'} /><button type="button" onClick={() => setShowPassword((visible) => !visible)}>{showPassword ? 'Ascunde' : 'Arată'}</button></div></label>
+              {isRecovery && <label><span>Confirmă parola nouă</span><input type={showPassword ? 'text' : 'password'} value={form.confirmPassword} onChange={(event) => update('confirmPassword', event.target.value)} placeholder="Repetă parola" autoComplete="new-password" /></label>}
+              {mode === 'login' && <button className="auth-forgot" type="button" disabled={submitting} onClick={sendPasswordReset}>Ai uitat parola?</button>}
+              {error && <div className="auth-error" role="alert">{error}</div>}
+              {success && <div className="auth-success" role="status">{success}</div>}
+              <button className="auth-submit" type="submit" disabled={submitting || initializing}>{submitting ? 'Se procesează...' : isRecovery ? 'Salvează parola nouă' : mode === 'login' ? 'Conectează-te' : 'Creează contul'} →</button>
+            </form>
+
+            {!isRecovery && <>
+              <div className="auth-guest-separator"><span>sau</span></div>
+              <button className="auth-google" type="button" disabled={submitting} onClick={continueWithGoogle}>
+                <span className="auth-google__icon"><GoogleIcon /></span>
+                <span className="auth-google__copy"><strong>Conectează-te cu Google</strong><small>Conectare rapidă și sigură</small></span>
+                <span className="auth-google__arrow" aria-hidden="true">→</span>
+              </button>
+              <button className="auth-guest" type="button" disabled={submitting} onClick={continueAsGuest}>
+                <span className="auth-guest__icon"><GuestIcon /></span>
+                <span><strong>Continuă ca vizitator</strong><small>Fără cont și fără parolă</small></span>
+                <span className="auth-guest__arrow" aria-hidden="true">→</span>
+              </button>
+              <p className="auth-switch">{mode === 'login' ? 'Nu ai încă un cont?' : 'Ai deja un cont?'} <button type="button" onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}>{mode === 'login' ? 'Creează unul' : 'Conectează-te'}</button></p>
+            </>}
+          </div>
         </div>
       </main>
     </div>

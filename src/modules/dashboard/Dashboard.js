@@ -174,6 +174,11 @@ const Dashboard = () => {
       </header>
 
       <section className="dashboard-mobile-start" aria-label="Continuă învățarea">
+        <div className="dashboard-mobile-start__welcome">
+          <span>{greeting()}</span>
+          <h1>{user && !user.isGuest ? user.name.split(' ')[0] : 'Hai să continuăm'}</h1>
+          <p>Următoarea lecție este pregătită pentru tine.</p>
+        </div>
         <div className="dashboard-mobile-start__top">
           <div>
             <span>Progresul tău · {activeLevel}</span>
@@ -193,6 +198,10 @@ const Dashboard = () => {
           <Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>
             {activeProgress.completed.length ? 'Continuă lecția' : 'Începe lecția'} <span aria-hidden="true">→</span>
           </Link>
+        </div>
+        <div className="dashboard-mobile-start__secondary" aria-label="Alte activități">
+          <Link to={`/invata?nivel=${activeLevel}`}><span aria-hidden="true">Aa</span>Toate lecțiile</Link>
+          <Link to={`/recapitulare?nivel=${activeLevel}`}><span aria-hidden="true">↻</span>Recapitulare</Link>
         </div>
       </section>
 
@@ -246,6 +255,12 @@ const Dashboard = () => {
         <div className="dashboard-section__heading"><div><span>Imagine completă</span><h2 id="levels-progress-title">Progres pe niveluri</h2></div><Link to={`/invata?nivel=${activeLevel}`}>Vezi toate lecțiile →</Link></div>
         <div className="dashboard-levels__grid">{levels.map((item) => <article className={item.level === activeLevel ? 'active' : ''} key={item.level}><div><span>{item.level}</span><small>{levelName[item.level]}{item.level === activeLevel ? ' · nivel activ' : ''}</small><strong>{item.percent}%</strong></div><div className="dashboard-levels__track"><span style={{ width: `${item.percent}%` }} /></div><p>{item.completed} din {item.total} lecții · {item.words} cuvinte</p></article>)}</div>
       </section>
+
+      <nav className="dashboard-mobile-nav" aria-label="Navigare rapidă">
+        <Link className="active" to="/dashboard" aria-current="page"><span aria-hidden="true">⌂</span>Acasă</Link>
+        <Link to={`/invata?nivel=${activeLevel}`}><span aria-hidden="true">Aa</span>Lecții</Link>
+        <Link to={`/recapitulare?nivel=${activeLevel}`}><span aria-hidden="true">↻</span>Repetă</Link>
+      </nav>
     </div>
   );
 };
