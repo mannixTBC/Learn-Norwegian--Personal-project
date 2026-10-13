@@ -5,7 +5,6 @@ import { useAuth } from '../../auth/AuthContext';
 import './Navbar.css';
 
 const navigation = [
-  { to: '/dashboard', label: 'Profil' },
   { to: '/invata', label: 'Învață' },
   { to: '/descopera', label: 'Descoperă' },
   { to: '/viata-in-norvegia', label: 'Viața în Norvegia' },
@@ -135,7 +134,7 @@ export default function Navbar() {
         </nav>
 
         <div className="navbar__account">
-          {user ? <div className="navbar__account-menu"><button ref={accountToggleRef} type="button" className="navbar__user" onClick={() => setAccountOpen((open) => !open)} aria-label="Deschide meniul contului" aria-expanded={accountOpen}><UserAvatar user={user} /><div><small>{user.isGuest ? 'Mod anonim' : 'Conectat'}</small><strong>{user.name}</strong></div><span className="navbar__user-chevron" aria-hidden="true">⌄</span></button>{accountOpen && <div className="navbar__account-dropdown"><Link to="/dashboard" onClick={closeMenu}>Dashboard</Link><Link to="/cont" onClick={closeMenu}>Setările contului</Link><button type="button" onClick={() => { logout(); closeMenu(); }}>Deconectare</button></div>}</div> : <Link className="navbar__login" to="/autentificare" onClick={closeMenu}>Conectare</Link>}
+          {user ? <div className="navbar__account-menu"><Link className="navbar__user" to="/dashboard" onClick={closeMenu} aria-label="Deschide profilul"><UserAvatar user={user} /><div><small>{user.isGuest ? 'Mod anonim' : 'Conectat'}</small><strong>{user.name}</strong></div></Link><button ref={accountToggleRef} type="button" className={`navbar__account-toggle ${accountOpen ? 'navbar__account-toggle--open' : ''}`} onClick={() => setAccountOpen((open) => !open)} aria-label={accountOpen ? 'Închide meniul contului' : 'Deschide meniul contului'} aria-expanded={accountOpen} aria-controls="account-navigation"><span /><span /><span /></button>{accountOpen && <div id="account-navigation" className="navbar__account-dropdown"><Link to="/cont" onClick={closeMenu}>Setările contului</Link><button type="button" onClick={() => { logout(); closeMenu(); }}>Deconectare</button></div>}</div> : <Link className="navbar__login" to="/autentificare" onClick={closeMenu}>Conectare</Link>}
         </div>
 
         <button
