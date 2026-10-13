@@ -60,18 +60,22 @@ try {
   emit({ type: 'conversation.item.input_audio_transcription.completed', item_id: 'help', transcript: 'Repetă.' });
   assert.equal(events.some((event) => event.type === 'practice.progress'), false, 'Help does not count as an answer');
   emit({ type: 'output_audio_buffer.stopped' });
-  for (let index = 1; index <= 3; index += 1) {
+  for (let index = 1; index <= 8; index += 1) {
     const event = { type: 'conversation.item.input_audio_transcription.completed', item_id: `answer-${index}`, transcript: 'Jeg heter Anna.' };
     emit(event); emit(event);
     assert.equal(responses().length, 2 + index, 'Duplicate transcriptions must not generate extra replies');
-    if (index < 3) emit({ type: 'output_audio_buffer.stopped' });
+    if (index < 8) emit({ type: 'output_audio_buffer.stopped' });
   }
-  assert.equal(events.filter((event) => event.type === 'practice.progress').length, 3);
+  assert.equal(events.filter((event) => event.type === 'practice.progress').length, 8);
   assert.equal(events.filter((event) => event.type === 'practice.feedback_started').length, 1);
+  const lastProgressIndex = events.findLastIndex((event) => event.type === 'practice.progress');
+  const feedbackIndex = events.findIndex((event) => event.type === 'practice.feedback_started');
+  assert.equal(events[lastProgressIndex].answers, 8);
+  assert.ok(lastProgressIndex < feedbackIndex, 'Feedback starts only after the learner\'s eighth answer');
   assert.match(currentPeer.events.at(-2).item.content[0].text, /25 de cuvinte/);
   assert.equal(track.enabled, false);
   emit({ type: 'conversation.item.input_audio_transcription.completed', item_id: 'late-answer', transcript: 'Hei' });
-  assert.equal(responses().length, 5, 'No fourth question after feedback begins');
+  assert.equal(responses().length, 10, 'No ninth question after feedback begins');
   emit({ type: 'response.done', response: { status: 'completed' } });
   assert.equal(currentPeer.closed, false, 'Wait for feedback playback to finish before closing');
   emit({ type: 'output_audio_buffer.stopped' });

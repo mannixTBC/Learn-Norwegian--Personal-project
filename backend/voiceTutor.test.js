@@ -34,6 +34,8 @@ test('sesiunea respectă nivelul, permite ezitările și include contextul real 
   assert.ok(a1.audio.input.transcription.keywords.length > 0);
   assert.equal(a1.max_output_tokens, 1024);
   assert.match(a1.instructions, /maximum opt răspunsuri/);
+  assert.match(a1.instructions, /A opta și ultima replică evaluată trebuie să fie răspunsul cursantului/);
+  assert.match(a1.instructions, /nu mai pune nicio întrebare/);
   assert.match(a1.instructions, /25 de cuvinte/);
   assert.doesNotMatch(a1.instructions, /6–10|80 de cuvinte|35 de cuvinte/);
   assert.match(a1.instructions, /Salutări și prezentări/);

@@ -86,7 +86,7 @@ export const createVoiceConversation = async ({ level, lessonId, pathId, onEvent
     if (finishing || closed) return;
     finishing = true;
     onEvent({ type: 'practice.feedback_started' });
-    respond('Încheie acum. Numai feedback în română: maximum 25 de cuvinte, două propoziții, o reușită observată și o sugestie. Fără întrebări, fără continuare. Dacă nu există răspunsuri reale, spune că nu ai suficiente exemple.');
+    respond('Cursantul tocmai a dat ultimul răspuns. Încheie acum: numai feedback în română, maximum 25 de cuvinte, două propoziții, o reușită observată și o sugestie. Fără întrebări și fără continuare. Dacă nu există răspunsuri reale, spune că nu ai suficiente exemple.');
   };
   try {
     checkCancelled();
@@ -143,7 +143,7 @@ export const createVoiceConversation = async ({ level, lessonId, pathId, onEvent
       answers += 1;
       onEvent({ type: 'practice.progress', answers, total: 8 });
       if (answers >= 8) feedback();
-      else respond(`Reacționează natural la răspuns și continuă dialogul cu replica ${answers + 1} din 8, strict în tema lecției. O singură întrebare scurtă în norvegiană. Așteaptă răspunsul.`);
+      else respond(`Reacționează natural la răspuns și continuă dialogul cu întrebarea ${answers + 1} din 8, strict în tema lecției. O singură întrebare scurtă în norvegiană. ${answers === 7 ? 'Aceasta este ultima întrebare: așteaptă răspunsul cursantului și nu încheia înaintea lui.' : 'Așteaptă răspunsul cursantului.'}`);
     };
     peer.onconnectionstatechange = () => {
       if (closed) return;
