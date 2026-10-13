@@ -238,7 +238,7 @@
     background:transparent;
     box-shadow:none;
   }
-  html.is-installed-app .dashboard-mobile-start__welcome{text-align:left}
+  html.is-installed-app .dashboard-mobile-start__welcome{text-align:center}
   html.is-installed-app .dashboard-mobile-start__welcome h1{font-size:clamp(1.9rem,9vw,2.3rem)}
   html.is-installed-app .dashboard-mobile-start__welcome p{margin-bottom:26px}
   html.is-installed-app .dashboard-mobile-start__lesson{
