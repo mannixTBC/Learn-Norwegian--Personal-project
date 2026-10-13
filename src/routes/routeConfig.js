@@ -39,6 +39,7 @@ import Dashboard from '../modules/dashboard/Dashboard';
 import CareerOnboarding from '../modules/onboarding/CareerOnboarding';
 import withCareerProfile from '../modules/onboarding/CareerProfileGate';
 import PricingPage from '../modules/premium/PricingPage';
+import AccountSettings from '../modules/account/AccountSettings';
 
 const PersonalizedLearningHub = withCareerProfile(LearningHub);
 const PersonalizedLessonProgram = withCareerProfile(LessonProgram);
@@ -143,6 +144,12 @@ const routes = [
     path: '/dashboard',
     exact: true,
     component: Dashboard,
+    protected: true,
+  },
+  {
+    path: '/cont',
+    exact: true,
+    component: AccountSettings,
     protected: true,
   },
   {

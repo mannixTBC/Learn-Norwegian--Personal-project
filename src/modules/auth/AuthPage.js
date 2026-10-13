@@ -41,7 +41,7 @@ const AuthPage = () => {
   const [mode, setMode] = useState(params.get('recovery') === '1' ? 'recovery' : 'login');
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [success, setSuccess] = useState(params.get('deleted') === '1' ? 'Contul și datele asociate au fost șterse.' : '');
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [mobileEmailOpen, setMobileEmailOpen] = useState(params.get('recovery') === '1');

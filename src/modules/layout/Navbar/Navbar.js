@@ -6,7 +6,7 @@ import '../../premium/premium.css';
 import './Navbar.css';
 
 const navigation = [
-  { to: '/dashboard', label: 'Profil' },
+  { to: '/cont', label: 'Cont' },
   { to: '/invata', label: 'Învață' },
   { to: '/descopera', label: 'Descoperă' },
   { to: '/viata-in-norvegia', label: 'Viața în Norvegia' },
@@ -119,7 +119,7 @@ export default function Navbar() {
           <div className="navbar__mobile-account">
             {user ? (
               <>
-                <Link className="navbar__mobile-user" to="/dashboard" onClick={closeMenu} aria-label="Deschide profilul">
+                <Link className="navbar__mobile-user" to="/cont" onClick={closeMenu} aria-label="Deschide setările contului">
                   <UserAvatar user={user} menu />
                   <div>
                     <small>{user.isGuest ? 'Mod vizitator' : 'Contul tău'}</small>
@@ -140,7 +140,7 @@ export default function Navbar() {
         </nav>
 
         <div className="navbar__account">
-          {user ? <><Link className="navbar__user" to="/dashboard" onClick={closeMenu} aria-label="Deschide profilul"><UserAvatar user={user} /><div><small>{user.isGuest ? 'Mod anonim' : 'Conectat'}</small><strong>{user.name}</strong></div></Link><button type="button" className="navbar__logout" onClick={() => { logout(); closeMenu(); }}>Ieșire</button></> : <Link className="navbar__login" to="/autentificare" onClick={closeMenu}>Conectare</Link>}
+          {user ? <><Link className="navbar__user" to="/cont" onClick={closeMenu} aria-label="Deschide setările contului"><UserAvatar user={user} /><div><small>{user.isGuest ? 'Mod anonim' : 'Conectat'}</small><strong>{user.name}</strong></div></Link><button type="button" className="navbar__logout" onClick={() => { logout(); closeMenu(); }}>Ieșire</button></> : <Link className="navbar__login" to="/autentificare" onClick={closeMenu}>Conectare</Link>}
         </div>
 
         <button

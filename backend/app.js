@@ -11,6 +11,7 @@ const chatRouter = require('./routes/chat');
 const voiceRouter = require('./routes/voice');
 const voicePracticeRouter = require('./routes/voicePractice');
 const voiceStreamRouter = require('./routes/voiceStream');
+const accountRouter = require('./routes/account');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/api/billing', billingRouter);
 app.use('/api/voice/stream', voiceStreamRouter);
 app.use('/api/voice/practice', voicePracticeRouter);
 app.use('/api/voice', voiceRouter);
+app.use('/api/account', accountRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

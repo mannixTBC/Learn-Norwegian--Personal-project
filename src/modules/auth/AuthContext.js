@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { isSupabaseConfigured, supabase } from '../../services/supabaseClient';
 import { fetchEntitlements, isDevBypassActive } from '../../services/entitlements';
+import { clearLocalAccountData, deleteRemoteAccount } from '../../services/account';
 
 const SESSION_KEY = 'norwegiata_frontend_session';
 const GUEST_SESSION = '__norwegiata_guest__';
@@ -164,6 +165,13 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const deleteAccount = async () => {
+    if (supabase) await deleteRemoteAccount({ allowMissingSession: Boolean(user?.isGuest) });
+    clearLocalAccountData();
+    if (supabase) await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
+    setUser(null);
+  };
+
   // Reîncarcă forțat entitlement-urile (ex. după întoarcerea din Stripe Checkout).
   const refreshEntitlements = async () => {
     const result = await fetchEntitlements(user);
@@ -189,6 +197,7 @@ export const AuthProvider = ({ children }) => {
     requestPasswordReset,
     updatePassword,
     logout,
+    deleteAccount,
     // Entitlements Premium
     plan: entitlements.plan,
     isPremium: entitlements.isPremium,
