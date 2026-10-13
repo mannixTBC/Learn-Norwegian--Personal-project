@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { sendChatTurn, startChatSession } from '../../services/chat';
 import { practiceRequest, audioBlob, recordPracticeAnswer, recordingPayload } from '../../services/voicePractice';
+import { createVoiceConversation } from '../../services/voiceConversation';
 import './VoiceLessonConversation.css';
 
 const normalizeDialog = (data, previousToken = null) => ({
@@ -37,7 +38,10 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   const [transcriptNotice, setTranscriptNotice] = useState('');
   const [revealedHelp, setRevealedHelp] = useState({});
   const [error, setError] = useState('');
+  const [mode, setMode] = useState('realtime');
   const controller = useRef(null);
+  const realtime = useRef(null);
+  const realtimeFinishing = useRef(false);
   const recording = useRef(null);
   const playback = useRef(null);
   const busy = useRef(false);
@@ -66,6 +70,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       mounted.current = false;
       abort.abort();
       controller.current?.abort();
+      realtime.current?.close();
       recording.current?.cancel();
       clearTimeout(autoStartTimer.current);
       stopPlayback();
@@ -114,6 +119,9 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   const stop = () => {
     clearTimeout(autoStartTimer.current);
     controller.current?.abort();
+    realtime.current?.close();
+    realtime.current = null;
+    realtimeFinishing.current = false;
     recording.current?.cancel();
     recording.current = null;
     stopPlayback();
@@ -187,7 +195,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     }
   };
 
-  const start = async () => {
+  const startBatch = async (fallbackNotice = '') => {
     if (busy.current) return;
     busy.current = true;
     controller.current?.abort();
@@ -204,6 +212,8 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     setRevealedHelp({});
     setError('');
     setStatus('loading');
+    setMode('batch');
+    if (fallbackNotice) setTranscriptNotice(fallbackNotice);
     try {
       const [voiceData, chatData] = await Promise.all([
         practiceRequest('start', { level, lessonId, pathId }, abort.signal),
@@ -222,6 +232,163 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       }
     } finally {
       if (!abort.signal.aborted) busy.current = false;
+    }
+  };
+
+  const resetForStart = () => {
+    setVoiceSession(null);
+    setDialog({ turn: 0, maxTurns: 8, done: false });
+    setMessages([]);
+    setAnswers([]);
+    setFeedback(null);
+    setPendingTranscript(null);
+    setTranscriptNotice('');
+    setRevealedHelp({});
+    setError('');
+    realtimeFinishing.current = false;
+  };
+
+  const handleRealtimeEvent = (event) => {
+    if (!mounted.current) return;
+    if (event.type === 'input_audio_buffer.speech_started') {
+      setStatus('recording');
+      setTranscriptNotice('');
+      return;
+    }
+    if (event.type === 'input_audio_buffer.speech_stopped') {
+      setStatus('transcribing');
+      return;
+    }
+    if (event.type === 'conversation.item.input_audio_transcription.completed') {
+      const text = event.transcript?.trim();
+      if (text) {
+        setMessages((current) => [...current, { role: 'user', content: text, turn: current.filter((item) => item.role === 'user').length + 1 }]);
+      }
+      setStatus('thinking');
+      return;
+    }
+    if (event.type === 'conversation.item.input_audio_transcription.failed') {
+      setTranscriptNotice('Nu am putut transcrie clar răspunsul. Încearcă din nou.');
+      setStatus('listening');
+      return;
+    }
+    if (event.type === 'practice.progress') {
+      setDialog({ turn: event.answers, maxTurns: event.total, done: event.answers >= event.total });
+      return;
+    }
+    if (event.type === 'practice.feedback_started') {
+      realtimeFinishing.current = true;
+      setStatus('evaluating');
+      return;
+    }
+    if (event.type === 'response.output_audio_transcript.delta' || event.type === 'response.audio_transcript.delta') {
+      setStatus(realtimeFinishing.current ? 'feedbackAudio' : 'speaking');
+      return;
+    }
+    if (event.type === 'response.output_audio_transcript.done' || event.type === 'response.audio_transcript.done') {
+      const text = event.transcript?.trim();
+      if (!text) return;
+      if (realtimeFinishing.current) setFeedback({ text });
+      else setMessages((current) => [...current, { role: 'assistant', reply: text, question: null, turn: current.filter((item) => item.role === 'user').length }]);
+      return;
+    }
+    if (event.type === 'output_audio_buffer.started') {
+      setStatus(realtimeFinishing.current ? 'feedbackAudio' : 'speaking');
+      return;
+    }
+    if (event.type === 'output_audio_buffer.stopped' || event.type === 'output_audio_buffer.cleared') {
+      setStatus(realtimeFinishing.current ? 'ended' : 'listening');
+      return;
+    }
+    if (event.type === 'playback.blocked') {
+      setError('Redarea automată a fost blocată. Apasă „Pornește sunetul” pentru a continua.');
+      setStatus('playbackBlocked');
+      return;
+    }
+    if (event.type === 'error' || (event.type === 'response.done' && ['failed', 'incomplete', 'cancelled'].includes(event.response?.status))) {
+      setError('Dialogul vocal s-a întrerupt. Pornește o conversație nouă.');
+      setStatus('ended');
+    }
+  };
+
+  const startRealtime = async () => {
+    if (busy.current) return;
+    busy.current = true;
+    controller.current?.abort();
+    realtime.current?.close();
+    stopPlayback();
+    const abort = new AbortController();
+    controller.current = abort;
+    resetForStart();
+    setMode('realtime');
+    setStatus('connecting');
+    try {
+      const conversation = await createVoiceConversation({
+        level,
+        lessonId,
+        pathId,
+        signal: abort.signal,
+        onEvent: handleRealtimeEvent,
+        onDisconnect: (message) => {
+          if (!mounted.current || abort.signal.aborted) return;
+          realtime.current = null;
+          setError(message);
+          setStatus('ended');
+        },
+      });
+      if (abort.signal.aborted || !mounted.current) {
+        conversation.close();
+        return;
+      }
+      realtime.current = conversation;
+      setStatus('speaking');
+      conversation.start();
+    } finally {
+      if (!abort.signal.aborted) busy.current = false;
+    }
+  };
+
+  const start = async () => {
+    const canUseRealtime = Boolean(navigator.mediaDevices?.getUserMedia && window.RTCPeerConnection);
+    if (!canUseRealtime) {
+      await startBatch('Browserul nu permite WebRTC; folosim modul vocal compatibil.');
+      return;
+    }
+    try {
+      await startRealtime();
+    } catch (err) {
+      if (controller.current?.signal.aborted || !mounted.current) return;
+      controller.current?.abort();
+      realtime.current = null;
+      busy.current = false;
+      if (/Permite accesul la microfon|microfon conectat/i.test(err.message)) {
+        setError(err.message);
+        setStatus('ended');
+        return;
+      }
+      await startBatch(`Conexiunea rapidă nu a pornit; folosim modul compatibil. ${err.message}`);
+    }
+  };
+
+  const requestRealtimeHelp = () => {
+    if (mode !== 'realtime' || !realtime.current || status !== 'listening') return;
+    setError('');
+    setStatus('thinking');
+    realtime.current.help();
+  };
+
+  const finishRealtime = () => {
+    if (mode !== 'realtime' || !realtime.current || realtimeFinishing.current) return;
+    realtime.current.feedback();
+  };
+
+  const resumeRealtimePlayback = async () => {
+    try {
+      await realtime.current?.play();
+      setError('');
+      setStatus('speaking');
+    } catch (_) {
+      setError('Sunetul nu a putut fi pornit. Verifică setările browserului.');
     }
   };
 
@@ -384,11 +551,14 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   const active = !['idle', 'ended'].includes(status);
   const labels = {
     idle: 'Pregătit de practică',
+    connecting: 'Conectăm dialogul live…',
     loading: 'Pregătim replica…',
     speaking: 'Nora vorbește…',
+    listening: 'Te ascult · vorbește natural',
+    playbackBlocked: 'Sunetul necesită confirmare',
     question: 'Răspunde când ești pregătit',
     microphone: 'Pornim microfonul…',
-    recording: 'Te ascult · maximum 30 de secunde',
+    recording: mode === 'realtime' ? 'Te ascult · vorbește natural' : 'Te ascult · maximum 30 de secunde',
     transcribing: 'Transcriem răspunsul…',
     confirming: 'Verifică ce am auzit',
     retrying: 'Mai încearcă o dată…',
@@ -445,13 +615,16 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       </div>}
       <div className="voice-lesson__controls">
         {!active && <button type="button" className="voice-lesson__primary" disabled={configured !== true} onClick={start}>{status === 'ended' ? 'Pornește un dialog nou' : 'Pornește dialogul'}</button>}
-        {status === 'recording' && <button type="button" className="voice-lesson__primary" onClick={() => recording.current?.stop()}>Am terminat răspunsul</button>}
+        {mode === 'batch' && status === 'recording' && <button type="button" className="voice-lesson__primary" onClick={() => recording.current?.stop()}>Am terminat răspunsul</button>}
+        {mode === 'realtime' && status === 'listening' && <button type="button" className="voice-lesson__primary" onClick={requestRealtimeHelp}>Ajută-mă</button>}
+        {mode === 'realtime' && dialog?.turn > 0 && !realtimeFinishing.current && active && <button type="button" onClick={finishRealtime}>Încheie cu feedback</button>}
+        {mode === 'realtime' && status === 'playbackBlocked' && <button type="button" className="voice-lesson__primary" onClick={resumeRealtimePlayback}>Pornește sunetul</button>}
         {status === 'confirming' && <button type="button" className="voice-lesson__primary" onClick={acceptPendingTranscript}>Da, continuă</button>}
         {status === 'confirming' && <button type="button" onClick={retryPendingTranscript}>Mai încerc</button>}
         {active && <button type="button" onClick={stop}>Oprește conversația</button>}
       </div>
       {status === 'idle' && <p className="voice-lesson__start-caption">O singură apăsare pornește dialogul.</p>}
-      <p className="voice-lesson__hint">După ce Nora termină replica, vorbește natural. Dialogul continuă automat după aproximativ 2 secunde de liniște.</p>
+      <p className="voice-lesson__hint">{mode === 'realtime' ? 'Microfonul rămâne conectat pe durata dialogului. După ce Nora termină, vorbește natural; dialogul continuă automat.' : 'După ce Nora termină replica, vorbește natural. Dialogul continuă automat după o pauză scurtă.'}</p>
     </div>
   </section>;
 }

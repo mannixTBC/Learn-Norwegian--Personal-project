@@ -71,7 +71,9 @@ const buildVoiceSession = (context) => ({
     input: {
       noise_reduction: { type: 'near_field' },
       transcription: { model: 'gpt-transcribe', languages: ['no'], prompt: 'En muntlig norsktime med korte svar på norsk bokmål.' },
-      turn_detection: { type: 'semantic_vad', eagerness: 'low', create_response: false, interrupt_response: false },
+      // Medium semantic VAD keeps natural learner pauses, but caps the end-of-turn
+      // wait at roughly half of the previous low-eagerness setting.
+      turn_detection: { type: 'semantic_vad', eagerness: 'medium', create_response: false, interrupt_response: false },
     },
     output: { voice: 'marin', speed: context.level === 'A1' ? 0.85 : context.level === 'A2' ? 0.95 : 1 },
   },

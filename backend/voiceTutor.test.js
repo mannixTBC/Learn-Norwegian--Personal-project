@@ -27,7 +27,7 @@ test('sesiunea respectă nivelul, permite ezitările și include contextul real 
   const a1 = buildVoiceSession(getVoiceLesson({ level: 'A1', lessonId: 1, pathId: 'healthcare' }));
   const b2 = buildVoiceSession(getVoiceLesson({ level: 'B2', lessonId: 4, pathId: 'transport' }));
   assert.ok(a1.audio.output.speed < b2.audio.output.speed);
-  assert.equal(a1.audio.input.turn_detection.eagerness, 'low');
+  assert.equal(a1.audio.input.turn_detection.eagerness, 'medium');
   assert.equal(a1.audio.input.turn_detection.create_response, false);
   assert.equal(a1.audio.input.turn_detection.interrupt_response, false);
   assert.equal(a1.max_output_tokens, 1024);
