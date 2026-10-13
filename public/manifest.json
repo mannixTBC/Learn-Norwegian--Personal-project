@@ -19,8 +19,11 @@
       "purpose": "any"
     }
   ],
-  "start_url": "/",
+  "start_url": "/dashboard",
   "scope": "/",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
   "display": "standalone",
   "orientation": "portrait-primary",
   "theme_color": "#0f766e",
