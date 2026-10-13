@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { useAuth } from '../../auth/AuthContext';
 import PWAInstallButton from '../../pwa/PWAInstallButton';
 import './HomePage.css';
 
@@ -9,8 +10,13 @@ const sections = [
   { to: '/viata-in-norvegia', icon: '🧭', title: 'Viața în Norvegia', text: 'Muncă, acte, vreme și știri într-un singur loc.' },
 ];
 
-const HomePage = () => (
-  <div className="landing">
+const HomePage = () => {
+  const { initializing, isAuthenticated } = useAuth();
+
+  if (initializing) return <div className="auth-route-loading" role="status">Se verifică sesiunea...</div>;
+  if (isAuthenticated) return <Redirect to="/dashboard" />;
+
+  return <div className="landing">
     <section className="landing__hero">
       <div className="landing__hero-content">
         <p className="landing__eyebrow">Limba și viața în Norvegia</p>
@@ -40,7 +46,7 @@ const HomePage = () => (
         ))}
       </div>
     </section>
-  </div>
-);
+  </div>;
+};
 
 export default HomePage;

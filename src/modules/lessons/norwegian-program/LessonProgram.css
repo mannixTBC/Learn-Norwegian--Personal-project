@@ -49,6 +49,7 @@
 .career-lesson__path-icon svg{width:25px;height:25px}
 
 .mobile-expression-navigation{display:none}
+.lesson-app-progress{display:none}
 
 @media(max-width:520px){
   .vocabulary-grid,.career-phrase-grid{display:block}
@@ -160,4 +161,35 @@
   .lesson-stepper button:not(:last-child):after{top:34px;left:15px;width:2px;height:16px}
   .lesson-content{width:100%;min-width:0;margin:0;padding:4px 0 110px}
   .lesson-content h1{font-size:clamp(2rem,3vw,3.2rem)}
+}
+
+/* În aplicația instalată, lecția ocupă ecranul ca o experiență nativă:
+   progresul și acțiunile rămân vizibile, iar numai conținutul poate glisa. */
+@media(max-width:860px){
+  html.is-installed-app body:has(.lesson-shell){height:100dvh;overflow:hidden}
+  html.is-installed-app .App:has(.lesson-shell){height:100dvh;min-height:0;overflow:hidden}
+  html.is-installed-app .App:has(.lesson-shell)>.navbar,
+  html.is-installed-app .App:has(.lesson-shell)>.footer{display:none}
+  html.is-installed-app .App__main:has(.lesson-shell){min-height:0;overflow:hidden}
+  html.is-installed-app .lesson-shell{display:grid;height:100%;min-height:0;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
+  html.is-installed-app .lesson-sidebar{position:relative;z-index:45;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;min-width:0;border-bottom:1px solid #dce6eb;background:rgba(255,255,255,.98);box-shadow:0 7px 22px rgba(20,33,61,.08);backdrop-filter:blur(14px)}
+  html.is-installed-app .lesson-topbar{position:static;display:block;min-height:0;padding:calc(10px + env(safe-area-inset-top,0px)) 6px 10px 14px;border:0;background:transparent;backdrop-filter:none}
+  html.is-installed-app .lesson-topbar>a{display:grid;width:42px;height:42px;place-items:center;overflow:hidden;padding:0;color:var(--fjord);border:1px solid #cfe0e3;border-radius:12px;background:#f3f9f9;font-size:0;white-space:nowrap}
+  html.is-installed-app .lesson-topbar>a::before{font-size:1.2rem;content:'←'}
+  html.is-installed-app .lesson-topbar>div,
+  html.is-installed-app .lesson-topbar>span{display:none}
+  html.is-installed-app .lesson-app-progress{display:grid;min-width:0;gap:7px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px 6px}
+  html.is-installed-app .lesson-app-progress__copy{display:flex;min-width:0;justify-content:space-between;gap:12px;align-items:baseline}
+  html.is-installed-app .lesson-app-progress__copy strong{overflow:hidden;color:#153b46;font-size:.88rem;text-overflow:ellipsis;white-space:nowrap}
+  html.is-installed-app .lesson-app-progress__copy span{flex:0 0 auto;color:#6d7d8c;font-size:.66rem;font-weight:800}
+  html.is-installed-app .lesson-app-progress__track{height:5px;overflow:hidden;border-radius:99px;background:#dce8e9}
+  html.is-installed-app .lesson-app-progress__track span{display:block;height:100%;min-width:5px;border-radius:inherit;background:linear-gradient(90deg,var(--fjord),#65b8be);transition:width .24s ease}
+  html.is-installed-app .lesson-stepper{display:none}
+  html.is-installed-app .lesson-content{box-sizing:border-box;width:calc(100% - 28px);height:100%;min-height:0;overflow-x:hidden;overflow-y:auto;margin:0 auto;padding:24px 0 calc(105px + env(safe-area-inset-bottom,0px));overscroll-behavior-y:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  html.is-installed-app .lesson-content::-webkit-scrollbar{display:none}
+  html.is-installed-app .lesson-navigation{padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 24px rgba(20,33,61,.1)}
+}
+
+@media(max-width:520px){
+  html.is-installed-app .mobile-expression-navigation{position:fixed;right:0;bottom:0;left:0;z-index:50;margin:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid #dce3eb;background:rgba(255,255,255,.98);box-shadow:0 -8px 24px rgba(20,33,61,.1);backdrop-filter:blur(14px)}
 }

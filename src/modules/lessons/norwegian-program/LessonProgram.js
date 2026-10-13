@@ -245,6 +245,7 @@ const LessonProgram = ({ match }) => {
   const careerModule = useMemo(() => getCareerLessonModule(careerProfile.pathId, levelCode, lesson.id), [careerProfile.pathId, lesson.id, levelCode]);
   const lessonExercises = useMemo(() => [...lesson.exercises, careerModule.exercise], [careerModule, lesson.exercises]);
   const lessonStartedAt = useRef(Date.now());
+  const lessonContentRef = useRef(null);
   const skipStepSave = useRef(true);
   const [step, setStep] = useState(() => readLessonStep(lessonStepKey, legacyStepKey));
   const [vocabularyIndex, setVocabularyIndex] = useState(0);
@@ -288,6 +289,9 @@ const LessonProgram = ({ match }) => {
       console.warn('Progresul este păstrat local, dar nu a putut fi sincronizat încă.', error.message);
     });
   }, [progress, progressKey]);
+  useEffect(() => {
+    if (lessonContentRef.current) lessonContentRef.current.scrollTo({ top: 0, behavior: 'auto' });
+  }, [careerPhraseIndex, exerciseIndex, step, vocabularyIndex]);
 
   const reviewItems = useMemo(() => lessonExercises.filter((_, index) => answers[index] === false), [answers, lessonExercises]);
 
@@ -324,10 +328,17 @@ const LessonProgram = ({ match }) => {
     <div className="lesson-shell">
       <div className="lesson-sidebar">
       <header className="lesson-topbar"><Link to="/invata">← Cursul {levelCode}</Link><div><span>Lecția {lesson.id} din {courseLessons.length}</span><strong>{lesson.title}</strong></div><span>{lesson.duration} min</span></header>
+      <section className="lesson-app-progress" aria-label={`Pasul ${step + 1} din ${steps.length}: ${steps[step]}`}>
+        <div className="lesson-app-progress__copy">
+          <strong>{steps[step]}</strong>
+          <span>Pasul {step + 1} din {steps.length} · Lecția {lesson.id}</span>
+        </div>
+        <div className="lesson-app-progress__track" aria-hidden="true"><span style={{ width: `${((step + 1) / steps.length) * 100}%` }} /></div>
+      </section>
       <div className="lesson-stepper" aria-label="Progresul lecției">{steps.map((label, index) => <button type="button" key={label} className={`${index === step ? 'active' : ''} ${index < step ? 'done' : ''}`} onClick={() => index <= step && setStep(index)} disabled={index > step}><span>{index < step ? '✓' : index + 1}</span><small>{label}</small></button>)}</div>
 
       </div>
-      <main className="lesson-content">
+      <main className="lesson-content" ref={lessonContentRef}>
         {step === 6 && <PremiumGate feature="Dialogul vocal cu AI"><VoiceLessonConversation key={`${levelCode}-${lesson.id}-${careerProfile.pathId}`} level={levelCode} lessonId={lesson.id} pathId={careerProfile.pathId} lessonTitle={lesson.title} /></PremiumGate>}
         {step === 0 && <section className="lesson-intro"><p className="lesson-eyebrow">Lecția {lesson.id} · Nivel {levelCode} {course.title}</p><h1>{lesson.title}</h1><p className="lesson-lead">O lecție practică pe care o poți finaliza în aproximativ {lesson.duration} minute.</p>{lesson.buildsOn && <aside className="lesson-bridge"><span>Legătura cu ce știi deja</span><p>{lesson.buildsOn}</p></aside>}<div className="objectives"><h2>După această lecție vei putea:</h2>{lesson.objectives.map((objective) => <div key={objective}><span>✓</span><p>{objective}</p></div>)}</div></section>}
         {step === 1 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 2</p><h1>Vocabular esențial</h1><p>Ascultă fraza completă în ritm lent, observă cuvântul evidențiat și compară traducerea.</p></div><div className="vocabulary-grid">{lesson.vocabulary.map(([word, wordTranslation, example, sentenceTranslation, highlight], index) => <article className={`vocabulary-card ${index === vocabularyIndex ? 'mobile-expression-card--active' : ''}`} key={word}><header><div><span className="vocabulary-card__label">Expresia {String(index + 1).padStart(2, '0')}</span><h2>{word}</h2></div><span className="vocabulary-card__meaning">{wordTranslation}</span></header><div className="vocabulary-card__example"><span>Exemplu în context</span><div className="vocabulary-card__example-row"><blockquote lang="no"><HighlightedSentence sentence={example} word={word} highlight={highlight}/></blockquote><CompactSlowAudioButton text={example}/></div></div><div className="vocabulary-card__translation" lang="ro"><span>RO</span><p>{sentenceTranslation}</p></div></article>)}</div><MobileExpressionNavigation current={vocabularyIndex} total={lesson.vocabulary.length} onPrevious={() => setVocabularyIndex((current) => Math.max(0, current - 1))} onNext={() => setVocabularyIndex((current) => Math.min(lesson.vocabulary.length - 1, current + 1))} onComplete={() => { setStep(2); window.scrollTo(0, 0); }}/></section>}
