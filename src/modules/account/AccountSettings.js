@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import { createCheckoutSession, createPortalSession } from '../../services/billing';
 import './AccountSettings.css';
 
 const DeleteIcon = () => (
@@ -11,13 +12,20 @@ const DeleteIcon = () => (
 
 const AccountSettings = () => {
   const history = useHistory();
-  const { user, plan, deleteAccount } = useAuth();
+  const location = useLocation();
+  const { user, plan, isPremium, isDevBypass, premiumUntil, refreshEntitlements, logout, deleteAccount } = useAuth();
   const [confirming, setConfirming] = useState(false);
   const [confirmation, setConfirmation] = useState('');
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState(false);
+  const [billingLoading, setBillingLoading] = useState(false);
+  const [billingError, setBillingError] = useState('');
   const inputRef = useRef(null);
   const registeredAccount = user && !user.isGuest;
+
+  useEffect(() => {
+    if (new URLSearchParams(location.search).get('billing') === 'success') void refreshEntitlements();
+  }, [location.search]);
 
   useEffect(() => {
     if (!confirming) return undefined;
@@ -50,6 +58,23 @@ const AccountSettings = () => {
     }
   };
 
+  const openBilling = async () => {
+    setBillingLoading(true);
+    setBillingError('');
+    try {
+      const { url } = isPremium && !isDevBypass ? await createPortalSession() : await createCheckoutSession();
+      window.location.href = url;
+    } catch (billingFailure) {
+      setBillingError(billingFailure.message);
+      setBillingLoading(false);
+    }
+  };
+
+  const connectAccount = async () => {
+    await logout();
+    history.push('/autentificare?redirect=/cont');
+  };
+
   return (
     <div className="account-page">
       <header className="account-page__heading">
@@ -68,6 +93,22 @@ const AccountSettings = () => {
             <p>{user.email || 'Fără adresă de e-mail asociată'}</p>
           </div>
           <span className="account-profile__plan">{plan === 'premium' ? 'Premium' : 'Gratuit'}</span>
+        </section>
+
+        <section className="account-subscription" aria-labelledby="account-subscription-title">
+          <div className="account-subscription__mark" aria-hidden="true">★</div>
+          <div className="account-subscription__copy">
+            <small>Abonament</small>
+            <h2 id="account-subscription-title">{isPremium ? 'Premium activ' : 'Plan gratuit'}</h2>
+            <p>{user.isGuest
+              ? 'Creează sau conectează un cont pentru a activa funcțiile Premium.'
+              : isPremium
+                ? premiumUntil ? `Acces Premium disponibil până la ${new Date(premiumUntil).toLocaleDateString('ro-RO')}.` : 'Ai acces la toate lecțiile și instrumentele Premium.'
+                : 'Poți trece la Premium pentru dialog vocal, pronunție și toate nivelurile.'}</p>
+            {billingError && <div className="account-subscription__error" role="alert">{billingError}</div>}
+          </div>
+          {registeredAccount && <button type="button" onClick={openBilling} disabled={billingLoading || isDevBypass}>{billingLoading ? 'Se încarcă…' : isPremium ? 'Gestionează abonamentul' : 'Treci la Premium'}</button>}
+          {user.isGuest && <button type="button" onClick={connectAccount}>Conectează un cont</button>}
         </section>
 
         <section className="account-danger" aria-labelledby="account-danger-title">

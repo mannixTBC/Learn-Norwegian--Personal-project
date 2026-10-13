@@ -45,8 +45,8 @@ router.post('/checkout', async (req, res) => {
 
   const stripe = getStripe();
   const origin = appOrigin();
-  const successUrl = (req.body && req.body.successUrl) || `${origin}/premium?status=success`;
-  const cancelUrl = (req.body && req.body.cancelUrl) || `${origin}/premium?status=cancel`;
+  const successUrl = `${origin}/cont?billing=success`;
+  const cancelUrl = `${origin}/cont?billing=cancel`;
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -89,7 +89,7 @@ router.post('/portal', async (req, res) => {
     const origin = appOrigin();
     const session = await stripe.billingPortal.sessions.create({
       customer: data.stripe_customer_id,
-      return_url: `${origin}/premium`,
+      return_url: `${origin}/cont`,
     });
     return res.json({ url: session.url });
   } catch (err) {

@@ -2,11 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import NorwegianFlagIcon from './NorwegianFlagIcon';
 import { useAuth } from '../../auth/AuthContext';
-import '../../premium/premium.css';
 import './Navbar.css';
 
 const navigation = [
-  { to: '/cont', label: 'Cont' },
+  { to: '/dashboard', label: 'Profil' },
   { to: '/invata', label: 'Învață' },
   { to: '/descopera', label: 'Descoperă' },
   { to: '/viata-in-norvegia', label: 'Viața în Norvegia' },
@@ -53,25 +52,27 @@ const UserAvatar = ({ user, menu = false }) => {
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const navbarRef = useRef(null);
   const toggleRef = useRef(null);
-  const { user, logout, isPremium, isDevBypass } = useAuth();
-  const closeMenu = () => setMenuOpen(false);
+  const accountToggleRef = useRef(null);
+  const { user, logout } = useAuth();
+  const closeMenu = () => { setMenuOpen(false); setAccountOpen(false); };
 
   useEffect(() => {
-    if (!menuOpen) return undefined;
+    if (!menuOpen && !accountOpen) return undefined;
 
     const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    if (menuOpen) document.body.style.overflow = 'hidden';
 
     const closeOnOutsideClick = (event) => {
-      if (navbarRef.current && !navbarRef.current.contains(event.target)) setMenuOpen(false);
+      if (navbarRef.current && !navbarRef.current.contains(event.target)) closeMenu();
     };
 
     const closeOnEscape = (event) => {
       if (event.key === 'Escape') {
-        setMenuOpen(false);
-        window.requestAnimationFrame(() => toggleRef.current && toggleRef.current.focus());
+        closeMenu();
+        window.requestAnimationFrame(() => (accountOpen ? accountToggleRef.current : toggleRef.current)?.focus());
       }
     };
 
@@ -83,7 +84,7 @@ export default function Navbar() {
       document.removeEventListener('pointerdown', closeOnOutsideClick);
       document.removeEventListener('keydown', closeOnEscape);
     };
-  }, [menuOpen]);
+  }, [accountOpen, menuOpen]);
 
   return (
     <>
@@ -109,23 +110,17 @@ export default function Navbar() {
               {item.label}
             </NavLink>
           ))}
-          {user && <Link
-            to="/premium"
-            className={`navbar__premium navbar__premium--mobile${isDevBypass ? ' navbar__premium--dev' : isPremium ? '' : ' navbar__premium--upgrade'}`}
-            onClick={closeMenu}
-          >
-            {isDevBypass ? '★ Premium (dev)' : isPremium ? '★ Premium' : '★ Treci la Premium'}
-          </Link>}
           <div className="navbar__mobile-account">
             {user ? (
               <>
-                <Link className="navbar__mobile-user" to="/cont" onClick={closeMenu} aria-label="Deschide setările contului">
+                <Link className="navbar__mobile-user" to="/dashboard" onClick={closeMenu} aria-label="Deschide profilul">
                   <UserAvatar user={user} menu />
                   <div>
                     <small>{user.isGuest ? 'Mod vizitator' : 'Contul tău'}</small>
                     <strong>{user.name}</strong>
                   </div>
                 </Link>
+                <Link className="navbar__mobile-settings" to="/cont" onClick={closeMenu}>Setări cont</Link>
                 <button type="button" className="navbar__mobile-logout" onClick={() => { logout(); closeMenu(); }}>
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M10 5H6.8A1.8 1.8 0 0 0 5 6.8v10.4A1.8 1.8 0 0 0 6.8 19H10M14.5 8.5 18 12l-3.5 3.5M9 12h9" />
@@ -140,7 +135,7 @@ export default function Navbar() {
         </nav>
 
         <div className="navbar__account">
-          {user ? <><Link className="navbar__user" to="/cont" onClick={closeMenu} aria-label="Deschide setările contului"><UserAvatar user={user} /><div><small>{user.isGuest ? 'Mod anonim' : 'Conectat'}</small><strong>{user.name}</strong></div></Link><button type="button" className="navbar__logout" onClick={() => { logout(); closeMenu(); }}>Ieșire</button></> : <Link className="navbar__login" to="/autentificare" onClick={closeMenu}>Conectare</Link>}
+          {user ? <div className="navbar__account-menu"><button ref={accountToggleRef} type="button" className="navbar__user" onClick={() => setAccountOpen((open) => !open)} aria-label="Deschide meniul contului" aria-expanded={accountOpen}><UserAvatar user={user} /><div><small>{user.isGuest ? 'Mod anonim' : 'Conectat'}</small><strong>{user.name}</strong></div><span className="navbar__user-chevron" aria-hidden="true">⌄</span></button>{accountOpen && <div className="navbar__account-dropdown"><Link to="/dashboard" onClick={closeMenu}>Dashboard</Link><Link to="/cont" onClick={closeMenu}>Setările contului</Link><button type="button" onClick={() => { logout(); closeMenu(); }}>Deconectare</button></div>}</div> : <Link className="navbar__login" to="/autentificare" onClick={closeMenu}>Conectare</Link>}
         </div>
 
         <button
