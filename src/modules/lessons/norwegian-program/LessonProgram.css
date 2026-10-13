@@ -193,3 +193,23 @@
 @media(max-width:520px){
   html.is-installed-app .mobile-expression-navigation{position:fixed;right:0;bottom:0;left:0;z-index:50;margin:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid #dce3eb;background:rgba(255,255,255,.98);box-shadow:0 -8px 24px rgba(20,33,61,.1);backdrop-filter:blur(14px)}
 }
+
+/* Gramatică mai compactă și mai ușor de parcurs în aplicația instalată. */
+@media(max-width:860px){
+  html.is-installed-app .lesson-content>section:has(.grammar-card) .lesson-heading{margin-bottom:16px}
+  html.is-installed-app .lesson-content>section:has(.grammar-card) .lesson-eyebrow{display:inline-flex;width:max-content;align-items:center;margin-bottom:8px;padding:5px 9px;border-radius:99px;background:var(--fjord-soft);font-size:.62rem;letter-spacing:.08em}
+  html.is-installed-app .lesson-content>section:has(.grammar-card) .lesson-heading h1{margin-bottom:8px;font-size:clamp(1.45rem,7vw,2rem);line-height:1.12}
+  html.is-installed-app .lesson-content>section:has(.grammar-card) .lesson-heading>p:last-child{font-size:.82rem;line-height:1.45}
+  html.is-installed-app .grammar-card{display:grid;gap:10px;overflow:visible;border:0;background:transparent}
+  html.is-installed-app .grammar-rule{position:relative;overflow:hidden;padding:19px 18px 18px 58px;border-radius:18px;background:linear-gradient(145deg,#14213d 0%,#1d5963 100%);box-shadow:0 12px 28px rgba(20,33,61,.17)}
+  html.is-installed-app .grammar-rule::before{position:absolute;top:18px;left:17px;display:grid;width:30px;height:30px;place-items:center;color:#174f57;border-radius:9px;background:#d9eff0;font-family:Georgia,serif;font-size:.8rem;font-weight:900;content:'Aa'}
+  html.is-installed-app .grammar-rule::after{position:absolute;right:-28px;bottom:-34px;width:105px;height:105px;border:18px solid rgba(255,255,255,.06);border-radius:50%;content:''}
+  html.is-installed-app .grammar-rule span{position:relative;z-index:1;color:#aee3e5;font-size:.62rem;letter-spacing:.1em}
+  html.is-installed-app .grammar-rule p{position:relative;z-index:1;margin-top:5px;font-size:.94rem;line-height:1.5}
+  html.is-installed-app .grammar-example{display:grid;grid-template-columns:32px minmax(0,1fr);gap:11px;align-items:center;padding:13px 15px;border:1px solid #dce7e8;border-radius:14px;background:#fff;box-shadow:0 5px 15px rgba(20,33,61,.045)}
+  html.is-installed-app .grammar-example span{display:grid;width:30px;height:30px;place-items:center;color:#267354;border-radius:9px;background:#e6f6ef;font-size:.9rem}
+  html.is-installed-app .grammar-example p{color:#31475c;font-size:.84rem;line-height:1.45}
+  html.is-installed-app .grammar-example--wrong{border-color:#efd0d6;background:#fff7f8}
+  html.is-installed-app .grammar-example--wrong span{color:#a33249;background:#fbe4e9}
+  html.is-installed-app .grammar-example--wrong p{color:#743848}
+}
