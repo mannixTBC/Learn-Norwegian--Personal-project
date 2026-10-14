@@ -3,6 +3,7 @@ const crypto = require('node:crypto');
 const { requireAuth } = require('../middleware/authSupabaseUser');
 const { getVoiceLesson, buildVoiceSession } = require('../voiceTutor');
 const { isNetlifyRuntime } = require('../voiceAudioCache');
+const { cartesiaConfigured } = require('../cartesiaSpeech');
 const router = express.Router();
 const attempts = new Map();
 
@@ -12,7 +13,12 @@ const isLocalBypass = (req) => process.env.VITE_PREMIUM_DEV_BYPASS === 'true'
 
 router.get('/status', (req, res) => {
   res.set('Cache-Control', 'no-store');
-  res.json({ configured: Boolean(process.env.OPENAI_API_KEY), questionAudioCache: isNetlifyRuntime() ? 'netlify' : 'local' });
+  const openai = Boolean(process.env.OPENAI_API_KEY);
+  res.json({
+    configured: openai,
+    providers: { openai, cartesia: cartesiaConfigured() },
+    questionAudioCache: isNetlifyRuntime() ? 'netlify' : 'local',
+  });
 });
 
 router.post('/session', async (req, res, next) => {

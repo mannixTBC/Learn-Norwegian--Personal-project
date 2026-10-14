@@ -14,7 +14,7 @@ const cartesiaSpeechStream = async (text, signal) => {
     method: 'POST',
     signal: requestSignal,
     headers: {
-      'X-API-Key': process.env.CARTESIA_API_KEY,
+      Authorization: `Bearer ${process.env.CARTESIA_API_KEY}`,
       'Cartesia-Version': process.env.CARTESIA_API_VERSION || '2026-08-14',
       'Content-Type': 'application/json',
       Accept: 'audio/mpeg',
@@ -22,7 +22,7 @@ const cartesiaSpeechStream = async (text, signal) => {
     body: JSON.stringify({
       model_id: process.env.CARTESIA_MODEL_ID || 'sonic-latest',
       transcript: text,
-      voice: { mode: 'id', id: process.env.CARTESIA_VOICE_ID },
+      voice: process.env.CARTESIA_VOICE_ID,
       language: 'no',
       output_format: { container: 'mp3', sample_rate: 44100, bit_rate: 128000 },
       generation_config: { speed: speed(), emotion: 'calm' },

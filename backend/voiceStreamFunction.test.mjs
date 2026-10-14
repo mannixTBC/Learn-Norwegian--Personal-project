@@ -14,7 +14,8 @@ test('funcția transmite incremental răspunsul audio Cartesia', async () => {
   let requestBody;
   global.fetch = async (url, options) => {
     assert.equal(url, 'https://api.cartesia.ai/tts/bytes');
-    assert.equal(options.headers['X-API-Key'], 'cartesia-test-key');
+    assert.equal(options.headers.Authorization, 'Bearer cartesia-test-key');
+    assert.equal(options.headers['X-API-Key'], undefined);
     requestBody = JSON.parse(options.body);
     return new Response(new ReadableStream({
       start(controller) {
@@ -32,7 +33,7 @@ test('funcția transmite incremental răspunsul audio Cartesia', async () => {
     assert.deepEqual([...new Uint8Array(await response.arrayBuffer())], [1, 2, 3, 4]);
     assert.equal(requestBody.transcript, 'Hei! Hva heter du?');
     assert.equal(requestBody.model_id, 'sonic-latest');
-    assert.equal(requestBody.voice.id, 'anna-cartesia-test');
+    assert.equal(requestBody.voice, 'anna-cartesia-test');
     assert.equal(requestBody.language, 'no');
     assert.equal(requestBody.output_format.container, 'mp3');
     assert.equal(requestBody.generation_config.speed, 0.82);

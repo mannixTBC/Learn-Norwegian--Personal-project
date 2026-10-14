@@ -33,6 +33,8 @@ Etapa și rezultatele exercițiilor sunt păstrate la rotirea telefonului și re
 - `OPENAI_VOICE_FEEDBACK_MODEL`: implicit `gpt-4o-mini`.
 - `OPENAI_VOICE_TTS_MODEL`: implicit `gpt-4o-mini-tts`, voce `marin`.
 - `CARTESIA_API_KEY` și `CARTESIA_VOICE_ID`: activează streamingul pentru replica Norei.
+- Cheia Cartesia este trimisă server-side prin antetul standard `Authorization: Bearer`; nu o
+  expune în frontend și nu îi adăuga prefixul `VITE_`.
 - `CARTESIA_MODEL_ID`: implicit `sonic-latest`; `CARTESIA_API_VERSION`: implicit `2026-08-14`.
 - `CARTESIA_VOICE_SPEED`: implicit `0.82`, limitat pe server la intervalul acceptat `0.6–1.5`.
 - `CARTESIA_STREAM_SECRET`: opțional. Criptează linkurile audio temporare; dacă lipsește,
