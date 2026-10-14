@@ -143,7 +143,6 @@ export default function Navbar() {
             {accountOpen && <div id="account-navigation" className="navbar__account-dropdown">
               <span className="navbar__account-dropdown-title">Cont</span>
               <Link to="/cont" onClick={closeMenu}><AccountIcon /><span><strong>Setările contului</strong><small>Profil, abonament și confidențialitate</small></span></Link>
-              <Link className="navbar__account-danger" to="/cont?delete=1" onClick={closeMenu}><DeleteIcon /><span><strong>{user.isGuest ? 'Șterge datele' : 'Șterge contul'}</strong><small>Elimină definitiv datele tale</small></span></Link>
               <button type="button" onClick={() => { logout(); closeMenu(); }}><LogoutIcon /><span>Deconectare</span></button>
             </div>}
           </div> : <Link className="navbar__login" to="/autentificare" onClick={closeMenu}>Conectare</Link>}

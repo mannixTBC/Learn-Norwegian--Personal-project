@@ -81,8 +81,6 @@
 .navbar__account-dropdown a small{color:#85929b;font-size:.61rem;font-weight:600;line-height:1.35}
 .navbar__account-dropdown a:link,.navbar__account-dropdown a:visited,.navbar__account-dropdown a:hover,.navbar__account-dropdown a:active { text-decoration: none; }
 .navbar__account-dropdown a:hover { color: #174e59; background: #edf7f7; }
-.navbar__account-dropdown a.navbar__account-danger{color:#8b3041}
-.navbar__account-dropdown a.navbar__account-danger:hover{color:#7b2536;background:#fff1f3}
 .navbar__account-dropdown button { min-height:43px;margin-top:6px;color:#596b76;border-top:1px solid #edf0f2;border-radius:0 0 10px 10px; }
 .navbar__account-dropdown button:hover { color:#344d59;background:#f3f6f7; }
 .navbar__account-dropdown a:focus-visible,.navbar__account-dropdown button:focus-visible { outline: 3px solid #9bd4d7; outline-offset: 1px; }
