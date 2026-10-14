@@ -50,6 +50,8 @@
 .voice-lesson__mode span{display:grid;gap:3px}
 .voice-lesson__mode strong{color:#153b46;font-size:.82rem}
 .voice-lesson__mode small{color:#63777f;font-size:.7rem;line-height:1.45}
+.voice-lesson__saved{margin:14px 0 0;padding-left:20px;color:#4e7268;font-size:.7rem;line-height:1.45}
+.voice-lesson__saved::before{margin-left:-20px;margin-right:7px;color:#2b806d;content:'✓'}
 .voice-lesson__portrait,.voice-lesson__art,.voice-lesson__welcome,.voice-lesson__start-caption{display:none}
 @media(min-width:861px){
   .voice-lesson__portrait{display:block;width:56px;height:56px}

@@ -2,11 +2,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { createCheckoutSession, createPortalSession } from '../../services/billing';
+import { getVoiceTranscriptPreference, setVoiceTranscriptPreference } from '../../services/voiceTranscripts';
 import './AccountSettings.css';
 
 const DeleteIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" />
+  </svg>
+);
+
+const PrivacyIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 3 5.5 5.7v5.2c0 4.4 2.7 8.1 6.5 10.1 3.8-2 6.5-5.7 6.5-10.1V5.7L12 3Z" />
+    <path d="m9.2 12 1.8 1.8 3.9-4" />
   </svg>
 );
 
@@ -20,12 +28,30 @@ const AccountSettings = () => {
   const [deleting, setDeleting] = useState(false);
   const [billingLoading, setBillingLoading] = useState(false);
   const [billingError, setBillingError] = useState('');
+  const [voiceConsent, setVoiceConsent] = useState(false);
+  const [voiceConsentState, setVoiceConsentState] = useState('loading');
   const inputRef = useRef(null);
   const registeredAccount = user && !user.isGuest;
 
   useEffect(() => {
     if (new URLSearchParams(location.search).get('billing') === 'success') void refreshEntitlements();
   }, [location.search]);
+
+  useEffect(() => {
+    if (new URLSearchParams(location.search).get('delete') === '1') setConfirming(true);
+  }, [location.search]);
+
+  useEffect(() => {
+    const abort = new AbortController();
+    getVoiceTranscriptPreference(abort.signal).then((preference) => {
+      if (abort.signal.aborted) return;
+      setVoiceConsent(preference.enabled === true);
+      setVoiceConsentState('ready');
+    }).catch(() => {
+      if (!abort.signal.aborted) setVoiceConsentState('unavailable');
+    });
+    return () => abort.abort();
+  }, []);
 
   useEffect(() => {
     if (!confirming) return undefined;
@@ -42,6 +68,20 @@ const AccountSettings = () => {
     setConfirming(false);
     setConfirmation('');
     setError('');
+    if (new URLSearchParams(location.search).get('delete') === '1') history.replace('/cont');
+  };
+
+  const updateVoiceConsent = async () => {
+    if (voiceConsentState !== 'ready') return;
+    const enabled = !voiceConsent;
+    setVoiceConsentState('saving');
+    try {
+      const preference = await setVoiceTranscriptPreference(enabled);
+      setVoiceConsent(preference.enabled === true);
+      setVoiceConsentState('ready');
+    } catch (_) {
+      setVoiceConsentState('unavailable');
+    }
   };
 
   const removeAccount = async (event) => {
@@ -109,6 +149,23 @@ const AccountSettings = () => {
           </div>
           {registeredAccount && <button type="button" onClick={openBilling} disabled={billingLoading || isDevBypass}>{billingLoading ? 'Se încarcă…' : isPremium ? 'Gestionează abonamentul' : 'Treci la Premium'}</button>}
           {user.isGuest && <button type="button" onClick={connectAccount}>Conectează un cont</button>}
+        </section>
+
+        <section className="account-privacy" aria-labelledby="account-privacy-title">
+          <div className="account-privacy__icon"><PrivacyIcon /></div>
+          <div className="account-privacy__copy">
+            <small>Confidențialitate și AI</small>
+            <h2 id="account-privacy-title">Contribuie la îmbunătățirea Norei</h2>
+            <p>{voiceConsent
+              ? 'Păstrăm numai textul dialogurilor vocale, fără audio, cel mult 90 de zile. Dezactivarea șterge și transcriptele salvate.'
+              : 'Dialogurile tale nu sunt păstrate. Poți permite opțional salvarea textului, fără înregistrările audio.'}</p>
+            {voiceConsentState === 'unavailable' && <span className="account-privacy__notice">Preferința nu este disponibilă momentan.</span>}
+          </div>
+          <label className={`account-privacy__toggle ${voiceConsent ? 'account-privacy__toggle--enabled' : ''}`}>
+            <input type="checkbox" checked={voiceConsent} disabled={!['ready'].includes(voiceConsentState)} onChange={updateVoiceConsent} />
+            <span aria-hidden="true" />
+            <strong>{voiceConsent ? 'Activat' : voiceConsentState === 'loading' ? 'Se încarcă…' : 'Dezactivat'}</strong>
+          </label>
         </section>
 
         <section className="account-danger" aria-labelledby="account-danger-title">

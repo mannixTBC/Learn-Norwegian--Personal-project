@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { sendChatTurn, startChatSession } from '../../services/chat';
 import { practiceRequest, audioBlob, recordPracticeAnswer, recordingPayload } from '../../services/voicePractice';
 import { createVoiceConversation } from '../../services/voiceConversation';
+import { getVoiceTranscriptPreference, saveVoiceTranscript } from '../../services/voiceTranscripts';
 import './VoiceLessonConversation.css';
 
 const normalizeDialog = (data, previousToken = null) => ({
@@ -26,6 +27,23 @@ const assistantMessage = (dialog) => ({
   turn: dialog.turn,
 });
 
+const transcriptMessages = (messages) => messages.map((message) => ({
+  role: message.role,
+  turn: message.turn || 0,
+  content: message.role === 'user'
+    ? message.content
+    : [message.reply, message.question].filter(Boolean).join(' '),
+})).filter((message) => message.content?.trim());
+
+const createConversationId = () => {
+  if (typeof window.crypto?.randomUUID === 'function') return window.crypto.randomUUID();
+  const bytes = window.crypto.getRandomValues(new Uint8Array(16));
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const value = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+  return `${value.slice(0, 8)}-${value.slice(8, 12)}-${value.slice(12, 16)}-${value.slice(16, 20)}-${value.slice(20)}`;
+};
+
 export default function VoiceLessonConversation({ level, lessonId, pathId, lessonTitle }) {
   const [configured, setConfigured] = useState(null);
   const [status, setStatus] = useState('idle');
@@ -39,6 +57,8 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   const [revealedHelp, setRevealedHelp] = useState({});
   const [error, setError] = useState('');
   const [mode, setMode] = useState('realtime');
+  const [transcriptConsent, setTranscriptConsent] = useState(false);
+  const [transcriptSaveStatus, setTranscriptSaveStatus] = useState('');
   const controller = useRef(null);
   const realtime = useRef(null);
   const realtimeFinishing = useRef(false);
@@ -47,6 +67,8 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   const busy = useRef(false);
   const mounted = useRef(false);
   const autoStartTimer = useRef(null);
+  const conversationId = useRef(null);
+  const savedTranscriptFingerprint = useRef('');
 
   const stopPlayback = () => {
     const player = playback.current;
@@ -66,6 +88,9 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     fetch('/api/voice/status', { signal: abort.signal }).then((response) => response.json()).then((data) => {
       if (!abort.signal.aborted) setConfigured(data.configured === true);
     }).catch(() => { if (!abort.signal.aborted) setConfigured(false); });
+    getVoiceTranscriptPreference(abort.signal).then((preference) => {
+      if (!abort.signal.aborted) setTranscriptConsent(preference.enabled === true);
+    }).catch(() => {});
     return () => {
       mounted.current = false;
       abort.abort();
@@ -76,6 +101,34 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       stopPlayback();
     };
   }, []);
+
+  useEffect(() => {
+    if (status !== 'ended' || !transcriptConsent || !conversationId.current) return undefined;
+    const transcript = transcriptMessages(messages);
+    if (!transcript.some((message) => message.role === 'user')) return undefined;
+
+    const payload = {
+      conversationId: conversationId.current,
+      level,
+      lessonId,
+      pathId: pathId || 'general',
+      mode,
+      messages: transcript,
+      feedback: feedback?.text || '',
+    };
+    const fingerprint = JSON.stringify(payload);
+    if (savedTranscriptFingerprint.current === fingerprint) return undefined;
+
+    setTranscriptSaveStatus('saving');
+    saveVoiceTranscript(payload).then(() => {
+      if (!mounted.current) return;
+      savedTranscriptFingerprint.current = fingerprint;
+      setTranscriptSaveStatus('saved');
+    }).catch(() => {
+      if (mounted.current) setTranscriptSaveStatus('error');
+    });
+    return undefined;
+  }, [feedback, lessonId, level, messages, mode, pathId, status, transcriptConsent]);
 
   const play = async (data, kind, onEnded, onStreamError) => {
     stopPlayback();
@@ -213,6 +266,9 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     setError('');
     setStatus('loading');
     setMode('batch');
+    conversationId.current = createConversationId();
+    savedTranscriptFingerprint.current = '';
+    setTranscriptSaveStatus('');
     if (fallbackNotice) setTranscriptNotice(fallbackNotice);
     try {
       const [voiceData, chatData] = await Promise.all([
@@ -246,6 +302,9 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     setRevealedHelp({});
     setError('');
     realtimeFinishing.current = false;
+    conversationId.current = createConversationId();
+    savedTranscriptFingerprint.current = '';
+    setTranscriptSaveStatus('');
   };
 
   const handleRealtimeEvent = (event) => {
@@ -609,6 +668,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
           </div>)}
       </div>}
       {feedback && <div className="voice-lesson__message voice-lesson__feedback"><small>Feedbackul tău</small><p>{feedback.text}</p></div>}
+      {status === 'ended' && transcriptConsent && transcriptSaveStatus === 'saved' && <p className="voice-lesson__saved">Transcript salvat în siguranță pentru îmbunătățirea Norei · fără înregistrarea audio</p>}
       {pendingTranscript && <div className="voice-lesson__confirmation" role="status">
         <small>Verificare rapidă</small>
         <p>{pendingTranscript.transcript.message}</p>
