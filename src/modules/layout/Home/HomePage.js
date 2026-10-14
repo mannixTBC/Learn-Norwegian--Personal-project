@@ -10,11 +10,27 @@ const sections = [
   { to: '/viata-in-norvegia', icon: '🧭', title: 'Viața în Norvegia', text: 'Muncă, acte, vreme și știri într-un singur loc.' },
 ];
 
+/**
+ * Detectează lansarea din aplicația instalată, fără să confunde browserul
+ * mobil cu experiența PWA / viitoarea aplicație Android (TWA).
+ */
+export const isInstalledApp = () => {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
+
+  const standaloneDisplay = typeof window.matchMedia === 'function'
+    && window.matchMedia('(display-mode: standalone)').matches;
+  const iosStandalone = navigator.standalone === true;
+  const androidApp = document.referrer.startsWith('android-app://');
+
+  return standaloneDisplay || iosStandalone || androidApp;
+};
+
 const HomePage = () => {
   const { initializing, isAuthenticated } = useAuth();
 
   if (initializing) return <div className="auth-route-loading" role="status">Se verifică sesiunea...</div>;
   if (isAuthenticated) return <Redirect to="/dashboard" />;
+  if (isInstalledApp()) return <Redirect to="/dashboard" />;
 
   return <div className="landing">
     <section className="landing__hero">
