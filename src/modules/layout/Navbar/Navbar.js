@@ -160,7 +160,6 @@ export default function Navbar() {
           <span />
           <span />
           <span />
-          <strong className="navbar__toggle-label">Mai multe</strong>
         </button>
         </div>
       </header>

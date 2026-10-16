@@ -16,7 +16,7 @@ const MobileAppNav = ({ activeLevel }) => {
   const items = [
     { id: 'home', label: 'Acasă', to: '/dashboard', active: location.pathname === '/dashboard' },
     { id: 'lessons', label: 'Lecții', to: `/invata?nivel=${level}`, active: ['/invata', '/invata-limba'].includes(location.pathname) },
-    { id: 'games', label: 'Jocuri', to: `/jocuri?nivel=${level}`, active: false },
+    { id: 'games', label: 'Jocuri', to: `/jocuri?nivel=${level}`, active: location.pathname === '/jocuri' },
     { id: 'account', label: 'Cont', to: '/cont', active: location.pathname === '/cont' },
   ];
 

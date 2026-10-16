@@ -26,6 +26,12 @@ const PrivacyIcon = () => (
   </svg>
 );
 
+const LogoutIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M10 5H6.8A1.8 1.8 0 0 0 5 6.8v10.4A1.8 1.8 0 0 0 6.8 19H10M14.5 8.5 18 12l-3.5 3.5M9 12h9" />
+  </svg>
+);
+
 const AccountSettings = () => {
   const history = useHistory();
   const location = useLocation();
@@ -133,6 +139,11 @@ const AccountSettings = () => {
     history.push('/autentificare?redirect=/cont');
   };
 
+  const signOut = async () => {
+    await logout();
+    history.replace('/autentificare');
+  };
+
   return (
     <div className="account-page">
       <header className="account-page__heading">
@@ -184,6 +195,12 @@ const AccountSettings = () => {
             <span aria-hidden="true" />
             <strong>{voiceConsent ? 'Activat' : voiceConsentState === 'loading' ? 'Se încarcă…' : 'Dezactivat'}</strong>
           </label>
+        </section>
+
+        <section className="account-signout" aria-labelledby="account-signout-title">
+          <div className="account-signout__icon"><LogoutIcon /></div>
+          <div className="account-signout__copy"><small>Sesiunea ta</small><h2 id="account-signout-title">Deconectare</h2><p>Ieși în siguranță din cont pe acest dispozitiv.</p></div>
+          <button type="button" onClick={signOut}><LogoutIcon />Deconectare</button>
         </section>
 
         <section className="account-danger" aria-labelledby="account-danger-title">

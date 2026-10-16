@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getLearningLevel, levelName } from '../lessons/learningLevel';
 import { getReviewStats } from '../../services/spacedReview';
+import MobileAppNav from '../layout/MobileAppNav';
 import './GamesHub.css';
 import './MobileExercisePolish.css';
 
@@ -51,6 +52,7 @@ const GamesHub = () => {
           <Link to={`/recapitulare?nivel=${level}`}><span aria-hidden="true">↻</span><div><small>Memorie inteligentă</small><h3>Recapitulare</h3><p>{reviewStats.due ? `${reviewStats.due} ${reviewStats.due === 1 ? 'element pregătit' : 'elemente pregătite'} pentru tine.` : 'Totul este la zi pentru moment.'}</p></div><b aria-hidden="true">→</b></Link>
         </div>
       </section>
+      <MobileAppNav activeLevel={level} />
     </div>
   );
 };

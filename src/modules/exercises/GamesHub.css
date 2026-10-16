@@ -8,7 +8,7 @@
 @media(max-width:760px){.games-hub{width:min(100% - 28px,1120px);padding:22px 0 calc(82px + env(safe-area-inset-bottom))}.games-hub__back{margin-bottom:16px}.games-hub__hero{grid-template-columns:1fr;padding:26px 22px;border-radius:20px}.games-hub__hero h1{font-size:2.35rem}.games-hub__hero p{font-size:.82rem}.games-hub__level{display:flex;width:auto;height:auto;gap:7px;justify-content:flex-start;padding:10px 12px;border-radius:12px}.games-hub__level strong{margin:0;font-size:1rem}.games-hub__section,.games-hub__training{margin-top:34px}.games-hub__heading{align-items:flex-start;flex-direction:column;gap:6px}.games-hub__heading h2{font-size:1.45rem}.games-hub__grid{grid-template-columns:1fr}.game-hub-card{min-height:205px;padding:19px}.game-hub-card__icon{margin-bottom:16px}.games-hub__training{padding-top:32px}.games-hub__training-grid>a{padding:15px}.games-hub__training-grid p{font-size:.68rem}}
 @media(max-width:680px){
   html.is-installed-app .App:has(.games-hub)>.footer{display:none}
-  html.is-installed-app .games-hub{width:100%;padding:16px 16px calc(34px + env(safe-area-inset-bottom));background:#f5f8f8;box-sizing:border-box}
+  html.is-installed-app .games-hub{width:100%;padding:16px 16px calc(104px + env(safe-area-inset-bottom));background:#f5f8f8;box-sizing:border-box}
   .games-hub__back{min-height:44px;margin-bottom:14px;padding:7px 12px 7px 8px;border-radius:13px;box-sizing:border-box}
   .games-hub__back>span{width:32px;height:32px;border-radius:10px}
   .games-hub__hero{gap:18px;padding:23px 20px;border-radius:20px;box-shadow:0 13px 30px rgba(31,111,120,.18)}
