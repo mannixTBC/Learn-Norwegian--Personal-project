@@ -106,6 +106,44 @@
   .practice-tool b{padding-top:10px;font-size:.75rem}
 }
 
+/* În aplicația instalată, această pagină este exclusiv catalogul de lecții.
+   Dashboardul rămâne singura pagină Acasă/profil. */
+@media(max-width:680px){
+  html.is-installed-app .App:has(.learn-page)>.footer{display:none}
+  html.is-installed-app .learn-page{display:block;width:100%;min-height:calc(100svh - 62px);padding:17px 15px calc(104px + env(safe-area-inset-bottom));background:#f5f8f8;box-sizing:border-box}
+  html.is-installed-app .learn-hero,
+  html.is-installed-app .continue-card,
+  html.is-installed-app .career-track-card,
+  html.is-installed-app .games-hub-promo,
+  html.is-installed-app .learning-tools,
+  html.is-installed-app .practice-zone{display:none}
+  html.is-installed-app .level-section{margin-top:0}
+  html.is-installed-app .section-title-row{display:block;margin-bottom:15px}
+  html.is-installed-app .section-title-row .learn-kicker{margin-bottom:5px;color:var(--fjord);font-size:.61rem}
+  html.is-installed-app .section-title-row h2{margin:0;color:#153b46;font-size:1.65rem;letter-spacing:-.025em}
+  html.is-installed-app .section-title-row>p{margin-top:5px;color:#71818a;font-size:.72rem}
+  html.is-installed-app .level-tabs{display:grid;grid-auto-columns:minmax(104px,1fr);grid-auto-flow:column;grid-template-columns:none;gap:8px;margin:0 -2px 12px;padding:2px 2px 7px;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x proximity}
+  html.is-installed-app .level-tab{display:flex;min-width:104px;min-height:58px;gap:8px;align-items:center;padding:9px;border-color:#d7e4e6;border-radius:12px;background:#fff;box-shadow:0 5px 14px rgba(20,33,61,.035);scroll-snap-align:start}
+  html.is-installed-app .level-tab strong{width:36px;height:36px;flex:0 0 36px;border-radius:9px}
+  html.is-installed-app .level-tab span{align-self:auto;font-size:.68rem;line-height:1.15}
+  html.is-installed-app .level-tab small{display:none}
+  html.is-installed-app .level-tab--active{border-color:var(--fjord);background:#f1f9f8;box-shadow:0 0 0 1px rgba(31,111,120,.08)}
+  html.is-installed-app .course-block{border-color:#d6e4e6;border-radius:18px;box-shadow:0 9px 25px rgba(20,33,61,.055)}
+  html.is-installed-app .course-block__header{padding:17px;background:linear-gradient(145deg,#fff,#f1f9f8)}
+  html.is-installed-app .course-block__header p{font-size:.72rem}
+  html.is-installed-app .course-stats{gap:6px}
+  html.is-installed-app .course-stats span{background:#fff}
+  html.is-installed-app .lesson-list{padding:0 16px}
+  html.is-installed-app .course-lesson{grid-template-columns:auto minmax(0,1fr);gap:10px 12px;padding:16px 0}
+  html.is-installed-app .course-lesson{min-height:76px;box-sizing:border-box}
+  html.is-installed-app .course-lesson__number{grid-row:1/3;width:36px;height:36px;font-size:.72rem}
+  html.is-installed-app .course-lesson__body{min-width:0}
+  html.is-installed-app .course-lesson>.lesson-action{grid-column:2}
+  html.is-installed-app .course-lesson>.lesson-action{min-height:42px;border-radius:11px}
+  html.is-installed-app .lesson-list-toggle{min-height:44px}
+  html.is-installed-app .final-test-card{border-radius:14px}
+}
+
 .learn-progress__track span,.career-track-progress__track>span{transition:width .3s ease}
 .in-progress-label{color:var(--fjord);font-weight:800}
 .games-hub-promo{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;margin-top:22px;padding:23px 25px;color:#153b46;border:1px solid #c9e0e1;border-radius:19px;background:linear-gradient(135deg,#f7fcfb,#e8f5f4);box-shadow:0 10px 28px rgba(20,33,61,.055);text-decoration:none;transition:transform .18s ease,box-shadow .18s ease}.games-hub-promo:hover{color:#153b46;box-shadow:0 14px 32px rgba(20,33,61,.1);text-decoration:none;transform:translateY(-2px)}.games-hub-promo__icon{display:grid;width:52px;height:52px;place-items:center;color:#fff;border-radius:15px;background:linear-gradient(145deg,#174e59,var(--fjord));font-size:.83rem;font-weight:950}.games-hub-promo small{color:var(--fjord);font-size:.64rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.games-hub-promo h2{margin:3px 0 5px;font-size:1.2rem}.games-hub-promo p{margin:0;color:#687b83;font-size:.8rem}.games-hub-promo>strong{display:inline-flex;min-height:44px;align-items:center;gap:9px;padding:0 15px;color:#fff;border-radius:11px;background:var(--fjord);font-size:.73rem;white-space:nowrap}.games-hub-promo:focus-visible{outline:3px solid var(--fjord-light);outline-offset:3px}

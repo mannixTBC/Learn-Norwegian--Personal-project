@@ -5,6 +5,7 @@ import { getReviewStats } from '../../services/spacedReview';
 import { getCareerPath, getCareerProfile } from '../../services/careerProfile';
 import { useAuth } from '../auth/AuthContext';
 import CareerPathVisual from '../onboarding/CareerPathVisual';
+import MobileAppNav from '../layout/MobileAppNav';
 import './LearningHub.css';
 import './FinalTestCard.css';
 import './ReviewBadge.css';
@@ -175,6 +176,8 @@ const LearningHub = () => {
         <div><p className="learn-kicker">Studiază mai eficient</p><h2>Instrumente de învățare</h2><p className="learning-tools__intro">Folosește-le când vrei să repeți o anumită abilitate în afara lecțiilor.</p></div>
         <div className="learning-tools__grid"><Link className="review-tool-link" to={`/recapitulare?nivel=${activeLevel}`}><span role="img" aria-hidden="true">🧠</span><strong>Recapitulare inteligentă</strong><small>{reviewStats.due ? `${reviewStats.due} ${reviewStats.due === 1 ? 'element pregătit' : 'elemente pregătite'} pentru astăzi.` : reviewStats.total ? 'Totul este la zi. Revenim la momentul potrivit.' : 'Greșelile vor fi programate automat.'}</small>{reviewStats.due > 0 && <em className="review-due-badge">{reviewStats.due}</em>}</Link><Link to={`/pronuntie?nivel=${activeLevel}`}><span role="img" aria-hidden="true">🔊</span><strong>Pronunție</strong><small>Ascultă și repetă sunetele.</small></Link><Link to={`/challenge30?nivel=${activeLevel}`}><span role="img" aria-hidden="true">📅</span><strong>Provocarea verbelor</strong><small>30 de verbe în 10 sesiuni.</small></Link></div>
       </section>}
+
+      <MobileAppNav activeLevel={activeLevel} />
 
     </div>
   );

@@ -7,6 +7,7 @@ import { getReviewItemsForLevel, getReviewStats } from '../../services/spacedRev
 import { getDailyGoal, getStudySummary, setDailyGoal } from '../../services/learningActivity';
 import { getCareerLessonModule, getCareerPath, getCareerProfile } from '../../services/careerProfile';
 import CareerPathVisual from '../onboarding/CareerPathVisual';
+import MobileAppNav from '../layout/MobileAppNav';
 import './Dashboard.css';
 
 const progressKey = (level) => level === 'A1' ? 'lesson_prog_progress' : `lesson_prog_progress_${level.toLowerCase()}`;
@@ -205,6 +206,16 @@ const Dashboard = () => {
         </div>
       </section>
 
+      <Link className="dashboard-mobile-games" to={`/jocuri?nivel=${activeLevel}`}>
+        <span className="dashboard-mobile-games__icon" aria-hidden="true">Aa</span>
+        <div>
+          <small>Practică în ritmul tău</small>
+          <h2>Jocuri și exerciții</h2>
+          <p>Vocabular, propoziții, verbe și pronunție.</p>
+        </div>
+        <strong aria-hidden="true">→</strong>
+      </Link>
+
       {careerPath && (
         <section className="dashboard-career" aria-label="Direcția personalizată a cursului">
           <span className="dashboard-career__icon" aria-hidden="true">{careerPath.icon}</span>
@@ -256,11 +267,7 @@ const Dashboard = () => {
         <div className="dashboard-levels__grid">{levels.map((item) => <article className={item.level === activeLevel ? 'active' : ''} key={item.level}><div><span>{item.level}</span><small>{levelName[item.level]}{item.level === activeLevel ? ' · nivel activ' : ''}</small><strong>{item.percent}%</strong></div><div className="dashboard-levels__track"><span style={{ width: `${item.percent}%` }} /></div><p>{item.completed} din {item.total} lecții · {item.words} cuvinte</p></article>)}</div>
       </section>
 
-      <nav className="dashboard-mobile-nav" aria-label="Navigare rapidă">
-        <Link className="active" to="/dashboard" aria-current="page"><span aria-hidden="true">⌂</span>Acasă</Link>
-        <Link to={`/invata?nivel=${activeLevel}`}><span aria-hidden="true">Aa</span>Lecții</Link>
-        <Link to={`/recapitulare?nivel=${activeLevel}`}><span aria-hidden="true">↻</span>Repetă</Link>
-      </nav>
+      <MobileAppNav activeLevel={activeLevel} />
     </div>
   );
 };

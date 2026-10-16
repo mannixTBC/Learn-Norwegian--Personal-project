@@ -3,6 +3,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { createCheckoutSession, createPortalSession } from '../../services/billing';
 import { getVoiceTranscriptPreference, setVoiceTranscriptPreference } from '../../services/voiceTranscripts';
+import MobileAppNav from '../layout/MobileAppNav';
 import './AccountSettings.css';
 
 const deletionReasons = [
@@ -197,6 +198,8 @@ const AccountSettings = () => {
           <button type="button" onClick={() => setConfirming(true)}><DeleteIcon />{registeredAccount ? 'Șterge contul' : 'Șterge datele'}</button>
         </section>
       </div>
+
+      <MobileAppNav />
 
       {confirming && (
         <div className="account-delete-overlay" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeDialog(); }}>
