@@ -7,8 +7,8 @@ import './Navbar.css';
 const navigation = [
   { to: '/invata', label: 'Învață' },
   { to: '/jocuri', label: 'Jocuri', mobileOnly: true },
-  { to: '/descopera', label: 'Descoperă' },
-  { to: '/viata-in-norvegia', label: 'Viața în Norvegia' },
+  { to: '/descopera', label: 'Descoperă', appSecondary: true },
+  { to: '/viata-in-norvegia', label: 'Viața în Norvegia', appSecondary: true },
 ];
 
 const UserAvatar = ({ user, menu = false }) => {
@@ -102,11 +102,12 @@ export default function Navbar() {
           className={`navbar__nav ${menuOpen ? 'navbar__nav--open' : ''}`}
           aria-label="Navigație principală"
         >
+          <span className="navbar__app-menu-title">Explorează Norvegia</span>
           {navigation.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
-              className={`nav-link${item.mobileOnly ? ' nav-link--mobile-only' : ''}`}
+              className={`nav-link${item.mobileOnly ? ' nav-link--mobile-only' : ''}${item.appSecondary ? ' nav-link--app-secondary' : ''}`}
               activeClassName="nav-link--active"
               onClick={closeMenu}
             >
@@ -159,6 +160,7 @@ export default function Navbar() {
           <span />
           <span />
           <span />
+          <strong className="navbar__toggle-label">Mai multe</strong>
         </button>
         </div>
       </header>
