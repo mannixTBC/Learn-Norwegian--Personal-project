@@ -12,6 +12,7 @@ import { recordStudyActivity } from '../../services/learningActivity';
 import { getLearningLevel, levelName } from './learningLevel';
 import './ReviewPage.css';
 import '../exercises/ExerciseBack.css';
+import '../exercises/MobileExercisePolish.css';
 
 const ratings = [
   { id: 'again', label: 'Mai repet', help: 'Nu mi-am amintit', tone: 'again' },

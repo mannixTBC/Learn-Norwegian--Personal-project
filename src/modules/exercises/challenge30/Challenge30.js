@@ -9,6 +9,7 @@ import ChallengeSentenceMatch from './ChallengeSentenceMatch';
 import { recordStudyActivity } from '../../../services/learningActivity';
 import './Challenge30.css';
 import '../ExerciseBack.css';
+import '../MobileExercisePolish.css';
 
 const levelOffset = { A1: 0, A2: 10, B1: 20, B2: 30 };
 

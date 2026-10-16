@@ -1,0 +1,70 @@
+/* Limbaj vizual comun pentru jocurile și exercițiile din aplicația mobilă. */
+@media(max-width:680px){
+  .App:has(.practice-game),.App:has(.challenge30),.App:has(.pronuntie),.App:has(.review-page){background:#f5f8f8}
+  .App:has(.practice-game)>.footer,.App:has(.challenge30)>.footer,.App:has(.pronuntie)>.footer,.App:has(.review-page)>.footer{display:none}
+
+  /* Jocurile rapide: configurare și sesiune. */
+  .practice-game{width:100%;min-height:calc(100svh - 62px);padding:16px 15px calc(34px + env(safe-area-inset-bottom));box-sizing:border-box}
+  .practice-game__hero{gap:13px;margin:16px 0 13px;padding:18px;border-radius:18px;background:linear-gradient(145deg,#174e59,var(--fjord));box-shadow:0 12px 28px rgba(31,111,120,.18)}
+  .practice-game__hero>span{width:48px;height:48px;flex:0 0 48px;border-radius:13px;font-size:1.3rem}
+  .practice-game__hero p{color:#bce4e6;font-size:.61rem;letter-spacing:.08em}
+  .practice-game__hero h1{margin:3px 0;font-size:1.42rem;line-height:1.15}
+  .practice-game__hero small{display:block;color:#d9ebed;font-size:.7rem;line-height:1.4}
+  .game-setup{gap:11px;padding:0;border:0;background:transparent}
+  .game-setup>section{padding:17px;border:1px solid #dce7e8;border-radius:16px;background:#fff;box-shadow:0 7px 20px rgba(20,33,61,.045)}
+  .game-setup h2{margin-bottom:11px;color:#29434c;font-size:.82rem}
+  .setup-options,.difficulty-options,.length-options{gap:7px}
+  .setup-options button,.difficulty-options button,.length-options button{min-height:54px;justify-content:center;padding:11px 12px;border-color:#d9e4e6;border-radius:11px;font:inherit;font-size:.75rem}
+  .setup-options button.active,.difficulty-options button.active,.length-options button.active{color:#174e59;border-color:var(--fjord);background:var(--fjord-soft);box-shadow:0 0 0 1px rgba(31,111,120,.08)}
+  .setup-options small,.difficulty-options small{font-size:.62rem;line-height:1.3}
+  .length-options{grid-template-columns:repeat(3,1fr)}
+  .start-game{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom));z-index:4;width:100%;min-height:52px;margin-top:3px;padding:0 20px;color:#14213d;border:1px solid #efbd43;border-radius:14px;background:linear-gradient(135deg,#ffdf88,#f5c752);box-shadow:0 10px 24px rgba(91,63,8,.22);font-size:.84rem}
+
+  .practice-game--session{display:flex;min-height:calc(100svh - 62px);flex-direction:column;padding-top:10px}
+  .session-header{position:sticky;top:6px;z-index:5;grid-template-columns:auto 1fr auto;gap:12px;padding:7px;border:1px solid #d9e4e6;border-radius:14px;background:rgba(255,255,255,.96);box-shadow:0 8px 20px rgba(20,33,61,.08);backdrop-filter:blur(12px)}
+  .session-header>button{width:40px;height:40px;color:#31515b;border-radius:11px;background:var(--fjord-soft)}
+  .session-header>div{height:7px;background:#e2ebec}.session-header>div span{background:linear-gradient(90deg,var(--fjord),#62b9be)}
+  .session-header strong{padding-right:6px;color:#50646c;font-size:.7rem}
+  .game-question{min-height:0;flex:1;padding:34px 2px 96px}
+  .question-meta{color:var(--fjord);font-size:.64rem}
+  .game-question>h1{margin-bottom:22px;font-size:1.55rem;line-height:1.25}
+  .game-choices{gap:8px}.game-choices button{min-height:58px;padding:13px;border-radius:12px;font-size:.86rem}
+  .game-choices button.selected{border-color:var(--fjord);background:var(--fjord-soft);box-shadow:0 0 0 1px var(--fjord)}
+  .game-input{height:54px;border-radius:12px;box-sizing:border-box}.game-input:focus{border-color:var(--fjord);outline-color:rgba(31,111,120,.14)}
+  .word-clue{padding:23px 16px;border-color:#dce7e8;border-radius:17px;box-shadow:0 8px 22px rgba(20,33,61,.045)}
+  .word-clue>span{gap:5px}.word-clue i{width:25px;height:35px}
+  .order-zone{min-height:96px;border-color:#b7d3d5;border-radius:14px;background:#f8fbfb}.order-zone button,.order-bank button{min-height:43px;border-radius:10px}
+  .game-feedback{padding:17px;border-radius:13px}
+  .session-actions{position:fixed;right:15px;bottom:calc(10px + env(safe-area-inset-bottom));left:15px;z-index:7;padding:7px;border:1px solid #d8e4e6;border-radius:16px;background:rgba(255,255,255,.97);box-shadow:0 12px 30px rgba(20,33,61,.16);backdrop-filter:blur(12px)}
+  .session-actions button{width:100%;min-height:50px;border-radius:12px}.session-actions button.primary{background:linear-gradient(145deg,#174e59,var(--fjord))}
+  .game-result{padding:34px 3px}.game-result__icon{width:58px;height:58px}.game-result>p{color:var(--fjord)}.game-result h1{font-size:1.55rem;line-height:1.25}.game-result__score{width:126px;height:126px;margin:22px auto;border-width:9px}.game-result__actions{display:grid}.game-result__actions button,.game-result__actions a{min-height:48px;border-radius:11px}.game-result__actions .primary{border-color:var(--fjord);background:var(--fjord)}
+
+  /* Provocarea verbelor. */
+  .challenge30{width:100%;min-height:calc(100svh - 62px);padding:16px 15px calc(34px + env(safe-area-inset-bottom));background:#f5f8f8;box-sizing:border-box}
+  .challenge30__breadcrumb{margin-bottom:15px}.challenge30__breadcrumb>span{display:none}
+  .challenge30__hero{gap:17px;padding:22px 19px;border:0;border-radius:19px;background:linear-gradient(145deg,#174e59,var(--fjord));box-shadow:0 13px 30px rgba(31,111,120,.18)}
+  .challenge30 .tool-level{margin-bottom:14px;color:#d8f0f1;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.1)}
+  .challenge30__hero-copy>p{color:#bce4e6}.challenge30__hero h1{color:#fff;font-size:2rem}.challenge30__hero-copy>small{color:#d8eaec;font-size:.78rem;line-height:1.5}
+  .challenge30__hero-meta{margin-top:15px}.challenge30__hero-meta>span{color:#e4f3f4;background:rgba(255,255,255,.11)}.challenge30__hero-meta strong{color:#fff}
+  .challenge30__hero-progress{padding:15px;border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.1);box-shadow:none}.challenge30__hero-progress-top span,.challenge30__hero-progress-foot span{color:#d8eaec}.challenge30__hero-progress-top strong,.challenge30__hero-progress-foot strong{color:#fff}.challenge30__hero-progress-track{background:rgba(255,255,255,.17)}.challenge30__hero-progress-track>span{background:#8fd6da}
+  .challenge30__workspace{gap:12px;margin-top:12px}.challenge30__sidebar{padding:15px;border-radius:17px;box-shadow:0 8px 22px rgba(20,33,61,.05)}
+  .challenge30__sidebar-heading{margin-bottom:11px}.challenge30__day-grid button{min-width:150px;min-height:51px}.challenge30__day-grid button small{white-space:nowrap}
+  .challenge30__panel{border-radius:18px;box-shadow:0 8px 24px rgba(20,33,61,.055)}.challenge30__panel-head{padding:19px 18px 15px}.challenge30__panel-head h2{font-size:1.25rem}.challenge30__panel-head div>small{font-size:.72rem}.challenge30__tabs{padding:0 10px 13px}.challenge30__tabs button{min-height:48px;border-radius:11px}.challenge30__content{padding:20px 15px 23px}.challenge30__verb-list article{min-height:176px;border-radius:14px}.challenge30__next{padding:14px}.challenge30__unlock{min-height:49px}
+
+  /* Pronunție. */
+  .pronuntie{width:100%;min-height:calc(100svh - 62px);padding:16px 15px calc(34px + env(safe-area-inset-bottom));background:#f5f8f8;box-sizing:border-box}
+  .pronuntie__hero{display:block;margin-bottom:12px;padding:21px 19px;border-radius:19px;background:linear-gradient(145deg,#174e59,var(--fjord));box-shadow:0 13px 30px rgba(31,111,120,.18)}
+  .pronuntie .tool-level{margin-bottom:13px;color:#d8f0f1;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.1)}.pronuntie__hero>p{color:#bce4e6;font-size:.62rem}.pronuntie__hero h1{margin-bottom:7px;font-size:1.8rem}.pronuntie__hero small{color:#d8eaec;font-size:.75rem;line-height:1.45}
+  .pronuntie__phrase-bar{position:sticky;top:7px;z-index:5;margin-bottom:12px;padding:8px 10px;border-color:#d6e5e6;border-radius:14px;box-shadow:0 8px 20px rgba(20,33,61,.08)}
+  .pronuntie__phrase-bar>span{font-size:.7rem}.pronuntie__phrase-bar button{border-radius:11px}
+  .pronunciation-lab{padding:18px!important;border-radius:18px!important;box-shadow:0 8px 24px rgba(20,33,61,.06)!important}
+  .pronunciation-lab__heading h2{font-size:1.25rem!important;line-height:1.25}.pronunciation-lab__heading p{font-size:.75rem!important;line-height:1.5}
+
+  /* Recapitulare. */
+  .review-page{width:100%;min-height:calc(100svh - 62px);padding:16px 15px calc(34px + env(safe-area-inset-bottom));background:#f5f8f8;box-sizing:border-box}
+  .review-page .tool-hero{gap:16px;padding:21px 19px;border:0;border-radius:19px;background:linear-gradient(145deg,#174e59,var(--fjord));box-shadow:0 13px 30px rgba(31,111,120,.18)}
+  .review-page .tool-level{margin-bottom:13px;color:#d8f0f1;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.1)}.review-page .tool-hero p{color:#bce4e6;font-size:.62rem}.review-page .tool-hero h1{font-size:1.72rem}.review-page .tool-hero small{color:#d8eaec;font-size:.75rem;line-height:1.45}
+  .review-page .tool-hero__stat{grid-template-columns:auto 1fr;gap:11px;padding:13px;border-radius:13px}.review-page .tool-hero__stat strong{font-size:1.65rem}.review-page .tool-hero__stat span{font-size:.7rem}
+  .review-overview{grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}.review-overview>div{display:flex;min-width:0;flex-direction:column;gap:2px;padding:11px 8px;border-radius:12px;text-align:center}.review-overview span{font-size:.55rem}.review-overview strong{order:-1;font-size:1.25rem}.review-overview small{display:none}
+  .review-workspace{margin-top:12px}.review-progress{padding:13px 14px;border-radius:12px}.review-card,.review-empty,.review-finished{padding:22px 18px;border-radius:18px;box-shadow:0 8px 24px rgba(20,33,61,.055)}.review-card__label{margin-top:27px;color:var(--fjord)}.review-card h2{margin-bottom:23px;font-size:1.25rem}.review-reveal{width:100%;min-height:49px;border-radius:12px;background:var(--fjord)}.review-answer{padding:17px;border-left-color:var(--fjord);border-radius:12px}.review-rating-intro{margin-top:19px}.review-rating-actions{grid-template-columns:repeat(3,1fr);gap:7px}.review-rating{min-height:64px;padding:10px 8px;border-radius:11px;text-align:center}.review-rating span{font-size:.75rem}.review-rating small{font-size:.58rem;line-height:1.25}.review-empty__actions{display:grid}.review-empty a,.review-empty button,.review-finished>a{display:flex;min-height:48px;align-items:center;justify-content:center;border-radius:11px}
+}

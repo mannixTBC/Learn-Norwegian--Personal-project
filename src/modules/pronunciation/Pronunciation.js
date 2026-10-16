@@ -7,6 +7,7 @@ import PronunciationLab from './PronunciationLab';
 import './Pronunciation.css';
 import './PronunciationEnhancements.css';
 import '../exercises/ExerciseBack.css';
+import '../exercises/MobileExercisePolish.css';
 
 const Pronunciation = () => {
   const location = useLocation();

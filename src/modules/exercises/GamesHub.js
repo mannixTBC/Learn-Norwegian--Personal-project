@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { getLearningLevel, levelName } from '../lessons/learningLevel';
 import { getReviewStats } from '../../services/spacedReview';
 import './GamesHub.css';
+import './MobileExercisePolish.css';
 
 const gameCards = [
   { to: '/chestionar', icon: '✓', eyebrow: 'Alege răspunsul', title: 'Chestionar', text: 'Verifică rapid vocabularul și expresiile din lecțiile tale.', meta: '5–15 întrebări', tone: 'quiz' },
@@ -23,7 +24,6 @@ const GamesHub = () => {
 
       <header className="games-hub__hero">
         <div>
-          <span>Practică suplimentară · {level}</span>
           <h1>Jocuri și exerciții</h1>
           <p>Exersează fără presiune. Alege o activitate scurtă și fixează ce ai învățat în lecții.</p>
         </div>

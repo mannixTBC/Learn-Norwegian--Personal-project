@@ -5,6 +5,7 @@ import { speakNorwegian } from '../../services/norwegianSpeech';
 import { saveReviewItem } from '../../services/spacedReview';
 import './PracticeGame.css';
 import './ExerciseBack.css';
+import './MobileExercisePolish.css';
 
 const shuffle=(items)=>[...items].sort(()=>Math.random()-.5);
 const gameInfo={quiz:{title:'Chestionar',subtitle:'Verifică vocabularul și expresiile din lecții.',icon:'✅'},order:{title:'Construiește propoziția',subtitle:'Așază cuvintele în ordinea corectă.',icon:'🧩'},word:{title:'Descoperă cuvântul',subtitle:'Găsește cuvântul norvegian folosind indiciile.',icon:'🔤'}};
