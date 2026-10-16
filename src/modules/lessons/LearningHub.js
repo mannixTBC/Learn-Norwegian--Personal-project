@@ -163,19 +163,19 @@ const LearningHub = () => {
         )}
       </section>
 
+      {activeLevelInfo && activeLevelInfo.available && (
+        <Link className="games-hub-promo" to={`/jocuri?nivel=${activeLevel}`}>
+          <span className="games-hub-promo__icon" aria-hidden="true">Aa</span>
+          <div><small>Practică suplimentară</small><h2>Jocuri și exerciții</h2><p>Chestionare, propoziții, vocabular, verbe și pronunție — toate într-un singur loc.</p></div>
+          <strong>Vezi toate jocurile <span aria-hidden="true">→</span></strong>
+        </Link>
+      )}
+
       {activeLevelInfo && activeLevelInfo.available && <section className="learning-tools" id="instrumente">
         <div><p className="learn-kicker">Studiază mai eficient</p><h2>Instrumente de învățare</h2><p className="learning-tools__intro">Folosește-le când vrei să repeți o anumită abilitate în afara lecțiilor.</p></div>
         <div className="learning-tools__grid"><Link className="review-tool-link" to={`/recapitulare?nivel=${activeLevel}`}><span role="img" aria-hidden="true">🧠</span><strong>Recapitulare inteligentă</strong><small>{reviewStats.due ? `${reviewStats.due} ${reviewStats.due === 1 ? 'element pregătit' : 'elemente pregătite'} pentru astăzi.` : reviewStats.total ? 'Totul este la zi. Revenim la momentul potrivit.' : 'Greșelile vor fi programate automat.'}</small>{reviewStats.due > 0 && <em className="review-due-badge">{reviewStats.due}</em>}</Link><Link to={`/pronuntie?nivel=${activeLevel}`}><span role="img" aria-hidden="true">🔊</span><strong>Pronunție</strong><small>Ascultă și repetă sunetele.</small></Link><Link to={`/challenge30?nivel=${activeLevel}`}><span role="img" aria-hidden="true">📅</span><strong>Provocarea verbelor</strong><small>30 de verbe în 10 sesiuni.</small></Link></div>
       </section>}
 
-      <section className="practice-zone" id="practica">
-        <div className="practice-zone__heading"><div><p className="learn-kicker">Practică suplimentară</p><h2>Exersează prin joc</h2><p>Aceste activități folosesc abilitățile studiate în curs. Nu sunt obligatorii pentru deblocarea lecțiilor.</p></div><span>Opțional</span></div>
-        <div className="practice-zone__grid">
-          <Link to="/chestionar" className="practice-tool"><span className="practice-tool__icon" role="img" aria-hidden="true">✅</span><div><small>Verificare rapidă</small><h3>Chestionar</h3><p>Alege răspunsul corect și verifică vocabularul de bază.</p></div><b>Începe →</b></Link>
-          <Link to="/drag" className="practice-tool"><span className="practice-tool__icon" role="img" aria-hidden="true">🧩</span><div><small>Construiește propoziții</small><h3>Trage și plasează</h3><p>Ordonează cuvintele și formează structuri corecte.</p></div><b>Începe →</b></Link>
-          <Link to="/hangman" className="practice-tool"><span className="practice-tool__icon" role="img" aria-hidden="true">🔤</span><div><small>Joc de vocabular</small><h3>Descoperă cuvântul</h3><p>Recunoaște și fixează cuvintele printr-un joc rapid.</p></div><b>Începe →</b></Link>
-        </div>
-      </section>
     </div>
   );
 };

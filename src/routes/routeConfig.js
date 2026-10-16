@@ -19,6 +19,7 @@ import RightToNature from '../modules/discover/RightToNature';
 import Traditions from '../modules/discover/Traditions';
 import Pronunciation from '../modules/pronunciation/Pronunciation';
 import PracticeGame from '../modules/exercises/PracticeGame';
+import GamesHub from '../modules/exercises/GamesHub';
 import Challenge30 from '../modules/exercises/challenge30/Challenge30';
 import LessonProgram from '../modules/lessons/norwegian-program/LessonProgram';
 import JobsCards from '../modules/jobs/JobsCards';
@@ -44,7 +45,7 @@ import AccountSettings from '../modules/account/AccountSettings';
 const PersonalizedLearningHub = withCareerProfile(LearningHub);
 const PersonalizedLessonProgram = withCareerProfile(LessonProgram);
 
-const LearningRedirect = () => <Redirect to="/invata#practica" />;
+const LearningRedirect = () => <Redirect to="/jocuri" />;
 const QuizPractice = () => <PracticeGame game="quiz" />;
 const OrderPractice = () => <PracticeGame game="order" />;
 const WordPractice = () => <PracticeGame game="word" />;
@@ -100,6 +101,12 @@ const routes = [
     path: '/exerseaza',
     exact: true,
     component: LearningRedirect,
+    protected: true,
+  },
+  {
+    path: '/jocuri',
+    exact: true,
+    component: GamesHub,
     protected: true,
   },
   // Adresă veche păstrată pentru compatibilitate

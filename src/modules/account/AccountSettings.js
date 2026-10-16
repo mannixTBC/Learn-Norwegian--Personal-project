@@ -5,6 +5,13 @@ import { createCheckoutSession, createPortalSession } from '../../services/billi
 import { getVoiceTranscriptPreference, setVoiceTranscriptPreference } from '../../services/voiceTranscripts';
 import './AccountSettings.css';
 
+const deletionReasons = [
+  { id: 'rarely-used', label: 'Nu folosesc aplicația suficient de des', description: 'Nu reușesc să includ învățarea în programul meu.' },
+  { id: 'better-service', label: 'Am găsit un serviciu mai potrivit', description: 'O altă aplicație răspunde mai bine nevoilor mele.' },
+  { id: 'content-fit', label: 'Conținutul nu mi se potrivește', description: 'Lecțiile sau nivelul nu corespund obiectivelor mele.' },
+  { id: 'other', label: 'Alt motiv', description: 'Vreau să ofer un motiv diferit.' },
+];
+
 const DeleteIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" />
@@ -23,6 +30,8 @@ const AccountSettings = () => {
   const location = useLocation();
   const { user, plan, isPremium, isDevBypass, premiumUntil, refreshEntitlements, logout, deleteAccount } = useAuth();
   const [confirming, setConfirming] = useState(false);
+  const [deletionReason, setDeletionReason] = useState('');
+  const [customReason, setCustomReason] = useState('');
   const [confirmation, setConfirmation] = useState('');
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState(false);
@@ -30,7 +39,7 @@ const AccountSettings = () => {
   const [billingError, setBillingError] = useState('');
   const [voiceConsent, setVoiceConsent] = useState(false);
   const [voiceConsentState, setVoiceConsentState] = useState('loading');
-  const inputRef = useRef(null);
+  const firstReasonRef = useRef(null);
   const registeredAccount = user && !user.isGuest;
 
   useEffect(() => {
@@ -55,17 +64,24 @@ const AccountSettings = () => {
 
   useEffect(() => {
     if (!confirming) return undefined;
-    inputRef.current?.focus();
+    firstReasonRef.current?.focus();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     const closeOnEscape = (event) => {
       if (event.key === 'Escape' && !deleting) setConfirming(false);
     };
     document.addEventListener('keydown', closeOnEscape);
-    return () => document.removeEventListener('keydown', closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', closeOnEscape);
+    };
   }, [confirming, deleting]);
 
   const closeDialog = () => {
     if (deleting) return;
     setConfirming(false);
+    setDeletionReason('');
+    setCustomReason('');
     setConfirmation('');
     setError('');
     if (new URLSearchParams(location.search).get('delete') === '1') history.replace('/cont');
@@ -86,7 +102,8 @@ const AccountSettings = () => {
 
   const removeAccount = async (event) => {
     event.preventDefault();
-    if (confirmation.trim().toLocaleUpperCase('ro-RO') !== 'ȘTERGE') return;
+    const hasReason = deletionReason && (deletionReason !== 'other' || customReason.trim().length >= 3);
+    if (!hasReason || confirmation.trim().toLocaleUpperCase('ro-RO') !== 'ȘTERGE') return;
     setDeleting(true);
     setError('');
     try {
@@ -188,15 +205,40 @@ const AccountSettings = () => {
             <span>Acțiune ireversibilă</span>
             <h2 id="delete-account-title">{registeredAccount ? 'Ștergi definitiv contul?' : 'Ștergi datele salvate?'}</h2>
             <p>{registeredAccount
-              ? 'Nu vei mai putea recupera profilul sau progresul. Pentru confirmare, scrie ȘTERGE mai jos.'
-              : 'Nu vei mai putea recupera progresul local. Pentru confirmare, scrie ȘTERGE mai jos.'}</p>
+              ? 'Nu vei mai putea recupera profilul sau progresul. Spune-ne motivul, apoi confirmă ștergerea.'
+              : 'Nu vei mai putea recupera progresul local. Spune-ne motivul, apoi confirmă ștergerea.'}</p>
             <form onSubmit={removeAccount}>
+              <fieldset className="account-delete-reasons">
+                <legend>De ce alegi să pleci?</legend>
+                {deletionReasons.map((reason, index) => (
+                  <label className={deletionReason === reason.id ? 'selected' : ''} key={reason.id}>
+                    <input
+                      ref={index === 0 ? firstReasonRef : undefined}
+                      type="radio"
+                      name="deletion-reason"
+                      value={reason.id}
+                      checked={deletionReason === reason.id}
+                      onChange={(event) => setDeletionReason(event.target.value)}
+                      disabled={deleting}
+                    />
+                    <span aria-hidden="true" />
+                    <div><strong>{reason.label}</strong><small>{reason.description}</small></div>
+                  </label>
+                ))}
+              </fieldset>
+              {deletionReason === 'other' && (
+                <div className="account-delete-other">
+                  <label htmlFor="delete-account-other">Spune-ne pe scurt motivul</label>
+                  <textarea id="delete-account-other" value={customReason} onChange={(event) => setCustomReason(event.target.value)} maxLength={240} placeholder="Scrie motivul aici…" disabled={deleting} />
+                  <small>{customReason.length}/240</small>
+                </div>
+              )}
               <label htmlFor="delete-account-confirmation">Scrie <strong>ȘTERGE</strong></label>
-              <input ref={inputRef} id="delete-account-confirmation" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} autoComplete="off" disabled={deleting} />
+              <input id="delete-account-confirmation" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} autoComplete="off" disabled={deleting} />
               {error && <div className="account-delete-dialog__error" role="alert">{error}</div>}
               <div className="account-delete-dialog__actions">
                 <button type="button" onClick={closeDialog} disabled={deleting}>Păstrează contul</button>
-                <button type="submit" disabled={deleting || confirmation.trim().toLocaleUpperCase('ro-RO') !== 'ȘTERGE'}>{deleting ? 'Se șterge…' : 'Șterge definitiv'}</button>
+                <button type="submit" disabled={deleting || !deletionReason || (deletionReason === 'other' && customReason.trim().length < 3) || confirmation.trim().toLocaleUpperCase('ro-RO') !== 'ȘTERGE'}>{deleting ? 'Se șterge…' : 'Șterge definitiv'}</button>
               </div>
             </form>
           </section>

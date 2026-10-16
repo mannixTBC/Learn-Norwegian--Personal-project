@@ -11,6 +11,7 @@ import {
 import { recordStudyActivity } from '../../services/learningActivity';
 import { getLearningLevel, levelName } from './learningLevel';
 import './ReviewPage.css';
+import '../exercises/ExerciseBack.css';
 
 const ratings = [
   { id: 'again', label: 'Mai repet', help: 'Nu mi-am amintit', tone: 'again' },
@@ -58,7 +59,7 @@ const ReviewPage = () => {
 
   return (
     <div className="review-page">
-      <Link className="tool-back" to={`/invata?nivel=${level}`}>← Înapoi la curs</Link>
+      <Link className="tool-back" to={`/jocuri?nivel=${level}`}><span aria-hidden="true">←</span><div><small>Înapoi la meniu</small><strong>Jocuri și exerciții</strong></div></Link>
       <header className="tool-hero review-hero">
         <div>
           <span className="tool-level">{level} · {levelName[level]}</span>

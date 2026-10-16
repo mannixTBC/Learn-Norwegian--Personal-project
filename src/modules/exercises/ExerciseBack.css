@@ -1,0 +1,7 @@
+.practice-back,.challenge30 .tool-back,.pronuntie>.tool-back,.review-page>.tool-back{display:inline-flex;gap:10px;align-items:center;margin-bottom:22px;padding:9px 13px 9px 10px;color:#31515b;border:1px solid #c9dee0;border-radius:12px;background:#fff;box-shadow:0 6px 16px rgba(20,33,61,.06);font-weight:700;text-decoration:none}
+.practice-back>span,.challenge30 .tool-back>span,.pronuntie>.tool-back>span,.review-page>.tool-back>span{display:grid;width:30px;height:30px;place-items:center;color:#fff;border-radius:9px;background:var(--fjord);font-weight:900}
+.practice-back small,.practice-back strong,.challenge30 .tool-back small,.challenge30 .tool-back strong,.pronuntie>.tool-back small,.pronuntie>.tool-back strong,.review-page>.tool-back small,.review-page>.tool-back strong{display:block}
+.practice-back small,.challenge30 .tool-back small,.pronuntie>.tool-back small,.review-page>.tool-back small{color:#78888f;font-size:.57rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.practice-back strong,.challenge30 .tool-back strong,.pronuntie>.tool-back strong,.review-page>.tool-back strong{color:#31515b;font-size:.74rem}
+.practice-back:hover,.challenge30 .tool-back:hover,.pronuntie>.tool-back:hover,.review-page>.tool-back:hover{color:#31515b;border-color:#9fc9cb;background:#f5fbfb;text-decoration:none}
+@media(max-width:680px){.practice-back,.challenge30 .tool-back,.pronuntie>.tool-back,.review-page>.tool-back{margin-bottom:16px;box-shadow:0 5px 13px rgba(20,33,61,.06)}}

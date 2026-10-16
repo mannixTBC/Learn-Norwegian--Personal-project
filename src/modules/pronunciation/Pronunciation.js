@@ -6,6 +6,7 @@ import { speakPronunciationModel } from '../../services/azurePronunciationSpeech
 import PronunciationLab from './PronunciationLab';
 import './Pronunciation.css';
 import './PronunciationEnhancements.css';
+import '../exercises/ExerciseBack.css';
 
 const Pronunciation = () => {
   const location = useLocation();
@@ -34,7 +35,7 @@ const Pronunciation = () => {
 
   return (
     <div className="pronuntie">
-      <Link to="/invata" className="tool-back">← Înapoi la curs</Link>
+      <Link to={`/jocuri?nivel=${level}`} className="tool-back"><span aria-hidden="true">←</span><div><small>Înapoi la meniu</small><strong>Jocuri și exerciții</strong></div></Link>
       <header className="pronuntie__hero">
         <span className="tool-level">{level} · {levelName[level]}</span>
         <p>Pronunție în context</p>

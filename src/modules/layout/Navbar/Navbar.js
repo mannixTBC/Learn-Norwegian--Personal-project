@@ -6,6 +6,7 @@ import './Navbar.css';
 
 const navigation = [
   { to: '/invata', label: 'Învață' },
+  { to: '/jocuri', label: 'Jocuri', mobileOnly: true },
   { to: '/descopera', label: 'Descoperă' },
   { to: '/viata-in-norvegia', label: 'Viața în Norvegia' },
 ];
@@ -50,7 +51,6 @@ const UserAvatar = ({ user, menu = false }) => {
 };
 
 const AccountIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.25" /><path d="M5.5 20c.5-4.1 2.7-6.2 6.5-6.2s6 2.1 6.5 6.2" /></svg>;
-const DeleteIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" /></svg>;
 const LogoutIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H6.8A1.8 1.8 0 0 0 5 6.8v10.4A1.8 1.8 0 0 0 6.8 19H10M14.5 8.5 18 12l-3.5 3.5M9 12h9" /></svg>;
 
 export default function Navbar() {
@@ -106,7 +106,7 @@ export default function Navbar() {
             <NavLink
               key={item.to}
               to={item.to}
-              className="nav-link"
+              className={`nav-link${item.mobileOnly ? ' nav-link--mobile-only' : ''}`}
               activeClassName="nav-link--active"
               onClick={closeMenu}
             >
@@ -124,7 +124,6 @@ export default function Navbar() {
                   </div>
                 </Link>
                 <Link className="navbar__mobile-settings" to="/cont" onClick={closeMenu}>Setări cont</Link>
-                <Link className="navbar__mobile-delete" to="/cont?delete=1" onClick={closeMenu}><DeleteIcon />{user.isGuest ? 'Șterge datele' : 'Șterge contul'}</Link>
                 <button type="button" className="navbar__mobile-logout" onClick={() => { logout(); closeMenu(); }}>
                   <LogoutIcon />
                   <span>Deconectare</span>
