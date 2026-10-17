@@ -50,6 +50,7 @@
 
 .mobile-expression-navigation{display:none}
 .lesson-app-progress{display:none}
+.lesson-mobile-stats,.lesson-result__summary,.vocabulary-card__translation-toggle{display:none}
 
 @media(max-width:520px){
   .vocabulary-grid,.career-phrase-grid{display:block}
@@ -163,53 +164,467 @@
   .lesson-content h1{font-size:clamp(2rem,3vw,3.2rem)}
 }
 
-/* În aplicația instalată, lecția ocupă ecranul ca o experiență nativă:
-   progresul și acțiunile rămân vizibile, iar numai conținutul poate glisa. */
+/* ═══════════════════════════════════════════════════════════════
+   Lecția în aplicația instalată — replică fidelă a referințelor
+   „La cafenea”: ecrane albe, paletă teal/navy, ilustrație contextuală
+   sus-dreapta pe fiecare pas, carduri cu chip-uri și cerc audio.
+   ═══════════════════════════════════════════════════════════════ */
+
 @media(max-width:860px){
   html.is-installed-app body:has(.lesson-shell){height:100dvh;overflow:hidden}
   html.is-installed-app .App:has(.lesson-shell){height:100dvh;min-height:0;overflow:hidden}
   html.is-installed-app .App:has(.lesson-shell)>.navbar,
   html.is-installed-app .App:has(.lesson-shell)>.footer{display:none}
   html.is-installed-app .App__main:has(.lesson-shell){min-height:0;overflow:hidden}
-  html.is-installed-app .lesson-shell{display:grid;height:100%;min-height:0;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
-  html.is-installed-app .lesson-sidebar{position:relative;z-index:45;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;min-width:0;border-bottom:1px solid #dce6eb;background:rgba(255,255,255,.98);box-shadow:0 7px 22px rgba(20,33,61,.08);backdrop-filter:blur(14px)}
-  html.is-installed-app .lesson-topbar{position:static;display:block;min-height:0;padding:calc(10px + env(safe-area-inset-top,0px)) 6px 10px 14px;border:0;background:transparent;backdrop-filter:none}
-  html.is-installed-app .lesson-topbar>a{display:grid;width:42px;height:42px;place-items:center;overflow:hidden;padding:0;color:var(--fjord);border:1px solid #cfe0e3;border-radius:12px;background:#f3f9f9;font-size:0;white-space:nowrap}
-  html.is-installed-app .lesson-topbar>a::before{font-size:1.2rem;content:'←'}
+  html.is-installed-app .lesson-shell{
+    display:grid;height:100%;min-height:0;grid-template-rows:auto minmax(0,1fr);overflow:hidden;
+    --la-ink:#12283a;
+    --la-sub:#5b6b75;
+    --la-meta:#8a9ba6;
+    --la-teal:#1f7a72;
+    --la-teal-deep:#0f6e68;
+    --la-tint:#e9f4f3;
+    --la-tint-strong:#e4f4f0;
+    --la-chip:#eef6f5;
+    --la-inner:#f3f7f8;
+    --la-track:#e2e9ec;
+    --la-border:#d9e2e6;
+    --la-card-line:#e3e9ec;
+    color:var(--la-ink);
+    background:#fff;
+  }
+
+  /* Antet: buton rotund, titlul etapei, meta la dreapta, progres sub tot. */
+  html.is-installed-app .lesson-sidebar{
+    position:relative;z-index:45;
+    display:grid;grid-template-columns:auto minmax(0,1fr);
+    align-items:center;gap:12px;min-width:0;box-sizing:border-box;
+    padding:0 16px;border-bottom:1px solid var(--la-card-line);
+    background:#fff;
+  }
+  html.is-installed-app .lesson-topbar{
+    position:static;display:block;min-height:0;
+    padding:calc(12px + env(safe-area-inset-top,0px)) 0 12px;
+    border:0;background:transparent;backdrop-filter:none;
+  }
+  html.is-installed-app .lesson-topbar>a{
+    display:grid;width:40px;height:40px;place-items:center;
+    color:var(--la-teal);border:0;border-radius:50%;
+    background:#eef1f2;font-size:0;white-space:nowrap;
+  }
+  html.is-installed-app .lesson-topbar>a::before{font-size:1.25rem;content:'←'}
+  html.is-installed-app .lesson-topbar>a:active{transform:scale(.94)}
   html.is-installed-app .lesson-topbar>div,
   html.is-installed-app .lesson-topbar>span{display:none}
-  html.is-installed-app .lesson-app-progress{display:grid;min-width:0;gap:7px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px 6px}
-  html.is-installed-app .lesson-app-progress__copy{display:flex;min-width:0;justify-content:space-between;gap:12px;align-items:baseline}
-  html.is-installed-app .lesson-app-progress__copy strong{overflow:hidden;color:#153b46;font-size:.88rem;text-overflow:ellipsis;white-space:nowrap}
-  html.is-installed-app .lesson-app-progress__copy span{flex:0 0 auto;color:#6d7d8c;font-size:.66rem;font-weight:800}
-  html.is-installed-app .lesson-app-progress__track{height:5px;overflow:hidden;border-radius:99px;background:#dce8e9}
-  html.is-installed-app .lesson-app-progress__track span{display:block;height:100%;min-width:5px;border-radius:inherit;background:linear-gradient(90deg,var(--fjord),#65b8be);transition:width .24s ease}
+  html.is-installed-app .lesson-app-progress{
+    display:grid;min-width:0;gap:7px;
+    padding:calc(13px + env(safe-area-inset-top,0px)) 0 13px;
+  }
+  html.is-installed-app .lesson-app-progress__copy{display:flex;min-width:0;justify-content:space-between;gap:10px;align-items:baseline}
+  html.is-installed-app .lesson-app-progress__copy strong{
+    overflow:hidden;color:var(--la-ink);font-size:1rem;font-weight:800;letter-spacing:-.01em;text-overflow:ellipsis;white-space:nowrap;
+  }
+  html.is-installed-app .lesson-app-progress__copy span{flex:0 0 auto;color:var(--la-meta);font-size:.7rem;font-weight:700}
+  html.is-installed-app .lesson-app-progress__track{height:5px;overflow:hidden;border-radius:99px;background:var(--la-track)}
+  html.is-installed-app .lesson-app-progress__track span{
+    display:block;height:100%;min-width:5px;border-radius:inherit;background:var(--la-teal);
+    transition:width .28s ease;
+  }
   html.is-installed-app .lesson-stepper{display:none}
-  html.is-installed-app .lesson-content{box-sizing:border-box;width:calc(100% - 28px);height:100%;min-height:0;overflow-x:hidden;overflow-y:auto;margin:0 auto;padding:24px 0 calc(105px + env(safe-area-inset-bottom,0px));overscroll-behavior-y:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+
+  /* Doar conținutul glisează, pe fundal alb curat. */
+  html.is-installed-app .lesson-content{
+    box-sizing:border-box;width:100%;height:100%;min-height:0;
+    overflow-x:hidden;overflow-y:auto;margin:0 auto;
+    padding:6px 16px calc(112px + env(safe-area-inset-bottom,0px));
+    overscroll-behavior-y:contain;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    background:#fff;
+  }
   html.is-installed-app .lesson-content::-webkit-scrollbar{display:none}
-  html.is-installed-app .lesson-navigation{padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 24px rgba(20,33,61,.1)}
+  html.is-installed-app .lesson-content>section{position:relative;width:100%;max-width:620px;margin:0 auto;box-sizing:border-box}
+  html.is-installed-app .lesson-content h1{
+    color:var(--la-ink);font-weight:800;line-height:1.08;letter-spacing:-.02em;
+    font-size:clamp(1.6rem,7vw,2.05rem);
+  }
+  html.is-installed-app .lesson-eyebrow{
+    margin:0 0 9px;color:var(--la-teal);
+    font-size:.64rem;font-weight:800;letter-spacing:.13em;
+  }
+  html.is-installed-app .lesson-lead,
+  html.is-installed-app .lesson-heading>p:last-child{color:var(--la-sub);font-size:.92rem;line-height:1.55}
+
+  /* Zona de titlu: ilustrația contextuală sus-dreapta, estompată spre alb,
+     exact ca în referințe; textul stă pe partea albă din stânga. */
+  html.is-installed-app .lesson-heading{
+    min-height:174px;box-sizing:border-box;
+    margin:0 0 16px;padding:28px 35% 0 0;
+    background-image:
+      linear-gradient(270deg,#fff 0,rgba(255,255,255,.55) 150px,rgba(255,255,255,0) 66%),
+      linear-gradient(0deg,#fff 0,rgba(255,255,255,0) 138px),
+      var(--lesson-context-image);
+    background-repeat:no-repeat;
+    background-position:left top,left bottom,right -118px top -34px;
+    background-size:100% 100%,100% 46%,auto 288px;
+  }
+  html.is-installed-app .lesson-heading h1{margin-bottom:9px}
+
+  /* Introducerea: aceeași compoziție, cu ilustrația puțin mai generoasă. */
+  html.is-installed-app .lesson-intro{padding-top:0}
+  html.is-installed-app .lesson-intro__copy{
+    box-sizing:border-box;min-height:196px;padding:26px 36% 0 0;
+    background-image:
+      linear-gradient(270deg,#fff 0,rgba(255,255,255,.55) 150px,rgba(255,255,255,0) 68%),
+      linear-gradient(0deg,#fff 0,rgba(255,255,255,0) 150px),
+      var(--lesson-context-image);
+    background-repeat:no-repeat;
+    background-position:left top,left bottom,right -128px top -40px;
+    background-size:100% 100%,100% 48%,auto 330px;
+  }
+  html.is-installed-app .lesson-intro__copy h1{margin-bottom:11px;font-size:clamp(1.85rem,8.6vw,2.4rem)}
+  html.is-installed-app .lesson-intro__copy .lesson-lead{max-width:330px}
+  html.is-installed-app .lesson-intro__copy .lesson-bridge{
+    margin-top:15px;padding:13px 15px;border:1px solid var(--la-card-line);
+    border-radius:14px;background:#fff;box-shadow:0 6px 18px rgba(18,40,58,.05);
+  }
+  html.is-installed-app .lesson-bridge span{color:var(--la-teal)}
+  html.is-installed-app .lesson-bridge p{color:var(--la-sub)}
+
+  /* Statisticile lecției: chipuri albe cu pictogramă pe tint teal. */
+  html.is-installed-app .lesson-mobile-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:15px 0 13px}
+  html.is-installed-app .lesson-mobile-stats article{
+    display:grid;min-width:0;grid-template-columns:34px minmax(0,1fr);gap:8px;align-items:center;
+    min-height:64px;box-sizing:border-box;padding:10px 9px;
+    border:1px solid var(--la-card-line);border-radius:14px;background:#fff;
+    box-shadow:0 6px 16px rgba(18,40,58,.045);
+  }
+  html.is-installed-app .lesson-mobile-stats article>span,
+  html.is-installed-app .lesson-result__summary>div>span{
+    display:grid;width:34px;height:34px;place-items:center;
+    color:var(--la-teal);border-radius:50%;background:var(--la-chip);
+  }
+  html.is-installed-app .lesson-mobile-stats svg,
+  html.is-installed-app .lesson-result__summary svg,
+  html.is-installed-app .vocabulary-card__translation-toggle svg{
+    width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+  }
+  html.is-installed-app .lesson-mobile-stats article>div{display:grid;min-width:0;gap:2px}
+  html.is-installed-app .lesson-mobile-stats strong{overflow:hidden;color:var(--la-ink);font-size:.68rem;font-weight:800;text-overflow:ellipsis;white-space:nowrap}
+  html.is-installed-app .lesson-mobile-stats small{overflow:hidden;color:var(--la-meta);font-size:.56rem;font-weight:700;text-overflow:ellipsis;white-space:nowrap}
+  html.is-installed-app .objectives{
+    margin:0;padding:18px;border:1px solid var(--la-card-line);border-radius:16px;background:#fff;
+    box-shadow:0 6px 18px rgba(18,40,58,.045);
+  }
+  html.is-installed-app .lesson-bridge+.objectives{margin-top:0}
+  html.is-installed-app .objectives h2{margin-bottom:11px;color:var(--la-ink);font-size:1.04rem;font-weight:800}
+  html.is-installed-app .objectives>div{gap:12px;padding:11px 0}
+  html.is-installed-app .objectives>div span{flex-basis:30px;height:30px;color:var(--la-teal);background:var(--la-tint);font-size:.9rem}
+  html.is-installed-app .objectives p{color:#33475c;font-size:.86rem;line-height:1.4}
+
+  /* Vocabular: un singur card activ, ca în referință. */
+  html.is-installed-app .vocabulary-grid,
+  html.is-installed-app .career-phrase-grid{display:block}
+  html.is-installed-app .vocabulary-grid>.vocabulary-card,
+  html.is-installed-app .career-phrase-grid>article{display:none}
+  html.is-installed-app .vocabulary-grid>.mobile-expression-card--active,
+  html.is-installed-app .career-phrase-grid>.mobile-expression-card--active{display:flex;animation:mobile-expression-in .24s ease both}
+  html.is-installed-app .mobile-expression-navigation{display:grid}
+  html.is-installed-app .lesson-navigation--expressions,
+  html.is-installed-app .lesson-navigation--exercises{display:none}
+  html.is-installed-app .vocabulary-card{
+    position:relative;min-height:0;
+    border:1px solid var(--la-card-line);border-radius:16px;background:#fff;
+    box-shadow:0 8px 22px rgba(18,40,58,.06);
+  }
+  html.is-installed-app .vocabulary-card::before{display:none}
+  /* Inima de favorite din colțul cardului, ca în referință. */
+  html.is-installed-app .vocabulary-card header::after{
+    content:'';position:absolute;top:16px;right:16px;width:22px;height:22px;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aaab4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z'/%3E%3C/svg%3E") center/contain no-repeat;
+    pointer-events:none;
+  }
+  html.is-installed-app .vocabulary-card header{position:relative;flex-direction:column;gap:6px;padding:18px 18px 4px}
+  html.is-installed-app .vocabulary-card__label{
+    display:inline-flex;width:max-content;margin:0 0 6px;padding:5px 10px;
+    color:var(--la-teal);border-radius:99px;background:var(--la-chip);
+    font-size:.62rem;font-weight:800;letter-spacing:.09em;
+  }
+  html.is-installed-app .vocabulary-card h2{
+    margin:0 34px 2px 0;color:var(--la-ink);
+    font-family:'Source Sans 3','Segoe UI',sans-serif;
+    font-size:1.66rem;font-weight:800;letter-spacing:-.015em;line-height:1.12;
+  }
+  html.is-installed-app .vocabulary-card__meaning{
+    max-width:none;padding:0;color:var(--la-sub);background:none;
+    font-size:.95rem;font-weight:600;text-align:left;
+  }
+  /* Rândul audio: cerc teal mare + undă sonoră decorativă, apoi exemplul. */
+  html.is-installed-app .vocabulary-card__example{padding:4px 18px 0;margin:0}
+  html.is-installed-app .vocabulary-card__example>span{display:none}
+  html.is-installed-app .vocabulary-card__example-row{
+    display:grid;grid-template-columns:minmax(0,1fr) 52px;gap:12px;align-items:center;
+    margin-top:12px;padding-top:14px;border-top:1px solid #edf1f3;
+  }
+  html.is-installed-app .vocabulary-card blockquote{
+    margin:0;padding:0;border:0;color:var(--la-ink);
+    font-size:1.04rem;font-weight:700;line-height:1.5;
+  }
+  html.is-installed-app .vocabulary-card blockquote::after{
+    content:'';display:block;width:84px;height:16px;margin-top:10px;border-radius:2px;opacity:.6;
+    background:
+      repeating-linear-gradient(90deg,rgba(31,122,114,.9) 0 3px,transparent 3px 9px),
+      repeating-linear-gradient(90deg,rgba(31,122,114,.38) 0 2px,transparent 2px 7px);
+    background-position:0 0,3px 0;
+  }
+  html.is-installed-app .vocabulary-card__highlight{color:#155e58;background:var(--la-tint-strong);box-shadow:inset 0 -1px 0 rgba(31,122,114,.22)}
+  html.is-installed-app .vocabulary-card .compact-slow-audio-button{
+    width:52px;height:52px;justify-content:center;padding:0;
+    border:0;border-radius:50%;background:var(--la-teal-deep);
+    box-shadow:0 8px 18px rgba(15,110,104,.28);
+  }
+  html.is-installed-app .vocabulary-card .compact-slow-audio-button:active{transform:scale(.94)}
+  html.is-installed-app .vocabulary-card__translation-toggle{
+    display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:9px;align-items:center;
+    margin:13px 16px 16px;padding:12px 13px;
+    color:var(--la-teal);border:0;border-radius:12px;background:var(--la-tint);
+    font:inherit;font-size:.75rem;font-weight:800;text-align:left;
+  }
+  html.is-installed-app .vocabulary-card__translation-toggle>span{font-size:1rem;transition:transform .18s ease}
+  html.is-installed-app .vocabulary-card__translation-toggle[aria-expanded='true']>span{transform:rotate(180deg)}
+  html.is-installed-app .vocabulary-card__translation{display:none;margin:0 16px 16px;padding:12px 13px;border-radius:12px;background:var(--la-inner)}
+  html.is-installed-app .vocabulary-card__translation span{background:var(--la-ink)}
+  html.is-installed-app .vocabulary-card__translation p{color:var(--la-sub)}
+  html.is-installed-app .vocabulary-card__translation.is-visible{display:grid;animation:mobile-expression-in .18s ease both}
+
+  /* Direcția ta: carduri albe, chip, buton audio rotund mic. */
+  html.is-installed-app .career-lesson__heading{margin-bottom:8px}
+  html.is-installed-app .career-phrase-grid article{
+    position:relative;min-height:0;padding:17px;
+    border:1px solid var(--la-card-line);border-radius:16px;background:#fff;
+    box-shadow:0 6px 18px rgba(18,40,58,.045);
+  }
+  html.is-installed-app .career-phrase-grid>.mobile-expression-card--active+.mobile-expression-card--active{margin-top:10px}
+  html.is-installed-app .career-phrase-grid article>span{
+    display:inline-flex;width:max-content;margin:0 0 4px;padding:4px 9px;
+    color:var(--la-teal);border-radius:99px;background:var(--la-chip);
+    font-size:.6rem;font-weight:800;letter-spacing:.08em;
+  }
+  html.is-installed-app .career-phrase-grid h2{margin:8px 0 4px;color:var(--la-ink);font-size:1.14rem;font-weight:750;line-height:1.3}
+  html.is-installed-app .career-phrase-grid p{margin:0;color:var(--la-sub);font-size:.83rem}
+  html.is-installed-app .career-phrase-grid .compact-slow-audio-button{
+    width:38px;height:38px;justify-content:center;padding:0;
+    border:0;border-radius:50%;background:var(--la-teal-deep);
+    box-shadow:0 6px 14px rgba(15,110,104,.24);
+  }
+  html.is-installed-app .career-phrase-grid article>.career-phrase-grid__phrase-row{margin:6px 0 4px}
+
+  /* Dialog: buline pe tint, buton mare de redare teal. */
+  html.is-installed-app .dialogue{padding:17px;border:1px solid var(--la-card-line);border-radius:16px;background:#fff;box-shadow:0 6px 18px rgba(18,40,58,.045)}
+  html.is-installed-app .dialogue__actions{margin-bottom:15px;padding-bottom:14px}
+  html.is-installed-app .dialogue-play-button{border-radius:13px;background:var(--la-teal-deep);box-shadow:0 8px 20px rgba(15,110,104,.24)}
+  html.is-installed-app .dialogue-line{margin:14px 0 17px}
+  html.is-installed-app .dialogue-line__content{padding:12px 14px;border-radius:5px 16px 16px 16px;background:var(--la-tint)}
+  html.is-installed-app .dialogue-line__content p{color:var(--la-ink);font-size:1rem}
+  html.is-installed-app .translation-button{color:var(--la-teal)}
+
+  /* Gramatică: regula pe card interior cu Aa teal, exemple pe rânduri. */
+  html.is-installed-app .lesson-content>section:has(.grammar-card) .lesson-heading{margin-bottom:12px}
+  html.is-installed-app .lesson-content>section:has(.grammar-card) .lesson-heading h1{margin-bottom:7px}
+  html.is-installed-app .grammar-card{display:grid;gap:9px;overflow:visible;border:0;background:transparent}
+  html.is-installed-app .grammar-rule{
+    position:relative;display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 12px;align-items:center;
+    padding:15px 16px;border-radius:14px;background:var(--la-inner);
+  }
+  html.is-installed-app .grammar-rule::before{
+    position:static;display:grid;width:34px;height:34px;place-items:center;
+    color:#fff;border-radius:50%;background:var(--la-teal);
+    font-family:Georgia,serif;font-size:.82rem;font-weight:900;content:'Aa';
+    grid-row:span 2;
+  }
+  html.is-installed-app .grammar-rule::after{content:none}
+  html.is-installed-app .grammar-rule span{color:var(--la-teal);font-size:.62rem;font-weight:800;letter-spacing:.11em}
+  html.is-installed-app .grammar-rule p{grid-column:2;margin:0;color:var(--la-sub);font-size:.92rem;line-height:1.5}
+  html.is-installed-app .grammar-example{
+    display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:center;
+    padding:12px 14px;border:1px solid var(--la-card-line);border-radius:13px;background:#fff;
+    box-shadow:0 4px 12px rgba(18,40,58,.04);
+  }
+  html.is-installed-app .grammar-example span{display:grid;width:28px;height:28px;place-items:center;color:var(--la-teal);border-radius:50%;background:var(--la-tint);font-size:.85rem}
+  html.is-installed-app .grammar-example p{color:#33475c;font-size:.86rem;line-height:1.45}
+  html.is-installed-app .grammar-example--wrong{border-color:#efd4da;background:#fdf7f8}
+  html.is-installed-app .grammar-example--wrong span{color:#a33249;background:#fbe4e9}
+  html.is-installed-app .grammar-example--wrong p{color:#743848}
+
+  /* Exerciții: card de stare, card de întrebare cu inimă, variante cu radio. */
+  html.is-installed-app .exercise-progress{
+    display:grid;gap:8px;height:auto;margin:-2px 0 18px;padding:12px 14px;
+    border:1px solid var(--la-card-line);border-radius:13px;background:#fff;
+    box-shadow:0 4px 12px rgba(18,40,58,.04);
+  }
+  html.is-installed-app .exercise-progress>span{position:static;display:block;height:6px;border-radius:99px;background:var(--la-track);transition:width .25s}
+  html.is-installed-app .exercise-progress small{position:static;color:var(--la-sub);font-size:.74rem;font-weight:700}
+  html.is-installed-app .lesson-exercise-list>.practice-card{display:none}
+  html.is-installed-app .lesson-exercise-list>.mobile-exercise-card--active{display:block;animation:mobile-expression-in .24s ease both}
+  html.is-installed-app .practice-card{
+    position:relative;margin:0;padding:18px;
+    border:1px solid var(--la-card-line);border-radius:16px;background:#fff;
+    box-shadow:0 8px 22px rgba(18,40,58,.06);
+  }
+  html.is-installed-app .practice-card::after{
+    content:'';position:absolute;top:15px;right:15px;width:21px;height:21px;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aaab4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z'/%3E%3C/svg%3E") center/contain no-repeat;
+    pointer-events:none;
+  }
+  html.is-installed-app .practice-card__counter{
+    display:inline-flex;margin-bottom:13px;padding:5px 10px;
+    color:var(--la-teal);border-radius:99px;background:var(--la-chip);
+    font-size:.63rem;font-weight:800;letter-spacing:.09em;
+  }
+  html.is-installed-app .practice-card h3{margin-right:30px;color:var(--la-ink);font-size:1.08rem;font-weight:750;line-height:1.35}
+  html.is-installed-app .choice-list{gap:9px}
+  html.is-installed-app .choice-list button{
+    position:relative;min-height:54px;padding:13px 14px 13px 54px;
+    color:var(--la-ink);border:1.5px solid var(--la-border);border-radius:12px;background:#fff;
+    font-size:.93rem;font-weight:700;transition:border-color .15s ease,background .15s ease;
+  }
+  html.is-installed-app .choice-list button::before{
+    position:absolute;top:50%;left:14px;display:grid;width:26px;height:26px;place-items:center;
+    border:2px solid #c7d3d8;border-radius:50%;content:'';transform:translateY(-50%);
+    font-size:.78rem;font-weight:900;color:#fff;transition:border-color .15s ease,background .15s ease;
+  }
+  html.is-installed-app .choice-list button:active:not(:disabled){transform:scale(.985)}
+  html.is-installed-app .choice-list button.selected{
+    color:#0d5a54;border-color:var(--la-teal);background:var(--la-tint-strong);
+  }
+  html.is-installed-app .choice-list button.selected::before{border-color:var(--la-teal);background:var(--la-teal);content:'✓'}
+  html.is-installed-app .choice-list button.is-correct{
+    color:#136148;border-color:#2e9b70;background:#e9f8f1;
+  }
+  html.is-installed-app .choice-list button.is-correct::before{border-color:#2e9b70;background:#2e9b70;content:'✓'}
+  html.is-installed-app .choice-list button.is-wrong{
+    color:#873849;border-color:#cb6073;background:#fdeef1;
+  }
+  html.is-installed-app .choice-list button.is-wrong::before{border-color:#cb6073;background:#cb6073;content:'×'}
+  html.is-installed-app .answer-input{height:54px;border:1.5px solid var(--la-border);border-radius:12px}
+  html.is-installed-app .answer-input:focus{border-color:var(--la-teal);outline:0;box-shadow:0 0 0 3px rgba(31,122,114,.13)}
+  html.is-installed-app .sentence-builder,
+  html.is-installed-app .gap-sentence{border-color:#cfdfe2;border-radius:12px;background:var(--la-inner)}
+  html.is-installed-app .word-bank button,
+  html.is-installed-app .gap-word-bank button{border-radius:11px}
+  html.is-installed-app .check-button{
+    display:flex;width:100%;min-height:52px;align-items:center;justify-content:center;gap:9px;
+    margin-top:16px;border:0;border-radius:12px;background:var(--la-teal-deep);
+    box-shadow:0 8px 20px rgba(15,110,104,.24);
+    font-size:.93rem;font-weight:800;letter-spacing:.01em;
+    transition:transform .15s ease;
+  }
+  html.is-installed-app .check-button:active:not(:disabled){transform:scale(.98)}
+  html.is-installed-app .check-button:disabled{opacity:.38;cursor:not-allowed;box-shadow:none}
+  html.is-installed-app .answer-feedback{margin-top:15px;padding:15px;border-radius:12px}
+  html.is-installed-app .answer-feedback--correct{color:#155f43;background:#e9f8f1}
+  html.is-installed-app .answer-feedback--wrong{color:#873849;background:#fdeef1}
+
+  /* Rezultat: badge teal, inel teal, sumar într-un singur card cu separatoare. */
+  html.is-installed-app .lesson-result{
+    box-sizing:border-box;min-height:100%;padding:22px 0 8px;text-align:center;
+    background-image:
+      linear-gradient(270deg,#fff 0,rgba(255,255,255,.6) 130px,rgba(255,255,255,.1) 62%),
+      linear-gradient(0deg,#fff 0,rgba(255,255,255,.2) 210px,rgba(255,255,255,0) 300px),
+      var(--lesson-context-image);
+    background-repeat:no-repeat;
+    background-position:left top,left bottom,right -150px top -30px;
+    background-size:100% 100%,100% 60%,auto 270px;
+  }
+  html.is-installed-app .result-icon{
+    width:64px;height:64px;margin:0 auto 16px;
+    color:var(--la-teal);background:var(--la-tint);
+    box-shadow:0 0 0 12px rgba(31,122,114,.07);font-size:1.7rem;
+  }
+  html.is-installed-app .lesson-result h1{max-width:420px;margin-right:auto;margin-left:auto;font-size:clamp(1.7rem,8vw,2.2rem)}
+  html.is-installed-app .lesson-result>p{color:var(--la-sub)}
+  html.is-installed-app .result-score{width:148px;height:148px;margin:22px auto 16px;border-width:9px;border-color:var(--la-track);box-shadow:inset 0 0 0 4px var(--la-teal)}
+  html.is-installed-app .result-score strong{color:var(--la-teal);font-size:2rem}
+  html.is-installed-app .result-score span{color:var(--la-meta);font-size:.78rem}
+  html.is-installed-app .lesson-result__summary{
+    display:grid;gap:0;max-width:460px;margin:0 auto;text-align:left;
+    border:1px solid var(--la-card-line);border-radius:16px;background:#fff;
+    box-shadow:0 8px 22px rgba(18,40,58,.055);overflow:hidden;
+  }
+  html.is-installed-app .lesson-result__summary>div{
+    display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:11px;align-items:center;
+    padding:13px 14px;border-top:1px solid #edf1f3;box-shadow:none;
+  }
+  html.is-installed-app .lesson-result__summary>div:first-child{border-top:0}
+  html.is-installed-app .lesson-result__summary strong{color:#33475c;font-size:.78rem;font-weight:750}
+  html.is-installed-app .lesson-result__summary b{color:var(--la-teal);font-size:.84rem}
+  html.is-installed-app .review-box{margin:20px 0 0;border:1px solid #efd4da;border-radius:14px;background:#fff}
+  html.is-installed-app .review-box button{border-radius:11px;background:var(--la-teal-deep)}
+  html.is-installed-app .result-actions{display:grid;gap:9px;margin-top:18px}
+  html.is-installed-app .result-actions a,
+  html.is-installed-app .result-actions button{
+    min-height:52px;border:1.5px solid var(--la-border);border-radius:14px;background:#fff;
+    color:var(--la-teal);font-weight:800;
+  }
+  html.is-installed-app .result-actions .primary{
+    color:#fff;border:0;background:var(--la-teal-deep);
+    box-shadow:0 8px 20px rgba(15,110,104,.24);
+  }
+
+  /* Barele fixe: alb, secundar conturat, primar teal solid — ca în referințe. */
+  html.is-installed-app .lesson-navigation{
+    grid-template-columns:auto minmax(0,1fr);
+    gap:9px;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));
+    border-top:1px solid var(--la-card-line);
+    background:#fff;
+    box-shadow:0 -6px 18px rgba(18,40,58,.05);
+  }
+  html.is-installed-app .lesson-navigation>span{display:none}
+  html.is-installed-app .lesson-navigation button{
+    min-height:50px;padding:10px 14px;border:1.5px solid var(--la-border);border-radius:12px;
+    color:var(--la-teal);background:#fff;font-size:.8rem;font-weight:800;
+  }
+  html.is-installed-app .lesson-navigation button:first-child{min-width:50px;padding:10px 0}
+  html.is-installed-app .lesson-navigation button.primary{
+    color:#fff;border:0;background:var(--la-teal-deep);
+    box-shadow:0 8px 20px rgba(15,110,104,.24);font-size:.9rem;font-weight:800;
+  }
+  html.is-installed-app .lesson-navigation button:active:not(:disabled){transform:scale(.98)}
+  html.is-installed-app .mobile-expression-navigation{
+    grid-template-columns:auto minmax(0,1fr) minmax(0,1.5fr);
+    gap:8px;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));
+    border-top:1px solid var(--la-card-line);
+    background:#fff;
+    box-shadow:0 -6px 18px rgba(18,40,58,.05);
+  }
+  html.is-installed-app .mobile-expression-navigation>button{
+    min-height:50px;padding:10px 12px;border:1.5px solid var(--la-border);border-radius:12px;
+    color:var(--la-teal);background:#fff;font-size:.77rem;font-weight:800;
+  }
+  html.is-installed-app .mobile-expression-navigation>button:first-child{min-width:50px}
+  html.is-installed-app .mobile-expression-navigation>button.primary{
+    color:#fff;border:0;background:var(--la-teal-deep);
+    box-shadow:0 8px 20px rgba(15,110,104,.24);font-size:.88rem;font-weight:800;
+  }
+  html.is-installed-app .mobile-expression-navigation>button:active:not(:disabled){transform:scale(.97)}
+  html.is-installed-app .mobile-expression-navigation__progress{gap:7px;min-width:0}
+  html.is-installed-app .mobile-expression-navigation__progress i{width:6px;height:6px;background:#d8e4e3}
+  html.is-installed-app .mobile-expression-navigation__progress i.active{width:16px;border-radius:5px;background:var(--la-teal)}
 }
 
 @media(max-width:520px){
-  html.is-installed-app .mobile-expression-navigation{position:fixed;right:0;bottom:0;left:0;z-index:50;margin:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid #dce3eb;background:rgba(255,255,255,.98);box-shadow:0 -8px 24px rgba(20,33,61,.1);backdrop-filter:blur(14px)}
+  html.is-installed-app .mobile-expression-navigation{
+    position:fixed;right:0;bottom:0;left:0;z-index:50;margin:0;
+  }
 }
 
-/* Gramatică mai compactă și mai ușor de parcurs în aplicația instalată. */
-@media(max-width:860px){
-  html.is-installed-app .lesson-content>section:has(.grammar-card) .lesson-heading{margin-bottom:16px}
-  html.is-installed-app .lesson-content>section:has(.grammar-card) .lesson-eyebrow{display:inline-flex;width:max-content;align-items:center;margin-bottom:8px;padding:5px 9px;border-radius:99px;background:var(--fjord-soft);font-size:.62rem;letter-spacing:.08em}
-  html.is-installed-app .lesson-content>section:has(.grammar-card) .lesson-heading h1{margin-bottom:8px;font-size:clamp(1.45rem,7vw,2rem);line-height:1.12}
-  html.is-installed-app .lesson-content>section:has(.grammar-card) .lesson-heading>p:last-child{font-size:.82rem;line-height:1.45}
-  html.is-installed-app .grammar-card{display:grid;gap:10px;overflow:visible;border:0;background:transparent}
-  html.is-installed-app .grammar-rule{position:relative;overflow:hidden;padding:19px 18px 18px 58px;border-radius:18px;background:linear-gradient(145deg,#14213d 0%,#1d5963 100%);box-shadow:0 12px 28px rgba(20,33,61,.17)}
-  html.is-installed-app .grammar-rule::before{position:absolute;top:18px;left:17px;display:grid;width:30px;height:30px;place-items:center;color:#174f57;border-radius:9px;background:#d9eff0;font-family:Georgia,serif;font-size:.8rem;font-weight:900;content:'Aa'}
-  html.is-installed-app .grammar-rule::after{position:absolute;right:-28px;bottom:-34px;width:105px;height:105px;border:18px solid rgba(255,255,255,.06);border-radius:50%;content:''}
-  html.is-installed-app .grammar-rule span{position:relative;z-index:1;color:#aee3e5;font-size:.62rem;letter-spacing:.1em}
-  html.is-installed-app .grammar-rule p{position:relative;z-index:1;margin-top:5px;font-size:.94rem;line-height:1.5}
-  html.is-installed-app .grammar-example{display:grid;grid-template-columns:32px minmax(0,1fr);gap:11px;align-items:center;padding:13px 15px;border:1px solid #dce7e8;border-radius:14px;background:#fff;box-shadow:0 5px 15px rgba(20,33,61,.045)}
-  html.is-installed-app .grammar-example span{display:grid;width:30px;height:30px;place-items:center;color:#267354;border-radius:9px;background:#e6f6ef;font-size:.9rem}
-  html.is-installed-app .grammar-example p{color:#31475c;font-size:.84rem;line-height:1.45}
-  html.is-installed-app .grammar-example--wrong{border-color:#efd0d6;background:#fff7f8}
-  html.is-installed-app .grammar-example--wrong span{color:#a33249;background:#fbe4e9}
-  html.is-installed-app .grammar-example--wrong p{color:#743848}
+/* Ecrane îngestre: ilustrația și spațierea se strâng ușor. */
+@media(max-width:380px){
+  html.is-installed-app .lesson-content{padding-right:12px;padding-left:12px}
+  html.is-installed-app .lesson-heading{min-height:162px;padding-right:33%}
+  html.is-installed-app .lesson-intro__copy{min-height:180px;padding-right:34%}
+  html.is-installed-app .lesson-mobile-stats{gap:6px}
+  html.is-installed-app .lesson-mobile-stats article{grid-template-columns:31px minmax(0,1fr);gap:6px;padding:8px 7px}
+  html.is-installed-app .lesson-mobile-stats article>span{width:31px;height:31px}
+  html.is-installed-app .lesson-mobile-stats strong{font-size:.64rem}
+  html.is-installed-app .objectives{padding:15px}
+  html.is-installed-app .mobile-expression-navigation{grid-template-columns:auto minmax(0,1fr) minmax(0,1.35fr)}
 }
