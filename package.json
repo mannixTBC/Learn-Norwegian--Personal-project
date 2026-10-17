@@ -7,6 +7,8 @@
     "npm": ">=10"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
     "@material-ui/core": "^4.7.0",
     "@material-ui/icons": "^4.5.1",
     "@netlify/blobs": "^11.1.4",
@@ -39,7 +41,10 @@
     "build:client": "vite build",
     "build:ssr": "vite build --ssr src/entry-server.jsx --outDir dist-ssr",
     "preview": "vite preview --host 0.0.0.0 --port 4173",
-    "preview:https": "vite preview --host 0.0.0.0 --port 4173 --mode https"
+    "preview:https": "vite preview --host 0.0.0.0 --port 4173 --mode https",
+    "android:sync": "npm run build:voice-context && npm run build:client && cap sync android",
+    "android:open": "cap open android",
+    "android:apk": "npm run android:sync && cd android && gradlew.bat assembleDebug"
   },
   "browserslist": {
     "production": [
@@ -54,6 +59,7 @@
     ]
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.3",
     "@vitejs/plugin-basic-ssl": "^2.3.0",
     "@vitejs/plugin-react": "latest",
     "concurrently": "latest",

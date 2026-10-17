@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 import { isSupabaseConfigured, supabase } from '../../services/supabaseClient';
 import { fetchEntitlements, isDevBypassActive } from '../../services/entitlements';
 import { clearLocalAccountData, deleteRemoteAccount } from '../../services/account';
+import { isNativeApp, webUrl } from '../../services/api';
 
 const SESSION_KEY = 'norwegiata_frontend_session';
 const GUEST_SESSION = '__norwegiata_guest__';
@@ -39,6 +40,8 @@ const authMessage = (error) => {
 const ensureSupabase = () => {
   if (!supabase) throw new Error('Conectarea cu un cont nu este disponibilă momentan. Poți continua ca vizitator.');
 };
+
+const authRedirectUrl = (path) => (isNativeApp() ? webUrl(path) : `${window.location.origin}${path}`);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -97,7 +100,7 @@ export const AuthProvider = ({ children }) => {
       password,
       options: {
         data: { full_name: name.trim() },
-        emailRedirectTo: `${window.location.origin}/autentificare`,
+        emailRedirectTo: authRedirectUrl('/autentificare'),
       },
     });
     if (error) throw new Error(authMessage(error));
@@ -136,7 +139,7 @@ export const AuthProvider = ({ children }) => {
     ensureSupabase();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/dashboard` },
+      options: { redirectTo: authRedirectUrl('/dashboard') },
     });
     if (error) throw new Error(authMessage(error));
   };
@@ -144,7 +147,7 @@ export const AuthProvider = ({ children }) => {
   const requestPasswordReset = async (email) => {
     ensureSupabase();
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
-      redirectTo: `${window.location.origin}/autentificare?recovery=1`,
+      redirectTo: authRedirectUrl('/autentificare?recovery=1'),
     });
     if (error) throw new Error(authMessage(error));
   };

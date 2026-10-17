@@ -1,0 +1,12 @@
+{
+  "appId": "net.nordlingo.app",
+  "appName": "NordLingo",
+  "webDir": "dist",
+  "loggingBehavior": "debug",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

@@ -2,9 +2,15 @@ import React from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import App from './App';
 import { registerServiceWorker } from './serviceWorker';
+import { isNativeApp } from './services/api';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
-const isInstalledApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+const isInstalledAppPreview = import.meta.env.DEV
+  && new URLSearchParams(window.location.search).get('appPreview') === '1';
+const isInstalledApp = isNativeApp()
+  || isInstalledAppPreview
+  || window.matchMedia('(display-mode: standalone)').matches
+  || window.navigator.standalone === true;
 document.documentElement.classList.toggle('is-installed-app', isInstalledApp);
 
 /**

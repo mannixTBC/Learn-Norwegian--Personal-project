@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 import PWAInstallButton from '../../pwa/PWAInstallButton';
+import { isNativeApp } from '../../../services/api';
 import './HomePage.css';
 
 const sections = [
@@ -22,7 +23,7 @@ export const isInstalledApp = () => {
   const iosStandalone = navigator.standalone === true;
   const androidApp = document.referrer.startsWith('android-app://');
 
-  return standaloneDisplay || iosStandalone || androidApp;
+  return isNativeApp() || standaloneDisplay || iosStandalone || androidApp;
 };
 
 const HomePage = () => {
