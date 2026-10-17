@@ -67,7 +67,7 @@ const staticPages = {
 
 const protectedPrefixes = [
   '/autentificare', '/dashboard', '/alege-directia', '/invata', '/exerseaza',
-  '/pronuntie', '/hangman', '/chestionar', '/drag', '/challenge30',
+  '/jocuri', '/pronuntie', '/hangman', '/chestionar', '/drag', '/challenge30',
   '/recapitulare', '/test-final', '/curs', '/program-norvegiana',
 ];
 

@@ -12,7 +12,9 @@ document.documentElement.classList.toggle('is-installed-app', isInstalledApp);
  * Montează componenta App în elementul HTML cu id="root".
  */
 const container = document.getElementById('root');
-if (container.hasChildNodes()) hydrateRoot(container, <App />);
+// În development, placeholder-ul <!--app-html--> este un nod comentariu, nu
+// conținut prerandat. Hidratăm doar când build-ul SSR a introdus elemente reale.
+if (container.childElementCount > 0) hydrateRoot(container, <App />);
 else createRoot(container).render(<App />);
 
 registerServiceWorker();

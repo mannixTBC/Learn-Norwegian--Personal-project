@@ -7,7 +7,12 @@ In the project directory, you can run:
 ### `npm start`
 
 Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Open [http://localhost:4173](http://localhost:4173) to view it in the browser.
+
+Local development uses HTTP by default so browser access and the configured
+Supabase callback URLs work without a self-signed certificate warning. If HTTPS
+is specifically needed, run `npm run dev:frontend:https` and open
+`https://localhost:4173`.
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.

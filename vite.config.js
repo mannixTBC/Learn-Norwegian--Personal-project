@@ -12,35 +12,43 @@ const sourceJsAsJsx = () => ({
   },
 });
 
-export default defineConfig({
-  plugins: [sourceJsAsJsx(), react(), basicSsl()],
-  optimizeDeps: {
-    noDiscovery: true,
-    include: [
-      '@supabase/supabase-js',
-      '@material-ui/core',
-      '@material-ui/icons',
-      'prop-types',
-      'react',
-      'react-beautiful-dnd',
-      'react-dom',
-      'react-dom/client',
-      'react-router-dom',
-      'styled-components',
+export default defineConfig(({ mode }) => {
+  const useLocalHttps = mode === 'https';
+
+  return {
+    plugins: [
+      sourceJsAsJsx(),
+      react(),
+      ...(useLocalHttps ? [basicSsl()] : []),
     ],
-  },
-  server: {
-    port: 4173,
-    strictPort: true,
-    proxy: {
-      '/api': {
-        target: 'http://127.0.0.1:5000',
-        changeOrigin: true,
+    optimizeDeps: {
+      noDiscovery: true,
+      include: [
+        '@supabase/supabase-js',
+        '@material-ui/core',
+        '@material-ui/icons',
+        'prop-types',
+        'react',
+        'react-beautiful-dnd',
+        'react-dom',
+        'react-dom/client',
+        'react-router-dom',
+        'styled-components',
+      ],
+    },
+    server: {
+      port: 4173,
+      strictPort: true,
+      proxy: {
+        '/api': {
+          target: 'http://127.0.0.1:5000',
+          changeOrigin: true,
+        },
       },
     },
-  },
-  preview: {
-    port: 4173,
-    strictPort: true,
-  },
+    preview: {
+      port: 4173,
+      strictPort: true,
+    },
+  };
 });

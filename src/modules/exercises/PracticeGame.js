@@ -9,6 +9,15 @@ import './MobileExercisePolish.css';
 
 const shuffle=(items)=>[...items].sort(()=>Math.random()-.5);
 const gameInfo={quiz:{title:'Chestionar',subtitle:'Verifică vocabularul și expresiile din lecții.',icon:'✅'},order:{title:'Construiește propoziția',subtitle:'Așază cuvintele în ordinea corectă.',icon:'🧩'},word:{title:'Descoperă cuvântul',subtitle:'Găsește cuvântul norvegian folosind indiciile.',icon:'🔤'}};
+const gameProgressTargets={quiz:10,order:5,word:5};
+
+const saveGameProgress=(game,results)=>{
+  const target=gameProgressTargets[game];
+  const correct=results.filter((result)=>result.correct).length;
+  let previous={completed:0,target};
+  try{previous=JSON.parse(localStorage.getItem(`practice_game_progress_${game}`))||previous}catch(_){/* Păstrăm progresul implicit. */}
+  localStorage.setItem(`practice_game_progress_${game}`,JSON.stringify({completed:Math.min(target,Math.max(Number(previous.completed)||0,correct)),target}));
+};
 
 const makeQuiz=(lessons,difficulty)=>{
   const pool=lessons.flatMap((lesson)=>lesson.vocabulary.map(([word,translation,example],index)=>({id:`q-${lesson.id}-${index}`,lessonId:lesson.id,prompt:difficulty==='hard'?`Scrie în norvegiană: „${translation}”`:`Ce înseamnă „${word}”?`,answer:difficulty==='hard'?word:translation,word,example,type:difficulty==='hard'?'text':'choice'})));
@@ -32,7 +41,7 @@ const PracticeGame=({game})=>{
   const normalized=(value)=>value.trim().toLocaleLowerCase('nb-NO').replace(/[.!?]/g,'');
   const isCorrect=()=>{if(game==='order')return normalized(selected.join(' '))===normalized(question.answer);return normalized(answer)===normalized(question.answer)};
   const verify=()=>{if(checked||(!answer&&!selected.length))return;const correct=isCorrect();setChecked(true);setResults((all)=>[...all,{question,correct,given:game==='order'?selected.join(' '):answer}]);if(!correct)saveReview(question)};
-  const next=()=>{if(current===questions.length-1){setScreen('result');return}setCurrent((value)=>value+1);setAnswer('');setSelected([]);setChecked(false);setHint(false)};
+  const next=()=>{if(current===questions.length-1){saveGameProgress(game,results);setScreen('result');return}setCurrent((value)=>value+1);setAnswer('');setSelected([]);setChecked(false);setHint(false)};
   const restartMistakes=()=>{const mistakes=results.filter((result)=>!result.correct).map((result)=>result.question);if(!mistakes.length){setScreen('setup');return}setQuestions(mistakes);setCurrent(0);setResults([]);setAnswer('');setSelected([]);setChecked(false);setHint(false);setScreen('game')};
   const score=results.filter((result)=>result.correct).length;
 
