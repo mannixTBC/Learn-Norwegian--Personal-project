@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { apiUrl } from '../../services/api';
 import './News.css';
 
 const PLACEHOLDER_IMAGE = 'https://images.unsplash.com/photo-1520769945061-0a448c463865?w=900&h=600&fit=crop';
@@ -17,7 +18,7 @@ const translateText = async (text, toLang) => {
 
   const tryLang = async (fromLang) => {
     try {
-      const response = await fetch('/api/translate', {
+      const response = await fetch(apiUrl('/api/translate'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, fromLang, toLang }),
@@ -97,7 +98,7 @@ const News = () => {
       setError(null);
 
       try {
-        const response = await fetch('/api/news/headlines');
+        const response = await fetch(apiUrl('/api/news/headlines'));
         const data = await response.json();
 
         if (!response.ok) throw new Error(data.error || 'Știrile nu au putut fi încărcate.');

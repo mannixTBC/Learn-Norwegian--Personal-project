@@ -1,4 +1,5 @@
 import { speakNorwegian } from './norwegianSpeech';
+import { apiUrl } from './api';
 
 let activeAudio = null;
 let activeAudioUrl = '';
@@ -35,7 +36,7 @@ const playBlob = (blob) => new Promise((resolve, reject) => {
 
 export const speakPronunciationModel = async (text, { slow = false } = {}) => {
   try {
-    const response = await fetch('/api/pronunciation/model', {
+    const response = await fetch(apiUrl('/api/pronunciation/model'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, slow }),
@@ -52,7 +53,7 @@ export const speakPronunciationModel = async (text, { slow = false } = {}) => {
 
 export const getAzurePronunciationStatus = async () => {
   try {
-    const response = await fetch('/api/pronunciation/status');
+    const response = await fetch(apiUrl('/api/pronunciation/status'));
     if (!response.ok) return { azureConfigured: false };
     return response.json();
   } catch (_) {

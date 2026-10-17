@@ -106,3 +106,25 @@
   .lesson-navigation--voice{padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
   .lesson-content:has(.voice-lesson){padding-bottom:calc(115px + env(safe-area-inset-bottom,0px))}
 }
+
+/* Extensia Nordic Everyday pentru dialogul vocal din aplicația instalată. */
+@media(max-width:860px){
+  html.is-installed-app .voice-lesson{padding-top:37px}
+  html.is-installed-app .voice-lesson>.lesson-eyebrow,
+  html.is-installed-app .voice-lesson>h1,
+  html.is-installed-app .voice-lesson>.lesson-lead{max-width:64%}
+  html.is-installed-app .voice-lesson>h1{margin-bottom:12px}
+  html.is-installed-app .voice-lesson__card{margin-top:27px;border-color:#d7e5e8;border-radius:23px;background:#fff;box-shadow:0 13px 34px rgba(20,52,72,.08)}
+  html.is-installed-app .voice-lesson__card--welcome>.voice-lesson__art{height:176px;background:linear-gradient(0deg,rgba(10,56,65,.24),rgba(10,56,65,0) 65%),url('/images/voice/voice-fjord.webp') center 45% / cover no-repeat}
+  html.is-installed-app .voice-lesson__portrait{display:none}
+  html.is-installed-app .voice-lesson__avatar{overflow:hidden;border-radius:14px;background:url('/images/voice/nora-avatar.webp') center / cover no-repeat}
+  html.is-installed-app .voice-lesson__avatar-letter{display:none}
+  html.is-installed-app .voice-lesson__status{border-radius:10px}
+  html.is-installed-app .voice-lesson__welcome h2{color:#0d2546}
+  html.is-installed-app .voice-lesson__controls button{border-radius:14px}
+  html.is-installed-app .voice-lesson__controls button.voice-lesson__primary{color:#fff;border-color:#05666d;background:linear-gradient(135deg,#05666d,#089497)}
+  html.is-installed-app .voice-lesson__message{border-color:#d9e6e9;border-radius:16px}
+  html.is-installed-app .voice-lesson__message--user{background:#e9f7f5}
+  html.is-installed-app .voice-lesson__transcript{scrollbar-width:none}
+  html.is-installed-app .voice-lesson__transcript::-webkit-scrollbar{display:none}
+}

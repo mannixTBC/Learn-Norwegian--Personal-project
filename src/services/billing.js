@@ -7,12 +7,7 @@
  */
 
 import { supabase } from './supabaseClient';
-
-/** Rezolvă URL-ul bazei pentru API (localhost:5000 în dev, same-origin în producție). */
-const apiBase = () => {
-  const local = typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost';
-  return local ? 'http://localhost:5000' : '';
-};
+import { apiUrl } from './api';
 
 /** Obține JWT-ul sesiunii curente sau aruncă dacă nu există. */
 const requireAccessToken = async () => {
@@ -25,7 +20,7 @@ const requireAccessToken = async () => {
 
 const postJson = async (path, payload = {}) => {
   const token = await requireAccessToken();
-  const response = await fetch(`${apiBase()}${path}`, {
+  const response = await fetch(apiUrl(path), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -40,7 +35,7 @@ const postJson = async (path, payload = {}) => {
 
 const getJson = async (path) => {
   const token = await requireAccessToken();
-  const response = await fetch(`${apiBase()}${path}`, {
+  const response = await fetch(apiUrl(path), {
     headers: { Authorization: `Bearer ${token}` },
   });
   const data = await response.json().catch(() => ({}));

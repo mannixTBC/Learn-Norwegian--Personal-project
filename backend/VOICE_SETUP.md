@@ -35,6 +35,9 @@ Etapa și rezultatele exercițiilor sunt păstrate la rotirea telefonului și re
 - `CARTESIA_API_KEY` și `CARTESIA_VOICE_ID`: activează streamingul pentru replica Norei.
 - Cheia Cartesia este trimisă server-side prin antetul standard `Authorization: Bearer`; nu o
   expune în frontend și nu îi adăuga prefixul `VITE_`.
+- Dialogul folosește `no-NO`, iar feedbackul final folosește `ro-RO`. Opțional,
+  `CARTESIA_FEEDBACK_VOICE_ID` alege o voce separată pentru română; în lipsa ei este folosită
+  vocea Norei. `CARTESIA_FEEDBACK_VOICE_SPEED` are valoarea implicită `0.95`.
 - `CARTESIA_MODEL_ID`: implicit `sonic-latest`; `CARTESIA_API_VERSION`: implicit `2026-08-14`.
 - `CARTESIA_VOICE_SPEED`: implicit `0.82`, limitat pe server la intervalul acceptat `0.6–1.5`.
 - `CARTESIA_STREAM_SECRET`: opțional. Criptează linkurile audio temporare; dacă lipsește,

@@ -34,7 +34,8 @@ test('funcția transmite incremental răspunsul audio Cartesia', async () => {
     assert.equal(requestBody.transcript, 'Hei! Hva heter du?');
     assert.equal(requestBody.model_id, 'sonic-latest');
     assert.equal(requestBody.voice, 'anna-cartesia-test');
-    assert.equal(requestBody.language, 'no');
+    assert.equal(requestBody.locale, 'no-NO');
+    assert.equal(requestBody.language, undefined);
     assert.equal(requestBody.output_format.container, 'mp3');
     assert.equal(requestBody.generation_config.speed, 0.82);
   } finally {

@@ -3,6 +3,7 @@ import { sendChatTurn, startChatSession } from '../../services/chat';
 import { practiceRequest, audioBlob, recordPracticeAnswer, recordingPayload } from '../../services/voicePractice';
 import { createVoiceConversation } from '../../services/voiceConversation';
 import { getVoiceTranscriptPreference, saveVoiceTranscript } from '../../services/voiceTranscripts';
+import { apiUrl } from '../../services/api';
 import './VoiceLessonConversation.css';
 
 const normalizeDialog = (data, previousToken = null) => ({
@@ -62,6 +63,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   const controller = useRef(null);
   const realtime = useRef(null);
   const realtimeFinishing = useRef(false);
+  const realtimeFeedbackAudioText = useRef('');
   const recording = useRef(null);
   const playback = useRef(null);
   const busy = useRef(false);
@@ -85,7 +87,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   useEffect(() => {
     mounted.current = true;
     const abort = new AbortController();
-    fetch('/api/voice/status', { signal: abort.signal }).then((response) => response.json()).then((data) => {
+    fetch(apiUrl('/api/voice/status'), { signal: abort.signal }).then((response) => response.json()).then((data) => {
       if (!abort.signal.aborted) setConfigured(data.configured === true);
     }).catch(() => { if (!abort.signal.aborted) setConfigured(false); });
     getVoiceTranscriptPreference(abort.signal).then((preference) => {
@@ -175,6 +177,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     realtime.current?.close();
     realtime.current = null;
     realtimeFinishing.current = false;
+    realtimeFeedbackAudioText.current = '';
     recording.current?.cancel();
     recording.current = null;
     stopPlayback();
@@ -302,9 +305,23 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     setRevealedHelp({});
     setError('');
     realtimeFinishing.current = false;
+    realtimeFeedbackAudioText.current = '';
     conversationId.current = createConversationId();
     savedTranscriptFingerprint.current = '';
     setTranscriptSaveStatus('');
+  };
+
+  const playRealtimeFeedback = async (text) => {
+    if (!text || realtimeFeedbackAudioText.current === text) return;
+    realtimeFeedbackAudioText.current = text;
+    try {
+      const spoken = await practiceRequest('realtime-feedback-speech', { text }, controller.current?.signal);
+      if (mounted.current && !controller.current?.signal.aborted) await play(spoken, 'feedback');
+    } catch (_) {
+      if (!mounted.current || controller.current?.signal.aborted) return;
+      setTranscriptNotice('Feedbackul este afișat, dar vocea nu a putut fi redată.');
+      setStatus('ended');
+    }
   };
 
   const handleRealtimeEvent = (event) => {
@@ -347,7 +364,10 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     if (event.type === 'response.output_audio_transcript.done' || event.type === 'response.audio_transcript.done') {
       const text = event.transcript?.trim();
       if (!text) return;
-      if (realtimeFinishing.current) setFeedback({ text });
+      if (realtimeFinishing.current) {
+        setFeedback({ text });
+        playRealtimeFeedback(text);
+      }
       else setMessages((current) => [...current, { role: 'assistant', reply: text, question: null, turn: current.filter((item) => item.role === 'user').length }]);
       return;
     }
@@ -356,7 +376,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       return;
     }
     if (event.type === 'output_audio_buffer.stopped' || event.type === 'output_audio_buffer.cleared') {
-      setStatus(realtimeFinishing.current ? 'ended' : 'listening');
+      if (!realtimeFinishing.current) setStatus('listening');
       return;
     }
     if (event.type === 'playback.blocked') {

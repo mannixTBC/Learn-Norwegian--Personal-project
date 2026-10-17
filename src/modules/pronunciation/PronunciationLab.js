@@ -3,6 +3,7 @@ import { speakPronunciationModel } from '../../services/azurePronunciationSpeech
 import { assessPronunciation } from '../../services/pronunciationAssessment';
 import { recordStudyActivity } from '../../services/learningActivity';
 import PremiumGate from '../premium/PremiumGate';
+import { apiUrl, isNativeApp } from '../../services/api';
 import './PronunciationLab.css';
 
 const MAX_SECONDS = 30;
@@ -77,8 +78,8 @@ const convertToAzureWav = async (blob) => {
 };
 
 const evaluationEndpoints = () => {
-  const endpoints = ['/api/pronunciation/evaluate'];
-  if (typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname) && !endpoints[0].startsWith('http')) {
+  const endpoints = [apiUrl('/api/pronunciation/evaluate')];
+  if (!isNativeApp() && typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname) && !endpoints[0].startsWith('http')) {
     endpoints.push('http://localhost:5000/api/pronunciation/evaluate');
   }
   return endpoints;

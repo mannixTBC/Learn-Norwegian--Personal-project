@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { apiUrl } from './api';
 
 const MAX_RECORDING_SECONDS = 30;
 // Keeps short learner pauses while making the exchange feel conversational.
@@ -22,7 +23,7 @@ export const nextSpeechActivity = (current, rms, now) => {
 export const practiceRequest = async (operation, payload, signal) => {
   const session = supabase ? await supabase.auth.getSession() : null;
   const token = session?.data?.session?.access_token;
-  const response = await fetch(`/api/voice/practice/${operation}`, {
+  const response = await fetch(apiUrl(`/api/voice/practice/${operation}`), {
     method: 'POST', signal, headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
     body: JSON.stringify(payload),
   });

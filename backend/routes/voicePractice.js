@@ -6,7 +6,7 @@ const { getPreparedQuestions } = require('../voiceQuestions');
 const { getQuestionAudio } = require('../voiceAudioCache');
 const { MAX_TURNS, verifySession: verifyChatSession, commandFor } = require('../chatTutor');
 const { createVoiceStreamTicket } = require('../voiceStreamTicket');
-const { cartesiaConfigured } = require('../cartesiaSpeech');
+const { cartesiaConfigured, cartesiaSpeechBuffer } = require('../cartesiaSpeech');
 const { decidePrimaryTranscript, decideAmbiguousTranscript, questionKind, normalizeTranscriptForQuestion } = require('../voiceTranscriptDecision');
 const router = express.Router();
 const starts = new Map();
@@ -229,6 +229,15 @@ router.post('/stream-ticket', wrap(async (req, res) => {
   const ticket = createVoiceStreamTicket({ text: latest, sessionId: session.id, turn: session.turn });
   res.json({ streamUrl: `/api/voice/stream?ticket=${encodeURIComponent(ticket)}`, provider: 'cartesia' });
 }));
+router.post('/realtime-feedback-speech', wrap(async (req, res) => {
+  if (!cartesiaConfigured()) throw fail('Vocea Cartesia pentru feedback nu este configurată.', 503);
+  const text = typeof req.body?.text === 'string' ? req.body.text.trim() : '';
+  if (!text || text.length > 400 || text.split(/\s+/u).length > 40) throw fail('Feedbackul vocal nu este valid.');
+  const digest = crypto.createHash('sha256').update(text).digest('base64url');
+  const audio = await once(`realtime-feedback:${owner(req)}:${digest}`, Date.now() + 60_000,
+    () => cartesiaSpeechBuffer(text, undefined, { locale: 'ro-RO' }));
+  res.json({ audioBase64: audio.toString('base64'), mimeType: 'audio/mpeg', provider: 'cartesia' });
+}));
 router.post('/transcribe', wrap(async (req, res) => {
   const session = sessionFor(req);
   const { index, audioBase64, mimeType, duration } = req.body;
@@ -345,8 +354,10 @@ Fără întrebări noi, note, scoruri sau explicații lungi. Context: ${JSON.str
     const text = words.length <= 25 ? shortText : `${words.slice(0, 25).join(' ').replace(/[,:;.!?]+$/, '')}.`;
     // Keep the text even if TTS fails, so retrying playback never repeats the LLM evaluation.
     let audioBase64 = null;
-    try { audioBase64 = (await speech(speechSettings(text, 'ro'))).toString('base64'); } catch (_) { /* Feedback remains readable. */ }
-    return { text, audioBase64, mimeType: 'audio/mpeg' };
+    try {
+      if (cartesiaConfigured()) audioBase64 = (await cartesiaSpeechBuffer(text, undefined, { locale: 'ro-RO' })).toString('base64');
+    } catch (_) { /* Feedback remains readable. */ }
+    return { text, audioBase64, mimeType: 'audio/mpeg', provider: audioBase64 ? 'cartesia' : null };
   });
   res.json(result);
 }));

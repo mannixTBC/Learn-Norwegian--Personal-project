@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
+import { apiUrl } from '../../services/api';
 import './ArticleDetail.css';
 
 const STORAGE_KEY = 'news_articles';
@@ -9,7 +10,7 @@ const translateText = async (text, toLang) => {
   if (!text || text.trim().length === 0) return text;
   const tryLang = async (fromLang) => {
     try {
-      const res = await fetch('/api/translate', {
+      const res = await fetch(apiUrl('/api/translate'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, fromLang, toLang }),

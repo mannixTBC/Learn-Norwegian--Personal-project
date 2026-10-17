@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { apiUrl } from './api';
 
 const request = async (path, options = {}) => {
   if (!supabase) throw new Error('Preferințele de confidențialitate necesită o sesiune activă.');
@@ -6,7 +7,7 @@ const request = async (path, options = {}) => {
   const token = data.session?.access_token;
   if (!token) throw new Error('Sesiunea a expirat. Conectează-te din nou.');
 
-  const response = await fetch(`/api/voice/transcripts${path}`, {
+  const response = await fetch(apiUrl(`/api/voice/transcripts${path}`), {
     ...options,
     headers: {
       ...(options.body ? { 'Content-Type': 'application/json' } : {}),

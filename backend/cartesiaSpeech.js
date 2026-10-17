@@ -1,13 +1,20 @@
 const CARTESIA_ENDPOINT = 'https://api.cartesia.ai/tts/bytes';
 
 const configured = () => Boolean(process.env.CARTESIA_API_KEY && process.env.CARTESIA_VOICE_ID);
-const speed = () => {
-  const value = Number(process.env.CARTESIA_VOICE_SPEED || 0.82);
-  return Number.isFinite(value) ? Math.min(1.5, Math.max(0.6, value)) : 0.82;
+const speed = (value, fallback) => {
+  const parsed = Number(value || fallback);
+  return Number.isFinite(parsed) ? Math.min(1.5, Math.max(0.6, parsed)) : fallback;
 };
 
-const cartesiaSpeechStream = async (text, signal) => {
+const cartesiaSpeechStream = async (text, signal, options = {}) => {
   if (!configured()) throw Object.assign(new Error('Streamingul Cartesia nu este configurat.'), { status: 503 });
+  const locale = options.locale || 'no-NO';
+  const isRomanian = locale.toLowerCase().startsWith('ro');
+  const voiceId = options.voiceId || (isRomanian && process.env.CARTESIA_FEEDBACK_VOICE_ID) || process.env.CARTESIA_VOICE_ID;
+  const voiceSpeed = speed(
+    options.speed || (isRomanian ? process.env.CARTESIA_FEEDBACK_VOICE_SPEED : process.env.CARTESIA_VOICE_SPEED),
+    isRomanian ? 0.95 : 0.82,
+  );
   const timeout = AbortSignal.timeout(25_000);
   const requestSignal = signal && typeof AbortSignal.any === 'function' ? AbortSignal.any([signal, timeout]) : timeout;
   const response = await fetch(CARTESIA_ENDPOINT, {
@@ -22,10 +29,10 @@ const cartesiaSpeechStream = async (text, signal) => {
     body: JSON.stringify({
       model_id: process.env.CARTESIA_MODEL_ID || 'sonic-latest',
       transcript: text,
-      voice: process.env.CARTESIA_VOICE_ID,
-      language: 'no',
+      voice: voiceId,
+      locale,
       output_format: { container: 'mp3', sample_rate: 44100, bit_rate: 128000 },
-      generation_config: { speed: speed(), emotion: 'calm' },
+      generation_config: { speed: voiceSpeed, emotion: 'calm' },
     }),
   });
   if (!response.ok || !response.body) {
@@ -34,4 +41,9 @@ const cartesiaSpeechStream = async (text, signal) => {
   return response;
 };
 
-module.exports = { cartesiaConfigured: configured, cartesiaSpeechStream };
+const cartesiaSpeechBuffer = async (text, signal, options = {}) => {
+  const response = await cartesiaSpeechStream(text, signal, options);
+  return Buffer.from(await response.arrayBuffer());
+};
+
+module.exports = { cartesiaConfigured: configured, cartesiaSpeechStream, cartesiaSpeechBuffer };

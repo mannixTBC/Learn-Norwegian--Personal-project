@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { apiUrl } from './api';
 
 export const clearLocalAccountData = () => {
   localStorage.clear();
@@ -11,7 +12,7 @@ export const deleteRemoteAccount = async ({ allowMissingSession = false } = {}) 
   if (!token && allowMissingSession) return false;
   if (!token) throw new Error('Sesiunea a expirat. Conectează-te din nou înainte de ștergerea contului.');
 
-  const response = await fetch('/api/account', {
+  const response = await fetch(apiUrl('/api/account'), {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   });

@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { apiUrl } from './api';
 
 const chatRequest = async (operation, payload, signal) => {
   const session = supabase ? await supabase.auth.getSession() : null;
@@ -8,7 +9,7 @@ const chatRequest = async (operation, payload, signal) => {
 
   let response;
   try {
-    response = await fetch(`/api/chat/${operation}`, {
+    response = await fetch(apiUrl(`/api/chat/${operation}`), {
       method: 'POST',
       signal,
       headers: {

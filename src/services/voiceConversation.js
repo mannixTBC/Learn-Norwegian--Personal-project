@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { apiUrl } from './api';
 
 const normalizeSpokenText = (value) => String(value || '')
   .normalize('NFD')
@@ -85,6 +86,8 @@ export const createVoiceConversation = async ({ level, lessonId, pathId, onEvent
   const feedback = () => {
     if (finishing || closed) return;
     finishing = true;
+    // OpenAI still produces the final transcript, but Cartesia reads it in Romanian.
+    audio.muted = true;
     onEvent({ type: 'practice.feedback_started' });
     respond('Cursantul tocmai a dat ultimul răspuns. Încheie acum: numai feedback în română, maximum 25 de cuvinte, două propoziții, o reușită observată și o sugestie. Fără întrebări și fără continuare. Dacă nu există răspunsuri reale, spune că nu ai suficiente exemple.');
   };
@@ -98,7 +101,7 @@ export const createVoiceConversation = async ({ level, lessonId, pathId, onEvent
     const session = supabase ? await supabase.auth.getSession() : null;
     checkCancelled();
     const token = session?.data?.session?.access_token;
-    const response = await fetch('/api/voice/session', {
+    const response = await fetch(apiUrl('/api/voice/session'), {
       method: 'POST', signal, headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
       body: JSON.stringify({ level, lessonId, pathId }),
     });

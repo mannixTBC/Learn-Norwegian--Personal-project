@@ -41,9 +41,10 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     cartesiaSecret: process.env.CARTESIA_STREAM_SECRET,
   };
   const realFetch = global.fetch;
-  const calls = { speech: 0, elevenSpeech: 0, transcription: 0, feedback: 0 };
+  const calls = { speech: 0, elevenSpeech: 0, cartesiaSpeech: 0, transcription: 0, feedback: 0 };
   const speechRequests = [];
   const elevenSpeechRequests = [];
+  const cartesiaSpeechRequests = [];
   const transcriptionRequests = [];
   process.env.OPENAI_API_KEY = 'test-key-not-exposed';
   process.env.NODE_ENV = 'production'; delete process.env.NETLIFY;
@@ -60,6 +61,14 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
   let failFeedbackAudio = false;
   const transcriptionResponses = [];
   global.fetch = async (url, options) => {
+    if (url === 'https://api.cartesia.ai/tts/bytes') {
+      calls.cartesiaSpeech += 1;
+      assert.equal(options.headers.Authorization, 'Bearer cartesia-test-key');
+      const data = JSON.parse(options.body);
+      cartesiaSpeechRequests.push(data);
+      if (failFeedbackAudio) return new Response('unavailable', { status: 503 });
+      return new Response(new Uint8Array([7, 8, 9]), { status: 200, headers: { 'Content-Type': 'audio/mpeg' } });
+    }
     if (url.includes('api.elevenlabs.io/v1/text-to-speech/')) {
       calls.elevenSpeech += 1;
       assert.equal(options.headers['xi-api-key'], 'test-elevenlabs-key');
@@ -110,7 +119,7 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     const session = await started.json();
     assert.equal(session.questions.length, 3);
     assert.equal(JSON.stringify(session).includes('test-key-not-exposed'), false);
-    assert.deepEqual(calls, { speech: 0, elevenSpeech: 0, transcription: 0, feedback: 0 });
+    assert.deepEqual(calls, { speech: 0, elevenSpeech: 0, cartesiaSpeech: 0, transcription: 0, feedback: 0 });
     assert.equal((await request('start', lesson)).status, 429);
     assert.equal((await request('question', { sessionToken: session.sessionToken, index: 0 }, 'other-user')).status, 401);
     const questionBody = { sessionToken: session.sessionToken, index: 0 };
@@ -220,12 +229,22 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
       sessionToken: session.sessionToken,
       answers: [answers[0], forkedAnswer],
     })).status, 400, 'Answers from forked dialogues cannot be mixed');
+    process.env.CARTESIA_API_KEY = 'cartesia-test-key';
+    process.env.CARTESIA_VOICE_ID = 'cartesia-anna-test';
+    assert.equal((await request('realtime-feedback-speech', { text: '' })).status, 400);
+    const realtimeSpoken = await (await request('realtime-feedback-speech', { text: 'Ai răspuns clar.' })).json();
+    assert.equal(realtimeSpoken.provider, 'cartesia');
+    assert.ok(realtimeSpoken.audioBase64);
+    assert.equal(cartesiaSpeechRequests.at(-1).locale, 'ro-RO');
+    assert.equal(cartesiaSpeechRequests.at(-1).voice, 'cartesia-anna-test');
     const result = await (await request('feedback', { sessionToken: session.sessionToken, answers })).json();
     assert.ok(result.text.split(/\s+/).length <= 25); assert.ok(result.audioBase64);
+    assert.equal(result.provider, 'cartesia');
+    assert.equal(cartesiaSpeechRequests.at(-1).locale, 'ro-RO');
     assert.equal(JSON.parse(analysis.messages[1].content).length, 8);
     assert.equal(analysis.store, false);
     await request('feedback', { sessionToken: session.sessionToken, answers });
-    assert.equal(calls.feedback, 1); assert.equal(calls.speech, 4);
+    assert.equal(calls.feedback, 1); assert.equal(calls.speech, 3); assert.equal(calls.cartesiaSpeech, 2);
     // A second learner can finish after two answers and still see text if TTS fails.
     const second = await (await request('start', lesson, 'other-user')).json();
     const secondAnswers = [];

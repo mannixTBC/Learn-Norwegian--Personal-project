@@ -1,7 +1,9 @@
+import { apiUrl } from './api';
+
 let activeAudio = null;
 let playbackSequence = 0;
 
-const speechEndpoint = '/api/speech';
+const speechEndpoint = apiUrl('/api/speech');
 const voiceSetVersion = 'alice-george-v1';
 
 const reportSpeechStatus = (detail) => {
