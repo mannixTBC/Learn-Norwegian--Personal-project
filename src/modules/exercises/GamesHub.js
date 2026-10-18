@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getLearningLevel, levelName } from '../lessons/learningLevel';
 import { getReviewStats } from '../../services/spacedReview';
+import { getStudySummary } from '../../services/learningActivity';
 import MobileAppNav from '../layout/MobileAppNav';
 import './GamesHub.css';
 import './MobileExercisePolish.css';
@@ -24,6 +25,8 @@ const GamesHub = () => {
   const location = useLocation();
   const level = getLearningLevel(location.search);
   const reviewStats = getReviewStats(level);
+  const studySummary = getStudySummary();
+  const rewardBalance = Math.max(0, Math.floor(Number(localStorage.getItem('norwegian_reward_balance')) || 0));
   const verbProgress = readJson(`challenge_verbs_progress_${level.toLowerCase()}`, { day: 1 });
   const pronunciationAttempts = readJson(`pronunciation_attempts_${level.toLowerCase()}`, []);
   const verbSession = Math.max(1, Math.min(Number(verbProgress.day) || 1, 10));
@@ -49,9 +52,30 @@ const GamesHub = () => {
     { id: 'review', to: `/recapitulare?nivel=${level}`, title: 'Recapitulare', text: 'Consolidează ce ai învățat până acum.', badge: reviewStats.due ? `${reviewStats.due} de repetat` : level },
   ];
 
+  const appGameCards = [
+    { id: 'quiz', to: `/chestionar?nivel=${level}`, title: 'Vocabular', progress: gameCards[0].progress, icon: icons.quiz },
+    { id: 'order', to: `/drag?nivel=${level}`, title: 'Propoziții', progress: gameCards[1].progress, icon: icons.order },
+    { id: 'verbs', to: `/challenge30?nivel=${level}`, title: 'Verbe', progress: { completed: verbSession, target: 10 }, icon: icons.verbs },
+    { id: 'pronunciation', to: `/pronuntie?nivel=${level}`, title: 'Pronunție', progress: { completed: pronunciationBest, target: 100 }, icon: icons.pronunciation },
+  ];
+  const streak = Math.max(0, Number(studySummary.streak) || 0);
+
   return (
     <main className="games-hub">
       <Link className="games-hub__back" to={`/invata?nivel=${level}`}><span aria-hidden="true">←</span><div><small>Înapoi la meniu</small><strong>Lecțiile mele</strong></div></Link>
+
+      <header className="games-hub__app-rewards">
+        <h1>Jocuri</h1>
+        <div className="games-hub__reward-pill" aria-label={`${rewardBalance} monede disponibile`}>
+          <span className="games-hub__coin" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="11" /><path d="m16 9.8 1.8 3.7 4.1.6-3 2.9.7 4.1-3.6-1.9-3.6 1.9.7-4.1-3-2.9 4.1-.6Z" /></svg>
+          </span>
+          <span><strong>{rewardBalance}</strong><small>monede</small></span>
+        </div>
+        <div className="games-hub__streak-pill" aria-label={`Serie curentă: ${streak} ${streak === 1 ? 'zi' : 'zile'}`}>
+          <span aria-hidden="true">🔥</span><strong>{streak}</strong><small>{streak === 1 ? 'zi' : 'zile'}</small>
+        </div>
+      </header>
 
       <header className="games-hub__intro">
         <div><h1>Jocuri și exerciții</h1><p>Exersează în ritmul tău</p></div>
@@ -70,6 +94,36 @@ const GamesHub = () => {
           <strong>Începe <span aria-hidden="true">›</span></strong>
         </div>
       </Link>
+
+      <section className="games-hub__app-library" aria-label="Biblioteca de jocuri">
+        {appGameCards.map((game) => {
+          const percent = Math.min(100, Math.round((game.progress.completed / game.progress.target) * 100));
+          const progressLabel = game.id === 'pronunciation' && !game.progress.completed
+            ? 'Nou'
+            : `${game.progress.completed} din ${game.progress.target}`;
+          return (
+            <Link to={game.to} key={game.id}>
+              <span className={`games-hub__app-game-icon games-hub__app-game-icon--${game.id}`}>{game.icon}</span>
+              <span className="games-hub__app-game-copy">
+                <strong>{game.title}</strong>
+                <small>{progressLabel}</small>
+                <i aria-hidden="true"><b style={{ width: `${percent}%` }} /></i>
+              </span>
+              <em aria-hidden="true">›</em>
+            </Link>
+          );
+        })}
+      </section>
+
+      <section className="games-hub__app-streak" aria-label={`Seria ta: ${streak} ${streak === 1 ? 'zi' : 'zile'}`}>
+        <span className="games-hub__app-streak-icon" aria-hidden="true">🔥</span>
+        <div>
+          <strong>{streak ? `Seria ta: ${streak} ${streak === 1 ? 'zi' : 'zile'}` : 'Începe seria ta'}</strong>
+          <span aria-hidden="true">
+            {Array.from({ length: 7 }, (_, index) => <i className={index < Math.min(streak, 7) ? 'active' : ''} key={index}>●</i>)}
+          </span>
+        </div>
+      </section>
 
       <section className="games-hub__games" aria-labelledby="games-hub-games-title">
         <div className="games-hub__section-heading"><h2 id="games-hub-games-title">Mai multe jocuri și exerciții</h2><span>Vezi toate <b aria-hidden="true">›</b></span></div>
