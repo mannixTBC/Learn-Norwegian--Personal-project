@@ -6,6 +6,7 @@ import { getCareerPath, getCareerProfile } from '../../services/careerProfile';
 import { useAuth } from '../auth/AuthContext';
 import CareerPathVisual from '../onboarding/CareerPathVisual';
 import MobileAppNav from '../layout/MobileAppNav';
+import { getLessonImage } from './lessonVisuals';
 import './LearningHub.css';
 import './FinalTestCard.css';
 import './ReviewBadge.css';
@@ -13,6 +14,14 @@ import './ReviewBadge.css';
 const getStorageKey = (levelCode) => levelCode === 'A1' ? 'lesson_prog_progress' : `lesson_prog_progress_${levelCode.toLowerCase()}`;
 const ACTIVE_LEVEL_KEY = 'norwegian_active_level';
 const LESSON_PROGRESS_STEPS = 7;
+
+const BookIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4.5 5.5c3.2-.7 5.7 0 7.5 1.7v12c-1.8-1.7-4.3-2.4-7.5-1.7ZM19.5 5.5c-3.2-.7-5.7 0-7.5 1.7v12c1.8-1.7 4.3-2.4 7.5-1.7Z" />
+  </svg>
+);
+
+const ChevronIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>;
 
 const getLessonResumeKey = (levelCode, lessonId, user) => `lesson_resume_${user && user.id ? user.id : 'guest'}_${levelCode.toLowerCase()}_${lessonId}`;
 
@@ -63,6 +72,13 @@ const LearningHub = () => {
   const totalStepUnits = activeLessons.length * LESSON_PROGRESS_STEPS;
   const progressPercent = totalStepUnits ? Math.round((completedStepUnits / totalStepUnits) * 100) : 0;
   const nextLesson = activeLessons.find((lesson) => !progress.completed.includes(lesson.id)) || activeLessons[activeLessons.length - 1];
+  const nextLessonIndex = Math.max(0, activeLessons.findIndex((lesson) => lesson.id === nextLesson?.id));
+  const appPreviewStart = Math.max(0, Math.min(nextLessonIndex - 1, Math.max(0, activeLessons.length - 4)));
+  const appVisibleLessons = showAllLessons ? activeLessons : activeLessons.slice(appPreviewStart, appPreviewStart + 4);
+  const appTimelineActiveIndex = Math.max(0, appVisibleLessons.findIndex((lesson) => lesson.id === nextLesson?.id));
+  const appTimelineProgress = appVisibleLessons.length > 1
+    ? Math.round((appTimelineActiveIndex / (appVisibleLessons.length - 1)) * 100)
+    : 0;
   const currentLessonSteps = nextLesson && !progress.completed.includes(nextLesson.id) ? lessonStepProgress.get(nextLesson.id) : 0;
   const hasLearningProgress = completedStepUnits > 0;
   const progressSummary = `${completedCount} din ${activeLessons.length || 5} lecții finalizate${currentLessonSteps ? ` · ${currentLessonSteps} din ${LESSON_PROGRESS_STEPS} pași în lecția curentă` : ''}`;
@@ -79,6 +95,74 @@ const LearningHub = () => {
 
   return (
     <div className="learn-page">
+      <section className="learn-app" aria-label="Lecțiile tale">
+        <Link className="learn-app__direction" to={`/alege-directia?redirect=${encodeURIComponent(`/invata?nivel=${activeLevel}`)}`} aria-label={`Direcția cursului: ${careerPath.title}. Schimbă direcția`}>
+          <span className="learn-app__direction-icon"><BookIcon /></span>
+          <span className="learn-app__direction-copy">
+            <small>Direcția cursului</small>
+            <strong>{careerPath.title}</strong>
+            <em>{careerPath.outcome}</em>
+          </span>
+          <span className="learn-app__direction-action">Schimbă <ChevronIcon /></span>
+        </Link>
+
+        <div className="learn-app__levels" role="tablist" aria-label="Niveluri de limbă">
+          {levels.map((level) => (
+            <button key={level.code} type="button" className={activeLevel === level.code ? 'active' : ''} onClick={() => setActiveLevel(level.code)} role="tab" aria-selected={activeLevel === level.code}>{level.code}</button>
+          ))}
+        </div>
+
+        <section className="learn-app__progress" aria-label={`Progres nivel ${activeLevel}: ${progressPercent}%`}>
+          <div><span>Nivel {activeLevel} · {activeLevelInfo?.title}</span><strong>{completedCount} din {activeLessons.length} lecții</strong></div>
+          <div className="learn-app__progress-track" role="progressbar" aria-label={`Progres la nivelul ${activeLevel}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progressPercent}><span style={{ width: `${progressPercent}%` }} /></div>
+          <b>{progressPercent}%</b>
+        </section>
+
+        {nextLesson && (
+          <article className="learn-app__next" style={{ '--learn-lesson-image': `url("${getLessonImage(nextLesson.id)}")` }}>
+            <div>
+              <small>Lecția următoare</small>
+              <h1>Lecția {nextLesson.id}: {nextLesson.title}</h1>
+              <p>{nextLesson.duration} · {nextLesson.vocabulary} expresii</p>
+            </div>
+            <Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>{hasLearningProgress ? 'Continuă lecția' : 'Începe lecția'} <span aria-hidden="true">→</span></Link>
+          </article>
+        )}
+
+        <section className="learn-app__program" aria-labelledby="learn-app-program-title">
+          <header><div><small>Traseul tău</small><h2 id="learn-app-program-title">Programa {activeLevel}</h2></div><span>{activeLessons.length} lecții</span></header>
+          <div className="learn-app__timeline" style={{ '--learn-timeline-progress': `${appTimelineProgress}%` }}>
+            {appVisibleLessons.map((lesson) => {
+              const completed = progress.completed.includes(lesson.id);
+              const current = lesson.id === nextLesson?.id && !completed;
+              const completedSteps = lessonStepProgress.get(lesson.id);
+              return (
+                <Link className={`learn-app__lesson${completed ? ' is-complete' : ''}${current ? ' is-current' : ''}`} to={`/curs/${activeLevel.toLowerCase()}/${lesson.id}`} key={lesson.id}>
+                  <span className="learn-app__lesson-node">{completed ? '✓' : lesson.number}</span>
+                  <span className="learn-app__lesson-copy"><strong>{lesson.title}</strong><small>{lesson.duration} · {lesson.vocabulary} expresii</small></span>
+                  {completed
+                    ? <em>Finalizată</em>
+                    : current
+                      ? <em className="is-current">{completedSteps ? `${completedSteps} din ${LESSON_PROGRESS_STEPS} pași` : 'În desfășurare'}</em>
+                      : <span className="learn-app__lesson-chevron"><ChevronIcon /></span>}
+                </Link>
+              );
+            })}
+          </div>
+          {activeLessons.length > 4 && (
+            <button className="learn-app__all" type="button" aria-expanded={showAllLessons} onClick={() => setShowAllLessons((current) => !current)}>
+              {showAllLessons ? 'Arată mai puține lecții' : `Vezi toate cele ${activeLessons.length} lecții`} <span aria-hidden="true">{showAllLessons ? '↑' : '↓'}</span>
+            </button>
+          )}
+        </section>
+
+        <Link className="learn-app__test" to={`/test-final/${activeLevel.toLowerCase()}`}>
+          <span>{finalTestPassed ? '✓' : activeLevel}</span>
+          <span><small>La finalul programei</small><strong>Test final interactiv</strong><em>{finalTestBest ? `Cel mai bun rezultat: ${finalTestBest}%` : 'Verifică ce ai învățat'}</em></span>
+          <ChevronIcon />
+        </Link>
+      </section>
+
       <header className="learn-hero">
         <div>
           <p className="learn-kicker">Curs de norvegiană</p>

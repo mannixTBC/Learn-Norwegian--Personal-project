@@ -5,12 +5,11 @@ import PremiumGate from '../../premium/PremiumGate';
 import ChatAssistant from '../../chat/ChatAssistant';
 import VoiceLessonConversation from '../../chat/VoiceLessonConversation';
 import { LessonExercise, LessonMetaIcon, HighlightedSentence, DialogueAudioButton, SpeakerAvatar, getDialogueVoice, DialogueLineAudioButton } from './lessonParts';
+import { getLessonImage } from '../lessonVisuals';
 import './LessonProgramApp.css';
 
 /* Vizualizarea lecției pentru aplicația instalată — replică ecranele
    de referință „La cafenea”. Web-ul folosește JSX-ul din LessonProgram. */
-
-const contextImageFor = (lessonId) => (lessonId === 2 ? '/images/lessons/nordic-cafe.png' : '/images/auth-norway-fjord.webp');
 
 const PlayIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5Z" /></svg>;
 const PauseIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5h2.8v13H8Zm5.2 0H16v13h-2.8Z" /></svg>;
@@ -115,7 +114,7 @@ const LessonAppView = (props) => {
     setVocabularyIndex, setCareerPhraseIndex, setExerciseIndex,
     toggleVocabularyTranslation, toggleTranslation, next, previous, goNextLesson, onRecordResult, onReplayExercises,
   } = props;
-  const art = contextImageFor(lesson.id);
+  const art = getLessonImage(lesson.id);
   const score = Object.values(answers).filter(Boolean).length;
   const answered = Object.keys(answers).length;
   const canFinish = answered === lessonExercises.length;

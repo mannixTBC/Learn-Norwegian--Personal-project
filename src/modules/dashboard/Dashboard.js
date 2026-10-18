@@ -8,6 +8,7 @@ import { getDailyGoal, getStudySummary, setDailyGoal } from '../../services/lear
 import { getCareerLessonModule, getCareerPath, getCareerProfile } from '../../services/careerProfile';
 import CareerPathVisual from '../onboarding/CareerPathVisual';
 import MobileAppNav from '../layout/MobileAppNav';
+import { getLessonImage } from '../lessons/lessonVisuals';
 import './Dashboard.css';
 
 const progressKey = (level) => level === 'A1' ? 'lesson_prog_progress' : `lesson_prog_progress_${level.toLowerCase()}`;
@@ -242,7 +243,7 @@ const Dashboard = () => {
           <span className="dashboard-app-home__progress-icon"><DashboardAppIcon type="progress" /></span>
         </section>
 
-        <article className="dashboard-app-home__lesson">
+        <article className="dashboard-app-home__lesson" style={{ '--dashboard-lesson-image': `url("${getLessonImage(nextLesson.id)}")` }}>
           <div className="dashboard-app-home__lesson-copy">
             <span>Următorul pas</span>
             <h2>Lecția {nextLesson.id}: {nextLesson.title}</h2>

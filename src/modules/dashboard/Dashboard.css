@@ -353,7 +353,7 @@
   .dashboard-app-home__lesson{
     position:relative;isolation:isolate;min-height:206px;overflow:hidden;padding:18px 17px;
     border:1px solid #e2e9e7;border-radius:22px;
-    background:linear-gradient(90deg,#fff 0%,#fff 44%,rgba(255,255,255,.86) 58%,rgba(255,255,255,.05) 100%),url('/images/lessons/nordic-cafe.png') 82% 63%/cover no-repeat;
+    background:linear-gradient(90deg,#fff 0%,#fff 44%,rgba(255,255,255,.86) 58%,rgba(255,255,255,.05) 100%),var(--dashboard-lesson-image,url('/images/auth-norway-fjord.webp')) 82% 63%/cover no-repeat;
     box-shadow:0 11px 28px rgba(20,52,72,.09);
   }
   .dashboard-app-home__lesson-copy{position:relative;z-index:1;max-width:68%}
