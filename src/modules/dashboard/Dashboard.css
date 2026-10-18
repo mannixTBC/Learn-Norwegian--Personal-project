@@ -294,10 +294,11 @@
 
 /* Pagina principală dedicată aplicației instalate — varianta ilustrată. */
 @media(max-width:680px){
+  html.is-installed-app .App:has(.daily-dashboard)>.navbar{display:none}
   html.is-installed-app .App:has(.daily-dashboard)>.footer{display:none}
   html.is-installed-app .App__main:has(.daily-dashboard){background:#fbfcfa}
   html.is-installed-app .daily-dashboard{
-    display:block;width:100%;min-height:calc(100dvh - 60px);box-sizing:border-box;
+    display:block;width:100%;min-height:100dvh;box-sizing:border-box;
     padding:0 14px calc(76px + env(safe-area-inset-bottom));overflow:hidden;
     background:linear-gradient(180deg,#fffdf8 0%,#f8fbfa 74%,#fff 100%);
   }
@@ -306,7 +307,7 @@
   html.is-installed-app .dashboard-app-home{display:grid;gap:11px}
 
   .dashboard-app-home__hero{
-    position:relative;min-height:156px;margin:0 -14px;padding:31px 22px 20px;box-sizing:border-box;
+    position:relative;min-height:222px;margin:0 -14px;padding:calc(14px + env(safe-area-inset-top)) 22px 22px;box-sizing:border-box;
     overflow:hidden;background:#eff9fb url('/images/games-fjord-hero.png') 58% center/cover no-repeat;
   }
   .dashboard-app-home__hero:after{
@@ -314,7 +315,9 @@
     background:linear-gradient(90deg,rgba(255,255,255,.98) 0%,rgba(255,255,255,.94) 35%,rgba(255,255,255,.38) 62%,rgba(255,255,255,0) 100%);
     content:'';
   }
-  .dashboard-app-home__hero>div{position:relative;z-index:1;max-width:64%}
+  .dashboard-app-home__brand{position:relative;z-index:1;display:inline-flex;align-items:center;width:136px;padding:4px 0;text-decoration:none}
+  .dashboard-app-home__brand img{display:block;width:100%;height:auto;filter:drop-shadow(0 1px 2px rgba(255,255,255,.8))}
+  .dashboard-app-home__hero>div{position:relative;z-index:1;max-width:64%;margin-top:22px}
   .dashboard-app-home__hero span{
     display:block;margin-bottom:3px;color:#0c6c70;font-size:.66rem;font-weight:950;
     letter-spacing:.13em;text-transform:uppercase;
@@ -389,32 +392,28 @@
   .dashboard-app-home__shortcuts strong{font-size:.72rem;line-height:1.18}
   .dashboard-app-home__shortcuts small{display:-webkit-box;overflow:hidden;color:#778697;font-size:.58rem;line-height:1.32;-webkit-box-orient:vertical;-webkit-line-clamp:2}
   .dashboard-app-home__shortcuts b,
-  .dashboard-app-home__games>b{display:grid;width:25px;height:25px;place-items:center;color:#075d68;border-radius:9px;background:#e9f5f3;font-size:1.2rem;line-height:1}
+  .dashboard-app-home__discover>b{display:grid;width:25px;height:25px;place-items:center;color:#075d68;border-radius:9px;background:#e9f5f3;font-size:1.2rem;line-height:1}
   .dashboard-app-home__shortcuts>a:active{transform:scale(.985)}
 
-  .dashboard-app-home__games{
-    position:relative;display:grid;grid-template-columns:54px minmax(0,1fr) 32px;gap:13px;align-items:center;
-    min-height:91px;overflow:hidden;padding:13px 14px;color:#0d2546!important;border:1px solid #cfe3e3;
-    border-radius:20px;background:linear-gradient(90deg,rgba(255,255,255,.97),rgba(255,255,255,.82)),url('/images/games-fjord-hero.png') center 61%/cover no-repeat;
-    box-shadow:0 8px 21px rgba(20,52,72,.065);
+  .dashboard-app-home__discover{
+    position:relative;display:grid;grid-template-columns:minmax(0,1fr) 34px;gap:13px;align-items:center;
+    min-height:96px;overflow:hidden;padding:15px 16px;color:#fff!important;border:1px solid rgba(113,185,181,.4);
+    border-radius:20px;background:linear-gradient(90deg,rgba(5,30,48,.94) 0%,rgba(5,39,53,.77) 52%,rgba(5,39,53,.23) 100%),url('/images/discover-v2/aurora-v2.webp') center 43%/cover no-repeat;
+    box-shadow:0 9px 23px rgba(13,45,65,.13);
   }
-  .dashboard-app-home__games:after{position:absolute;right:-8px;bottom:-26px;width:155px;height:70px;border-radius:50%;background:rgba(119,205,194,.16);content:''}
-  .dashboard-app-home__games-icon{
-    position:relative;z-index:1;display:grid;width:54px;height:54px;place-items:center;color:#fff;
-    border-radius:17px;background:linear-gradient(145deg,#08676c,#0b9391);box-shadow:0 7px 16px rgba(8,103,108,.2);
-  }
-  .dashboard-app-home__games-icon svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-  .dashboard-app-home__games>span:nth-child(2){position:relative;z-index:1;display:grid;min-width:0}
-  .dashboard-app-home__games small{color:#0c7475;font-size:.58rem;font-weight:950;letter-spacing:.09em;text-transform:uppercase}
-  .dashboard-app-home__games strong{margin:2px 0;color:#0d2546;font-size:1rem;line-height:1.15}
-  .dashboard-app-home__games em{overflow:hidden;color:#697b8b;font-size:.65rem;font-style:normal;text-overflow:ellipsis;white-space:nowrap}
-  .dashboard-app-home__games>b{position:relative;z-index:1;width:32px;height:32px;border-radius:11px}
-  .dashboard-app-home__games:active{transform:scale(.985)}
+  .dashboard-app-home__discover>span{position:relative;z-index:1;display:grid;min-width:0}
+  .dashboard-app-home__discover small{color:#a9e3d5;font-size:.58rem;font-weight:950;letter-spacing:.1em;text-transform:uppercase}
+  .dashboard-app-home__discover strong{margin:3px 0;color:#fff;font-size:1.05rem;line-height:1.15}
+  .dashboard-app-home__discover em{overflow:hidden;color:#e2edf0;font-size:.65rem;font-style:normal;text-overflow:ellipsis;white-space:nowrap}
+  .dashboard-app-home__discover>b{position:relative;z-index:1;width:34px;height:34px;color:#fff;border:1px solid rgba(255,255,255,.34);border-radius:11px;background:rgba(255,255,255,.16);backdrop-filter:blur(7px)}
+  .dashboard-app-home__discover:active{transform:scale(.985)}
 }
 
 @media(max-width:370px){
   html.is-installed-app .daily-dashboard{padding-right:11px;padding-left:11px}
-  .dashboard-app-home__hero{min-height:146px;margin-right:-11px;margin-left:-11px;padding-right:18px;padding-left:18px}
+  .dashboard-app-home__hero{min-height:216px;margin-right:-11px;margin-left:-11px;padding-right:18px;padding-left:18px}
+  .dashboard-app-home__brand{width:128px}
+  .dashboard-app-home__hero>div{margin-top:19px}
   .dashboard-app-home__hero p{font-size:.82rem}
   .dashboard-app-home__progress{grid-template-columns:62px minmax(0,1fr) 35px;gap:9px;padding:11px}
   .dashboard-app-home__ring{width:60px;height:60px}

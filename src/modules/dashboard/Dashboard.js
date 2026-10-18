@@ -220,6 +220,9 @@ const Dashboard = () => {
 
       <section className="dashboard-app-home" aria-label="Pagina principală a aplicației">
         <header className="dashboard-app-home__hero">
+          <Link className="dashboard-app-home__brand" to="/dashboard" aria-label="NordLingo — Acasă">
+            <img src="/branding/nordlingo-selected-color.png" alt="NordLingo" />
+          </Link>
           <div>
             <span>{greeting()}</span>
             <h1>{user && !user.isGuest ? user.name.split(' ')[0] : 'Hai să continuăm'}</h1>
@@ -263,10 +266,9 @@ const Dashboard = () => {
           </Link>
         </div>
 
-        <Link className="dashboard-app-home__games" to={`/jocuri?nivel=${activeLevel}`}>
-          <span className="dashboard-app-home__games-icon"><DashboardAppIcon type="game" /></span>
-          <span><small>Practică în ritmul tău</small><strong>Jocuri și exerciții</strong><em>Vocabular, propoziții, verbe și pronunție.</em></span>
-          <b aria-hidden="true">›</b>
+        <Link className="dashboard-app-home__discover" to="/descopera">
+          <span><small>Cultură și viață</small><strong>Descoperă Norvegia</strong><em>Locuri, tradiții și viața de zi cu zi.</em></span>
+          <b aria-hidden="true">→</b>
         </Link>
       </section>
 
