@@ -118,11 +118,11 @@ export const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$
 
 /* Cardul de exercițiu, comun web/app. Varianta appLayout urmează
    ecranul „Exerciții” din referințe: chip, inimă, variante cu radio. */
-export const LessonExercise = ({ exercise, index, onResult, isMobileActive, appLayout, wasAnswered }) => {
+export const LessonExercise = ({ exercise, index, onResult, isMobileActive, appLayout }) => {
   const [value, setValue] = useState('');
   const [selectedWords, setSelectedWords] = useState([]);
   const [gapAnswers, setGapAnswers] = useState([]);
-  const [checked, setChecked] = useState(() => Boolean(appLayout && wasAnswered));
+  const [checked, setChecked] = useState(false);
 
   const cleanWords = selectedWords.map((entry) => entry.split('::')[0]);
   const isCorrect = exercise.type === 'choice'

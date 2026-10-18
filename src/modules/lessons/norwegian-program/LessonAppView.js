@@ -89,20 +89,27 @@ const AppBar = ({ onBack, backDisabled, primaryLabel, onPrimary, primaryDisabled
   </footer>
 );
 
-const AppExpressionBar = ({ current, total, onBack, onNext, onComplete, nextLabel }) => (
+const AppExpressionBar = ({ current, total, onBack, onNext, onComplete, nextLabel, nextDisabled = false, completeLabel = 'Continuă' }) => (
   <footer className="lapp-bar lapp-bar--dots">
-    <button type="button" className="lapp-bar__back" onClick={onBack} disabled={current === 0} aria-label="Elementul anterior">← Înapoi</button>
+    <button type="button" className="lapp-bar__back" onClick={onBack} aria-label={current === 0 ? 'Etapa anterioară' : 'Elementul anterior'}>← Înapoi</button>
     <div className="lapp-bar__dots" aria-live="polite">
       <span>{current + 1} din {total}</span>
       <div aria-hidden="true">{Array.from({ length: total }, (_, i) => <i className={i === current ? 'is-active' : ''} key={i} />)}</div>
     </div>
-    <button type="button" className={`lapp-bar__next ${current === total - 1 ? 'is-solid' : ''}`} onClick={current === total - 1 ? onComplete : onNext}>{current === total - 1 ? 'Continuă' : nextLabel} →</button>
+    <button
+      type="button"
+      className={`lapp-bar__next ${current === total - 1 ? 'is-solid' : ''}`}
+      onClick={current === total - 1 ? onComplete : onNext}
+      disabled={nextDisabled}
+    >
+      {current === total - 1 ? completeLabel : nextLabel} →
+    </button>
   </footer>
 );
 
 const LessonAppView = (props) => {
   const {
-    step, steps, lesson, course, levelCode, courseLessons, lessonExercises, careerModule,
+    step, steps, lesson, course, levelCode, courseLessons, lessonExercises, careerModule, careerPathId, voiceCompleted,
     vocabularyIndex, careerPhraseIndex, exerciseIndex, answers, showVocabularyTranslations, showTranslations,
     contentRef, resultStep,
     setVocabularyIndex, setCareerPhraseIndex, setExerciseIndex,
@@ -161,7 +168,7 @@ const LessonAppView = (props) => {
               </article>
             ))}
             <AppExpressionBar current={vocabularyIndex} total={lesson.vocabulary.length} nextLabel="Următoarea"
-              onBack={() => setVocabularyIndex((c) => Math.max(0, c - 1))}
+              onBack={() => vocabularyIndex === 0 ? previous() : setVocabularyIndex((c) => c - 1)}
               onNext={() => setVocabularyIndex((c) => Math.min(lesson.vocabulary.length - 1, c + 1))}
               onComplete={next} />
           </section>
@@ -186,7 +193,7 @@ const LessonAppView = (props) => {
               })}
             </div>
             <AppExpressionBar current={careerPhraseIndex} total={careerPages} nextLabel="Următoarea"
-              onBack={() => setCareerPhraseIndex((c) => Math.max(0, c - 1))}
+              onBack={() => careerPhraseIndex === 0 ? previous() : setCareerPhraseIndex((c) => c - 1)}
               onNext={() => setCareerPhraseIndex((c) => Math.min(careerPages - 1, c + 1))}
               onComplete={next} />
           </section>
@@ -212,7 +219,7 @@ const LessonAppView = (props) => {
               ))}
             </div>
             <PremiumGate feature="Asistentul virtual de conversație">
-              <ChatAssistant key={`${levelCode}-${lesson.id}-app`} level={levelCode} lessonId={lesson.id} pathId="general" lessonTitle={lesson.title} />
+              <ChatAssistant key={`${levelCode}-${lesson.id}-${careerPathId}-app`} level={levelCode} lessonId={lesson.id} pathId={careerPathId} lessonTitle={lesson.title} />
             </PremiumGate>
           </section>
         )}
@@ -246,19 +253,33 @@ const LessonAppView = (props) => {
                 {lessonExercises.map((_, i) => <i className={answers[i] !== undefined ? 'is-done' : ''} key={i} />)}
               </div>
             </div>
-            <LessonExercise exercise={lessonExercises[exerciseIndex]} index={exerciseIndex} onResult={onRecordResult} appLayout wasAnswered={answers[exerciseIndex] !== undefined} />
+            <LessonExercise
+              key={`${lesson.id}-${exerciseIndex}-${lessonExercises[exerciseIndex].careerPath || 'general'}`}
+              exercise={lessonExercises[exerciseIndex]}
+              index={exerciseIndex}
+              onResult={onRecordResult}
+              appLayout
+            />
             <AppExpressionBar current={exerciseIndex} total={lessonExercises.length} nextLabel="Următoarea"
-              onBack={() => setExerciseIndex((c) => Math.max(0, c - 1))}
+              onBack={() => exerciseIndex === 0 ? previous() : setExerciseIndex((c) => c - 1)}
               onNext={() => setExerciseIndex((c) => Math.min(lessonExercises.length - 1, c + 1))}
-              onComplete={next} />
+              onComplete={next}
+              nextDisabled={answers[exerciseIndex] === undefined}
+              completeLabel={canFinish ? 'Dialog vocal' : 'Verifică răspunsul'} />
           </section>
         )}
 
         {step === 6 && (
           <section>
-            <StepHeading eyebrow="Pasul 7" title="Dialog vocal" sub="Exersează conversația cu vocea AI." art={art} />
             <PremiumGate feature="Dialogul vocal cu AI">
-              <VoiceLessonConversation key={`${levelCode}-${lesson.id}-app`} level={levelCode} lessonId={lesson.id} pathId="general" lessonTitle={lesson.title} />
+              <VoiceLessonConversation
+                key={`${levelCode}-${lesson.id}-${careerPathId}-app`}
+                level={levelCode}
+                lessonId={lesson.id}
+                pathId={careerPathId}
+                lessonTitle={lesson.title}
+                onComplete={props.onVoiceComplete}
+              />
             </PremiumGate>
           </section>
         )}
@@ -275,7 +296,7 @@ const LessonAppView = (props) => {
             </div>
             <div className="lapp-statscard">
               <div><span><LessonMetaIcon type="vocabulary" /></span><strong>Exerciții corecte</strong><b>{score}/{lessonExercises.length}</b></div>
-              <div><span><LessonMetaIcon type="voice" /></span><strong>Dialog vocal finalizat</strong><b>✓</b></div>
+              <div><span><LessonMetaIcon type="voice" /></span><strong>{voiceCompleted ? 'Dialog vocal finalizat' : 'Dialog vocal de exersat'}</strong><b>{voiceCompleted ? '✓' : '—'}</b></div>
               <div><span><LessonMetaIcon type="level" /></span><strong>Expresii parcurse</strong><b>{lesson.vocabulary.length + careerModule.phrases.length}</b></div>
             </div>
             {Object.values(answers).filter((v) => !v).length > 0 && (
@@ -297,8 +318,8 @@ const LessonAppView = (props) => {
 
       {step < resultStep && step !== 1 && step !== 2 && step !== 5 && (
         <AppBar onBack={previous} backDisabled={step === 0}
-          primaryLabel={step === 5 ? (canFinish ? 'Dialog vocal' : 'Răspunde la toate') : step === 6 ? 'Finalizează lecția' : 'Continuă'}
-          onPrimary={next} primaryDisabled={step === 5 && !canFinish} primarySolid />
+          primaryLabel={step === 6 ? 'Finalizează lecția' : 'Continuă'}
+          onPrimary={next} primarySolid />
       )}
     </div>
   );

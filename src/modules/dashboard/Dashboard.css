@@ -266,6 +266,7 @@
 /* Pornire directa dintr-un antet compact, exclusiv pe desktop. */
 .dashboard-desktop-start{display:none}
 .dashboard-desktop-progress{display:none}
+.dashboard-app-home{display:none}
 @media(min-width:681px){
   .daily-dashboard__hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;padding:24px 28px;border:1px solid #cfe3e5;border-radius:20px;background:linear-gradient(135deg,#fff,#f0f9f8);box-shadow:0 8px 24px rgba(20,33,61,.05);align-items:center}
   .daily-dashboard__hero .daily-goal,.daily-dashboard__welcome>span,.daily-dashboard__welcome>p,.daily-dashboard__welcome>div>a{display:none}
@@ -289,4 +290,138 @@
   .dashboard-desktop-start>a:hover{color:#14213d;background:linear-gradient(135deg,#ffe59d,#ffd066);transform:translateY(-2px)}
   .dashboard-today__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .dashboard-today .today-task--primary{display:none}
+}
+
+/* Pagina principală dedicată aplicației instalate — varianta ilustrată. */
+@media(max-width:680px){
+  html.is-installed-app .App:has(.daily-dashboard)>.footer{display:none}
+  html.is-installed-app .App__main:has(.daily-dashboard){background:#fbfcfa}
+  html.is-installed-app .daily-dashboard{
+    display:block;width:100%;min-height:calc(100dvh - 60px);box-sizing:border-box;
+    padding:0 14px calc(76px + env(safe-area-inset-bottom));overflow:hidden;
+    background:linear-gradient(180deg,#fffdf8 0%,#f8fbfa 74%,#fff 100%);
+  }
+  html.is-installed-app .dashboard-mobile-start,
+  html.is-installed-app .dashboard-mobile-games{display:none}
+  html.is-installed-app .dashboard-app-home{display:grid;gap:11px}
+
+  .dashboard-app-home__hero{
+    position:relative;min-height:156px;margin:0 -14px;padding:31px 22px 20px;box-sizing:border-box;
+    overflow:hidden;background:#eff9fb url('/images/games-fjord-hero.png') 58% center/cover no-repeat;
+  }
+  .dashboard-app-home__hero:after{
+    position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(90deg,rgba(255,255,255,.98) 0%,rgba(255,255,255,.94) 35%,rgba(255,255,255,.38) 62%,rgba(255,255,255,0) 100%);
+    content:'';
+  }
+  .dashboard-app-home__hero>div{position:relative;z-index:1;max-width:64%}
+  .dashboard-app-home__hero span{
+    display:block;margin-bottom:3px;color:#0c6c70;font-size:.66rem;font-weight:950;
+    letter-spacing:.13em;text-transform:uppercase;
+  }
+  .dashboard-app-home__hero h1{
+    margin:0;color:#0d2546;font-size:clamp(2.15rem,11vw,2.75rem);font-weight:850;
+    line-height:1;letter-spacing:-.045em;
+  }
+  .dashboard-app-home__hero p{margin:8px 0 0;color:#65758a;font-size:.88rem;line-height:1.4}
+
+  .dashboard-app-home__progress{
+    position:relative;z-index:2;display:grid;grid-template-columns:72px minmax(0,1fr) 39px;
+    gap:13px;align-items:center;margin-top:-12px;padding:13px 14px;
+    border:1px solid #d8e7e8;border-radius:20px;background:rgba(255,255,255,.96);
+    box-shadow:0 10px 25px rgba(20,52,72,.09);backdrop-filter:blur(12px);
+  }
+  .dashboard-app-home__ring{
+    position:relative;display:grid;width:70px;height:70px;place-items:center;border-radius:50%;
+    background:conic-gradient(#159b97 var(--app-progress),#dfebec 0);
+  }
+  .dashboard-app-home__ring:before{position:absolute;width:53px;height:53px;border-radius:50%;background:#fff;content:''}
+  .dashboard-app-home__ring strong{position:relative;color:#0d2546;font-size:1.1rem;font-weight:900}
+  .dashboard-app-home__progress-copy{display:grid;min-width:0;gap:3px}
+  .dashboard-app-home__progress-copy>strong{color:#31485f;font-size:.68rem;font-weight:900;letter-spacing:.085em;text-transform:uppercase}
+  .dashboard-app-home__progress-copy>span{color:#63748a;font-size:.75rem;font-weight:650}
+  .dashboard-app-home__progress-copy>div{height:8px;margin-top:5px;overflow:hidden;border-radius:99px;background:#deeaeb}
+  .dashboard-app-home__progress-copy i{display:block;height:100%;min-width:3px;border-radius:inherit;background:linear-gradient(90deg,#168985,#4fc2bd)}
+  .dashboard-app-home__progress-icon{
+    display:grid;width:39px;height:39px;place-items:center;color:#0c6c70;border-radius:13px;background:#e5f5f3;
+  }
+  .dashboard-app-home__progress-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+
+  .dashboard-app-home__lesson{
+    position:relative;isolation:isolate;min-height:206px;overflow:hidden;padding:18px 17px;
+    border:1px solid #e2e9e7;border-radius:22px;
+    background:linear-gradient(90deg,#fff 0%,#fff 44%,rgba(255,255,255,.86) 58%,rgba(255,255,255,.05) 100%),url('/images/lessons/nordic-cafe.png') 82% 63%/cover no-repeat;
+    box-shadow:0 11px 28px rgba(20,52,72,.09);
+  }
+  .dashboard-app-home__lesson-copy{position:relative;z-index:1;max-width:68%}
+  .dashboard-app-home__lesson-copy>span{
+    display:inline-flex;padding:5px 10px;color:#0c6c70;border-radius:99px;background:#e8f5f2;
+    font-size:.62rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase;
+  }
+  .dashboard-app-home__lesson h2{
+    margin:10px 0 8px;color:#0d2546;font-size:clamp(1.28rem,6.4vw,1.58rem);font-weight:850;
+    display:-webkit-box;overflow:hidden;line-height:1.12;letter-spacing:-.025em;
+    -webkit-box-orient:vertical;-webkit-line-clamp:2;
+  }
+  .dashboard-app-home__lesson p{display:flex;gap:12px;flex-wrap:wrap;margin:0;color:#617287;font-size:.72rem;font-weight:650}
+  .dashboard-app-home__lesson p>span{display:flex;align-items:center;gap:5px}
+  .dashboard-app-home__lesson p svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .dashboard-app-home__lesson>a{
+    position:absolute;z-index:2;bottom:16px;left:16px;display:flex;width:min(58%,220px);min-height:49px;
+    align-items:center;justify-content:center;gap:10px;color:#0d2546!important;border:1px solid #efb833;
+    border-radius:14px;background:linear-gradient(135deg,#ffe18a,#ffc94e);box-shadow:0 8px 19px rgba(137,94,10,.2);
+    font-size:.9rem;font-weight:950;
+  }
+  .dashboard-app-home__lesson>a>span{font-size:1.2rem}
+  .dashboard-app-home__lesson>a:active{transform:scale(.985)}
+
+  .dashboard-app-home__shortcuts{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .dashboard-app-home__shortcuts>a{
+    display:grid;grid-template-columns:40px minmax(0,1fr) 25px;gap:9px;align-items:center;min-height:78px;
+    padding:10px;color:#0d2546!important;border:1px solid #d6e6e7;border-radius:18px;background:#fff;
+    box-shadow:0 7px 18px rgba(20,52,72,.055);
+  }
+  .dashboard-app-home__shortcut-icon{
+    display:grid;width:40px;height:40px;place-items:center;color:#075d68;border-radius:13px;background:#e5f5f2;
+  }
+  .dashboard-app-home__shortcut-icon svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .dashboard-app-home__shortcuts>a>span:nth-child(2){display:grid;min-width:0;gap:2px}
+  .dashboard-app-home__shortcuts strong{font-size:.72rem;line-height:1.18}
+  .dashboard-app-home__shortcuts small{display:-webkit-box;overflow:hidden;color:#778697;font-size:.58rem;line-height:1.32;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+  .dashboard-app-home__shortcuts b,
+  .dashboard-app-home__games>b{display:grid;width:25px;height:25px;place-items:center;color:#075d68;border-radius:9px;background:#e9f5f3;font-size:1.2rem;line-height:1}
+  .dashboard-app-home__shortcuts>a:active{transform:scale(.985)}
+
+  .dashboard-app-home__games{
+    position:relative;display:grid;grid-template-columns:54px minmax(0,1fr) 32px;gap:13px;align-items:center;
+    min-height:91px;overflow:hidden;padding:13px 14px;color:#0d2546!important;border:1px solid #cfe3e3;
+    border-radius:20px;background:linear-gradient(90deg,rgba(255,255,255,.97),rgba(255,255,255,.82)),url('/images/games-fjord-hero.png') center 61%/cover no-repeat;
+    box-shadow:0 8px 21px rgba(20,52,72,.065);
+  }
+  .dashboard-app-home__games:after{position:absolute;right:-8px;bottom:-26px;width:155px;height:70px;border-radius:50%;background:rgba(119,205,194,.16);content:''}
+  .dashboard-app-home__games-icon{
+    position:relative;z-index:1;display:grid;width:54px;height:54px;place-items:center;color:#fff;
+    border-radius:17px;background:linear-gradient(145deg,#08676c,#0b9391);box-shadow:0 7px 16px rgba(8,103,108,.2);
+  }
+  .dashboard-app-home__games-icon svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .dashboard-app-home__games>span:nth-child(2){position:relative;z-index:1;display:grid;min-width:0}
+  .dashboard-app-home__games small{color:#0c7475;font-size:.58rem;font-weight:950;letter-spacing:.09em;text-transform:uppercase}
+  .dashboard-app-home__games strong{margin:2px 0;color:#0d2546;font-size:1rem;line-height:1.15}
+  .dashboard-app-home__games em{overflow:hidden;color:#697b8b;font-size:.65rem;font-style:normal;text-overflow:ellipsis;white-space:nowrap}
+  .dashboard-app-home__games>b{position:relative;z-index:1;width:32px;height:32px;border-radius:11px}
+  .dashboard-app-home__games:active{transform:scale(.985)}
+}
+
+@media(max-width:370px){
+  html.is-installed-app .daily-dashboard{padding-right:11px;padding-left:11px}
+  .dashboard-app-home__hero{min-height:146px;margin-right:-11px;margin-left:-11px;padding-right:18px;padding-left:18px}
+  .dashboard-app-home__hero p{font-size:.82rem}
+  .dashboard-app-home__progress{grid-template-columns:62px minmax(0,1fr) 35px;gap:9px;padding:11px}
+  .dashboard-app-home__ring{width:60px;height:60px}
+  .dashboard-app-home__ring:before{width:45px;height:45px}
+  .dashboard-app-home__ring strong{font-size:.96rem}
+  .dashboard-app-home__lesson{min-height:199px;padding:16px 14px}
+  .dashboard-app-home__shortcuts>a{grid-template-columns:36px minmax(0,1fr);gap:7px;min-height:74px;padding:9px}
+  .dashboard-app-home__shortcuts>a>b{display:none}
+  .dashboard-app-home__shortcut-icon{width:36px;height:36px}
 }

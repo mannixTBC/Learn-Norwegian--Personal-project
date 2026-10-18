@@ -45,7 +45,7 @@ const createConversationId = () => {
   return `${value.slice(0, 8)}-${value.slice(8, 12)}-${value.slice(12, 16)}-${value.slice(16, 20)}-${value.slice(20)}`;
 };
 
-export default function VoiceLessonConversation({ level, lessonId, pathId, lessonTitle }) {
+export default function VoiceLessonConversation({ level, lessonId, pathId, lessonTitle, onComplete }) {
   const [configured, setConfigured] = useState(null);
   const [status, setStatus] = useState('idle');
   const [voiceSession, setVoiceSession] = useState(null);
@@ -198,6 +198,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       }, signal);
       if (signal.aborted || !mounted.current) return;
       setFeedback(result);
+      onComplete?.();
       if (result.audioBase64) await play(result, 'feedback');
       else {
         setStatus('ended');
@@ -366,6 +367,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       if (!text) return;
       if (realtimeFinishing.current) {
         setFeedback({ text });
+        onComplete?.();
         playRealtimeFeedback(text);
       }
       else setMessages((current) => [...current, { role: 'assistant', reply: text, question: null, turn: current.filter((item) => item.role === 'user').length }]);

@@ -29,6 +29,18 @@ const greeting = () => {
   return 'Bună seara';
 };
 
+const DashboardAppIcon = ({ type }) => {
+  const paths = {
+    progress: <><path d="M5 19V11M12 19V5M19 19v-9" /></>,
+    book: <><path d="M4.5 5.5c3.2-.7 5.7 0 7.5 1.7v12c-1.8-1.7-4.3-2.4-7.5-1.7Z" /><path d="M19.5 5.5c-3.2-.7-5.7 0-7.5 1.7v12c1.8-1.7 4.3-2.4 7.5-1.7Z" /></>,
+    review: <><path d="M19.5 8.5A8 8 0 0 0 6 7l-2 2" /><path d="M4 5v4h4M4.5 15.5A8 8 0 0 0 18 17l2-2" /><path d="M20 19v-4h-4" /></>,
+    game: <><path d="M8 9h8a5 5 0 0 1 4.8 3.6l1 3.6a2.8 2.8 0 0 1-4.7 2.7L15.2 17H8.8l-1.9 1.9a2.8 2.8 0 0 1-4.7-2.7l1-3.6A5 5 0 0 1 8 9Z" /><path d="M7 12v4M5 14h4M16.5 13h.1M18.5 15h.1" /></>,
+    clock: <><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></>,
+    chat: <><path d="M5 6.5h14v9H10l-4.5 3v-3H5Z" /><path d="M9 11h.1M12 11h.1M15 11h.1" /></>,
+  };
+  return <svg viewBox="0 0 24 24" aria-hidden="true">{paths[type]}</svg>;
+};
+
 const RecommendationVisual = ({ type, fallback, pathId }) => {
   if (type === 'career') {
     return <CareerPathVisual pathId={pathId} className="dashboard-recommendation__career-icon" />;
@@ -204,6 +216,58 @@ const Dashboard = () => {
           <Link to={`/invata?nivel=${activeLevel}`}><span aria-hidden="true">Aa</span>Toate lecțiile</Link>
           <Link to={`/recapitulare?nivel=${activeLevel}`}><span aria-hidden="true">↻</span>Recapitulare</Link>
         </div>
+      </section>
+
+      <section className="dashboard-app-home" aria-label="Pagina principală a aplicației">
+        <header className="dashboard-app-home__hero">
+          <div>
+            <span>{greeting()}</span>
+            <h1>{user && !user.isGuest ? user.name.split(' ')[0] : 'Hai să continuăm'}</h1>
+            <p>Următoarea lecție este pregătită pentru tine.</p>
+          </div>
+        </header>
+
+        <section className="dashboard-app-home__progress" aria-label={`Progres nivel ${activeLevel}`}>
+          <div className="dashboard-app-home__ring" style={{ '--app-progress': `${activeLevelProgress * 3.6}deg` }} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={activeLevelProgress}>
+            <strong>{activeLevelProgress}%</strong>
+          </div>
+          <div className="dashboard-app-home__progress-copy">
+            <strong>Progresul tău · {activeLevel}</strong>
+            <span>{activeProgress.completed.length} din {course.lessons.length} lecții</span>
+            <div aria-hidden="true"><i style={{ width: `${activeLevelProgress}%` }} /></div>
+          </div>
+          <span className="dashboard-app-home__progress-icon"><DashboardAppIcon type="progress" /></span>
+        </section>
+
+        <article className="dashboard-app-home__lesson">
+          <div className="dashboard-app-home__lesson-copy">
+            <span>Următorul pas</span>
+            <h2>Lecția {nextLesson.id}: {nextLesson.title}</h2>
+            <p><span><DashboardAppIcon type="clock" />{nextLesson.duration} min</span><span><DashboardAppIcon type="chat" />{nextLesson.vocabulary.length + (careerModule ? careerModule.phrases.length : 0)} expresii</span></p>
+          </div>
+          <Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>
+            {activeProgress.completed.length ? 'Continuă lecția' : 'Începe lecția'} <span aria-hidden="true">→</span>
+          </Link>
+        </article>
+
+        <div className="dashboard-app-home__shortcuts" aria-label="Alte activități">
+          <Link to={`/invata?nivel=${activeLevel}`}>
+            <span className="dashboard-app-home__shortcut-icon"><DashboardAppIcon type="book" /></span>
+            <span><strong>Toate lecțiile</strong><small>Explorează întregul curs {activeLevel} pas cu pas.</small></span>
+            <b aria-hidden="true">›</b>
+          </Link>
+          <Link to={`/recapitulare?nivel=${activeLevel}`}>
+            <span className="dashboard-app-home__shortcut-icon"><DashboardAppIcon type="review" /></span>
+            <span><strong>Recapitulare</strong><small>Repetă și consolidează ce ai învățat.</small></span>
+            <b aria-hidden="true">›</b>
+          </Link>
+        </div>
+
+        <Link className="dashboard-app-home__games" to={`/jocuri?nivel=${activeLevel}`}>
+          <span className="dashboard-app-home__games-icon"><DashboardAppIcon type="game" /></span>
+          <span><small>Practică în ritmul tău</small><strong>Jocuri și exerciții</strong><em>Vocabular, propoziții, verbe și pronunție.</em></span>
+          <b aria-hidden="true">›</b>
+        </Link>
       </section>
 
       <Link className="dashboard-mobile-games" to={`/jocuri?nivel=${activeLevel}`}>
