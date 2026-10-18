@@ -119,7 +119,7 @@ const LearningHub = () => {
         </section>
 
         {nextLesson && (
-          <article className="learn-app__next" style={{ '--learn-lesson-image': `url("${getLessonImage(nextLesson.id)}")` }}>
+          <article className="learn-app__next" style={{ '--learn-lesson-image': `url("${getLessonImage(activeLevel, nextLesson.id)}")` }}>
             <div>
               <small>Lecția următoare</small>
               <h1>Lecția {nextLesson.id}: {nextLesson.title}</h1>

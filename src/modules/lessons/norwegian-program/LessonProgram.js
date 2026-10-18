@@ -237,7 +237,7 @@ const LessonProgram = ({ match }) => {
       <main
         className={`lesson-content lesson-content--step-${step}`}
         ref={lessonContentRef}
-        style={{ '--lesson-context-image': `url("${getLessonImage(lesson.id)}")` }}
+        style={{ '--lesson-context-image': `url("${getLessonImage(levelCode, lesson.id)}")` }}
       >
         {step === 6 && <PremiumGate feature="Dialogul vocal cu AI"><VoiceLessonConversation key={`${levelCode}-${lesson.id}-${careerProfile.pathId}`} level={levelCode} lessonId={lesson.id} pathId={careerProfile.pathId} lessonTitle={lesson.title} onComplete={recordVoiceComplete} /></PremiumGate>}
         {step === 0 && <section className="lesson-intro"><div className="lesson-intro__copy"><p className="lesson-eyebrow">Lecția {lesson.id} · Nivel {levelCode} {course.title}</p><h1>{lesson.title}</h1><p className="lesson-lead">O lecție practică pe care o poți finaliza în aproximativ {lesson.duration} minute.</p>{lesson.buildsOn && <aside className="lesson-bridge"><span>Legătura cu ce știi deja</span><p>{lesson.buildsOn}</p></aside>}</div><div className="lesson-mobile-stats" aria-label="Detaliile lecției"><article><span><LessonMetaIcon type="time"/></span><div><strong>{lesson.duration} min</strong><small>Durata lecției</small></div></article><article><span><LessonMetaIcon type="vocabulary"/></span><div><strong>{lesson.vocabulary.length} expresii</strong><small>Vocabular</small></div></article><article><span><LessonMetaIcon type="level"/></span><div><strong>Nivel {levelCode}</strong><small>{course.title}</small></div></article></div><div className="objectives"><h2>După această lecție vei putea:</h2>{lesson.objectives.map((objective) => <div key={objective}><span>✓</span><p>{objective}</p></div>)}</div></section>}

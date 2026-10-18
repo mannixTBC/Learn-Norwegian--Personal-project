@@ -114,7 +114,7 @@ const LessonAppView = (props) => {
     setVocabularyIndex, setCareerPhraseIndex, setExerciseIndex,
     toggleVocabularyTranslation, toggleTranslation, next, previous, goNextLesson, onRecordResult, onReplayExercises,
   } = props;
-  const art = getLessonImage(lesson.id);
+  const art = getLessonImage(levelCode, lesson.id);
   const score = Object.values(answers).filter(Boolean).length;
   const answered = Object.keys(answers).length;
   const canFinish = answered === lessonExercises.length;

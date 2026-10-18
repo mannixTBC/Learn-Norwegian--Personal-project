@@ -243,7 +243,7 @@ const Dashboard = () => {
           <span className="dashboard-app-home__progress-icon"><DashboardAppIcon type="progress" /></span>
         </section>
 
-        <article className="dashboard-app-home__lesson" style={{ '--dashboard-lesson-image': `url("${getLessonImage(nextLesson.id)}")` }}>
+        <article className="dashboard-app-home__lesson" style={{ '--dashboard-lesson-image': `url("${getLessonImage(activeLevel, nextLesson.id)}")` }}>
           <div className="dashboard-app-home__lesson-copy">
             <span>Următorul pas</span>
             <h2>Lecția {nextLesson.id}: {nextLesson.title}</h2>
