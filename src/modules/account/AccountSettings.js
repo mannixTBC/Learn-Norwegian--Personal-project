@@ -32,6 +32,26 @@ const LogoutIcon = () => (
   </svg>
 );
 
+const AccountIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="8" r="3.25" />
+    <path d="M5.5 20c.5-4.1 2.7-6.2 6.5-6.2s6 2.1 6.5 6.2" />
+  </svg>
+);
+
+const SubscriptionIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <rect x="3.5" y="5.5" width="17" height="13" rx="2.5" />
+    <path d="M3.5 9.5h17M7 14h4" />
+  </svg>
+);
+
+const ChevronIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="m9 5 7 7-7 7" />
+  </svg>
+);
+
 const AccountSettings = () => {
   const history = useHistory();
   const location = useLocation();
@@ -46,6 +66,7 @@ const AccountSettings = () => {
   const [billingError, setBillingError] = useState('');
   const [voiceConsent, setVoiceConsent] = useState(false);
   const [voiceConsentState, setVoiceConsentState] = useState('loading');
+  const [managingAccount, setManagingAccount] = useState(false);
   const firstReasonRef = useRef(null);
   const registeredAccount = user && !user.isGuest;
 
@@ -70,19 +91,20 @@ const AccountSettings = () => {
   }, []);
 
   useEffect(() => {
-    if (!confirming) return undefined;
-    firstReasonRef.current?.focus();
+    if (!confirming && !managingAccount) return undefined;
+    if (confirming) firstReasonRef.current?.focus();
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const closeOnEscape = (event) => {
       if (event.key === 'Escape' && !deleting) setConfirming(false);
+      if (event.key === 'Escape') setManagingAccount(false);
     };
     document.addEventListener('keydown', closeOnEscape);
     return () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener('keydown', closeOnEscape);
     };
-  }, [confirming, deleting]);
+  }, [confirming, managingAccount, deleting]);
 
   const closeDialog = () => {
     if (deleting) return;
@@ -216,7 +238,88 @@ const AccountSettings = () => {
         </section>
       </div>
 
+      <div className="account-mobile" aria-label="Setările contului">
+        <div className="account-mobile__hero" aria-hidden="true" />
+
+        <section className="account-mobile__profile" aria-labelledby="account-mobile-profile-title">
+          <div className="account-mobile__avatar" aria-hidden="true">{user.name.charAt(0).toUpperCase()}</div>
+          <div className="account-mobile__identity">
+            <h1 id="account-mobile-profile-title">{user.name}</h1>
+            <p>{user.email || 'Fără adresă de e-mail asociată'}</p>
+            <span>{plan === 'premium' ? 'Premium' : 'Plan gratuit'}</span>
+          </div>
+        </section>
+
+        <section className="account-mobile__settings" aria-label="Opțiunile contului">
+          <button type="button" className="account-mobile__row" onClick={registeredAccount ? openBilling : connectAccount} disabled={billingLoading || isDevBypass}>
+            <span className="account-mobile__row-icon"><SubscriptionIcon /></span>
+            <span className="account-mobile__row-copy">
+              <strong>Abonamentul meu</strong>
+              <small>{billingLoading ? 'Se încarcă…' : user.isGuest ? 'Conectează un cont' : isPremium ? 'Premium activ' : 'Plan gratuit'}</small>
+            </span>
+            <span className="account-mobile__chevron"><ChevronIcon /></span>
+          </button>
+
+          <div className="account-mobile__row account-mobile__row--privacy">
+            <span className="account-mobile__row-icon"><PrivacyIcon /></span>
+            <span className="account-mobile__row-copy">
+              <strong>Confidențialitate și Nora</strong>
+              <small>Controlează salvarea transcrierilor</small>
+              {voiceConsentState === 'unavailable' && <em>Preferința nu este disponibilă momentan.</em>}
+            </span>
+            <label className={`account-mobile__toggle ${voiceConsent ? 'account-mobile__toggle--enabled' : ''}`}>
+              <span className="sr-only">Salvarea transcrierilor</span>
+              <input type="checkbox" checked={voiceConsent} disabled={voiceConsentState !== 'ready'} onChange={updateVoiceConsent} />
+              <span aria-hidden="true" />
+            </label>
+          </div>
+
+          <button type="button" className="account-mobile__row" onClick={() => setManagingAccount(true)}>
+            <span className="account-mobile__row-icon"><AccountIcon /></span>
+            <span className="account-mobile__row-copy">
+              <strong>Administrare cont</strong>
+              <small>Date personale, acces și ștergerea contului</small>
+            </span>
+            <span className="account-mobile__chevron"><ChevronIcon /></span>
+          </button>
+        </section>
+
+        {billingError && <div className="account-mobile__error" role="alert">{billingError}</div>}
+      </div>
+
       <MobileAppNav />
+
+      {managingAccount && (
+        <div className="account-manage-overlay" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setManagingAccount(false); }}>
+          <section className="account-manage-dialog" role="dialog" aria-modal="true" aria-labelledby="account-manage-title">
+            <header>
+              <div>
+                <span>Setările profilului</span>
+                <h2 id="account-manage-title">Administrare cont</h2>
+              </div>
+              <button type="button" onClick={() => setManagingAccount(false)} aria-label="Închide administrarea contului">×</button>
+            </header>
+
+            <div className="account-manage-dialog__details">
+              <span className="account-manage-dialog__icon"><AccountIcon /></span>
+              <div><small>Nume</small><strong>{user.name}</strong></div>
+              <div><small>Adresă de e-mail</small><strong>{user.email || 'Neasociată'}</strong></div>
+            </div>
+
+            <button type="button" className="account-manage-dialog__action" onClick={signOut}>
+              <span><LogoutIcon /></span>
+              <span><strong>Deconectare</strong><small>Ieși din cont pe acest dispozitiv</small></span>
+              <ChevronIcon />
+            </button>
+
+            <button type="button" className="account-manage-dialog__action account-manage-dialog__action--danger" onClick={() => { setManagingAccount(false); setConfirming(true); }}>
+              <span><DeleteIcon /></span>
+              <span><strong>{registeredAccount ? 'Șterge contul' : 'Șterge datele'}</strong><small>{registeredAccount ? 'Elimină definitiv contul și progresul' : 'Elimină progresul salvat pe dispozitiv'}</small></span>
+              <ChevronIcon />
+            </button>
+          </section>
+        </div>
+      )}
 
       {confirming && (
         <div className="account-delete-overlay" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeDialog(); }}>
