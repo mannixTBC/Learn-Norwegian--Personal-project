@@ -285,3 +285,21 @@
   .career-track-progress__start:hover{color:#14213d;background:linear-gradient(135deg,#ffe59d,#ffd066);box-shadow:0 8px 20px rgba(91,63,8,.2);text-decoration:none}
   .career-track-progress__start:focus-visible{outline:3px solid var(--fjord-light);outline-offset:3px}
 }
+
+/* Section labels retain the existing lesson-list layout and palette. */
+.learn-section-heading{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:baseline;padding:20px 0 8px;color:#68778a}
+.learn-section-heading>span,.learn-section-heading>small{font-size:.72rem;line-height:1.4;white-space:nowrap}
+.learn-section-heading>span{font-weight:700}
+.learn-section-heading>h2,.learn-section-heading>h3{min-width:0;margin:0;color:#14213d;font-size:.95rem;line-height:1.35;overflow-wrap:anywhere}
+@media(max-width:540px){
+  .learn-section-heading{padding-top:16px}
+  .learn-section-heading>h2,.learn-section-heading>h3{font-size:.88rem}
+}
+@media(max-width:680px){
+  html.is-installed-app .learn-app__levels{grid-template-columns:repeat(6,minmax(0,1fr))}
+  html.is-installed-app .learn-app__levels button{min-height:44px}
+  html.is-installed-app .learn-app__timeline .learn-section-heading{grid-template-columns:minmax(0,1fr) auto;gap:3px 8px;margin-left:56px;padding:12px 0 2px}
+  html.is-installed-app .learn-app__timeline .learn-section-heading>h2,
+  html.is-installed-app .learn-app__timeline .learn-section-heading>h3{grid-column:1/-1;grid-row:2;font-size:.79rem}
+  html.is-installed-app .learn-app__timeline .learn-section-heading>small{grid-column:2;grid-row:1}
+}

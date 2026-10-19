@@ -116,25 +116,93 @@ const nextReview = rateReviewItem('curriculum-schedule-check', 'good', reviewNow
 assert.equal(nextReview.intervalDays, 7);
 console.log('✓ New expressions enter review after one day; successful recall expands intervals to three and seven days.');
 
+const { useLocation: useHubTestLocation } = await import('react-router-dom');
+const hubText = (node) => node.children.map((child) => typeof child === 'string' ? child : hubText(child)).join('');
+const hubHasClass = (node, name) => typeof node.type === 'string' && String(node.props.className || '').split(/\s+/).includes(name);
 for (const level of Object.keys(courseCatalog)) {
-  let renderer;
-  await act(async () => { renderer = TestRenderer.create(React.createElement(MemoryRouter, { initialEntries: [`/invata?nivel=${level}`] }, React.createElement(LearningHub))); });
-  const tabs = renderer.root.findAllByProps({ role: 'tab' });
-  assert.equal(tabs.length, 6);
-  assert.equal(tabs.filter((tab) => tab.props['aria-selected']).length, 1);
-  assert.equal(tabs.filter((tab) => tab.props.tabIndex === 0).length, 1);
-  assert.equal(localStorage.getItem('norwegian_active_level'), level);
-  const sectionButtons = renderer.root.findAll((node) => node.type === 'button' && node.props.className === 'curriculum-section__toggle');
-  assert.equal(sectionButtons.length, 6);
-  await act(async () => sectionButtons[5].props.onClick());
-  assert.equal(sectionButtons[5].props['aria-expanded'], true);
-  await act(async () => tabs.find((tab) => tab.props['aria-selected']).props.onKeyDown({ key: 'End', preventDefault() {} }));
-  assert.equal(renderer.root.findByProps({ id: 'curriculum-tab-C2' }).props['aria-selected'], true);
-  await act(async () => renderer.root.findByProps({ id: 'curriculum-tab-C2' }).props.onKeyDown({ key: 'ArrowRight', preventDefault() {} }));
-  assert.equal(renderer.root.findByProps({ id: 'curriculum-tab-A1' }).props['aria-selected'], true);
-  await act(async () => renderer.unmount());
+  let hubRenderer;
+  let hubLocation;
+  let hubFocusedId;
+  const HubLocationProbe = () => { hubLocation = useHubTestLocation(); return null; };
+  await act(async () => {
+    hubRenderer = TestRenderer.create(React.createElement(MemoryRouter, { initialEntries: [`/invata?nivel=${level}&sursa=hub-test`] },
+      React.createElement(React.Fragment, null, React.createElement(LearningHub), React.createElement(HubLocationProbe))),
+    { createNodeMock: ({ props }) => ({ focus() { hubFocusedId = props.id; } }) });
+  });
+  assert.equal(hubRenderer.root.findAll((node) => hubHasClass(node, 'learn-page')).length, 1, 'the earlier page shell is retained');
+  const mobile = () => hubRenderer.root.find((node) => hubHasClass(node, 'learn-app'));
+  const web = () => hubRenderer.root.find((node) => hubHasClass(node, 'level-section'));
+  const mobileRows = () => mobile().findAll((node) => node.type === 'a' && hubHasClass(node, 'learn-app__lesson'));
+  const webRows = () => web().findAll((node) => hubHasClass(node, 'course-lesson'));
+  const levelTab = (variant, code) => hubRenderer.root.findByProps({ id: `learn-${variant}-tab-${code}` });
+  const assertLevel = (expected) => {
+    for (const container of [mobile(), web()]) {
+      const tabs = container.findAllByProps({ role: 'tab' });
+      assert.equal(tabs.length, 6, 'each original tablist exposes all six levels');
+      assert.equal(tabs.filter((tab) => tab.props['aria-selected']).length, 1);
+      assert.equal(tabs.filter((tab) => tab.props.tabIndex === 0).length, 1);
+      assert.ok(tabs.filter((tab) => !tab.props['aria-selected']).every((tab) => tab.props.tabIndex === -1));
+      assert.ok(hubText(tabs.find((tab) => tab.props['aria-selected'])).startsWith(expected));
+    }
+    assert.equal(hubLocation.pathname, '/invata');
+    assert.equal(new URLSearchParams(hubLocation.search).get('nivel'), expected, 'level selection updates the router URL');
+    assert.equal(new URLSearchParams(hubLocation.search).get('sursa'), 'hub-test', 'unrelated URL parameters are preserved');
+    assert.equal(localStorage.getItem('norwegian_active_level'), expected);
+    assert.doesNotMatch(hubText(hubRenderer.root), /în pregătire|în curând/i, 'all six levels are available');
+    assert.equal(hubRenderer.root.findAll((node) => hubHasClass(node, 'curriculum-section__toggle')).length, 0, 'sections use headings rather than an accordion');
+  };
+  const assertRoutes = (expected) => {
+    for (const link of hubRenderer.root.findAll((node) => node.type === 'a' && String(node.props.href || '').startsWith('/curs/'))) {
+      const route = /^\/curs\/([a-c][12])\/(\d+)$/.exec(link.props.href);
+      assert.ok(route, `valid lesson route ${link.props.href}`);
+      assert.equal(route[1].toUpperCase(), expected);
+      assert.ok(courseCatalog[expected].lessons.some((lesson) => lesson.id === Number(route[2])));
+    }
+  };
+  const assertCollapsed = () => {
+    assert.equal(mobileRows().length, 4, 'the mobile timeline returns to its original four-lesson preview');
+    assert.equal(webRows().length, 4, 'the web list returns to its original four-lesson preview');
+    const toggles = hubRenderer.root.findAll((node) => node.type === 'button' && (hubHasClass(node, 'learn-app__all') || hubHasClass(node, 'lesson-list-toggle')));
+    assert.equal(toggles.length, 2, 'the mobile and web lists keep their original expansion buttons');
+    for (const button of toggles) {
+      assert.equal(button.props['aria-expanded'], false);
+      assert.match(hubText(button), /Vezi toate.*24.*lecții/);
+    }
+  };
+  assertLevel(level);
+  assertCollapsed();
+  assertRoutes(level);
+  if (['A1', 'C1', 'C2'].includes(level)) {
+    const expand = mobile().find((node) => node.type === 'button' && hubHasClass(node, 'learn-app__all'));
+    await act(async () => expand.props.onClick());
+    assert.equal(mobileRows().length, 24, `${level}: mobile exposes every lesson after expansion`);
+    assert.equal(webRows().length, 24, `${level}: web exposes every lesson after expansion`);
+    assert.equal(new Set(mobileRows().map((link) => link.props.href)).size, 24, `${level}: all mobile lesson routes are distinct`);
+    for (const container of [mobile(), web()]) {
+      const headings = container.findAll((node) => hubHasClass(node, 'learn-section-heading')).map((section) => section.findByType('h3'));
+      assert.equal(headings.length, 6, `${level}: all section titles appear in each original list`);
+      for (const section of courseCatalog[level].sections) assert.equal(headings.filter((heading) => hubText(heading).includes(section.title)).length, 1, `${section.id}: section heading`);
+    }
+    assertRoutes(level);
+  }
+  const other = level === 'C2' ? 'A1' : 'C2';
+  await act(async () => levelTab('app', other).props.onClick());
+  assertLevel(other);
+  assertCollapsed();
+  assertRoutes(other);
+  await act(async () => levelTab('web', level).props.onClick());
+  assertLevel(level);
+  assertCollapsed();
+  await act(async () => levelTab('web', level).props.onKeyDown({ key: 'End', preventDefault() {} }));
+  assertLevel('C2');
+  assert.equal(hubFocusedId, 'learn-web-tab-C2', 'keyboard navigation focuses the destination tab in the same view');
+  await act(async () => levelTab('app', 'C2').props.onKeyDown({ key: 'ArrowRight', preventDefault() {} }));
+  assertLevel('A1');
+  assert.equal(hubFocusedId, 'learn-app-tab-A1', 'keyboard navigation wraps from C2 to A1');
+  assertCollapsed();
+  await act(async () => hubRenderer.unmount());
 }
-console.log('✓ Section navigation renders at every level, including C1 and C2.');
+console.log('✓ Earlier mobile/web lesson layouts retain six-level tabs, valid routes, section headings, expansion and keyboard/URL navigation.');
 
 const lesson = courseCatalog.C1.lessons[2];
 let renderer;
