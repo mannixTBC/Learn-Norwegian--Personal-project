@@ -1,4 +1,4 @@
-export const gameProgressTargets = { quiz: 10, order: 5, word: 5 };
+export const gameProgressTargets = { quiz: 5, order: 5, word: 5 };
 export const normalizePracticeAnswer = (value) => String(value || '').normalize('NFC').toLocaleLowerCase('nb-NO').replace(/[.!?,;:“”„«»"]/g, '').replace(/\s+/g, ' ').trim();
 export const shufflePractice = (items, random = Math.random) => {
   const result = [...items];

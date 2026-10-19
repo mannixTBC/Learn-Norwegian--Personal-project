@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildListeningQuestions, buildMissionQuestions, practiceProgressKey, readPracticeProgress, savePracticeProgress } from './practiceActivities.js';
+import { buildAdaptiveListeningQuestions, buildListeningQuestions, buildMissionQuestions, practiceProgressKey, readPracticeProgress, savePracticeProgress } from './practiceActivities.js';
 import { workMissionData } from './workMissionData.js';
 
 const lessons = [
@@ -37,6 +37,71 @@ test('another translation of the same audio is never a distractor', () => {
 test('small pools do not create duplicated or undefined choices', () => {
   assert.deepEqual(buildListeningQuestions({ lessons: [{ id: 1, vocabulary: [['Hei', 'Salut']] }], length: 5 }), []);
   assert.deepEqual(buildListeningQuestions({ lessons, lessonId: 'missing' }), []);
+});
+
+const listeningLesson = (id) => ({
+  id, title: `Lecția ${id}`,
+  vocabulary: [
+    ...Array.from({ length: 3 }, (_, index) => [`ord${id}-${index}`, `Cuvânt ${id}-${index}`]),
+    ...Array.from({ length: 3 }, (_, index) => [`uttrykk ${id}-${index}`, `Expresie ${id}-${index}`]),
+  ],
+  dialogue: Array.from({ length: 4 }, (_, index) => ['A', `Dette er replikk ${id}-${index}.`, `Replica ${id}-${index}.`]),
+});
+const seededRandom = (seed) => () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+
+test('adaptive listening mixes ten unique words, expressions and dialogue lines from the current lesson', () => {
+  const questions = buildAdaptiveListeningQuestions({ lessons: [listeningLesson(1), listeningLesson(2)], level: 'A2', random: seededRandom(3) });
+  assert.equal(questions.length, 10);
+  assert.equal(new Set(questions.map((question) => question.audioText)).size, 10);
+  assert.ok(questions.every((question) => question.lessonId === 1 && question.id.startsWith('listen-A2-')));
+  assert.deepEqual(new Set(questions.map((question) => question.contentType)), new Set(['word', 'expression', 'dialogue']));
+  assert.ok(questions.every((question) => question.options.length === 3 && new Set(question.options).size === 3));
+  assert.ok(questions.every((question) => !question.options.some((option) => /2-/.test(option))), 'future lessons cannot enter as distractors when familiar content is sufficient');
+});
+
+test('all completed lessons remain eligible, including completed lessons after gaps', () => {
+  const source = [1, 2, 3, 4].map(listeningLesson);
+  const seenLessons = new Set();
+  for (let seed = 1; seed <= 20; seed++) {
+    const questions = buildAdaptiveListeningQuestions({ lessons: source, level: 'B1', completed: [1, 3], random: seededRandom(seed) });
+    assert.equal(questions.length, 10);
+    for (const question of questions) { assert.ok([1, 2, 3].includes(question.lessonId)); seenLessons.add(question.lessonId); }
+  }
+  assert.deepEqual(seenLessons, new Set([1, 2, 3]), 'each completed lesson and the current lesson can supply questions');
+});
+
+test('future lessons fill only missing places, in curriculum order', () => {
+  const first = { ...listeningLesson(1), vocabulary: listeningLesson(1).vocabulary.slice(0, 3), dialogue: [] };
+  const second = { ...listeningLesson(2), vocabulary: listeningLesson(2).vocabulary.slice(0, 2), dialogue: [] };
+  const questions = buildAdaptiveListeningQuestions({ lessons: [first, second, listeningLesson(3), listeningLesson(4)], level: 'A1', random: seededRandom(8) });
+  assert.equal(questions.length, 10);
+  assert.equal(questions.filter((question) => question.lessonId === 1).length, 3, 'all available familiar items are retained');
+  assert.equal(questions.filter((question) => question.lessonId === 2).length, 2, 'the immediately following lesson is used first');
+  assert.equal(questions.filter((question) => question.lessonId === 3).length, 5);
+  assert.equal(questions.filter((question) => question.lessonId === 4).length, 0);
+});
+
+test('supplementing never relabels familiar audio or offers another valid translation as a wrong choice', () => {
+  const first = { ...listeningLesson(1), vocabulary: listeningLesson(1).vocabulary.slice(0, 3), dialogue: [] };
+  const second = listeningLesson(2);
+  second.dialogue.push(['B', 'ord1-0!', 'Alt sens corect']);
+  const questions = buildAdaptiveListeningQuestions({ lessons: [first, second, listeningLesson(3)], level: 'B2', random: seededRandom(9) });
+  assert.equal(questions.length, 10);
+  const familiar = questions.find((question) => question.audioText === 'ord1-0');
+  assert.equal(familiar.lessonId, 1);
+  assert.ok(!familiar.options.includes('Alt sens corect'));
+  assert.equal(new Set(questions.map((question) => question.audioText.toLowerCase().replace(/[.!?]+$/g, ''))).size, 10);
+  assert.ok(questions.every((question) => question.lessonId !== 3));
+});
+
+test('fully completed levels remain reviewable and exhausted content is never duplicated', () => {
+  const source = [listeningLesson(1), listeningLesson(2)];
+  const questions = buildAdaptiveListeningQuestions({ lessons: source, level: 'C2', completed: [1, 2], random: seededRandom(12) });
+  assert.equal(questions.length, 10);
+  assert.deepEqual(buildAdaptiveListeningQuestions({ lessons: [], level: 'A1' }), []);
+  assert.deepEqual(buildAdaptiveListeningQuestions({ lessons: [source[0]], level: 'A1', length: 0 }), []);
+  const tiny = { id: 1, vocabulary: [['Hei', 'Salut']], dialogue: [] };
+  assert.deepEqual(buildAdaptiveListeningQuestions({ lessons: [tiny], level: 'A1' }), []);
 });
 
 test('every career has three coherent two-step missions at all four levels', () => {

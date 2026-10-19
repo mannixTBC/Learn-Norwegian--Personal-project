@@ -72,7 +72,7 @@ const GamesHub = () => {
   const streak = Math.max(0, Number(studySummary.streak) || 0);
   const careerPath = getCareerPath(getCareerProfile(user)?.pathId);
   const newGames = [
-    { id: 'listen', to: '/asculta-si-alege', title: 'Ascultă și alege', text: 'Auzi norvegiana. Descoperă sensul.', meta: `${level} · 2–4 minute` },
+    { id: 'listen', to: '/asculta-si-alege', title: 'Ascultă și alege', text: 'Auzi norvegiana. Descoperă sensul.', meta: `${level} · 10 întrebări` },
     { id: 'missions', to: '/misiuni-la-serviciu', title: 'Misiuni la serviciu', text: 'Situații reale. Replica potrivită.', meta: `${['C1', 'C2'].includes(level) ? 'Recapitulare B2' : level} · ${careerPath.shortTitle}` },
   ].map((game) => ({ ...game, progress: readPracticeProgress(localStorage, { game: game.id, level: game.id === 'missions' && ['C1', 'C2'].includes(level) ? 'B2' : level, pathId: careerPath.id, userId: user?.id || 'guest' }) }));
 

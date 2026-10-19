@@ -4,7 +4,7 @@ import { pathToFileURL } from 'node:url';
 import assert from 'node:assert/strict';
 import React from 'react';
 import TestRenderer, { act } from 'react-test-renderer';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route } from 'react-router-dom';
 
 const root = resolve(import.meta.dirname, '..');
 const outDir = resolve(root, 'node_modules/.cache/mobile-exercise-tests');
@@ -48,7 +48,7 @@ const button = (label) => buttons().find((node) => text(node).includes(label));
 const byClass = (value) => renderer.root.findAll((node) => typeof node.type === 'string' && node.props.className?.split(' ').includes(value));
 const click = async (node) => { assert.ok(node, 'control exists'); assert.ok(!node.props.disabled, 'control is enabled'); await act(async () => { node.props.onClick(); }); };
 const render = async (name, props = {}, level = 'A1') => {
-  await act(async () => { renderer = TestRenderer.create(React.createElement(MemoryRouter, { initialEntries: ['/?nivel=' + level + '&appPreview=1'] }, React.createElement(components[name], props)), { createNodeMock: () => ({ focus() {}, querySelector: () => ({ focus() {} }) }) }); });
+  await act(async () => { renderer = TestRenderer.create(React.createElement(MemoryRouter, { initialEntries: ['/?nivel=' + level + '&appPreview=1'] }, React.createElement(Route, { exact: true, path: '/' }, React.createElement(components[name], props)), React.createElement(Route, { path: '/jocuri' }, React.createElement('p', { id: 'games-return' }, 'Jocuri și exerciții'))), { createNodeMock: () => ({ focus() {}, querySelector: () => ({ focus() {} }) }) }); });
 };
 const unmount = async () => act(async () => renderer.unmount());
 
@@ -63,8 +63,8 @@ for (const level of Object.keys(courseCatalog)) {
       if (game === 'quiz') assert.ok(questions.every((question) => new Set(question.options).size === question.options.length));
     }
     await render('practice', { game }, level);
-    assert.equal(renderer.root.findAllByType('optgroup').length, 6);
-    await click(button('Începe sesiunea'));
+    assert.equal(renderer.root.findAllByType('select').length, 0, 'games start without a configuration screen');
+    assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props['aria-valuemax'], 5);
     assert.ok(text(byClass('question-meta')[0]).includes(level));
     await unmount();
   }
@@ -82,18 +82,17 @@ for (const level of Object.keys(courseCatalog)) {
 console.log('✓ A1–C2: all 144 lessons supply each quick game; all eight activities stay available.');
 
 // Level changes must replace the content and preserve the app preview query.
-await render('practice', { game: 'quiz' });
-const levelSelect = renderer.root.findByProps({ 'aria-label': 'Nivel de practică' });
+await render('hub');
+const levelSelect = renderer.root.findAllByProps({ 'aria-label': 'Nivel de practică' })[0];
 await act(async () => levelSelect.props.onChange({ target: { value: 'C2' } }));
-assert.equal(renderer.root.findByProps({ 'aria-label': 'Nivel de practică' }).props.value, 'C2');
+assert.ok(renderer.root.findAllByProps({ 'aria-label': 'Nivel de practică' }).every((select) => select.props.value === 'C2'));
 assert.equal(localStorage.getItem('norwegian_active_level'), 'C2');
-assert.ok(renderer.root.findAllByType('option').some((option) => text(option).includes(courseCatalog.C2.lessons[0].title)));
+assert.ok(byClass('games-hub__card').every((card) => card.props.href.endsWith('?nivel=C2')));
 await unmount();
 
 // Complete a real quiz, guarding duplicate checks and completion; mistakes reach review.
 storage.clear(); mobileEvents.length = 0;
 await render('practice', { game: 'quiz' }, 'B2');
-await click(button('Începe sesiunea'));
 for (let index = 0; index < 5; index++) {
   const prompt = text(renderer.root.findByType('h1'));
   const word = prompt.match(/„(.+)”/)[1];
@@ -116,12 +115,15 @@ const correctMeaning = JSON.parse(localStorage.getItem('norwegian_review_items')
 await click(byClass('game-choices')[0].findAllByType('button').find((node) => text(node.findByType('strong')) === correctMeaning));
 await click(button('Verifică răspunsul')); await click(button('Vezi rezultatul'));
 assert.equal(localStorage.getItem('practice_game_v2_mobile-test_B2_quiz'), originalRecord, 'a one-question retry cannot inflate the record');
+await click(button('Sesiune nouă'));
+assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props['aria-valuemax'], 5);
+assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props['aria-valuenow'], 0);
+assert.equal(renderer.root.findAllByType('select').length, 0);
 await unmount();
 console.log('✓ Quiz: one score per answer, review of mistakes, completed results and honest retry records.');
 
 // Repeated words remain separate tokens. Verification waits for the whole sentence.
 await render('practice', { game: 'order' }, 'C1');
-await click(button('Începe sesiunea'));
 const bank = () => byClass('order-bank')[0].findAllByType('button');
 assert.ok(button('Verifică răspunsul').props.disabled);
 const first = bank()[0];
@@ -136,15 +138,15 @@ await unmount();
 
 // Typing preserves spaces, uses a form for the keyboard action and rejects blank answers.
 await render('practice', { game: 'word' }, 'C2');
-await click(button('Începe sesiunea'));
 await act(async () => renderer.root.findByType('input').props.onChange({ target: { value: 'å ta ' } }));
 assert.equal(renderer.root.findByType('input').props.value, 'å ta ');
 await act(async () => renderer.root.findByType('input').props.onChange({ target: { value: '   ' } }));
 assert.ok(button('Verifică răspunsul').props.disabled);
+const eventsBeforeExit = mobileEvents.length;
 await click(renderer.root.findByProps({ 'aria-label': 'Închide sesiunea' }));
-assert.ok(renderer.root.findByProps({ role: 'dialog' }));
-await act(async () => renderer.root.findByProps({ role: 'dialog' }).props.onKeyDown({ key: 'Escape' }));
 assert.equal(renderer.root.findAllByProps({ role: 'dialog' }).length, 0);
+assert.ok(renderer.root.findByProps({ id: 'games-return' }));
+assert.equal(mobileEvents.length, eventsBeforeExit, 'leaving a partial session must not record a completion');
 await unmount();
 const repeated = createPracticeQuestions([{ uid: 'repeat', id: 1, vocabulary: [], exercises: [{ type: 'order', prompt: 'Repetă', answer: ['jeg', 'tror', 'at', 'jeg', 'kan'] }], dialogue: [] }], 'order')[0];
 assert.equal(repeated.words.filter((word) => word === 'jeg').length, 2);
@@ -152,7 +154,7 @@ assert.equal(normalizePracticeAnswer('  Å TA   HENSYN TIL! '), 'å ta hensyn ti
 saveGameProgress(localStorage, 'word', 'C2', 'other', [{ correct: true }]);
 assert.equal(readGameProgress(localStorage, 'word', 'C1', 'other').sessions, 0);
 assert.equal(readGameProgress(localStorage, 'word', 'C2', 'mobile-test').sessions, 0);
-console.log('✓ Sentence and word games: independent tokens, complete answers, whitespace, exit dialog and isolated progress.');
+console.log('✓ Sentence and word games: independent tokens, complete answers, whitespace, direct exit and isolated progress.');
 
 const verbs = [{ norwegian: 'å ta hensyn til', romanian: 'a ține cont de', example: 'Vi må ta hensyn til barna.', translation: 'Trebuie să ținem cont de copii.' }, { norwegian: 'å sove', romanian: 'a dormi', example: 'Jeg vil sove.', translation: 'Vreau să dorm.' }, { norwegian: 'å spise', romanian: 'a mânca', example: 'Vi skal spise.', translation: 'Vom mânca.' }];
 let completions = 0;

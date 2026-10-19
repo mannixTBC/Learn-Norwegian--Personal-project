@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useRef } from 'react';
+import React from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { learningLevels } from '../lessons/learningLevel';
 import './ExerciseUI.css';
@@ -42,21 +42,3 @@ export const ExerciseLayout = ({ title, description, icon, level, className = ''
 );
 
 export const ExerciseLessonSelect = ({ course, value, onChange, label = 'Conținutul sesiunii', all = true }) => <label className="exercise-field"><span>{label}</span><select value={value} onChange={(event) => onChange(event.target.value)}>{all && <option value="all">Toate lecțiile · {course.code}</option>}{course.sections.map((section) => <optgroup key={section.id} label={'Secțiunea ' + section.number + ' · ' + section.title}>{section.lessons.map((lesson) => <option key={lesson.uid} value={lesson.id}>{lesson.id + '. ' + lesson.title}</option>)}</optgroup>)}</select></label>;
-
-export const ExerciseExitDialog = ({ onContinue, onExit }) => {
-  const titleId = useId();
-  const dialog = useRef(null);
-  useEffect(() => {
-    if (typeof document === 'undefined') return undefined;
-    const previous = document.activeElement;
-    dialog.current?.querySelector('button')?.focus();
-    return () => previous?.focus?.();
-  }, []);
-  return <div className="exercise-dialog-backdrop"><section ref={dialog} className="exercise-dialog" role="dialog" aria-modal="true" aria-labelledby={titleId} onKeyDown={(event) => {
-    if (event.key === 'Escape') onContinue();
-    if (event.key !== 'Tab') return;
-    const buttons = event.currentTarget.querySelectorAll('button');
-    if (event.shiftKey && document.activeElement === buttons[0]) { event.preventDefault(); buttons[buttons.length - 1]?.focus(); }
-    else if (!event.shiftKey && document.activeElement === buttons[buttons.length - 1]) { event.preventDefault(); buttons[0]?.focus(); }
-  }}><span className="exercise-dialog__icon"><ExerciseIcon name="games" /></span><h2 id={titleId}>Ieși din sesiune?</h2><p>Scorul se salvează la final. Răspunsurile greșite deja verificate rămân în recapitulare.</p><button type="button" className="exercise-primary" onClick={onContinue}>Continuă sesiunea</button><button type="button" className="exercise-secondary" onClick={onExit}>Ieși la configurare</button></section></div>;
-};
