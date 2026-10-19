@@ -15,7 +15,7 @@ create table if not exists public.voice_transcript_preferences (
 create table if not exists public.voice_conversations (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
-  level text not null check (level in ('A1', 'A2', 'B1', 'B2')),
+  level text not null check (level in ('A1', 'A2', 'B1', 'B2', 'C1', 'C2')),
   lesson_id integer not null check (lesson_id > 0),
   path_id text not null default 'general',
   mode text not null check (mode in ('realtime', 'batch')),

@@ -6,7 +6,7 @@ create extension if not exists pgcrypto;
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   display_name text not null default 'Cursant',
-  learning_level text not null default 'A1' check (learning_level in ('A1', 'A2', 'B1', 'B2')),
+  learning_level text not null default 'A1' check (learning_level in ('A1', 'A2', 'B1', 'B2', 'C1', 'C2')),
   career_path text,
   -- Stratul de entitlements pentru abonamentul Premium (gestionat de Stripe webhook).
   plan text not null default 'free' check (plan in ('free', 'premium')),
@@ -25,7 +25,7 @@ create table if not exists public.study_activity (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
   activity_type text not null,
-  level text check (level in ('A1', 'A2', 'B1', 'B2')),
+  level text check (level in ('A1', 'A2', 'B1', 'B2', 'C1', 'C2')),
   minutes integer not null default 0 check (minutes >= 0),
   score integer check (score between 0 and 100),
   metadata jsonb not null default '{}'::jsonb,
@@ -336,7 +336,7 @@ create table if not exists public.voice_transcript_preferences (
 create table if not exists public.voice_conversations (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
-  level text not null check (level in ('A1', 'A2', 'B1', 'B2')),
+  level text not null check (level in ('A1', 'A2', 'B1', 'B2', 'C1', 'C2')),
   lesson_id integer not null check (lesson_id > 0),
   path_id text not null default 'general',
   mode text not null check (mode in ('realtime', 'batch')),

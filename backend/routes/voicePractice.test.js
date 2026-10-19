@@ -26,7 +26,8 @@ test('toate lecțiile au trei întrebări scurte pregătite în Bokmål', () => 
     assert.equal(questions.length, 3);
     assert.equal(new Set(questions).size, 3);
     questions.forEach((question) => {
-      assert.ok(question.split(/\s+/).length <= 12);
+      const limit = level.startsWith('C') ? 30 : 12;
+      assert.ok(question.split(/\s+/).length <= limit, `${level}/${id}: question stays within the level's voice limit`);
       assert.ok(getPreparedQuestionTranslation(level, Number(id), question));
     });
   }

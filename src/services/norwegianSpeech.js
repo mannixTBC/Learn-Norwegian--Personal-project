@@ -1,6 +1,7 @@
 import { apiUrl } from './api';
 
 let activeAudio = null;
+let cancelActivePlayback = null;
 let playbackSequence = 0;
 
 const speechEndpoint = apiUrl('/api/speech');
@@ -24,6 +25,8 @@ const stopActiveAudio = () => {
 
   const audio = activeAudio;
   activeAudio = null;
+  if (cancelActivePlayback) cancelActivePlayback();
+  cancelActivePlayback = null;
   releaseAudio(audio);
 };
 
@@ -45,6 +48,7 @@ const mediaErrorMessage = (audio) => {
 };
 
 export const speakNorwegian = (text, options = {}) => {
+  if (options.signal?.aborted) return Promise.resolve({ ok: false, cancelled: true });
   const slow = Boolean(options.slow);
   const voice = options.voice === 'female' ? 'female' : 'male';
   const waitForEnd = Boolean(options.waitForEnd);
@@ -61,12 +65,25 @@ export const speakNorwegian = (text, options = {}) => {
 
   return new Promise((resolve) => {
     let settled = false;
+    let loadTimeout;
 
     const finish = (result) => {
       if (settled) return;
       settled = true;
+      clearTimeout(loadTimeout);
       resolve(result);
     };
+    const cancel = () => {
+      options.signal?.removeEventListener('abort', cancel);
+      finish({ ok: false, provider: 'elevenlabs', cancelled: true });
+      if (activeAudio === audio) {
+        activeAudio = null;
+        cancelActivePlayback = null;
+        releaseAudio(audio);
+      }
+    };
+    cancelActivePlayback = cancel;
+    options.signal?.addEventListener('abort', cancel, { once: true });
 
     const fail = (reason) => {
       if (playbackId !== playbackSequence || activeAudio !== audio) {
@@ -76,6 +93,8 @@ export const speakNorwegian = (text, options = {}) => {
 
       const error = reason instanceof Error ? reason : new Error(mediaErrorMessage(audio));
       activeAudio = null;
+      cancelActivePlayback = null;
+      options.signal?.removeEventListener('abort', cancel);
       releaseAudio(audio);
 
       console.error('ElevenLabs audio could not be played.', error);
@@ -88,17 +107,24 @@ export const speakNorwegian = (text, options = {}) => {
     };
 
     audio.onplay = () => {
+      clearTimeout(loadTimeout);
+      options.onPlaybackStart?.();
       reportSpeechStatus({ status: 'playing', provider: 'elevenlabs', voice });
       if (!waitForEnd) finish({ ok: true, provider: 'elevenlabs', voice });
     };
 
     audio.onended = () => {
       if (activeAudio === audio) activeAudio = null;
+      cancelActivePlayback = null;
+      options.signal?.removeEventListener('abort', cancel);
       releaseAudio(audio);
       finish({ ok: true, provider: 'elevenlabs', voice });
     };
 
     audio.onerror = () => fail(new Error(mediaErrorMessage(audio)));
+
+    // Practice sessions need an actionable error if a request never starts.
+    if (options.signal) loadTimeout = setTimeout(() => fail(new Error('Audio loading timed out.')), 20000);
 
     // Calling play immediately inside the click keeps browser playback permission active
     // while the MP3 is downloaded from the Netlify function.

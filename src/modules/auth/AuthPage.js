@@ -144,7 +144,7 @@ const AuthPage = () => {
   return (
     <div className="auth-page">
       <section className="auth-story">
-        <div><span className="auth-story__eyebrow">Spațiul tău de învățare</span><h1>Norvegiana ta,<br />pas cu pas.</h1><p>Învață printr-un curs modern, construit pentru situațiile reale pe care le vei întâlni în Norvegia.</p><div className="auth-story__features"><span>✓ Programă structurată pe niveluri A1–B2</span><span>✓ Lecții practice pentru viața din Norvegia</span><span>✓ Audio, exerciții și feedback personalizat</span><span>✓ Recapitulare inteligentă prin repetare spațiată și reamintire activă</span></div></div>
+        <div><span className="auth-story__eyebrow">Spațiul tău de învățare</span><h1>Norvegiana ta,<br />pas cu pas.</h1><p>Învață printr-un curs modern, construit pentru situațiile reale pe care le vei întâlni în Norvegia.</p><div className="auth-story__features"><span>✓ Programă pe șase niveluri, A1–C2</span><span>✓ Lecții practice pentru viața din Norvegia</span><span>✓ Audio, exerciții și feedback personalizat</span><span>✓ Recapitulare inteligentă prin repetare spațiată și reamintire activă</span></div></div>
       </section>
       <main className="auth-panel">
         <div className="auth-panel__inner">

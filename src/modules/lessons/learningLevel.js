@@ -1,4 +1,6 @@
-export const learningLevels = ['A1', 'A2', 'B1', 'B2'];
+import { curriculumLevels } from './curriculumMetadata';
+
+export const learningLevels = curriculumLevels.map((level) => level.code);
 
 export const getLearningLevel = (search = '') => {
   const requested = new URLSearchParams(search).get('nivel');
@@ -7,9 +9,4 @@ export const getLearningLevel = (search = '') => {
   return learningLevels.includes(level) ? level : 'A1';
 };
 
-export const levelName = {
-  A1: 'Începător',
-  A2: 'Elementar',
-  B1: 'Intermediar',
-  B2: 'Avansat',
-};
+export const levelName = Object.fromEntries(curriculumLevels.map((level) => [level.code, level.title]));

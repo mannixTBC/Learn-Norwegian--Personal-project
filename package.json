@@ -36,10 +36,14 @@
     "dev:frontend": "vite --host 0.0.0.0 --port 4173",
     "dev:frontend:https": "vite --host 0.0.0.0 --port 4173 --mode https",
     "dev:backend": "node backend/server.js",
-    "build": "npm run build:voice-context && npm run build:client && npm run build:ssr && node scripts/prerender.mjs",
+    "build": "npm run build:curriculum && npm run build:voice-context && npm run build:client && npm run build:ssr && node scripts/prerender.mjs",
+    "build:curriculum": "node scripts/export-curriculum.mjs",
     "build:voice-context": "node scripts/generate-voice-context.mjs",
     "build:client": "vite build",
     "build:ssr": "vite build --ssr src/entry-server.jsx --outDir dist-ssr",
+    "test:games": "node --test src/modules/exercises/practiceActivities.test.mjs && node scripts/test-activity-games.mjs",
+    "test:curriculum": "node scripts/test-curriculum.mjs && node scripts/test-curriculum-assessment.mjs",
+    "test:lesson-visuals": "node scripts/test-lesson-visuals.mjs",
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "preview:https": "vite preview --host 0.0.0.0 --port 4173 --mode https",
     "android:sync": "npm run build:voice-context && npm run build:client && cap sync android",
@@ -63,6 +67,7 @@
     "@vitejs/plugin-basic-ssl": "^2.3.0",
     "@vitejs/plugin-react": "latest",
     "concurrently": "latest",
+    "react-test-renderer": "18.3.1",
     "vite": "latest"
   },
   "overrides": {

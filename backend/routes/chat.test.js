@@ -1,6 +1,12 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const express = require('express');
+const curriculumCatalog = require('../voiceCatalog.json');
+// Locate the technology scenario by its semantic identity; lesson numbers
+// change when new teaching and consolidation stages are inserted.
+const [technologyLessonId, technologyLesson] = Object.entries(curriculumCatalog.B2)
+  .find(([, lesson]) => lesson.uid === 'b2-decizii-tehnologie');
+const technologyFollowUp = technologyLesson.conversationPrompts[1];
 
 const auth = require('../middleware/authSupabaseUser');
 const openai = require('../openai');
@@ -109,8 +115,8 @@ openai.getOpenAI = () => ({
                 intent: 'answer',
                 advanceTurn: true,
                 reply: 'Det høres bra ut.',
-                question: 'Hva er en risiko for personvernet?',
-                questionTranslation: 'Care este un risc pentru viața privată?',
+                question: technologyFollowUp[0],
+                questionTranslation: technologyFollowUp[1],
                 suggestions: [
                   { answer: 'Data kan bli misbrukt.', translation: 'Datele pot fi folosite abuziv.' },
                   { answer: 'Noen kan miste kontroll over dataene sine.', translation: 'Unii pot pierde controlul asupra datelor lor.' },
@@ -348,7 +354,7 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     assert.equal((await request('start', { level: 'A1', lessonId: 1, pathId: 'toString' })).status, 400);
     assert.equal((await request('start', { level: 'A1', lessonId: 1, unexpected: true })).status, 400);
 
-    const startResponse = await request('start', { level: 'B2', lessonId: 9, pathId: 'transport' });
+    const startResponse = await request('start', { level: 'B2', lessonId: Number(technologyLessonId), pathId: 'transport' });
     assert.equal(startResponse.status, 200);
     assert.equal(startResponse.headers.get('cache-control'), 'no-store');
     const started = await startResponse.json();
@@ -368,7 +374,7 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
 
     const compact = decodeSession(started.sessionToken);
     assert.equal(compact.level, 'B2');
-    assert.equal(compact.lessonId, 9);
+    assert.equal(compact.lessonId, Number(technologyLessonId));
     assert.equal(compact.pathId, 'transport');
     assert.equal(compact.history.length, 1);
     assert.deepEqual(compact.memory, []);
@@ -427,7 +433,7 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     assert.equal(afterFirst.askedQuestions.length, 2);
     assert.notEqual(afterFirst.askedQuestions[0], afterFirst.askedQuestions[1]);
     assert.deepEqual(afterFirst.memory, ['Eleven synes kunstig intelligens er nyttig.']);
-    assert.equal(first.questionTranslation, 'Care este un risc pentru viața privată?');
+    assert.equal(first.questionTranslation, technologyFollowUp[1]);
     assert.equal(first.suggestions.length, 2);
 
     providerMode = 'refusal';

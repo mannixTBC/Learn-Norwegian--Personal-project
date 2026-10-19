@@ -388,6 +388,8 @@ const levelCoaching = {
   A2: 'Adaptează expresiile pentru o solicitare sau o problemă simplă.',
   B1: 'Explică situația, motivul și următorul pas într-o conversație reală.',
   B2: 'Argumentează o soluție și adaptează registrul la contextul profesional.',
+  C1: 'Transferă expresiile lecției în situații profesionale complexe; nuanțează poziția și justifică reformulările.',
+  C2: 'Adaptează fin registrul, precizia și subînțelesul la interlocutorul și scopul profesional.',
 };
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -410,9 +412,25 @@ const buildCareerGapExercise = (path, phrases) => {
   };
 };
 
-export const getCareerLessonModule = (pathId, level = 'A1', lessonId = 1) => {
+export const getCareerLessonModule = (pathId, level = 'A1', lessonId = 1, lesson = null) => {
   const path = getCareerPath(pathId);
   const normalizedLevel = String(level).toUpperCase();
+  if (lesson) {
+    const usedHighlights = new Set();
+    const functionWords = new Set('jeg du han hun vi dere de det den dette disse en ei et å er har kan skal vil må og for med på til som at om ikke'.split(' '));
+    const phrases = Array.from(new Map(lesson.vocabulary.map((entry) => [entry[2], entry])).values()).slice(0, normalizedLevel === 'A1' ? 2 : 3).map((entry) => {
+      const tokens = entry[2].match(/[\p{L}]+(?:-[\p{L}]+)*/gu) || [];
+      const candidates = [entry[4], entry[0], ...tokens.filter((token) => token.length > 2 && !functionWords.has(token.toLocaleLowerCase('nb-NO'))), ...tokens];
+      const highlight = candidates.find((candidate) => candidate && entry[2].toLocaleLowerCase('nb-NO').includes(candidate.toLocaleLowerCase('nb-NO')) && !usedHighlights.has(candidate.toLocaleLowerCase('nb-NO'))) || tokens[0];
+      usedHighlights.add(highlight.toLocaleLowerCase('nb-NO'));
+      return [entry[2], entry[3], highlight];
+    });
+    return { path, phrases,
+      scenario: { title: `${lesson.sectionTitle} · ${path.shortTitle}`, norwegian: lesson.conversationPrompts[0][0], romanian: `${lesson.production.speakingPrompt} Adaptează situația la domeniul „${path.title}”.` },
+      coaching: `${levelCoaching[normalizedLevel] || levelCoaching.A1} Reutilizează structurile lecției în domeniul „${path.shortTitle}”, fără o listă nouă de memorat.`,
+      exercise: buildCareerGapExercise(path, phrases),
+    };
+  }
   const a1Phrases = a1CareerPhrases[path.id] || a1CareerPhrases.general;
   const phraseSource = normalizedLevel === 'A1' ? a1Phrases : path.phrases;
   const offset = (Math.max(1, Number(lessonId)) - 1) % phraseSource.length;

@@ -1,128 +1,156 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { courseCatalog } from './norwegian-program/lessonContent';
+import { CurriculumProduction } from './norwegian-program/CurriculumPractice';
+import { curriculumLevels } from './curriculumMetadata';
+import { buildExam, correctAnswerText, givenAnswerText, isCompleteAnswer, isCorrectAnswer } from './curriculumAssessment';
+import { useAuth } from '../auth/AuthContext';
+import { finalTestKey } from '../../services/curriculumProgress';
 import { speakNorwegian } from '../../services/norwegianSpeech';
 import { saveReviewItem } from '../../services/spacedReview';
 import { recordStudyActivity } from '../../services/learningActivity';
 import './LevelFinalTest.css';
 
-const normalize = (value) => String(value || '').trim().toLocaleLowerCase().replace(/\s+/g, ' ');
-const nextAvailableLevel = { A1: 'A2', A2: 'B1', B1: 'B2' };
+export { buildExam } from './curriculumAssessment';
 const PASS_PERCENT = 70;
-
-const buildExam = (course) => {
-  const lessonQuestions = course.lessons.map((lesson, index) => {
-    const exercise = lesson.exercises[index % lesson.exercises.length];
-    return { ...exercise, id: `${course.code}-${lesson.id}`, lessonId: lesson.id, category: exercise.type === 'order' ? 'Construiește' : exercise.type === 'fill' ? 'Completează' : 'Alege' };
-  });
-  const audioLessons = [course.lessons[2], course.lessons[7]];
-  const audioQuestions = audioLessons.map((lesson, index) => {
-    const vocabulary = lesson.vocabulary[(index + 1) % lesson.vocabulary.length];
-    const distractors = course.lessons.filter((item) => item.id !== lesson.id).slice(index, index + 3).map((item) => item.vocabulary[0][3]).filter((item) => item !== vocabulary[3]).slice(0, 3);
-    const options = [vocabulary[3], ...distractors].sort((a, b) => a.localeCompare(b));
-    return { id: `${course.code}-audio-${index}`, type: 'audio', category: 'Ascultă', lessonId: lesson.id, prompt: 'Ascultă fraza și alege traducerea corectă.', audioText: vocabulary[2], options, answer: options.indexOf(vocabulary[3]), explanation: `Fraza „${vocabulary[2]}” înseamnă „${vocabulary[3]}”.` };
-  });
-  return [...lessonQuestions.slice(0, 5), audioQuestions[0], ...lessonQuestions.slice(5), audioQuestions[1]];
+const readBest = (level, user) => {
+  const value = Number(localStorage.getItem(finalTestKey(level, 'best', user)));
+  return Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
 };
-
-const isCorrect = (question, answer) => {
-  if (question.type === 'choice' || question.type === 'audio') return Number(answer) === question.answer;
-  if (question.type === 'fill') return normalize(answer) === normalize(question.answer);
-  return Array.isArray(answer) && answer.map((index) => question.words[index]).join(' ') === question.answer.join(' ');
-};
-
-const correctAnswer = (question) => {
-  if (question.type === 'choice' || question.type === 'audio') return question.options[question.answer];
-  return Array.isArray(question.answer) ? question.answer.join(' ') : question.answer;
-};
-
 const scoreMessage = (percent) => {
-  if (percent >= 90) return { title: 'Excelent — nivel stăpânit!', text: 'Folosești vocabularul și structurile cu multă siguranță. Ești pregătit pentru următoarea etapă.', tone: 'excellent' };
-  if (percent >= 75) return { title: 'Foarte bine!', text: 'Ai o bază solidă. Recapitulează răspunsurile marcate și vei fixa nivelul complet.', tone: 'good' };
-  if (percent >= 55) return { title: 'Ești pe drumul cel bun', text: 'Ai înțeles ideile principale, dar câteva lecții merită revăzute înainte să continui.', tone: 'medium' };
-  return { title: 'Mai exersăm puțin', text: 'Reia vocabularul și exercițiile indicate mai jos, apoi încearcă testul din nou.', tone: 'practice' };
+  if (percent >= 90) return { title: 'Foarte bine la exercițiile de recapitulare!', text: 'Ai rezolvat cu siguranță majoritatea sarcinilor cu răspuns fix. Continuă cu scrierea și vorbirea de mai jos.', tone: 'excellent' };
+  if (percent >= 75) return { title: 'Un rezultat bun!', text: 'Revizuiește răspunsurile marcate și folosește expresiile într-un text și într-o conversație proprie.', tone: 'good' };
+  if (percent >= 55) return { title: 'Ai puncte clare de consolidat', text: 'Reia lecțiile indicate la greșeli și verifică dacă poți folosi expresiile fără variante de răspuns.', tone: 'medium' };
+  return { title: 'Reia secțiunile care au nevoie de practică', text: 'Folosește explicațiile de mai jos, revino la dialoguri și încearcă din nou după recapitulare.', tone: 'practice' };
 };
 
-const LevelFinalTest = ({ match }) => {
-  const requestedLevel = ((match && match.params && match.params.level) || 'a1').toUpperCase();
-  const course = courseCatalog[requestedLevel] || courseCatalog.A1;
-  const testStartedAt = useRef(Date.now());
+const FinalTestSession = ({ course, user }) => {
   const questions = useMemo(() => buildExam(course), [course]);
+  const startedAt = useRef(Date.now());
+  const finishing = useRef(false);
+  const audioController = useRef(null);
+  const heading = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [bestScore, setBestScore] = useState(() => Number(localStorage.getItem(`final_test_best_${course.code.toLowerCase()}`)) || 0);
+  const [bestScore, setBestScore] = useState(() => readBest(course.code, user));
+  const [audioError, setAudioError] = useState('');
   const current = questions[currentIndex];
-  const answer = answers[current.id];
-  const answered = current.type === 'order' ? Array.isArray(answer) && answer.length > 0 : answer !== undefined && String(answer).trim() !== '';
-  const correctCount = questions.filter((question) => isCorrect(question, answers[question.id])).length;
-  const percent = Math.round((correctCount / questions.length) * 100);
+  const answer = current ? answers[current.id] : undefined;
+  const answeredCount = questions.filter((question) => isCompleteAnswer(question, answers[question.id])).length;
+  const allAnswered = questions.length > 0 && answeredCount === questions.length;
+  const correctCount = questions.filter((question) => isCorrectAnswer(question, answers[question.id])).length;
+  const percent = questions.length ? Math.round((correctCount / questions.length) * 100) : 0;
   const feedback = scoreMessage(percent);
   const passed = percent >= PASS_PERCENT;
-  const nextLevel = nextAvailableLevel[course.code];
+  const nextLevel = curriculumLevels[curriculumLevels.findIndex((level) => level.code === course.code) + 1]?.code;
+  const productionLesson = [...course.lessons].reverse().find((lesson) => lesson.kind === 'consolidation') || course.lessons[course.lessons.length - 1];
+  const courseLink = `/invata?nivel=${course.code}`;
+  const selectedIndexes = current?.type === 'order' && Array.isArray(answer) ? answer : [];
 
-  useEffect(() => { window.scrollTo(0, 0); }, [currentIndex, submitted]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    heading.current?.focus();
+    setAudioError('');
+    return () => audioController.current?.abort();
+  }, [currentIndex, submitted]);
 
-  const chooseWord = (wordIndex) => setAnswers((all) => ({ ...all, [current.id]: [...(all[current.id] || []), wordIndex] }));
-  const removeWord = (position) => setAnswers((all) => ({ ...all, [current.id]: all[current.id].filter((_, index) => index !== position) }));
-  const selectedIndexes = current.type === 'order' && Array.isArray(answer) ? answer : [];
-  const selectedWords = current.type === 'order' ? selectedIndexes.map((index) => current.words[index]) : [];
-
+  const chooseWord = (wordIndex) => setAnswers((all) => {
+    const selected = all[current.id] || [];
+    if (selected.includes(wordIndex) || selected.length >= current.answer.length) return all;
+    return { ...all, [current.id]: [...selected, wordIndex] };
+  });
+  const removeWord = (position) => setAnswers((all) => ({ ...all, [current.id]: (all[current.id] || []).filter((_, index) => index !== position) }));
+  const playAudio = async (slow = false) => {
+    audioController.current?.abort();
+    const controller = new AbortController();
+    audioController.current = controller;
+    setAudioError('');
+    try {
+      const result = await speakNorwegian(current.audioText, { slow, signal: controller.signal });
+      if (!controller.signal.aborted && result?.ok === false && !result.cancelled) setAudioError('Înregistrarea nu a putut fi redată. Încearcă din nou.');
+    } catch (_) {
+      if (!controller.signal.aborted) setAudioError('Înregistrarea nu a putut fi redată. Încearcă din nou.');
+    }
+  };
   const finish = () => {
-    const nextBest = Math.max(bestScore, percent);
+    if (finishing.current || submitted || !allAnswered) return;
+    finishing.current = true;
+    const nextBest = Math.max(readBest(course.code, user), bestScore, percent);
     const previewMode = new URLSearchParams(window.location.search).has('preview');
     if (!previewMode) {
-      localStorage.setItem(`final_test_best_${course.code.toLowerCase()}`, String(nextBest));
-      if (percent >= PASS_PERCENT) localStorage.setItem(`final_test_passed_${course.code.toLowerCase()}`, 'true');
-      questions.filter((question) => !isCorrect(question, answers[question.id])).forEach((question) => {
-        saveReviewItem({
-          level: course.code,
-          lessonId: question.lessonId,
-          source: 'final-test',
-          prompt: question.prompt,
-          answer: correctAnswer(question),
-        });
+      localStorage.setItem(finalTestKey(course.code, 'best', user), String(nextBest));
+      if (passed) localStorage.setItem(finalTestKey(course.code, 'passed', user), 'true');
+      questions.filter((question) => !isCorrectAnswer(question, answers[question.id])).forEach((question) => {
+        saveReviewItem({ id: question.id, level: course.code, lessonId: question.lessonId, lessonUid: question.lessonUid, source: 'final-test', prompt: question.type === 'audio' ? `Ce înseamnă „${question.audioText}”?` : question.prompt, answer: correctAnswerText(question) });
       });
-      recordStudyActivity({ type: 'final-test', level: course.code, minutes: Math.max(1, Math.round((Date.now() - testStartedAt.current) / 60000)), score: percent });
-      setBestScore(nextBest);
+      recordStudyActivity({ type: 'final-test', level: course.code, minutes: Math.max(1, Math.round((Date.now() - startedAt.current) / 60000)), score: percent });
     }
+    setBestScore(nextBest);
     setSubmitted(true);
   };
+  const restart = () => {
+    startedAt.current = Date.now();
+    finishing.current = false;
+    setAnswers({});
+    setCurrentIndex(0);
+    setSubmitted(false);
+  };
 
-  const restart = () => { testStartedAt.current = Date.now(); setAnswers({}); setCurrentIndex(0); setSubmitted(false); };
+  if (!questions.length) return <div className="final-test"><Link className="final-test__back" to={courseLink}>← Înapoi la cursul {course.code}</Link><h1>Evaluarea este în pregătire</h1><p>Continuă cu misiunile de consolidare ale secțiunilor.</p></div>;
 
   if (submitted) return (
     <div className="final-test final-test--result">
-      <Link className="final-test__back" to="/invata">← Înapoi la curs</Link>
+      <Link className="final-test__back" to={courseLink}>← Înapoi la cursul {course.code}</Link>
       <header className={`final-result final-result--${feedback.tone}`}>
-        <div><span>Evaluare finală · {course.code}</span><h1>{feedback.title}</h1><p>{feedback.text}</p>{passed && <div className="final-result__passed">✓ Test promovat · prag {PASS_PERCENT}%</div>}</div>
+        <div><span>Recapitulare finală · {course.code}</span><h1 ref={heading} tabIndex={-1}>{feedback.title}</h1><p>{feedback.text}</p>{passed && <div className="final-result__passed">✓ Pragul exercițiilor atins · {PASS_PERCENT}%</div>}</div>
         <div className="final-result__score"><strong>{percent}%</strong><span>{correctCount} din {questions.length} corecte</span></div>
       </header>
-      <section className="final-summary"><div><small>Punctaj obținut</small><strong>{correctCount * 10} puncte</strong></div><div><small>Cel mai bun rezultat</small><strong>{bestScore}%</strong></div><div><small>Întrebări de revăzut</small><strong>{questions.length - correctCount}</strong></div></section>
-      <section className="final-review"><div className="final-review__heading"><div><span>Feedback detaliat</span><h2>Vezi ce ai stăpânit și ce repeți</h2></div><button type="button" onClick={restart}>Repetă testul</button></div>{questions.map((question, index) => { const correct = isCorrect(question, answers[question.id]); return <article className={correct ? 'correct' : 'wrong'} key={question.id}><div>{correct ? '✓' : '×'}</div><div><small>Întrebarea {index + 1} · Lecția {question.lessonId}</small><h3>{question.prompt}</h3><p>Răspunsul tău: <strong>{question.type === 'order' ? (answers[question.id] || []).map((wordIndex) => question.words[wordIndex]).join(' ') : question.type === 'choice' || question.type === 'audio' ? question.options[answers[question.id]] : answers[question.id]}</strong></p>{!correct && <p className="correct-answer">Corect: <strong>{correctAnswer(question)}</strong></p>}<small className="explanation">{question.explanation}</small></div></article>; })}</section>
-      <div className="final-result__actions">{passed && nextLevel ? <Link className="next-level" to={`/invata?nivel=${nextLevel}`}>Continuă cu nivelul {nextLevel} →</Link> : <Link to="/invata">Înapoi la cursul {course.code}</Link>}<button type="button" onClick={restart}>Încearcă din nou</button></div>
+      <section className="final-summary" aria-label="Rezultatele sarcinilor cu răspuns fix"><div><small>Răspunsuri corecte</small><strong>{correctCount} din {questions.length}</strong></div><div><small>Cel mai bun rezultat</small><strong>{bestScore}%</strong></div><div><small>Întrebări de revăzut</small><strong>{questions.length - correctCount}</strong></div></section>
+      <section className="final-review">
+        <div className="final-review__heading"><div><span>Răspunsuri fixe · feedback</span><h2>Ce ai rezolvat și ce repeți</h2></div><button type="button" onClick={restart}>Repetă testul</button></div>
+        {questions.map((question, index) => {
+          const correct = isCorrectAnswer(question, answers[question.id]);
+          return <article className={correct ? 'correct' : 'wrong'} key={question.id}><div aria-hidden="true">{correct ? '✓' : '×'}</div><div><small>Întrebarea {index + 1} · {question.sectionTitle} · Lecția {question.lessonId}</small><h3>{question.type === 'audio' ? `Ascultare: „${question.audioText}”` : question.prompt}</h3><p>Răspunsul tău: <strong>{givenAnswerText(question, answers[question.id])}</strong></p>{!correct && <p className="correct-answer">Corect: <strong>{correctAnswerText(question)}</strong></p>}<small className="explanation">{question.explanation}</small>{!correct && <Link to={`/curs/${course.code.toLowerCase()}/${question.lessonId}`}>Reia lecția →</Link>}</div></article>;
+        })}
+      </section>
+      <section aria-labelledby="final-production-title">
+        <div className="final-review__heading"><div><span>Evaluare separată · răspuns deschis</span><h2 id="final-production-title">Scrierea și vorbirea ta</h2><p>Scorul de mai sus privește exercițiile cu răspuns fix. Folosește această misiune și criteriile ei pentru a-ți verifica exprimarea proprie.</p></div></div>
+        {productionLesson && <CurriculumProduction key={productionLesson.uid} lesson={productionLesson} level={course.code} />}
+      </section>
+      <div className="final-result__actions">{passed && nextLevel ? <Link className="next-level" to={`/invata?nivel=${nextLevel}`}>Explorează nivelul {nextLevel} →</Link> : <Link to={courseLink}>Înapoi la cursul {course.code}</Link>}<button type="button" onClick={restart}>Încearcă din nou</button></div>
     </div>
   );
 
   return (
     <div className="final-test">
-      <Link className="final-test__back" to="/invata">← Înapoi la cursul {course.code}</Link>
-      <header className="final-test__hero"><div><span>Test final · {course.code} {course.title}</span><h1>Demonstrează ce ai învățat</h1><p>{questions.length} provocări interactive din toate cele 10 lecții. Primești punctaj și feedback complet la final.</p></div><div><small>Cel mai bun scor</small><strong>{bestScore}%</strong></div></header>
+      <Link className="final-test__back" to={courseLink}>← Înapoi la cursul {course.code}</Link>
+      <header className="final-test__hero"><div><span>Recapitulare finală · {course.code} {course.title}</span><h1>Verifică legăturile dintre lecții</h1><p>{questions.length} sarcini din cele {course.sections.length} secțiuni: vocabular, structuri, propoziții și ascultare. La final compari răspunsurile și continui cu scriere și vorbire evaluate separat.</p></div><div><small>Cel mai bun scor</small><strong>{bestScore}%</strong></div></header>
       <div className="final-test__layout">
-        <aside className="final-test__map"><p>Progresul testului</p><div>{questions.map((question, index) => <button type="button" onClick={() => answers[question.id] !== undefined && setCurrentIndex(index)} className={`${index === currentIndex ? 'active' : ''} ${answers[question.id] !== undefined ? 'answered' : ''}`} key={question.id}>{answers[question.id] !== undefined ? '✓' : index + 1}</button>)}</div><small>{Object.keys(answers).length} din {questions.length} rezolvate</small></aside>
+        <aside className="final-test__map" aria-label="Navigarea întrebărilor"><p>Progresul testului</p><div>{questions.map((question, index) => {
+          const complete = isCompleteAnswer(question, answers[question.id]);
+          return <button type="button" onClick={() => setCurrentIndex(index)} aria-label={`Întrebarea ${index + 1}${complete ? ', completată' : ''}`} aria-current={index === currentIndex ? 'step' : undefined} className={`${index === currentIndex ? 'active' : ''} ${complete ? 'answered' : ''}`} key={question.id}>{complete ? '✓' : index + 1}</button>;
+        })}</div><small>{answeredCount} din {questions.length} completate</small></aside>
         <main className="final-question">
-          <div className="final-question__meta"><span>{current.category} · Lecția {current.lessonId}</span><strong>Întrebarea {currentIndex + 1} / {questions.length}</strong></div>
-          <div className="final-question__progress"><span style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }} /></div>
-          <h2>{current.prompt}</h2>
-          {current.type === 'audio' && <div className="final-question__audio"><button type="button" onClick={() => speakNorwegian(current.audioText)}><span aria-hidden="true">▶</span> Ascultă fraza</button><button type="button" onClick={() => speakNorwegian(current.audioText, { slow: true })}>Ascultă lent</button></div>}
-          {(current.type === 'choice' || current.type === 'audio') && <div className="final-question__choices">{current.options.map((option, index) => <button type="button" className={Number(answer) === index ? 'selected' : ''} onClick={() => setAnswers((all) => ({ ...all, [current.id]: index }))} key={option}><span>{String.fromCharCode(65 + index)}</span>{option}</button>)}</div>}
-          {current.type === 'fill' && <div className="final-question__fill"><label htmlFor="final-answer">Răspunsul tău</label><input id="final-answer" value={answer || ''} onChange={(event) => { const value = event.target.value; setAnswers((all) => ({ ...all, [current.id]: value })); }} placeholder="Scrie răspunsul în norvegiană" autoComplete="off" /></div>}
-          {current.type === 'order' && <div className="final-order"><div className="final-order__sentence">{selectedWords.length ? selectedWords.map((word, position) => <button type="button" onClick={() => removeWord(position)} key={`${word}-${position}`}>{word}</button>) : <span>Alege cuvintele în ordinea corectă</span>}</div><div className="final-order__bank">{current.words.map((word, index) => <button type="button" disabled={selectedIndexes.includes(index)} onClick={() => chooseWord(index)} key={`${word}-${index}`}>{word}</button>)}</div></div>}
-          <footer className="final-question__nav"><button type="button" disabled={currentIndex === 0} onClick={() => setCurrentIndex((index) => index - 1)}>← Înapoi</button>{currentIndex < questions.length - 1 ? <button className="primary" type="button" disabled={!answered} onClick={() => setCurrentIndex((index) => index + 1)}>Următoarea întrebare →</button> : <button className="primary" type="button" disabled={Object.keys(answers).length !== questions.length} onClick={finish}>Finalizează și vezi punctajul</button>}</footer>
+          <div className="final-question__meta"><span>{current.category} · {current.sectionTitle}</span><strong>Întrebarea {currentIndex + 1} / {questions.length}</strong></div>
+          <div className="final-question__progress" role="progressbar" aria-label="Răspunsuri completate" aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={answeredCount}><span style={{ width: `${(answeredCount / questions.length) * 100}%` }} /></div>
+          <h2 ref={heading} tabIndex={-1}>{current.prompt}</h2>
+          {current.type === 'audio' && <div className="final-question__audio"><button type="button" onClick={() => playAudio()}><span aria-hidden="true">▶</span> Ascultă fraza</button><button type="button" onClick={() => playAudio(true)}>Ascultă lent</button></div>}
+          {audioError && <p role="alert">{audioError}</p>}
+          {(current.type === 'choice' || current.type === 'audio') && <div className="final-question__choices">{current.options.map((option, index) => <button type="button" aria-pressed={answer === index} className={answer === index ? 'selected' : ''} onClick={() => setAnswers((all) => ({ ...all, [current.id]: index }))} key={option}><span aria-hidden="true">{String.fromCharCode(65 + index)}</span>{option}</button>)}</div>}
+          {current.type === 'fill' && <div className="final-question__fill"><label htmlFor="final-answer">Răspunsul tău</label><input id="final-answer" lang="nb" value={answer || ''} onChange={(event) => { const value = event.target.value; setAnswers((all) => ({ ...all, [current.id]: value })); }} placeholder="Scrie răspunsul în norvegiană" autoComplete="off" /></div>}
+          {current.type === 'order' && <div className="final-order"><div className="final-order__sentence" aria-live="polite">{selectedIndexes.length ? selectedIndexes.map((wordIndex, position) => <button type="button" onClick={() => removeWord(position)} aria-label={`Elimină ${current.words[wordIndex]}`} key={`${wordIndex}-${position}`}>{current.words[wordIndex]}</button>) : <span>Alege toate cuvintele în ordinea corectă</span>}</div><div className="final-order__bank">{current.words.map((word, index) => <button type="button" disabled={selectedIndexes.includes(index)} onClick={() => chooseWord(index)} key={`${word}-${index}`}>{word}</button>)}</div></div>}
+          <footer className="final-question__nav"><button type="button" disabled={currentIndex === 0} onClick={() => setCurrentIndex((index) => index - 1)}>← Înapoi</button>{currentIndex < questions.length - 1 ? <button className="primary" type="button" disabled={!isCompleteAnswer(current, answer)} onClick={() => setCurrentIndex((index) => index + 1)}>Următoarea întrebare →</button> : <button className="primary" type="button" disabled={!allAnswered} onClick={finish}>Finalizează și vezi rezultatul</button>}</footer>
         </main>
       </div>
     </div>
   );
 };
 
+const LevelFinalTest = ({ match }) => {
+  const { user } = useAuth();
+  const requestedLevel = ((match?.params?.level) || 'a1').toUpperCase();
+  const course = courseCatalog[requestedLevel] || courseCatalog.A1;
+  return <FinalTestSession key={`${course.code}-${user?.id || 'guest'}`} course={course} user={user} />;
+};
 export default LevelFinalTest;

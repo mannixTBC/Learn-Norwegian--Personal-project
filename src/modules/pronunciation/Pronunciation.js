@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { courseCatalog } from '../lessons/norwegian-program/lessonContent';
 import { getLearningLevel, levelName } from '../lessons/learningLevel';
@@ -15,6 +15,7 @@ const Pronunciation = () => {
   const lessons = courseCatalog[level].lessons;
   const [activeLesson, setActiveLesson] = useState(1);
   const [activePhrase, setActivePhrase] = useState(0);
+  useEffect(() => { setActiveLesson(1); setActivePhrase(0); }, [level]);
   const phrases = useMemo(() => {
     const lesson = lessons.find((item) => item.id === activeLesson) || lessons[0];
     return lesson.vocabulary.map(([word, meaning, example, translation]) => ({ word, meaning, example, translation }));

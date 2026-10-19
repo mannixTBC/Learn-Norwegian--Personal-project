@@ -20,6 +20,7 @@ import Traditions from '../modules/discover/Traditions';
 import Pronunciation from '../modules/pronunciation/Pronunciation';
 import PracticeGame from '../modules/exercises/PracticeGame';
 import GamesHub from '../modules/exercises/GamesHub';
+import ActivityGame from '../modules/exercises/ActivityGame';
 import Challenge30 from '../modules/exercises/challenge30/Challenge30';
 import LessonProgram from '../modules/lessons/norwegian-program/LessonProgram';
 import JobsCards from '../modules/jobs/JobsCards';
@@ -49,6 +50,8 @@ const LearningRedirect = () => <Redirect to="/jocuri" />;
 const QuizPractice = () => <PracticeGame game="quiz" />;
 const OrderPractice = () => <PracticeGame game="order" />;
 const WordPractice = () => <PracticeGame game="word" />;
+const ListeningPractice = () => <ActivityGame key="listen" game="listen" />;
+const WorkMissions = () => <ActivityGame key="missions" game="missions" />;
 
 /** Rutele aplicației, ordonate după secțiune */
 const routes = [
@@ -107,6 +110,18 @@ const routes = [
     path: '/jocuri',
     exact: true,
     component: GamesHub,
+    protected: true,
+  },
+  {
+    path: '/asculta-si-alege',
+    exact: true,
+    component: ListeningPractice,
+    protected: true,
+  },
+  {
+    path: '/misiuni-la-serviciu',
+    exact: true,
+    component: WorkMissions,
     protected: true,
   },
   // Adresă veche păstrată pentru compatibilitate

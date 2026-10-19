@@ -5,7 +5,7 @@ import './premium.css';
 const BENEFITS = [
   'Evaluare pronunție nelimitată cu Azure Speech',
   'Asistent virtual ChatGPT pentru norvegiană',
-  'Toate nivelurile și lecțiile (B1/B2 incluse)',
+  'Toate nivelurile și lecțiile, de la A1 la C2',
   'Provocarea de 30 de zile și recapitulare spațiată',
 ];
 

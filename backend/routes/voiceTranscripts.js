@@ -91,7 +91,7 @@ router.post('/', async (req, res) => {
   res.set('Cache-Control', 'no-store');
   try {
     const { conversationId, level, lessonId, pathId = 'general', mode, messages, feedback = '' } = req.body || {};
-    if (!uuidPattern.test(conversationId || '') || !['A1', 'A2', 'B1', 'B2'].includes(level)
+    if (!uuidPattern.test(conversationId || '') || !['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(level)
       || !Number.isInteger(lessonId) || lessonId < 1 || lessonId > 999
       || !pathPattern.test(pathId) || !['realtime', 'batch'].includes(mode)) {
       throw fail('Datele conversației nu sunt valide.');

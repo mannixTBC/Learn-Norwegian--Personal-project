@@ -51,7 +51,8 @@ const questions = {
   ],
 };
 
-const entriesFor = (level, lessonId) => questions[level]?.[lessonId - 1] || null;
+const catalog = require('./voiceCatalog.json');
+const entriesFor = (level, lessonId) => catalog[level]?.[lessonId]?.conversationPrompts || questions[level]?.[lessonId - 1] || null;
 const getPreparedQuestions = (level, lessonId) => entriesFor(level, lessonId)?.map(([question]) => question) || null;
 const getPreparedQuestionTranslation = (level, lessonId, question) => (
   entriesFor(level, lessonId)?.find(([candidate]) => candidate === question)?.[1] || null

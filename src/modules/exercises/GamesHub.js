@@ -4,6 +4,10 @@ import { getLearningLevel, levelName } from '../lessons/learningLevel';
 import { getReviewStats } from '../../services/spacedReview';
 import { getStudySummary } from '../../services/learningActivity';
 import MobileAppNav from '../layout/MobileAppNav';
+import { useAuth } from '../auth/AuthContext';
+import { getCareerPath, getCareerProfile } from '../../services/careerProfile';
+import { ActivityIcon } from './ActivityGame';
+import { readPracticeProgress } from './practiceActivities';
 import './GamesHub.css';
 import './MobileExercisePolish.css';
 
@@ -22,6 +26,7 @@ const icons = {
 };
 
 const GamesHub = () => {
+  const { user } = useAuth();
   const location = useLocation();
   const level = getLearningLevel(location.search);
   const reviewStats = getReviewStats(level);
@@ -59,6 +64,11 @@ const GamesHub = () => {
     { id: 'pronunciation', to: `/pronuntie?nivel=${level}`, title: 'Pronunție', progress: { completed: pronunciationBest, target: 100 }, icon: icons.pronunciation },
   ];
   const streak = Math.max(0, Number(studySummary.streak) || 0);
+  const careerPath = getCareerPath(getCareerProfile(user)?.pathId);
+  const newGames = [
+    { id: 'listen', to: '/asculta-si-alege', title: 'Ascultă și alege', text: 'Auzi norvegiana. Descoperă sensul.', meta: `${level} · 2–4 minute` },
+    { id: 'missions', to: '/misiuni-la-serviciu', title: 'Misiuni la serviciu', text: 'Situații reale. Replica potrivită.', meta: `${level} · ${careerPath.shortTitle}` },
+  ].map((game) => ({ ...game, progress: readPracticeProgress(localStorage, { game: game.id, level, pathId: careerPath.id, userId: user?.id || 'guest' }) }));
 
   return (
     <main className="games-hub">
@@ -94,6 +104,15 @@ const GamesHub = () => {
           <strong>Începe <span aria-hidden="true">›</span></strong>
         </div>
       </Link>
+
+      <section className="games-hub__new-games" aria-labelledby="games-hub-new-title">
+        <div className="games-hub__new-heading"><h2 id="games-hub-new-title">Ascultă. Înțelege. Răspunde.</h2><span>Două moduri de a exersa</span></div>
+        <div className="games-hub__new-grid">{newGames.map((game) => <Link className={`games-hub__new-card games-hub__new-card--${game.id}`} to={`${game.to}?nivel=${level}`} key={game.id}>
+          <span className="games-hub__new-icon"><ActivityIcon game={game.id} /></span>
+          <div><small>{game.meta}</small><h3>{game.title}</h3><p>{game.text}</p><span className="games-hub__new-badge">{game.progress.sessions ? `Record: ${game.progress.best}% · ${game.progress.sessions} ${game.progress.sessions === 1 ? 'sesiune' : 'sesiuni'}` : 'Încearcă acum'}</span></div>
+          <b aria-hidden="true">↗</b>
+        </Link>)}</div>
+      </section>
 
       <section className="games-hub__app-library" aria-label="Biblioteca de jocuri">
         {appGameCards.map((game) => {

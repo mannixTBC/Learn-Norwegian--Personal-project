@@ -78,8 +78,12 @@ const lessonFor = ({ level, lessonId, pathId = 'general' }) => {
 const compactLesson = (context) => ({
   level: context.level,
   title: context.lesson.title,
+  sectionTitle: context.lesson.sectionTitle,
   objectives: context.lesson.objectives.slice(0, 3),
   vocabulary: context.lesson.vocabulary.slice(0, 8).map((entry) => entry.slice(0, 2)),
+  recycledVocabulary: (context.lesson.recycledVocabulary || []).filter((item) => Array.isArray(item?.entry)).slice(0, 8).map((item) => item.entry.slice(0, 2)),
+  production: { speakingPrompt: context.lesson.production?.speakingPrompt || '' },
+  reading: context.lesson.reading ? { title: context.lesson.reading.title, text: context.lesson.reading.text } : undefined,
   grammar: {
     title: context.lesson.grammar?.title || '',
     rule: context.lesson.grammar?.rule || '',
@@ -162,7 +166,7 @@ const isUsableQuestion = (question, askedQuestions, level) => {
   if (typeof question !== 'string' || !question.trim()) return false;
   const trimmed = question.trim();
   const questionMarks = trimmed.match(/\?/g)?.length || 0;
-  const wordLimit = ['A1', 'A2'].includes(level) ? 12 : 20;
+  const wordLimit = ['A1', 'A2'].includes(level) ? 12 : ['C1', 'C2'].includes(level) ? 32 : 20;
   return questionMarks === 1
     && trimmed.endsWith('?')
     && trimmed.split(/\s+/).length <= wordLimit
@@ -364,7 +368,7 @@ const objectiveForTurn = (context, turn) => {
 };
 
 const buildSystemPrompt = (context, session) => {
-  const wordLimit = ['A1', 'A2'].includes(context.level) ? 18 : 35;
+  const wordLimit = ['A1', 'A2'].includes(context.level) ? 18 : ['C1', 'C2'].includes(context.level) ? 60 : 35;
   const newWordLimit = ['A1', 'A2'].includes(context.level) ? 1 : 2;
   const isFinalTurn = session.turn + 1 >= MAX_TURNS;
   const plannedQuestion = isFinalTurn ? null : nextQuestionFor(session, context, null);
@@ -386,6 +390,7 @@ correction: de regulă null. Corectează numai o greșeală norvegiană sigură:
 memory: un singur fapt scurt în Bokmål, maximum 80 de caractere, util pentru dialogul următor; altfel null. Nu memora date personale sensibile.
 Introdu maximum ${newWordLimit} ${newWordLimit === 1 ? 'cuvânt nou necesar' : 'cuvinte noi necesare'} în replică. Dacă utilizatorul se abate de la temă, răspunde foarte scurt și revino natural la obiectiv.
 Pentru nivelurile A1–A2, rămâi strict la tema, vocabularul și gramatica lecției de bază. Direcția profesională este doar decor; nu preda expresiile ei dacă nu apar și în lecția de bază.
+Pentru C1–C2, cere explicații, comparații și reformulări legate de obiectiv; urmărește nuanța, registrul și sinteza, nu numai recunoașterea unor cuvinte.
 Conversația trebuie să curgă natural: reacționează concret la răspuns, apoi pune o continuare relevantă pentru același obiectiv, nu o listă de întrebări independente.
 Nu juca niciodată rolul cursantului și nu răspunde la propria întrebare. Nu concatena expresiile sau exemplele din vocabular.
 Nu te numi ChatGPT sau OpenAI. Numele tău este Nora și îl menționezi numai dacă ești întrebată.
@@ -484,7 +489,7 @@ const parseCompletion = (completion) => {
 const isUsableReply = (reply, context) => {
   if (typeof reply !== 'string' || !reply.trim() || reply.includes('?')) return false;
   if (/\b(chatgpt|openai)\b/i.test(reply)) return false;
-  const wordLimit = ['A1', 'A2'].includes(context.level) ? 18 : 35;
+  const wordLimit = ['A1', 'A2'].includes(context.level) ? 18 : ['C1', 'C2'].includes(context.level) ? 60 : 35;
   const sentenceCount = reply.split(/[.!]+/).filter((part) => part.trim()).length;
   return reply.trim().split(/\s+/).length <= wordLimit && sentenceCount <= 2;
 };

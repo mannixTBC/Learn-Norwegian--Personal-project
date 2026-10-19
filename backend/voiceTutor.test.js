@@ -44,3 +44,37 @@ test('sesiunea respectă nivelul, permite ezitările și include contextul real 
   assert.match(a1.instructions, /Nu răspunde în locul cursantului/);
   assert.match(a1.instructions, /nu atribui scoruri exacte de pronunție/);
 });
+
+test('vocea și chatul primesc lectura C1, expresiile reactivate și sarcina orală, fără răspunsul-reper', () => {
+  const [id, lesson] = Object.entries(catalog.C1).find(([, item]) => item.reading?.text && item.recycledVocabulary?.length);
+  const context = getVoiceLesson({ level: 'C1', lessonId: Number(id), pathId: 'general' });
+  assert.ok(context.reading.text.length > 200, 'the actual extended text is available, not only its title');
+  assert.deepEqual(Object.keys(context.reading).sort(), ['text', 'title'], 'the generated catalog only contains the reading source');
+  const hiddenAnswer = 'PRIVATE_READING_MODEL_ANSWER_NOT_FOR_CONVERSATION_CONTEXT';
+  const reading = { ...context.reading, answer: hiddenAnswer, explanation: 'PRIVATE_READING_EXPLANATION' };
+  const instructions = buildVoiceSession({ ...context, reading }).instructions;
+  const voiceContext = JSON.parse(instructions.split('# Context curricular\n')[1]);
+  assert.equal(voiceContext.sectionTitle, lesson.sectionTitle);
+  assert.equal(voiceContext.reading.title, lesson.reading.title);
+  assert.equal(voiceContext.reading.text, lesson.reading.text);
+  assert.deepEqual(voiceContext.recycledVocabulary[0], lesson.recycledVocabulary[0].entry.slice(0, 2));
+  assert.equal(voiceContext.production.speakingPrompt, lesson.production.speakingPrompt);
+  assert.equal(instructions.includes(hiddenAnswer), false);
+  assert.equal(instructions.includes('PRIVATE_READING_EXPLANATION'), false);
+
+  const tutor = require('./chatTutor');
+  const chatLesson = tutor.lessonFor({ level: 'C1', lessonId: Number(id), pathId: 'general' });
+  const question = lesson.conversationPrompts[0][0];
+  const request = tutor.buildCompletionRequest({ ...chatLesson, lesson: { ...chatLesson.lesson, reading } }, {
+    turn: 0, lastQuestion: question, askedQuestions: [question], memory: [], history: [],
+  }, 'Jeg vil undersøke forutsetningen i teksten.');
+  const prompt = request.messages[0].content;
+  const chatContext = JSON.parse(prompt.split('Folosește prioritar acest context curricular compact: ')[1]);
+  assert.equal(chatContext.sectionTitle, lesson.sectionTitle);
+  assert.equal(chatContext.reading.text, lesson.reading.text);
+  assert.deepEqual(chatContext.recycledVocabulary[0], lesson.recycledVocabulary[0].entry.slice(0, 2));
+  assert.equal(chatContext.production.speakingPrompt, lesson.production.speakingPrompt);
+  assert.deepEqual(Object.keys(chatContext.reading).sort(), ['text', 'title']);
+  assert.equal(prompt.includes(hiddenAnswer), false);
+  assert.equal(prompt.includes('PRIVATE_READING_EXPLANATION'), false);
+});

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { learningLevels } from '../lessons/learningLevel';
 import './MobileAppNav.css';
 
 const icons = {
@@ -12,7 +13,7 @@ const icons = {
 const MobileAppNav = ({ activeLevel }) => {
   const location = useLocation();
   const storedLevel = typeof window !== 'undefined' ? window.localStorage.getItem('norwegian_active_level') : '';
-  const level = activeLevel || (/^(A1|A2|B1|B2)$/.test(storedLevel) ? storedLevel : 'A1');
+  const level = activeLevel || (learningLevels.includes(storedLevel) ? storedLevel : 'A1');
   const items = [
     { id: 'home', label: 'Acasă', to: '/dashboard', active: location.pathname === '/dashboard' },
     { id: 'lessons', label: 'Lecții', to: `/invata?nivel=${level}`, active: ['/invata', '/invata-limba'].includes(location.pathname) },

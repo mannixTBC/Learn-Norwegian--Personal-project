@@ -7,7 +7,7 @@ import './premium.css';
 const PREMIUM_BENEFITS = [
   { icon: '🎤', title: 'Pronunție nelimitată', desc: 'Evaluare cu Azure Speech la fiecare frază — scor pe foneme, fluență și acuratețe.' },
   { icon: '💬', title: 'Asistent ChatGPT', desc: 'Conversație virtuală în norvegiană cu corectări instant și explicații în română.' },
-  { icon: '📚', title: 'Toate lecțiile', desc: 'Deblocăm nivelele B1 și B2, lecțiile extra și testele finale avansate.' },
+  { icon: '📚', title: 'Programa A1–C2', desc: 'Șase niveluri organizate în secțiuni, cu lecții conectate și misiuni de consolidare.' },
   { icon: '🔥', title: 'Provocarea de 30 zile', desc: 'Program intens cu recapitulare spațiată pentru retenție pe termen lung.' },
 ];
 

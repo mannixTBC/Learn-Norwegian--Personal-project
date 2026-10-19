@@ -6,6 +6,7 @@ import ChatAssistant from '../../chat/ChatAssistant';
 import VoiceLessonConversation from '../../chat/VoiceLessonConversation';
 import { LessonExercise, LessonMetaIcon, HighlightedSentence, DialogueAudioButton, SpeakerAvatar, getDialogueVoice, DialogueLineAudioButton } from './lessonParts';
 import { getLessonImage } from '../lessonVisuals';
+import { CurriculumRecall, CurriculumReading, CurriculumProduction } from './CurriculumPractice';
 import './LessonProgramApp.css';
 
 /* Vizualizarea lecției pentru aplicația instalată — replică ecranele
@@ -136,6 +137,7 @@ const LessonAppView = (props) => {
             {lesson.buildsOn && (
               <aside className="lapp-bridge"><span>Legătura cu ce știi deja</span><p>{lesson.buildsOn}</p></aside>
             )}
+            <CurriculumRecall key={lesson.uid} lesson={lesson} level={levelCode} />
             <div className="lapp-objectives">
               <h2>După această lecție vei putea:</h2>
               {lesson.objectives.map((objective) => <div key={objective}><span><CheckIcon /></span><p>{objective}</p></div>)}
@@ -235,8 +237,10 @@ const LessonAppView = (props) => {
               {lesson.grammar.examples.map((example) => (
                 <div className="lapp-grammar__example" key={example}><span className="is-ok"><CheckIcon /></span><p>{example}</p></div>
               ))}
-              <div className="lapp-grammar__example is-wrong"><span className="is-no">×</span><p>{lesson.grammar.wrong}</p></div>
+              <div className="lapp-grammar__example is-wrong"><span className="is-no">×</span><p><strong>Formulare de evitat în acest context: </strong>{lesson.grammar.wrong}</p></div>
             </div>
+            <CurriculumReading key={lesson.uid} lesson={lesson} />
+            <CurriculumProduction key={`${lesson.uid}-production`} lesson={lesson} level={levelCode} />
           </section>
         )}
 
@@ -296,7 +300,7 @@ const LessonAppView = (props) => {
             <div className="lapp-statscard">
               <div><span><LessonMetaIcon type="vocabulary" /></span><strong>Exerciții corecte</strong><b>{score}/{lessonExercises.length}</b></div>
               <div><span><LessonMetaIcon type="voice" /></span><strong>{voiceCompleted ? 'Dialog vocal finalizat' : 'Dialog vocal de exersat'}</strong><b>{voiceCompleted ? '✓' : '—'}</b></div>
-              <div><span><LessonMetaIcon type="level" /></span><strong>Expresii parcurse</strong><b>{lesson.vocabulary.length + careerModule.phrases.length}</b></div>
+              <div><span><LessonMetaIcon type="level" /></span><strong>Expresii noi</strong><b>{lesson.introducedVocabulary.length}</b></div>
             </div>
             {Object.values(answers).filter((v) => !v).length > 0 && (
               <div className="lapp-review">

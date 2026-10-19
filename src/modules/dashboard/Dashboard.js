@@ -9,19 +9,16 @@ import { getCareerLessonModule, getCareerPath, getCareerProfile } from '../../se
 import CareerPathVisual from '../onboarding/CareerPathVisual';
 import MobileAppNav from '../layout/MobileAppNav';
 import { getLessonImage } from '../lessons/lessonVisuals';
+import { finalTestKey, readCourseProgress } from '../../services/curriculumProgress';
 import './Dashboard.css';
 
-const progressKey = (level) => level === 'A1' ? 'lesson_prog_progress' : `lesson_prog_progress_${level.toLowerCase()}`;
 
 const readJson = (key, fallback) => {
   try { return JSON.parse(localStorage.getItem(key)) || fallback; }
   catch (_) { return fallback; }
 };
 
-const readProgress = (level) => {
-  const value = readJson(progressKey(level), { completed: [], unlocked: 1 });
-  return { completed: Array.isArray(value.completed) ? value.completed : [], unlocked: value.unlocked || 1 };
-};
+const readProgress = (level, user) => readCourseProgress(level, user, courseCatalog[level].lessons);
 
 const greeting = () => {
   const hour = new Date().getHours();
@@ -111,7 +108,7 @@ const Dashboard = () => {
   const { user } = useAuth();
   const activeLevel = learningLevels.includes(localStorage.getItem('norwegian_active_level')) ? localStorage.getItem('norwegian_active_level') : 'A1';
   const course = courseCatalog[activeLevel];
-  const activeProgress = readProgress(activeLevel);
+  const activeProgress = readProgress(activeLevel, user);
   const nextLesson = course.lessons.find((lesson) => !activeProgress.completed.includes(lesson.id)) || course.lessons[course.lessons.length - 1];
   const reviews = getReviewStats(activeLevel);
   const difficultItems = getReviewItemsForLevel(activeLevel).sort((left, right) => (right.lapses || 0) - (left.lapses || 0));
@@ -123,9 +120,9 @@ const Dashboard = () => {
 
   const levels = learningLevels.map((level) => {
     const lessons = courseCatalog[level].lessons;
-    const progress = readProgress(level);
+    const progress = readProgress(level, user);
     const completed = progress.completed.filter((id) => id <= lessons.length).length;
-    const words = lessons.filter((lesson) => progress.completed.includes(lesson.id)).reduce((total, lesson) => total + lesson.vocabulary.length, 0);
+    const words = lessons.filter((lesson) => progress.completed.includes(lesson.id)).reduce((total, lesson) => total + lesson.introducedVocabulary.length, 0);
     return { level, completed, total: lessons.length, words, percent: Math.round((completed / lessons.length) * 100) };
   });
   const totalWords = levels.reduce((total, level) => total + level.words, 0);
@@ -133,11 +130,11 @@ const Dashboard = () => {
   const activeLevelProgress = Math.round((activeProgress.completed.length / course.lessons.length) * 100);
   const goalPercent = Math.min(100, Math.round((activity.todayMinutes / dailyGoal) * 100));
   const maxWeekMinutes = Math.max(20, ...activity.last7Days.map((day) => day.minutes));
-  const finalBest = Number(localStorage.getItem(`final_test_best_${activeLevel.toLowerCase()}`)) || 0;
-  const finalPassed = localStorage.getItem(`final_test_passed_${activeLevel.toLowerCase()}`) === 'true';
+  const finalBest = Number(localStorage.getItem(finalTestKey(activeLevel, 'best', user))) || 0;
+  const finalPassed = localStorage.getItem(finalTestKey(activeLevel, 'passed', user)) === 'true';
   const careerProfile = getCareerProfile(user);
   const careerPath = careerProfile ? getCareerPath(careerProfile.pathId) : null;
-  const careerModule = careerPath ? getCareerLessonModule(careerPath.id, activeLevel, nextLesson.id) : null;
+  const careerModule = careerPath ? getCareerLessonModule(careerPath.id, activeLevel, nextLesson.id, nextLesson) : null;
 
   const selectGoal = (goal) => {
     updateDailyGoal(setDailyGoal(goal));
@@ -207,7 +204,7 @@ const Dashboard = () => {
           <div>
             <small>Următorul pas</small>
             <h2>Lecția {nextLesson.id}: {nextLesson.title}</h2>
-            <p>{nextLesson.duration} min · {nextLesson.vocabulary.length + (careerModule ? careerModule.phrases.length : 0)} expresii</p>
+            <p>{nextLesson.duration} min · {nextLesson.vocabulary.length} expresii</p>
           </div>
           <Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>
             {activeProgress.completed.length ? 'Continuă lecția' : 'Începe lecția'} <span aria-hidden="true">→</span>
@@ -247,7 +244,7 @@ const Dashboard = () => {
           <div className="dashboard-app-home__lesson-copy">
             <span>Următorul pas</span>
             <h2>Lecția {nextLesson.id}: {nextLesson.title}</h2>
-            <p><span><DashboardAppIcon type="clock" />{nextLesson.duration} min</span><span><DashboardAppIcon type="chat" />{nextLesson.vocabulary.length + (careerModule ? careerModule.phrases.length : 0)} expresii</span></p>
+            <p><span><DashboardAppIcon type="clock" />{nextLesson.duration} min</span><span><DashboardAppIcon type="chat" />{nextLesson.vocabulary.length} expresii</span></p>
           </div>
           <Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>
             {activeProgress.completed.length ? 'Continuă lecția' : 'Începe lecția'} <span aria-hidden="true">→</span>
@@ -294,7 +291,7 @@ const Dashboard = () => {
       <section className="dashboard-section dashboard-today" aria-labelledby="today-plan-title">
         <div className="dashboard-section__heading"><div><span>Plan personalizat · {activeLevel}</span><h2 id="today-plan-title">Ce faci astăzi</h2></div><Link to={`/invata?nivel=${activeLevel}`}>Vezi toate lecțiile →</Link></div>
         <div className="dashboard-today__grid">
-          <article className="today-task today-task--primary"><div className="today-task__top"><span>01</span><small>Activitatea principală</small></div><h3>Continuă lecția {nextLesson.id}</h3><p>{nextLesson.title}</p><div className="today-task__meta"><span>◷ {nextLesson.duration} min</span><span>○ {nextLesson.vocabulary.length + (careerModule ? careerModule.phrases.length : 0)} expresii</span></div><Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>{activeProgress.completed.length ? 'Continuă lecția' : 'Începe lecția'} →</Link></article>
+          <article className="today-task today-task--primary"><div className="today-task__top"><span>01</span><small>Activitatea principală</small></div><h3>Continuă lecția {nextLesson.id}</h3><p>{nextLesson.title}</p><div className="today-task__meta"><span>◷ {nextLesson.duration} min</span><span>○ {nextLesson.vocabulary.length} expresii</span></div><Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>{activeProgress.completed.length ? 'Continuă lecția' : 'Începe lecția'} →</Link></article>
           <article className="today-task"><div className="today-task__top"><span>02</span><small>Memorie</small></div><h3>{reviews.due ? `Repetă ${reviews.due} elemente` : 'Recapitularea este la zi'}</h3><p>{reviews.due ? 'Greșelile recente sunt pregătite pentru repetare spațiată.' : reviews.total ? 'Următoarele elemente vor apărea când este momentul potrivit.' : 'Greșelile din lecții vor fi salvate automat aici.'}</p><Link to={`/recapitulare?nivel=${activeLevel}`}>{reviews.due ? 'Începe recapitularea' : 'Recapitulează'} →</Link></article>
           <article className="today-task"><div className="today-task__top"><span>03</span><small>Exercițiu opțional</small></div><h3>Pronunție · 5 minute</h3><p>Ascultă o frază, înregistrează-te și compară rezultatul fără să afecteze progresul.</p><Link to={`/pronuntie?nivel=${activeLevel}`}>Deschide laboratorul →</Link></article>
         </div>

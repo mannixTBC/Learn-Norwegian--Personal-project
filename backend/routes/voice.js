@@ -29,7 +29,7 @@ router.post('/session', async (req, res, next) => {
 }, async (req, res) => {
   try {
     const { level, lessonId, pathId = 'general' } = req.body || {};
-    if (!['A1', 'A2', 'B1', 'B2'].includes(level) || !Number.isInteger(lessonId)) {
+    if (!['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(level) || !Number.isInteger(lessonId)) {
       return res.status(400).json({ error: 'Lecția selectată nu este validă.' });
     }
     const context = getVoiceLesson({ level, lessonId, pathId });
