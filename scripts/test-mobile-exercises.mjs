@@ -72,6 +72,10 @@ for (const level of Object.keys(courseCatalog)) {
   const cards = byClass('games-hub__card');
   assert.equal(cards.length, 8);
   assert.ok(cards.every((card) => card.props.href.endsWith('?nivel=' + level)));
+  const mobileCards = [...byClass('games-hub__app-library')[0].findAllByType('a'), ...byClass('games-hub__new-card')];
+  assert.equal(mobileCards.length, 8, 'all eight activities remain available in the compact mobile layout');
+  assert.deepEqual(new Set(mobileCards.map((card) => card.props.href)), new Set(cards.map((card) => card.props.href)));
+  assert.ok(renderer.root.findAllByProps({ 'aria-label': 'Nivel de practică' }).every((select) => select.props.value === level));
   await unmount();
   assert.deepEqual(getVerbSessions(level).map((session) => session.length), Array(10).fill(3));
 }
