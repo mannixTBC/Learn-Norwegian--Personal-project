@@ -278,7 +278,16 @@ const AccountSettings = () => {
             <span className="account-mobile__row-icon"><AccountIcon /></span>
             <span className="account-mobile__row-copy">
               <strong>Administrare cont</strong>
-              <small>Date personale, acces și ștergerea contului</small>
+              <small>Date personale și ștergerea contului</small>
+            </span>
+            <span className="account-mobile__chevron"><ChevronIcon /></span>
+          </button>
+
+          <button type="button" className="account-mobile__row" onClick={signOut}>
+            <span className="account-mobile__row-icon"><LogoutIcon /></span>
+            <span className="account-mobile__row-copy">
+              <strong>Deconectare</strong>
+              <small>Ieși din cont pe acest dispozitiv</small>
             </span>
             <span className="account-mobile__chevron"><ChevronIcon /></span>
           </button>
@@ -305,12 +314,6 @@ const AccountSettings = () => {
               <div><small>Nume</small><strong>{user.name}</strong></div>
               <div><small>Adresă de e-mail</small><strong>{user.email || 'Neasociată'}</strong></div>
             </div>
-
-            <button type="button" className="account-manage-dialog__action" onClick={signOut}>
-              <span><LogoutIcon /></span>
-              <span><strong>Deconectare</strong><small>Ieși din cont pe acest dispozitiv</small></span>
-              <ChevronIcon />
-            </button>
 
             <button type="button" className="account-manage-dialog__action account-manage-dialog__action--danger" onClick={() => { setManagingAccount(false); setConfirming(true); }}>
               <span><DeleteIcon /></span>

@@ -25,3 +25,10 @@
 .games-hub .games-hub__progress>i{display:block;height:100%;border-radius:inherit;background:#479488}
 @media(max-width:680px){.games-hub.exercise-screen{padding-bottom:calc(100px + env(safe-area-inset-bottom))}.games-hub .games-hub__grid{grid-template-columns:1fr;gap:10px}.games-hub .games-hub__card{grid-template-columns:46px minmax(0,1fr) 12px;gap:12px;min-height:0;padding:16px}.games-hub .games-hub__icon{width:46px;height:46px;border-radius:12px}.games-hub .games-hub__copy h3{font-size:1rem}.games-hub .games-hub__copy p{margin:5px 0 8px;font-size:.83rem}.games-hub .games-hub__daily{min-height:0;background-position:60% center}.games-hub .games-hub__daily>div{max-width:85%;padding:22px}.games-hub .games-hub__daily h2{max-width:250px;font-size:1.5rem}.games-hub .games-hub__daily p{max-width:240px;font-size:.85rem}.games-hub .games-hub__daily strong{padding:10px 14px;gap:12px;font-size:.85rem}.games-hub .games-hub__section{margin-top:24px}}
 @media(max-width:360px){.games-hub .games-hub__card{padding:14px;grid-template-columns:40px minmax(0,1fr) 10px;gap:10px}.games-hub .games-hub__icon{width:40px;height:40px}.games-hub .games-hub__daily>div{max-width:100%;padding:20px}}
+.games-hub .games-hub__status{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;margin:-5px 0 18px}
+.games-hub .games-hub__wallet{display:inline-flex;max-width:100%;min-height:58px;gap:10px;align-items:center;padding:6px 17px 6px 9px;border:1px solid #ecd9a4;border-radius:16px;background:linear-gradient(135deg,#fffdf7,#fff6dc);box-shadow:0 3px 10px #9b701208}
+.games-hub .games-hub__wallet>img{display:block;flex:0 0 44px;object-fit:contain}
+.games-hub .games-hub__wallet>span{display:grid;gap:1px;line-height:1.25}
+.games-hub .games-hub__wallet strong{color:#765014;font-size:1.15rem;font-weight:800;font-variant-numeric:tabular-nums}
+.games-hub .games-hub__wallet small{color:#8b702e;font-size:.75rem}
+.games-hub .games-hub__status .games-hub__streak{margin:0}

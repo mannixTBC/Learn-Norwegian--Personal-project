@@ -18,6 +18,8 @@ const GamesHub = () => {
   const level = getLearningLevel(location.search);
   const review = getReviewStats(level);
   const streak = Math.max(0, Number(getStudySummary().streak) || 0);
+  const storedBalance = Number(localStorage.getItem('norwegian_reward_balance'));
+  const rewardBalance = Number.isFinite(storedBalance) ? Math.max(0, Math.floor(storedBalance)) : 0;
   const career = getCareerPath(getCareerProfile(user)?.pathId);
   const verbSessions = getVerbSessions(level).length;
   const verbs = readVerbProgress(localStorage, level, verbSessions);
@@ -51,8 +53,14 @@ const GamesHub = () => {
   </Link>;
 
   return <ExerciseLayout className="games-hub" title="Jocuri și exerciții" description="Alege ce vrei să exersezi. Câteva minute în fiecare zi fac diferența." icon="games" level={level} allowLevelChange backTo={'/invata?nivel=' + level} backLabel="Lecțiile mele">
+    <div className="games-hub__status">
+      <div className="games-hub__wallet" aria-label={`${rewardBalance} ${rewardBalance === 1 ? 'monedă disponibilă' : 'monede disponibile'}`}>
+        <img src="/images/norwegian-gold-coin.svg" width="44" height="44" alt="" aria-hidden="true" />
+        <span><strong>{rewardBalance.toLocaleString('ro-RO')}</strong><small>{rewardBalance === 1 ? 'monedă' : 'monede'}</small></span>
+      </div>
+      {streak > 0 && <p className="games-hub__streak"><span aria-hidden="true">✦</span> Seria ta: <strong>{streak} {streak === 1 ? 'zi' : 'zile'}</strong></p>}
+    </div>
     <Link className="games-hub__daily" to={'/hangman?nivel=' + level}><div><span className="games-hub__eyebrow">Câteva cuvinte pentru azi</span><h2>Un pas mic, în fiecare zi.</h2><p>Reia vocabularul din lecțiile nivelului {level}.</p><strong>Începe să exersezi <span aria-hidden="true">→</span></strong></div></Link>
-    {streak > 0 && <p className="games-hub__streak"><span aria-hidden="true">✦</span> Seria ta: <strong>{streak} {streak === 1 ? 'zi' : 'zile'}</strong></p>}
     <section className="games-hub__section" aria-labelledby="games-quick"><h2 id="games-quick">Cuvinte și propoziții</h2><div className="games-hub__grid">{quickGames.map(card)}</div></section>
     <section className="games-hub__section" aria-labelledby="games-situations"><h2 id="games-situations">Ascultă și răspunde</h2><div className="games-hub__grid">{activities.map(card)}</div></section>
     <section className="games-hub__section" aria-labelledby="games-guided"><h2 id="games-guided">Antrenament ghidat</h2><div className="games-hub__grid">{guided.map(card)}</div></section>
