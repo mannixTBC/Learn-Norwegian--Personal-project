@@ -1,98 +1,65 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { verbsByDay } from './verbs';
-import { getLearningLevel, levelName } from '../../lessons/learningLevel';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { getLearningLevel } from '../../lessons/learningLevel';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
+import { recordStudyActivity } from '../../../services/learningActivity';
+import { ExerciseIcon, ExerciseLayout } from '../ExerciseUI';
+import { getVerbSessions, readVerbProgress } from './verbsForLevel';
 import ChallengeDragDrop from './ChallengeDragDrop';
 import ChallengeFillIn from './ChallengeFillIn';
 import ChallengeSentenceMatch from './ChallengeSentenceMatch';
-import { recordStudyActivity } from '../../../services/learningActivity';
 import './Challenge30.css';
-import '../ExerciseBack.css';
-import '../MobileExercisePolish.css';
 
-const levelOffset = { A1: 0, A2: 10, B1: 20, B2: 30 };
-
+const steps = [['vocab', 'Învață'], ['drag', 'Asociază'], ['fill', 'Completează']];
+const VerbSession = ({ level }) => {
+  const sessions = useMemo(() => getVerbSessions(level), [level]);
+  const storageKey = 'challenge_verbs_progress_' + level.toLowerCase();
+  const [progress, setProgress] = useState(() => readVerbProgress(localStorage, level, sessions.length));
+  const [currentDay, setCurrentDay] = useState(() => readVerbProgress(localStorage, level, sessions.length).day);
+  const [activeTab, setActiveTab] = useState('vocab');
+  const [matchesDone, setMatchesDone] = useState(false);
+  const tabs = useRef([]);
+  const recorded = useRef(new Set());
+  const dayVerbs = sessions[currentDay - 1] || [];
+  const verbsForExercises = useMemo(() => {
+    const previous = sessions.slice(0, currentDay - 1).flat();
+    return [...dayVerbs, ...previous.slice(-3)];
+  }, [sessions, currentDay, dayVerbs]);
+  const percent = Math.round(progress.completed.length / sessions.length * 100);
+  const chooseDay = (value) => { setCurrentDay(Number(value)); setActiveTab('vocab'); setMatchesDone(false); };
+  useEffect(() => { localStorage.setItem(storageKey, JSON.stringify(progress)); }, [progress, storageKey]);
+  const complete = () => {
+    if (!recorded.current.has(currentDay) && !progress.completed.includes(currentDay)) {
+      recorded.current.add(currentDay);
+      recordStudyActivity({ type: 'verbs', level, minutes: 3, session: currentDay, words: dayVerbs.length });
+    }
+    setProgress((value) => ({ day: Math.max(value.day, Math.min(currentDay + 1, sessions.length)), completed: [...new Set([...value.completed, currentDay])] }));
+  };
+  const navigateTabs = (event, index) => {
+    const destination = { ArrowRight: (index + 1) % 3, ArrowLeft: (index + 2) % 3, Home: 0, End: 2 }[event.key];
+    if (destination === undefined) return;
+    event.preventDefault(); setActiveTab(steps[destination][0]); tabs.current[destination]?.focus();
+  };
+  return <ExerciseLayout className="challenge30" level={level} title="Verbele de astăzi" description={level.startsWith('C') ? 'Verbe și expresii din programa ta, cu recapitulare din nivelurile anterioare.' : 'Învață trei verbe, găsește perechile și scrie din memorie.'} icon="verbs" allowLevelChange>
+    <section className="challenge30__overview" aria-label="Progresul verbelor"><div><span>Parcursul tău · {level}</span><strong>{progress.completed.length} din {sessions.length} sesiuni</strong></div><b>{percent}%</b><div role="progressbar" aria-label="Sesiuni parcurse" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent}><span style={{ width: percent + '%' }} /></div></section>
+    <div className="challenge30__workspace">
+      <aside className="challenge30__sidebar"><h2>Alege sesiunea</h2><div className="challenge30__day-grid">{sessions.map((_, index) => <button type="button" key={index} className={currentDay === index + 1 ? 'active' : ''} disabled={index + 1 > progress.day} aria-current={currentDay === index + 1 ? 'step' : undefined} onClick={() => chooseDay(index + 1)}><span>{progress.completed.includes(index + 1) ? '✓' : String(index + 1).padStart(2, '0')}</span><strong>Sesiunea {index + 1}</strong></button>)}</div></aside>
+      <section className="challenge30__panel">
+        <div className="challenge30__session-picker"><label className="exercise-field"><span>Sesiunea ta</span><select aria-label="Alege sesiunea de verbe" value={currentDay} onChange={(event) => chooseDay(event.target.value)}>{sessions.map((_, index) => <option key={index} value={index + 1} disabled={index + 1 > progress.day}>{'Sesiunea ' + (index + 1) + ' din ' + sessions.length + (progress.completed.includes(index + 1) ? ' · Parcursă' : index + 1 > progress.day ? ' · Urmează' : '')}</option>)}</select></label></div>
+        <div className="challenge30__panel-head"><h2>Sesiunea {currentDay}</h2><span>Pasul {steps.findIndex(([id]) => id === activeTab) + 1} din 3</span></div>
+        <div className="challenge30__tabs" role="tablist" aria-label="Pașii sesiunii">{steps.map(([id, title], index) => <button type="button" ref={(element) => { tabs.current[index] = element; }} role="tab" id={'verb-tab-' + id} aria-controls="verb-exercise-panel" aria-selected={activeTab === id} tabIndex={activeTab === id ? 0 : -1} onKeyDown={(event) => navigateTabs(event, index)} className={activeTab === id ? 'active' : ''} key={id} onClick={() => setActiveTab(id)}><span>{index + 1}</span><strong>{title}</strong></button>)}</div>
+        <div className="challenge30__content" id="verb-exercise-panel" role="tabpanel" aria-labelledby={'verb-tab-' + activeTab}>
+          {activeTab === 'vocab' && <><h3>Citește și ascultă</h3><p className="challenge30__instructions">Repetă fiecare expresie cu voce tare. În exerciții revin și verbe cunoscute.</p><div className="challenge30__verb-list">{dayVerbs.map((verb, index) => <article key={verb.norwegian}><span className="challenge30__verb-number">{index + 1}</span><div><strong lang="nb">{verb.norwegian}</strong><span>{verb.romanian}</span></div><button type="button" onClick={() => speakNorwegian(verb.norwegian)} aria-label={'Ascultă ' + verb.norwegian}><ExerciseIcon name="listen" /></button></article>)}</div><button type="button" className="exercise-primary challenge30__continue" onClick={() => setActiveTab('drag')}>Exersează sensurile <span aria-hidden="true">→</span></button></>}
+          {activeTab === 'drag' && <><ChallengeDragDrop key={'drag-' + currentDay} verbs={verbsForExercises} onComplete={() => setMatchesDone(true)} />{matchesDone && <button type="button" className="exercise-primary challenge30__continue" onClick={() => setActiveTab('fill')}>Continuă cu scrierea <span aria-hidden="true">→</span></button>}<details className="challenge30__extra"><summary>Exersează și în propoziții</summary><ChallengeSentenceMatch key={'sentences-' + currentDay} verbs={dayVerbs} /></details></>}
+          {activeTab === 'fill' && <><ChallengeFillIn key={'fill-' + currentDay} verbs={verbsForExercises} onComplete={complete} />{progress.completed.includes(currentDay) && <div className="challenge30__complete" role="status"><strong>Sesiune parcursă ✓</strong><p>{currentDay < sessions.length ? 'Ai fixat expresiile. Poți continua cu următoarea sesiune.' : 'Ai ajuns la final. Revino oricând la sesiunile care au nevoie de practică.'}</p>{currentDay < sessions.length && <button type="button" className="exercise-primary" onClick={() => chooseDay(currentDay + 1)}>Sesiunea {currentDay + 1} <span aria-hidden="true">→</span></button>}</div>}</>}
+        </div>
+      </section>
+    </div>
+  </ExerciseLayout>;
+};
 const Challenge30 = () => {
   const location = useLocation();
   const level = getLearningLevel(location.search);
-  const storageKey = `challenge_verbs_progress_${level.toLowerCase()}`;
-  const [currentDay, setCurrentDay] = useState(1);
-  const [activeTab, setActiveTab] = useState('vocab');
-  const [progress, setProgress] = useState(() => {
-    try { return JSON.parse(localStorage.getItem(storageKey)) || { day: 1 }; }
-    catch (_) { return { day: 1 }; }
-  });
-
-  useEffect(() => { localStorage.setItem(storageKey, JSON.stringify(progress)); }, [progress, storageKey]);
-
-  const levelVerbs = useMemo(() => verbsByDay.slice(levelOffset[level], levelOffset[level] + 10), [level]);
-  const dayVerbs = levelVerbs[currentDay - 1] || [];
-  const verbsForExercises = useMemo(() => {
-    const previous = levelVerbs.slice(0, currentDay - 1).flat();
-    return [...dayVerbs, ...previous.slice(Math.max(0, previous.length - 3))];
-  }, [currentDay, dayVerbs, levelVerbs]);
-  const completedPercent = Math.round(((progress.day - 1) / 10) * 100);
-  const unlockDay = (day) => {
-    const nextDay = Math.min(day, 10);
-    if (nextDay > progress.day) recordStudyActivity({ type: 'verbs', level, minutes: 3, session: currentDay, words: 3 });
-    setProgress((value) => ({ ...value, day: Math.max(value.day, nextDay) }));
-  };
-
-  return (
-    <div className="challenge30">
-      <div className="challenge30__breadcrumb">
-        <Link to={`/jocuri?nivel=${level}`} className="tool-back"><span aria-hidden="true">←</span><div><small>Înapoi la meniu</small><strong>Jocuri și exerciții</strong></div></Link>
-        <span>Practică suplimentară</span>
-      </div>
-      <header className="challenge30__hero">
-        <div className="challenge30__hero-copy">
-          <span className="tool-level">Nivel {level} · {levelName[level]}</span>
-          <p>Provocarea verbelor</p>
-          <h1>Verbele de astăzi</h1>
-          <small>Învață trei verbe utile, ascultă pronunția și fixează-le prin exerciții scurte.</small>
-          <div className="challenge30__hero-meta" aria-label="Detaliile sesiunii">
-            <span><strong>3</strong> verbe noi</span>
-            <span><strong>~5</strong> minute</span>
-            <span><strong>3</strong> pași</span>
-          </div>
-        </div>
-        <div className="challenge30__hero-progress" aria-label={`Progres ${completedPercent}%`}>
-          <div className="challenge30__hero-progress-top"><span>Parcursul nivelului</span><strong>{completedPercent}%</strong></div>
-          <div className="challenge30__hero-progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={completedPercent}><span style={{ width: `${completedPercent}%` }} /></div>
-          <div className="challenge30__hero-progress-foot"><span>Sesiunea curentă</span><strong>{currentDay} din 10</strong></div>
-        </div>
-      </header>
-
-      <div className="challenge30__workspace">
-        <aside className="challenge30__sidebar">
-          <div className="challenge30__sidebar-heading"><div><p>Parcursul tău</p><h2>10 sesiuni</h2></div><span>{Math.max(0, progress.day - 1)}/10</span></div>
-          <div className="challenge30__day-grid">
-            {levelVerbs.map((_, index) => {
-              const day = index + 1;
-              const unlocked = day <= progress.day;
-              return <button key={day} type="button" className={`${currentDay === day ? 'active' : ''} ${!unlocked ? 'locked' : ''} ${day < progress.day ? 'complete' : ''}`} onClick={() => unlocked && setCurrentDay(day)} disabled={!unlocked} aria-current={currentDay === day ? 'step' : undefined}><span>{day < progress.day ? '✓' : String(day).padStart(2, '0')}</span><div><strong>Sesiunea {day}</strong><small>{day < progress.day ? 'Finalizată' : unlocked ? 'Disponibilă acum' : 'Se deblochează pe parcurs'}</small></div></button>;
-            })}
-          </div>
-        </aside>
-
-        <main className="challenge30__panel">
-          <div className="challenge30__panel-head"><div><p>Sesiunea {currentDay} · Nivel {level}</p><h2>Exersează pas cu pas</h2><small>Începe cu verbele noi, apoi verifică dacă le recunoști și le poți scrie.</small></div><span>{activeTab === 'vocab' ? 'Pasul 1 din 3' : activeTab === 'drag' ? 'Pasul 2 din 3' : 'Pasul 3 din 3'}</span></div>
-          <div className="challenge30__tabs" role="tablist" aria-label="Pașii sesiunii">
-            <button type="button" role="tab" aria-selected={activeTab === 'vocab'} className={activeTab === 'vocab' ? 'active' : ''} onClick={() => setActiveTab('vocab')}><span>01</span><div><strong>Învață</strong><small>Ascultă verbele</small></div></button>
-            <button type="button" role="tab" aria-selected={activeTab === 'drag'} className={activeTab === 'drag' ? 'active' : ''} onClick={() => setActiveTab('drag')}><span>02</span><div><strong>Asociază</strong><small>Leagă sensurile</small></div></button>
-            <button type="button" role="tab" aria-selected={activeTab === 'fill'} className={activeTab === 'fill' ? 'active' : ''} onClick={() => setActiveTab('fill')}><span>03</span><div><strong>Completează</strong><small>Scrie din memorie</small></div></button>
-          </div>
-
-          <div className="challenge30__content">
-            {activeTab === 'vocab' && <div className="challenge30__learn"><div className="challenge30__section-intro"><span>Pasul 01</span><div><h3>Citește și ascultă</h3><p>Apasă pe difuzor și repetă fiecare verb cu voce tare.</p></div></div><div className="challenge30__verb-list">{dayVerbs.map((verb, index) => <article key={verb.norwegian}><div className="challenge30__verb-number">{String(index + 1).padStart(2, '0')}</div><div className="challenge30__verb-copy"><small>Norvegiană</small><strong>{verb.norwegian}</strong><span>{verb.romanian}</span></div><button type="button" onClick={() => speakNorwegian(verb.norwegian)} aria-label={`Ascultă ${verb.norwegian}`}><span aria-hidden="true">▶</span><small>Ascultă</small></button></article>)}</div>{currentDay === progress.day && progress.day < 10 && <div className="challenge30__next"><div><small>Ai parcurs cele trei verbe?</small><strong>Continuă când te simți pregătit.</strong></div><button type="button" className="challenge30__unlock" onClick={() => unlockDay(currentDay + 1)}>Am învățat · Deschide sesiunea {currentDay + 1} →</button></div>}{progress.day === 10 && currentDay === 10 && <div className="challenge30__complete"><span aria-hidden="true">✓</span><div><strong>Toate sesiunile sunt deschise</strong><p>Continuă cu exercițiile pentru a fixa verbele nivelului {level}.</p></div></div>}</div>}
-            {activeTab === 'drag' && <><ChallengeDragDrop key={`drag-${level}-${currentDay}`} verbs={verbsForExercises} onComplete={() => unlockDay(currentDay + 1)} /><ChallengeSentenceMatch key={`sentence-${level}-${currentDay}`} verbs={dayVerbs} onComplete={() => unlockDay(currentDay + 1)} /></>}
-            {activeTab === 'fill' && <ChallengeFillIn key={`fill-${level}-${currentDay}`} verbs={verbsForExercises} onComplete={() => unlockDay(currentDay + 1)} />}
-          </div>
-        </main>
-      </div>
-    </div>
-  );
+  return <VerbSession key={level} level={level} />;
 };
-
 export default Challenge30;

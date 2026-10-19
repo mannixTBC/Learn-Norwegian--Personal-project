@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { courseCatalog } from '../lessons/norwegian-program/lessonContent';
 import { getLearningLevel, levelName } from '../lessons/learningLevel';
@@ -9,6 +9,7 @@ import { saveReviewItem } from '../../services/spacedReview';
 import { recordStudyActivity } from '../../services/learningActivity';
 import { buildListeningQuestions, buildMissionQuestions, readPracticeProgress, savePracticeProgress } from './practiceActivities';
 import { workMissionData } from './workMissionData';
+import { ExerciseLayout } from './ExerciseUI';
 import './ActivityGame.css';
 
 export const ActivityIcon = ({ game, ...props }) => (
@@ -22,7 +23,7 @@ const info = {
   missions: { title: 'Misiuni la serviciu', eyebrow: 'Norvegiană în situații reale', description: 'Un pas mai sigur în fiecare conversație.', detail: 'Înțelege cererea, apoi alege replica potrivită. Două provocări pentru fiecare situație din domeniul tău.', action: 'Începe misiunile', unit: 'misiuni' },
 };
 
-const ActivityGame = ({ game }) => {
+const ActivitySession = ({ game }) => {
   const { user } = useAuth();
   const location = useLocation();
   const history = useHistory();
@@ -139,18 +140,10 @@ const ActivityGame = ({ game }) => {
     const query = new URLSearchParams(location.search); query.set('nivel', value);
     history.replace({ pathname: location.pathname, search: query.toString() }); setLessonId('all'); setSetupError('');
   };
-  const backLink = <Link className="activity-game__back" to={`/jocuri?nivel=${level}`}><span aria-hidden="true">←</span> Jocuri și exerciții</Link>;
 
   if (screen === 'setup') return (
-    <div className={`activity-game activity-game--${game}`}>
-      {backLink}
+    <ExerciseLayout className={`activity-game activity-game--${game}`} title={details.title} description={details.description} icon={game} level={level}>
       {limitedMissions && <p className="activity-pool-note">Misiunile profesionale au momentan conținut A1–B2. Această sesiune folosește nivelul B2; lecțiile și ascultarea sunt disponibile și la C1–C2.</p>}
-      <header className="activity-hero">
-        <div className="activity-hero__copy"><span className="activity-eyebrow">{details.eyebrow}</span><h1>{details.title}</h1><p>{details.description}</p>
-          <div className="activity-hero__tags"><span>{level} · {levelName[level]}</span><span>{game === 'listen' ? '2–4 minute' : length === 1 ? '1–2 minute' : '3–5 minute'}</span><span>În ritmul tău</span></div>
-        </div>
-        <div className="activity-hero__art"><i /><i /><i /><ActivityIcon game={game} /></div>
-      </header>
       <div className="activity-setup">
         <section className="activity-panel" aria-labelledby="activity-config-title">
           <div className="activity-section-title"><span>01</span><div><h2 id="activity-config-title">Pregătește-ți sesiunea</h2><p>{details.detail}</p></div></div>
@@ -171,12 +164,11 @@ const ActivityGame = ({ game }) => {
           <div className="activity-personal-best"><span>{progress.sessions ? 'Cel mai bun rezultat' : 'Prima ta sesiune'}</span><strong>{progress.sessions ? `${progress.best}%` : 'Un început bun'}</strong><small>{progress.sessions ? `${progress.sessions} ${progress.sessions === 1 ? 'sesiune' : 'sesiuni'} · ${level}${game === 'missions' ? ` · ${path.shortTitle}` : ''}` : 'Fără cronometru. Poți relua oricând.'}</small></div>
         </aside>
       </div>
-    </div>
+    </ExerciseLayout>
   );
 
   if (screen === 'result') return (
-    <div className={`activity-game activity-game--${game}`}>
-      {backLink}
+    <ExerciseLayout className={`activity-game activity-game--${game}`} title={details.title} icon={game} level={level} compact>
       <section className="activity-result">
         <span className="activity-result__icon" aria-hidden="true">{mistakes.length ? '↗' : '✓'}</span><span className="activity-eyebrow">{retry ? 'Recapitulare încheiată' : 'Sesiune încheiată'} · {level}</span>
         <h1 ref={headingRef} tabIndex={-1}>{mistakes.length ? 'Fiecare încercare te duce înainte.' : 'Ai prins toate răspunsurile!'}</h1>
@@ -186,11 +178,11 @@ const ActivityGame = ({ game }) => {
         <div className="activity-result__actions">{mistakes.length > 0 && <button type="button" className="activity-primary" onClick={() => begin(mistakes.map((item) => item.question), true)}>Repetă greșelile ({mistakes.length})</button>}<button type="button" className={mistakes.length ? 'activity-secondary' : 'activity-primary'} onClick={() => setScreen('setup')}>Sesiune nouă</button></div>
       </section>
       <section className="activity-review" aria-label="Răspunsurile sesiunii"><h2>Ce iei cu tine din sesiune</h2>{results.map(({ question: item, given, correct }) => <article className={correct ? 'correct' : 'wrong'} key={item.id}><span aria-hidden="true">{correct ? '✓' : '↻'}</span><div><small>{correct ? 'Corect' : 'De repetat'} · {item.topic}</small><h3 lang={item.kind === 'listen' || item.kind === 'intent' ? 'nb' : 'ro'}>{item.audioText || item.quote || item.context}</h3>{!correct && <p>Ai ales: {given}</p>}<p><strong lang={item.kind === 'reply' ? 'nb' : 'ro'}>{item.answer}</strong></p></div></article>)}</section>
-    </div>
+    </ExerciseLayout>
   );
 
   return (
-    <div className={`activity-game activity-game--${game} activity-game--playing`}>
+    <div className={`exercise-screen activity-game activity-game--${game} activity-game--playing`}>
       <header className="activity-session-bar"><button type="button" className="activity-close" aria-label="Închide sesiunea" onClick={() => { stopAudio(); setShowExit(true); }}>×</button><div><span>{details.title} · {level}</span><div className="activity-progress" role="progressbar" aria-label="Progresul sesiunii" aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={results.length}><i style={{ width: `${results.length / questions.length * 100}%` }} /></div></div><strong>{current + 1}<small> / {questions.length}</small></strong></header>
       <section className="activity-question" aria-labelledby="activity-question-title">
         <div className="activity-question__meta"><span>{retry ? 'Repetă greșelile' : game === 'listen' ? question.topic : `Misiunea ${question.mission} · ${question.title}`}</span><span>{game === 'listen' ? mode === 'words' ? 'Cuvinte și expresii' : 'Conversații' : question.kind === 'intent' ? '01 · Înțelege' : '02 · Răspunde'}</span></div>
@@ -217,4 +209,10 @@ const ActivityGame = ({ game }) => {
   );
 };
 
+const ActivityGame = ({ game }) => {
+  const { user } = useAuth();
+  const location = useLocation();
+  const level = getLearningLevel(location.search);
+  return <ActivitySession key={(user?.id || 'guest') + '-' + level + '-' + game} game={game} />;
+};
 export default ActivityGame;

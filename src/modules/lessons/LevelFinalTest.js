@@ -9,6 +9,7 @@ import { finalTestKey } from '../../services/curriculumProgress';
 import { speakNorwegian } from '../../services/norwegianSpeech';
 import { saveReviewItem } from '../../services/spacedReview';
 import { recordStudyActivity } from '../../services/learningActivity';
+import { ExerciseLayout } from '../exercises/ExerciseUI';
 import './LevelFinalTest.css';
 
 export { buildExam } from './curriculumAssessment';
@@ -97,11 +98,10 @@ const FinalTestSession = ({ course, user }) => {
     setSubmitted(false);
   };
 
-  if (!questions.length) return <div className="final-test"><Link className="final-test__back" to={courseLink}>← Înapoi la cursul {course.code}</Link><h1>Evaluarea este în pregătire</h1><p>Continuă cu misiunile de consolidare ale secțiunilor.</p></div>;
+  if (!questions.length) return <ExerciseLayout className="final-test" level={course.code} title="Recapitulare finală" icon="quiz" backTo={courseLink} backLabel={"Cursul " + course.code}><p>Continuă cu misiunile de consolidare ale secțiunilor.</p></ExerciseLayout>;
 
   if (submitted) return (
-    <div className="final-test final-test--result">
-      <Link className="final-test__back" to={courseLink}>← Înapoi la cursul {course.code}</Link>
+    <ExerciseLayout className="final-test final-test--result" level={course.code} title="Recapitulare finală" compact backTo={courseLink} backLabel={"Cursul " + course.code}>
       <header className={`final-result final-result--${feedback.tone}`}>
         <div><span>Recapitulare finală · {course.code}</span><h1 ref={heading} tabIndex={-1}>{feedback.title}</h1><p>{feedback.text}</p>{passed && <div className="final-result__passed">✓ Pragul exercițiilor atins · {PASS_PERCENT}%</div>}</div>
         <div className="final-result__score"><strong>{percent}%</strong><span>{correctCount} din {questions.length} corecte</span></div>
@@ -119,31 +119,30 @@ const FinalTestSession = ({ course, user }) => {
         {productionLesson && <CurriculumProduction key={productionLesson.uid} lesson={productionLesson} level={course.code} />}
       </section>
       <div className="final-result__actions">{passed && nextLevel ? <Link className="next-level" to={`/invata?nivel=${nextLevel}`}>Explorează nivelul {nextLevel} →</Link> : <Link to={courseLink}>Înapoi la cursul {course.code}</Link>}<button type="button" onClick={restart}>Încearcă din nou</button></div>
-    </div>
+    </ExerciseLayout>
   );
 
   return (
-    <div className="final-test">
-      <Link className="final-test__back" to={courseLink}>← Înapoi la cursul {course.code}</Link>
+    <ExerciseLayout className="final-test" level={course.code} title="Recapitulare finală" compact backTo={courseLink} backLabel={"Cursul " + course.code}>
       <header className="final-test__hero"><div><span>Recapitulare finală · {course.code} {course.title}</span><h1>Verifică legăturile dintre lecții</h1><p>{questions.length} sarcini din cele {course.sections.length} secțiuni: vocabular, structuri, propoziții și ascultare. La final compari răspunsurile și continui cu scriere și vorbire evaluate separat.</p></div><div><small>Cel mai bun scor</small><strong>{bestScore}%</strong></div></header>
       <div className="final-test__layout">
-        <aside className="final-test__map" aria-label="Navigarea întrebărilor"><p>Progresul testului</p><div>{questions.map((question, index) => {
+        <details className="final-test__map"><summary>Harta întrebărilor <span>{answeredCount} / {questions.length} completate</span></summary><div aria-label="Navigarea întrebărilor">{questions.map((question, index) => {
           const complete = isCompleteAnswer(question, answers[question.id]);
           return <button type="button" onClick={() => setCurrentIndex(index)} aria-label={`Întrebarea ${index + 1}${complete ? ', completată' : ''}`} aria-current={index === currentIndex ? 'step' : undefined} className={`${index === currentIndex ? 'active' : ''} ${complete ? 'answered' : ''}`} key={question.id}>{complete ? '✓' : index + 1}</button>;
-        })}</div><small>{answeredCount} din {questions.length} completate</small></aside>
-        <main className="final-question">
+        })}</div><small>{answeredCount} din {questions.length} completate</small></details>
+        <section className="final-question">
           <div className="final-question__meta"><span>{current.category} · {current.sectionTitle}</span><strong>Întrebarea {currentIndex + 1} / {questions.length}</strong></div>
           <div className="final-question__progress" role="progressbar" aria-label="Răspunsuri completate" aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={answeredCount}><span style={{ width: `${(answeredCount / questions.length) * 100}%` }} /></div>
           <h2 ref={heading} tabIndex={-1}>{current.prompt}</h2>
           {current.type === 'audio' && <div className="final-question__audio"><button type="button" onClick={() => playAudio()}><span aria-hidden="true">▶</span> Ascultă fraza</button><button type="button" onClick={() => playAudio(true)}>Ascultă lent</button></div>}
           {audioError && <p role="alert">{audioError}</p>}
           {(current.type === 'choice' || current.type === 'audio') && <div className="final-question__choices">{current.options.map((option, index) => <button type="button" aria-pressed={answer === index} className={answer === index ? 'selected' : ''} onClick={() => setAnswers((all) => ({ ...all, [current.id]: index }))} key={option}><span aria-hidden="true">{String.fromCharCode(65 + index)}</span>{option}</button>)}</div>}
-          {current.type === 'fill' && <div className="final-question__fill"><label htmlFor="final-answer">Răspunsul tău</label><input id="final-answer" lang="nb" value={answer || ''} onChange={(event) => { const value = event.target.value; setAnswers((all) => ({ ...all, [current.id]: value })); }} placeholder="Scrie răspunsul în norvegiană" autoComplete="off" /></div>}
+          {current.type === 'fill' && <div className="final-question__fill"><label htmlFor="final-answer">Răspunsul tău</label><input id="final-answer" lang="nb" value={answer || ''} onChange={(event) => { const value = event.target.value; setAnswers((all) => ({ ...all, [current.id]: value })); }} placeholder="Scrie răspunsul în norvegiană" autoComplete="off" autoCapitalize="none" autoCorrect="off" spellCheck={false} /></div>}
           {current.type === 'order' && <div className="final-order"><div className="final-order__sentence" aria-live="polite">{selectedIndexes.length ? selectedIndexes.map((wordIndex, position) => <button type="button" onClick={() => removeWord(position)} aria-label={`Elimină ${current.words[wordIndex]}`} key={`${wordIndex}-${position}`}>{current.words[wordIndex]}</button>) : <span>Alege toate cuvintele în ordinea corectă</span>}</div><div className="final-order__bank">{current.words.map((word, index) => <button type="button" disabled={selectedIndexes.includes(index)} onClick={() => chooseWord(index)} key={`${word}-${index}`}>{word}</button>)}</div></div>}
           <footer className="final-question__nav"><button type="button" disabled={currentIndex === 0} onClick={() => setCurrentIndex((index) => index - 1)}>← Înapoi</button>{currentIndex < questions.length - 1 ? <button className="primary" type="button" disabled={!isCompleteAnswer(current, answer)} onClick={() => setCurrentIndex((index) => index + 1)}>Următoarea întrebare →</button> : <button className="primary" type="button" disabled={!allAnswered} onClick={finish}>Finalizează și vezi rezultatul</button>}</footer>
-        </main>
+        </section>
       </div>
-    </div>
+    </ExerciseLayout>
   );
 };
 

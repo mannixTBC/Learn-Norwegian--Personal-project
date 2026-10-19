@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   formatDueDate,
@@ -9,10 +9,9 @@ import {
   ratingPreview,
 } from '../../services/spacedReview';
 import { recordStudyActivity } from '../../services/learningActivity';
-import { getLearningLevel, levelName } from './learningLevel';
+import { getLearningLevel } from './learningLevel';
+import { ExerciseLayout } from '../exercises/ExerciseUI';
 import './ReviewPage.css';
-import '../exercises/ExerciseBack.css';
-import '../exercises/MobileExercisePolish.css';
 
 const ratings = [
   { id: 'again', label: 'Mai repet', help: 'Nu mi-am amintit', tone: 'again' },
@@ -20,9 +19,8 @@ const ratings = [
   { id: 'good', label: 'Știu', help: 'Mi-am amintit', tone: 'good' },
 ];
 
-const ReviewPage = () => {
-  const location = useLocation();
-  const level = getLearningLevel(location.search);
+const ReviewSession = ({ level }) => {
+  const ratedRef = useRef(false);
   const [queue, setQueue] = useState(() => getDueReviewItems(level));
   const [sessionTotal, setSessionTotal] = useState(() => getDueReviewItems(level).length);
   const [revealed, setRevealed] = useState(false);
@@ -33,16 +31,11 @@ const ReviewPage = () => {
   const allLevelItems = getReviewItemsForLevel(level);
   const sessionFinished = sessionTotal > 0 && queue.length === 0;
 
-  useEffect(() => {
-    const due = getDueReviewItems(level);
-    setQueue(due);
-    setSessionTotal(due.length);
-    setSessionRatings({ again: 0, hard: 0, good: 0 });
-    setRevealed(false);
-  }, [level]);
+  useEffect(() => { ratedRef.current = false; }, [current?.id]);
 
   const rateCurrent = (rating) => {
-    if (!current) return;
+    if (!current || !revealed || ratedRef.current) return;
+    ratedRef.current = true;
     rateReviewItem(current.id, rating);
     if (queue.length === 1) recordStudyActivity({ type: 'review', level, minutes: Math.max(1, Math.ceil(sessionTotal / 2)), reviewed: sessionTotal });
     setSessionRatings((values) => ({ ...values, [rating]: values[rating] + 1 }));
@@ -51,6 +44,7 @@ const ReviewPage = () => {
   };
 
   const startExtraReview = () => {
+    ratedRef.current = false;
     const scheduled = getReviewItemsForLevel(level).slice(0, 10);
     setQueue(scheduled);
     setSessionTotal(scheduled.length);
@@ -59,18 +53,7 @@ const ReviewPage = () => {
   };
 
   return (
-    <div className="review-page">
-      <Link className="tool-back" to={`/jocuri?nivel=${level}`}><span aria-hidden="true">←</span><div><small>Înapoi la meniu</small><strong>Jocuri și exerciții</strong></div></Link>
-      <header className="tool-hero review-hero">
-        <div>
-          <span className="tool-level">{level} · {levelName[level]}</span>
-          <p>Repetare spațiată</p>
-          <h1>Învață astăzi. Amintește-ți și peste o lună.</h1>
-          <small>Greșelile reapar exact când memoria are nevoie de încă o repetare.</small>
-        </div>
-        <div className="tool-hero__stat"><strong>{stats.due}</strong><span>de repetat acum</span></div>
-      </header>
-
+    <ExerciseLayout className="review-page" title="Recapitulare" description="Reia cuvintele și expresiile învățate, la momentul potrivit." icon="review" level={level} allowLevelChange>
       <section className="review-overview" aria-label="Progresul recapitulării">
         <div><span>Astăzi</span><strong>{stats.due}</strong><small>elemente pregătite</small></div>
         <div><span>În învățare</span><strong>{stats.learning}</strong><small>interval sub 21 zile</small></div>
@@ -109,18 +92,18 @@ const ReviewPage = () => {
         <section className="review-workspace">
           <div className="review-progress">
             <div><span>Sesiunea de astăzi</span><strong>{reviewed + 1} / {sessionTotal}</strong></div>
-            <div className="review-progress__track"><span style={{ width: `${(reviewed / sessionTotal) * 100}%` }} /></div>
+            <div className="review-progress__track" role="progressbar" aria-label="Elemente repetate" aria-valuemin={0} aria-valuemax={sessionTotal} aria-valuenow={reviewed}><span style={{ width: `${(reviewed / sessionTotal) * 100}%` }} /></div>
           </div>
           <article className="review-card">
             <div className="review-card__top">
-              <span>{level} · Lecția {current.lessonId}</span>
-              <span>{current.source === 'final-test' ? 'Test final' : current.source === 'practice' ? 'Exercițiu' : 'Lecție'}</span>
+              <span>{level}{current.source === 'work-missions' ? ' · Situație de la serviciu' : current.lessonId ? ' · Lecția ' + current.lessonId : ''}</span>
+              <span>{current.source === 'final-test' ? 'Test final' : ['practice', 'listening-game', 'work-missions'].includes(current.source) ? 'Exercițiu' : 'Lecție'}</span>
             </div>
             <p className="review-card__label">Răspunde în minte înainte să verifici</p>
             <h2>{current.prompt}</h2>
             {revealed ? (
               <>
-                <div className="review-answer"><small>Răspunsul corect</small><strong>{current.answer}</strong></div>
+                <div className="review-answer" role="status"><small>Răspunsul corect</small><strong>{current.answer}</strong></div>
                 <div className="review-rating-intro"><strong>Cât de ușor ți-ai amintit?</strong><span>Alegerea stabilește următoarea repetare.</span></div>
                 <div className="review-rating-actions">
                   {ratings.map((rating) => (
@@ -136,8 +119,14 @@ const ReviewPage = () => {
           </article>
         </section>
       )}
-    </div>
+    </ExerciseLayout>
   );
+};
+
+const ReviewPage = () => {
+  const location = useLocation();
+  const level = getLearningLevel(location.search);
+  return <ReviewSession key={level} level={level} />;
 };
 
 export default ReviewPage;

@@ -1,55 +1,119 @@
-import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { courseLessons } from '../lessons/norwegian-program/lessonContent';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { courseCatalog } from '../lessons/norwegian-program/lessonContent';
+import { getLearningLevel } from '../lessons/learningLevel';
+import { useAuth } from '../auth/AuthContext';
 import { speakNorwegian } from '../../services/norwegianSpeech';
 import { saveReviewItem } from '../../services/spacedReview';
+import { recordStudyActivity } from '../../services/learningActivity';
+import { ExerciseExitDialog, ExerciseLayout, ExerciseLessonSelect } from './ExerciseUI';
+import { createPracticeQuestions, normalizePracticeAnswer, saveGameProgress, shufflePractice } from './practiceGameData';
 import './PracticeGame.css';
-import './ExerciseBack.css';
-import './MobileExercisePolish.css';
 
-const shuffle=(items)=>[...items].sort(()=>Math.random()-.5);
-const gameInfo={quiz:{title:'Chestionar',subtitle:'Verifică vocabularul și expresiile din lecții.',icon:'✅'},order:{title:'Construiește propoziția',subtitle:'Așază cuvintele în ordinea corectă.',icon:'🧩'},word:{title:'Descoperă cuvântul',subtitle:'Găsește cuvântul norvegian folosind indiciile.',icon:'🔤'}};
-const gameProgressTargets={quiz:10,order:5,word:5};
-
-const saveGameProgress=(game,results)=>{
-  const target=gameProgressTargets[game];
-  const correct=results.filter((result)=>result.correct).length;
-  let previous={completed:0,target};
-  try{previous=JSON.parse(localStorage.getItem(`practice_game_progress_${game}`))||previous}catch(_){/* Păstrăm progresul implicit. */}
-  localStorage.setItem(`practice_game_progress_${game}`,JSON.stringify({completed:Math.min(target,Math.max(Number(previous.completed)||0,correct)),target}));
+const gameInfo = {
+  quiz: { title: 'Chestionar', subtitle: 'Recunoaște și folosește expresiile din lecțiile tale.' },
+  order: { title: 'Construiește propoziția', subtitle: 'Atinge cuvintele și așază-le în ordinea corectă.' },
+  word: { title: 'Descoperă cuvântul', subtitle: 'Pornește de la sens și găsește expresia în norvegiană.' },
+};
+const maskExample = (example, answer) => {
+  const index = example.toLocaleLowerCase('nb-NO').indexOf(answer.toLocaleLowerCase('nb-NO'));
+  return index < 0 ? example : example.slice(0, index) + '_____ ' + example.slice(index + answer.length);
 };
 
-const makeQuiz=(lessons,difficulty)=>{
-  const pool=lessons.flatMap((lesson)=>lesson.vocabulary.map(([word,translation,example],index)=>({id:`q-${lesson.id}-${index}`,lessonId:lesson.id,prompt:difficulty==='hard'?`Scrie în norvegiană: „${translation}”`:`Ce înseamnă „${word}”?`,answer:difficulty==='hard'?word:translation,word,example,type:difficulty==='hard'?'text':'choice'})));
-  return pool.map((item)=>item.type==='choice'?{...item,options:shuffle([item.answer,...shuffle(pool.filter((other)=>other.answer!==item.answer).map((other)=>other.answer)).slice(0,difficulty==='easy'?2:3)])}:item);
+const PracticeSession = ({ game, level, user }) => {
+  const course = courseCatalog[level];
+  const info = gameInfo[game];
+  const [screen, setScreen] = useState('setup');
+  const [lessonFilter, setLessonFilter] = useState('all');
+  const [difficulty, setDifficulty] = useState('normal');
+  const [length, setLength] = useState(5);
+  const [questions, setQuestions] = useState([]);
+  const [current, setCurrent] = useState(0);
+  const [answer, setAnswer] = useState('');
+  const [selected, setSelected] = useState([]);
+  const [checked, setChecked] = useState(false);
+  const [results, setResults] = useState([]);
+  const [hint, setHint] = useState(false);
+  const [showExit, setShowExit] = useState(false);
+  const [retry, setRetry] = useState(false);
+  const [setupError, setSetupError] = useState('');
+  const questionTitle = useRef(null);
+  const answered = useRef(false);
+  const moving = useRef(false);
+  const finished = useRef(false);
+  const startedAt = useRef(0);
+  const question = questions[current];
+  const selectedLessons = useMemo(() => lessonFilter === 'all' ? course.lessons : course.lessons.filter((lesson) => lesson.id === Number(lessonFilter)), [course, lessonFilter]);
+  const score = results.filter((result) => result.correct).length;
+  const mistakes = results.filter((result) => !result.correct);
+  const given = game === 'order' && question ? selected.map((index) => question.words[index]).join(' ') : answer;
+  const completeAnswer = game === 'order' ? selected.length === question?.words.length : Boolean(answer.trim());
+  const isCorrect = () => (question.acceptedAnswers || [question.answer]).some((accepted) => normalizePracticeAnswer(given) === normalizePracticeAnswer(accepted));
+
+  useEffect(() => {
+    moving.current = false;
+    window.scrollTo?.({ top: 0, behavior: 'auto' });
+    if (screen !== 'setup') questionTitle.current?.focus();
+  }, [screen, current]);
+
+  const resetAnswer = () => { answered.current = false; setAnswer(''); setSelected([]); setChecked(false); setHint(false); };
+  const begin = (pool, isRetry = false) => {
+    if (!pool.length) { setSetupError('Alege altă lecție pentru o sesiune cu suficiente răspunsuri distincte.'); return; }
+    resetAnswer(); setRetry(isRetry); setQuestions(pool); setCurrent(0); setResults([]); setSetupError(''); setScreen('game'); finished.current = false; startedAt.current = Date.now();
+  };
+  const start = () => begin(shufflePractice(createPracticeQuestions(selectedLessons, game, difficulty)).slice(0, length));
+  const verify = () => {
+    if (answered.current || !completeAnswer) return;
+    answered.current = true;
+    const correct = isCorrect();
+    setChecked(true); setResults((all) => [...all, { question, correct, given }]);
+    if (!correct) saveReviewItem({ id: 'practice-' + level + '-' + question.id, level, lessonId: question.lessonId, source: 'practice', prompt: question.prompt, answer: question.answer });
+  };
+  const next = () => {
+    if (!checked || moving.current) return;
+    moving.current = true;
+    if (current < questions.length - 1) { resetAnswer(); setCurrent((value) => value + 1); return; }
+    if (finished.current) return;
+    finished.current = true;
+    if (!retry) saveGameProgress(localStorage, game, level, user?.id, results);
+    recordStudyActivity({ type: 'practice-' + game, level, minutes: Math.max(1, Math.round((Date.now() - startedAt.current) / 60000)), score: Math.round(score / questions.length * 100), retry });
+    setScreen('result');
+  };
+
+  if (screen === 'setup') return <ExerciseLayout className="practice-game" level={level} icon={game} title={info.title} description={info.subtitle} allowLevelChange>
+    <div className="game-setup">
+      <section className="practice-config-card"><h2>Alege ce repeți</h2><ExerciseLessonSelect course={course} value={lessonFilter} onChange={setLessonFilter} /><p className="exercise-note">{selectedLessons.length} {selectedLessons.length === 1 ? 'lecție selectată' : 'lecții selectate'} · {level}</p></section>
+      {game === 'quiz' && <fieldset className="practice-config-card"><legend>Dificultate</legend><div className="difficulty-options">{[['easy', 'Ușor', 'Trei variante'], ['normal', 'Normal', 'Patru variante'], ['hard', 'Dificil', 'Scrii răspunsul']].map(([value, label, description]) => <button type="button" aria-pressed={difficulty === value} className={difficulty === value ? 'active' : ''} onClick={() => setDifficulty(value)} key={value}><strong>{label}</strong><small>{description}</small></button>)}</div></fieldset>}
+      <fieldset className="practice-config-card"><legend>Lungimea sesiunii</legend><div className="length-options">{[5, 10, 15].map((value) => <button type="button" aria-pressed={length === value} className={length === value ? 'active' : ''} onClick={() => setLength(value)} key={value}><strong>{value}</strong><span>întrebări</span></button>)}</div></fieldset>
+      {setupError && <p className="practice-error" role="alert">{setupError}</p>}
+      <button type="button" className="start-game exercise-primary" onClick={start}>Începe sesiunea <span aria-hidden="true">→</span></button>
+    </div>
+  </ExerciseLayout>;
+
+  if (screen === 'result') return <ExerciseLayout className="practice-game" level={level} icon={game} title={info.title} compact>
+    <section className="game-result"><span className="game-result__icon" aria-hidden="true">{mistakes.length ? '↗' : '✓'}</span><p>Sesiune finalizată · {level}</p><h1 ref={questionTitle} tabIndex={-1}>{mistakes.length ? 'Încă un pas înainte' : 'Le-ai rezolvat pe toate!'}</h1><div className="game-result__score">{Math.round(score / results.length * 100)}<small>%</small></div><p>{score} din {results.length} răspunsuri corecte</p><div className="game-result__actions">{mistakes.length > 0 && <button type="button" className="exercise-primary" onClick={() => begin(mistakes.map((item) => item.question), true)}>Repetă greșelile ({mistakes.length})</button>}<button type="button" className={mistakes.length ? 'exercise-secondary' : 'exercise-primary'} onClick={() => setScreen('setup')}>Sesiune nouă</button><Link to={'/jocuri?nivel=' + level}>Înapoi la jocuri</Link></div></section>
+    {mistakes.length > 0 && <section className="mistake-summary"><h2>De repetat</h2>{mistakes.map((result) => <article key={result.question.id}><span>{result.question.prompt}</span><strong lang={game === 'quiz' && result.question.type === 'choice' ? 'ro' : 'nb'}>{result.question.answer}</strong></article>)}</section>}
+  </ExerciseLayout>;
+
+  const correct = checked && isCorrect();
+  return <ExerciseLayout className="practice-game practice-game--session" level={level} icon={game} title={info.title} compact onExit={() => setShowExit(true)}>
+    <div className="session-header"><span>Întrebarea {current + 1} din {questions.length}</span><strong>{score} corecte</strong><div role="progressbar" aria-label="Progresul sesiunii" aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={results.length}><span style={{ width: results.length / questions.length * 100 + '%' }} /></div></div>
+    <section className="game-question"><p className="question-meta">Lecția {question.lessonId} · {level}</p><h1 ref={questionTitle} tabIndex={-1}>{game === 'word' ? 'Ce expresie se ascunde aici?' : question.prompt}</h1>
+      {game === 'word' && <div className="word-clue"><small>Sensul în română</small><strong>{question.prompt}</strong><div className="word-clue__slots" aria-hidden="true">{question.answer.split(/\s+/).map((word, wordIndex) => <span key={wordIndex}>{Array.from(word).map((char, index) => <i key={index}>{!/[\p{L}\p{N}]/u.test(char) || (hint && wordIndex === 0 && index === 0) ? char : '·'}</i>)}</span>)}</div><p lang="nb">{maskExample(question.example, question.answer)}</p><button type="button" className="hint-button" onClick={() => setHint(true)} disabled={hint}>{hint ? 'Indiciul este afișat' : 'Arată prima literă'}</button></div>}
+      {game === 'quiz' && question.type === 'choice' && <div className="game-choices" role="group" aria-label="Alege răspunsul">{question.options.map((option, index) => { const state = checked ? option === question.answer ? 'correct' : answer === option ? 'wrong' : '' : answer === option ? 'selected' : ''; return <button type="button" disabled={checked} aria-pressed={answer === option} className={state} onClick={() => setAnswer(option)} key={option}><span aria-hidden="true">{String.fromCharCode(65 + index)}</span><strong>{option}</strong><b aria-hidden="true">{state === 'correct' ? '✓' : state === 'wrong' ? '×' : answer === option ? '●' : ''}</b></button>; })}</div>}
+      {((game === 'quiz' && question.type === 'text') || game === 'word') && <form className="practice-answer" onSubmit={(event) => { event.preventDefault(); if (!checked) verify(); }}><label htmlFor="practice-answer">Răspunsul tău în norvegiană</label><input id="practice-answer" className="game-input" lang="nb" autoComplete="off" autoCorrect="off" autoCapitalize="none" spellCheck={false} enterKeyHint="done" disabled={checked} value={answer} onChange={(event) => setAnswer(event.target.value)} placeholder="Scrie aici…" /></form>}
+      {game === 'order' && <><div className="order-zone" aria-label="Propoziția ta"><small>Propoziția ta</small><div>{selected.length ? selected.map((wordIndex, index) => <button type="button" lang="nb" disabled={checked} onClick={() => setSelected((all) => all.filter((_, position) => position !== index))} aria-label={'Elimină ' + question.words[wordIndex] + ' din poziția ' + (index + 1)} key={wordIndex}>{question.words[wordIndex]}<span aria-hidden="true">×</span></button>) : <p>Atinge cuvintele de mai jos, în ordinea potrivită.</p>}</div></div><div className="order-bank" aria-label="Cuvinte disponibile">{question.words.map((word, index) => <button type="button" lang="nb" disabled={checked || selected.includes(index)} aria-pressed={selected.includes(index)} onClick={() => setSelected((all) => all.includes(index) ? all : [...all, index])} key={index}>{word}</button>)}</div><p className="exercise-note">Atinge un cuvânt din propoziție pentru a-l pune înapoi.</p></>}
+      {checked && <div role="status" className={'game-feedback ' + (correct ? 'correct' : 'wrong')}><span aria-hidden="true">{correct ? '✓' : '↻'}</span><div><h2>{correct ? 'Corect!' : 'Reține pentru data viitoare'}</h2><p>{correct ? question.example || question.explanation || 'Ai găsit răspunsul potrivit.' : 'Răspunsul corect: ' + question.answer}</p>{game === 'word' && <button type="button" onClick={() => speakNorwegian(question.answer)}>Ascultă pronunția</button>}</div></div>}
+    </section>
+    <footer className="session-actions"><button type="button" className="exercise-primary" disabled={!checked && !completeAnswer} onClick={checked ? next : verify}>{checked ? current === questions.length - 1 ? 'Vezi rezultatul' : 'Continuă' : 'Verifică răspunsul'} <span aria-hidden="true">→</span></button></footer>
+    {showExit && <ExerciseExitDialog onContinue={() => setShowExit(false)} onExit={() => { setShowExit(false); setScreen('setup'); }} />}
+  </ExerciseLayout>;
 };
-const makeOrder=(lessons)=>lessons.flatMap((lesson)=>[
-  ...lesson.exercises.filter((exercise)=>exercise.type==='order').map((exercise,index)=>({id:`o-${lesson.id}-${index}`,lessonId:lesson.id,prompt:exercise.prompt,answer:exercise.answer.join(' '),words:shuffle(exercise.answer),explanation:exercise.explanation,type:'order'})),
-  ...lesson.dialogue.map((line,index)=>({id:`d-${lesson.id}-${index}`,lessonId:lesson.id,prompt:`Construiește: „${line[2]}”`,answer:line[1].replace(/[.!?]/g,''),words:shuffle(line[1].replace(/[.!?]/g,'').split(' ')),explanation:`Forma corectă este „${line[1]}”`,type:'order'})),
-]);
-const makeWords=(lessons)=>lessons.flatMap((lesson)=>lesson.vocabulary.map(([word,translation,example],index)=>({id:`w-${lesson.id}-${index}`,lessonId:lesson.id,prompt:translation,answer:word,example,type:'word'})));
 
-const saveReview=(item)=>saveReviewItem({level:localStorage.getItem('norwegian_active_level')||'A1',lessonId:item.lessonId,source:'practice',prompt:item.prompt,answer:item.answer});
-
-const PracticeGame=({game})=>{
-  const info=gameInfo[game];
-  const availableLessons=courseLessons;
-  const[screen,setScreen]=useState('setup');const[lessonFilter,setLessonFilter]=useState('unlocked');const[difficulty,setDifficulty]=useState('normal');const[length,setLength]=useState(5);const[questions,setQuestions]=useState([]);const[current,setCurrent]=useState(0);const[answer,setAnswer]=useState('');const[selected,setSelected]=useState([]);const[checked,setChecked]=useState(false);const[results,setResults]=useState([]);const[hint,setHint]=useState(false);
-  const question=questions[current];
-  const selectedLessons=useMemo(()=>lessonFilter==='unlocked'?availableLessons:courseLessons.filter((lesson)=>lesson.id===Number(lessonFilter)),[lessonFilter,availableLessons]);
-  const start=()=>{let pool=game==='quiz'?makeQuiz(selectedLessons,difficulty):game==='order'?makeOrder(selectedLessons):makeWords(selectedLessons);pool=shuffle(pool);if(!pool.length)return;setQuestions(pool.slice(0,Math.min(length,pool.length)));setCurrent(0);setResults([]);setAnswer('');setSelected([]);setChecked(false);setHint(false);setScreen('game')};
-  const normalized=(value)=>value.trim().toLocaleLowerCase('nb-NO').replace(/[.!?]/g,'');
-  const isCorrect=()=>{if(game==='order')return normalized(selected.join(' '))===normalized(question.answer);return normalized(answer)===normalized(question.answer)};
-  const verify=()=>{if(checked||(!answer&&!selected.length))return;const correct=isCorrect();setChecked(true);setResults((all)=>[...all,{question,correct,given:game==='order'?selected.join(' '):answer}]);if(!correct)saveReview(question)};
-  const next=()=>{if(current===questions.length-1){saveGameProgress(game,results);setScreen('result');return}setCurrent((value)=>value+1);setAnswer('');setSelected([]);setChecked(false);setHint(false)};
-  const restartMistakes=()=>{const mistakes=results.filter((result)=>!result.correct).map((result)=>result.question);if(!mistakes.length){setScreen('setup');return}setQuestions(mistakes);setCurrent(0);setResults([]);setAnswer('');setSelected([]);setChecked(false);setHint(false);setScreen('game')};
-  const score=results.filter((result)=>result.correct).length;
-
-  if(screen==='setup')return <div className="practice-game"><Link className="practice-back" to="/jocuri"><span aria-hidden="true">←</span><div><small>Înapoi la meniu</small><strong>Jocuri și exerciții</strong></div></Link><header className="practice-game__hero"><span role="img" aria-hidden="true">{info.icon}</span><div><p>Practică suplimentară</p><h1>{info.title}</h1><small>{info.subtitle}</small></div></header><div className="game-setup"><section><h2>Ce vrei să repeți?</h2><div className="setup-options"><button className={lessonFilter==='unlocked'?'active':''} onClick={()=>setLessonFilter('unlocked')}>Toate lecțiile deblocate<small>{availableLessons.length} lecții disponibile</small></button>{availableLessons.map((lesson)=><button className={lessonFilter===String(lesson.id)?'active':''} onClick={()=>setLessonFilter(String(lesson.id))} key={lesson.id}>Lecția {lesson.id}<small>{lesson.title}</small></button>)}</div></section>{game==='quiz'&&<section><h2>Dificultate</h2><div className="difficulty-options">{[['easy','Ușor','Variante de răspuns'],['normal','Normal','Vocabular amestecat'],['hard','Dificil','Scriere fără variante']].map(([value,label,desc])=><button className={difficulty===value?'active':''} onClick={()=>setDifficulty(value)} key={value}><strong>{label}</strong><small>{desc}</small></button>)}</div></section>}<section><h2>Lungimea sesiunii</h2><div className="length-options">{[5,10,15].map((value)=><button className={length===value?'active':''} onClick={()=>setLength(value)} key={value}>{value} întrebări</button>)}</div></section><button className="start-game" onClick={start}>Începe sesiunea →</button></div></div>;
-
-  if(screen==='result')return <div className="practice-game"><div className="game-result"><div className="game-result__icon">✓</div><p>Sesiune finalizată</p><h1>{score} din {results.length} răspunsuri corecte</h1><div className="game-result__score">{Math.round((score/results.length)*100)}%</div>{score<results.length&&<div className="mistake-summary"><h2>De repetat</h2>{results.filter((result)=>!result.correct).map((result)=><div key={result.question.id}><span>{result.question.prompt}</span><strong>{result.question.answer}</strong></div>)}</div>}<div className="game-result__actions">{score<results.length&&<button className="primary" onClick={restartMistakes}>Repetă greșelile</button>}<button onClick={()=>setScreen('setup')}>Sesiune nouă</button><Link to="/jocuri">Înapoi la Jocuri</Link></div></div></div>;
-
-  const correct=checked&&isCorrect();
-  return <div className="practice-game practice-game--session"><header className="session-header"><button onClick={()=>setScreen('setup')} aria-label="Închide sesiunea">×</button><div><span style={{width:`${((current+(checked?1:0))/questions.length)*100}%`}}/></div><strong>{current+1}/{questions.length}</strong></header><main className="game-question"><p className="question-meta">Lecția {question.lessonId} · {info.title}</p><h1>{game==='word'?'Descoperă cuvântul':question.prompt}</h1>{game==='word'&&<><div className="word-clue"><small>Traducere</small><strong>{question.prompt}</strong><span>{question.answer.split('').map((char,index)=><i key={index}>{hint&&index===0?char:'_'}</i>)}</span><p>{question.example.replace(new RegExp(question.answer,'i'),'_____')}</p></div><button className="hint-button" onClick={()=>setHint(true)} disabled={hint}>Arată prima literă</button></>}{game==='quiz'&&question.type==='choice'&&<div className="game-choices">{question.options.map((option)=><button disabled={checked} className={answer===option?'selected':''} onClick={()=>setAnswer(option)} key={option}>{option}</button>)}</div>}{((game==='quiz'&&question.type==='text')||game==='word')&&<input className="game-input" disabled={checked} value={answer} onChange={(event)=>setAnswer(event.target.value)} onKeyDown={(event)=>event.key==='Enter'&&verify()} placeholder="Scrie răspunsul"/>}{game==='order'&&<><div className="order-zone">{selected.length?selected.map((word,index)=><button disabled={checked} onClick={()=>setSelected((all)=>all.filter((_,i)=>i!==index))} key={`${word}-${index}`}>{word}</button>):<span>Selectează cuvintele în ordinea corectă</span>}</div><div className="order-bank">{question.words.map((word,index)=><button disabled={checked||selected.filter((selectedWord)=>selectedWord===word).length>=question.words.slice(0,index+1).filter((candidate)=>candidate===word).length} onClick={()=>setSelected((all)=>[...all,word])} key={`${word}-${index}`}>{word}</button>)}</div></>}{checked&&<div className={`game-feedback ${correct?'correct':'wrong'}`}><h2>{correct?'Corect!':'Nu este încă corect.'}</h2><p>{correct?(question.example||question.explanation||'Foarte bine!'):`Răspunsul corect este: ${question.answer}`}</p>{game==='word'&&<button onClick={()=>speakNorwegian(question.answer)}>🔊 Ascultă pronunția</button>}</div>}</main><footer className="session-actions">{!checked?<button className="primary" onClick={verify} disabled={!answer&&!selected.length}>Verifică</button>:<button className="primary" onClick={next}>{current===questions.length-1?'Vezi rezultatul':'Continuă →'}</button>}</footer></div>;
+const PracticeGame = ({ game }) => {
+  const { user } = useAuth();
+  const location = useLocation();
+  const level = getLearningLevel(location.search);
+  return <PracticeSession key={(user?.id || 'guest') + '-' + level + '-' + game} game={game} level={level} user={user} />;
 };
 export default PracticeGame;

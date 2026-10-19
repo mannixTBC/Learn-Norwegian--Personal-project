@@ -36,7 +36,7 @@ const examples = {
   'å tenke': ['Vi må tenke på konsekvensene.', 'Trebuie să ne gândim la consecințe.'],
 };
 
-const getExample = (verb) => examples[verb.norwegian] || [
+const getExample = (verb) => (verb.example && verb.translation ? [verb.example, verb.translation] : examples[verb.norwegian]) || [
   `I dag øver vi på verbet «${verb.norwegian}».`,
   `Astăzi exersăm verbul „${verb.romanian}”.`,
 ];
@@ -52,6 +52,7 @@ const ChallengeSentenceMatch = ({ verbs, onComplete }) => {
   const score = questions.filter((question, index) => answers[index] === question.translation).length;
 
   const checkAnswers = () => {
+    if (checked || Object.keys(answers).length !== questions.length) return;
     setChecked(true);
     if (score === questions.length && onComplete) onComplete();
   };
