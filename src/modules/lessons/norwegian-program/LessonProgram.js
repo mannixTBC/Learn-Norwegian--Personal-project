@@ -225,10 +225,6 @@ const LessonSession = ({ match }) => {
     if (typeof answers[index] === 'boolean') return;
     setExerciseResponses((current) => ({ ...current, [index]: response }));
   };
-  const navigateLessonStep = (target) => {
-    if (!Number.isInteger(target) || target < 0 || target > 6 || (target === 6 && !canFinish)) return;
-    setStep(target);
-  };
 
   const finishLesson = () => {
     if (!canFinish) return;
@@ -283,7 +279,6 @@ const LessonSession = ({ match }) => {
         goNextLesson={goNextLesson}
         onRecordResult={recordResult}
         onDraftExercise={saveExerciseDraft}
-        onNavigateStep={navigateLessonStep}
         onVoiceComplete={recordVoiceComplete}
         onReplayExercises={() => { setAnswers({}); setExerciseResponses({}); setExerciseIndex(0); setStep(5); }}
         onReviewVocabulary={() => { setVocabularyIndex(0); setStep(1); }}

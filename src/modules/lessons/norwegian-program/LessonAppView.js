@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
 import PremiumGate from '../../premium/PremiumGate';
 import ChatAssistant from '../../chat/ChatAssistant';
 import VoiceLessonConversation from '../../chat/VoiceLessonConversation';
 import { LessonMetaIcon, HighlightedSentence, DialogueAudioButton, SpeakerAvatar, getDialogueVoice, DialogueLineAudioButton } from './lessonParts';
 import LessonAppExercise from './LessonAppExercise';
-import LessonExerciseMenu from './LessonExerciseMenu';
 import { getLessonImage } from '../lessonVisuals';
 import { CurriculumRecall, CurriculumReading, CurriculumProduction } from './CurriculumPractice';
 import './LessonProgramApp.css';
@@ -27,13 +26,13 @@ const BookIcon = () => (
 const ChevronIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9.5 6 6 6-6" /></svg>;
 const CheckIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>;
 
-/* Meniul exercițiilor este separat de navigarea între întrebări. */
-const AppHeader = ({ title, step, totalSteps, lessonId, onOpenMenu, menuOpen }) => (
+/* Meniul principal este separat de navigarea între întrebări. */
+const AppHeader = ({ title, step, totalSteps, lessonId, onMenu }) => (
   <header className="lapp-header">
     <div className="lapp-header__row">
-      {onOpenMenu ? <>
+      {onMenu ? <>
         <div className="lapp-header__copy"><strong className="lapp-header__title">{title}</strong><span className="lapp-header__meta">Pasul {step + 1} din {totalSteps} · Lecția {lessonId}</span></div>
-        <button type="button" className="lapp-header__menu" onClick={onOpenMenu} aria-haspopup="dialog" aria-expanded={menuOpen}>Meniu</button>
+        <button type="button" className="lapp-header__menu" onClick={onMenu} aria-label="Meniu principal">Meniu</button>
       </> : <>
         <Link to="/invata" className="lapp-header__back" aria-label="Înapoi la curs">←</Link>
         <strong className="lapp-header__title">{title}</strong>
@@ -120,28 +119,20 @@ const LessonAppView = (props) => {
     vocabularyIndex, careerPhraseIndex, exerciseIndex, answers, exerciseResponses, showVocabularyTranslations, showTranslations,
     contentRef, resultStep,
     setVocabularyIndex, setCareerPhraseIndex, setExerciseIndex,
-    toggleVocabularyTranslation, toggleTranslation, next, previous, goNextLesson, onRecordResult, onReplayExercises, onDraftExercise, onNavigateStep,
+    toggleVocabularyTranslation, toggleTranslation, next, previous, goNextLesson, onRecordResult, onReplayExercises, onDraftExercise,
   } = props;
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [reviewingLesson, setReviewingLesson] = useState(false);
+  const history = useHistory();
   const art = getLessonImage(levelCode, lesson.id);
   const score = Object.values(answers).filter(Boolean).length;
   const answered = Object.keys(answers).length;
   const careerPages = Math.ceil(careerModule.phrases.length / 2);
-  const isReviewingLesson = reviewingLesson && step < 5;
-  const selectStep = (index) => {
-    setMenuOpen(false);
-    setReviewingLesson(index < 5);
-    onNavigateStep(index);
-  };
 
   return (
     <div className={`lesson-shell lapp${step === 5 ? ' lapp--exercises' : ''}`}>
       <AppHeader title={steps[step]} step={step} totalSteps={steps.length} lessonId={lesson.id}
-        onOpenMenu={step === 5 || isReviewingLesson ? () => setMenuOpen(true) : undefined} menuOpen={menuOpen} />
+        onMenu={step === 5 ? () => history.push('/dashboard') : undefined} />
 
       <main className="lapp-content" ref={contentRef}>
-        {isReviewingLesson && <button type="button" className="lapp-exercise-return" onClick={() => selectStep(5)}>Înapoi la exerciții <span aria-hidden="true">→</span></button>}
         {step === 0 && (
           <section className="lapp-intro">
             <StepHeading large eyebrow={`Lecția ${lesson.id} · Nivel ${levelCode} ${course.title}`} title={lesson.title} sub={`O lecție practică pe care o poți finaliza în aproximativ ${lesson.duration} minute.`} art={art} />
@@ -278,7 +269,7 @@ const LessonAppView = (props) => {
               onDraft={onDraftExercise}
               result={answers[exerciseIndex]}
               response={exerciseResponses?.[exerciseIndex]}
-              onPrevious={() => setExerciseIndex((current) => Math.max(0, current - 1))}
+              onPrevious={() => exerciseIndex === 0 ? previous() : setExerciseIndex((current) => current - 1)}
               onContinue={() => exerciseIndex < lessonExercises.length - 1 ? setExerciseIndex((c) => c + 1) : next()}
             />
           </section>
@@ -330,8 +321,6 @@ const LessonAppView = (props) => {
           </section>
         )}
       </main>
-      {menuOpen && <LessonExerciseMenu steps={steps} level={levelCode} canFinish={answered === lessonExercises.length}
-        onClose={() => setMenuOpen(false)} onSelectStep={selectStep} />}
 
       {step < resultStep && step !== 1 && step !== 2 && step !== 5 && (
         <AppBar onBack={previous} backDisabled={step === 0}

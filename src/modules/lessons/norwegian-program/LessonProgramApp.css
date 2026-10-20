@@ -237,27 +237,6 @@
 .lapp-exercise__footer .lapp-exercise__back{ padding:8px 2px; background:transparent; color:var(--a-teal-deep); font-size:.84rem; white-space:nowrap; }
 .lapp-exercise__back>span{ font-size:1.2rem; line-height:1; }
 .lapp-exercise__back:disabled{ opacity:.35; cursor:default; }
-.lapp-exercise-return{ display:flex; width:100%; max-width:620px; min-height:44px; align-items:center; justify-content:space-between; margin:10px auto 18px; padding:10px 14px; border:1px solid #cbdccd; border-radius:12px; background:#edf4e9; color:var(--a-teal-deep); font:inherit; font-size:.82rem; font-weight:700; cursor:pointer; }
-.lapp-exercise-menu{ position:fixed; top:auto; right:0; bottom:0; left:0; width:100%; max-width:620px; max-height:min(85dvh,720px); margin:0 auto; padding:0; overflow-y:auto; overscroll-behavior:contain; border:1px solid #d8e1d3; border-radius:24px 24px 0 0; background:#faf8f0; color:var(--a-ink); box-shadow:0 -12px 48px rgba(18,40,38,.14); }
-.lapp-exercise-menu::backdrop{ background:rgba(18,40,38,.35); backdrop-filter:blur(3px); }
-.lapp-exercise-menu__panel{ padding:20px 22px calc(22px + env(safe-area-inset-bottom,0px)); }
-.lapp-exercise-menu header{ display:flex; gap:12px; align-items:center; justify-content:space-between; }
-.lapp-exercise-menu h2{ margin:0; font-size:1.15rem; font-weight:750; }
-.lapp-exercise-menu header button{ display:grid; flex:0 0 44px; width:44px; height:44px; place-items:center; padding:0; border:1px solid #d7dfd2; border-radius:12px; background:#f0f3e9; color:var(--a-teal-deep); font:inherit; font-size:1.5rem; cursor:pointer; }
-.lapp-exercise-menu__panel>p{ margin:8px 0 18px; color:var(--a-sub); font-size:.82rem; line-height:1.55; }
-.lapp-exercise-menu__action{ display:grid; width:100%; gap:5px; margin:10px 0; padding:16px; border:1px solid #d9e2d4; border-radius:15px; background:#fff; color:var(--a-ink); font:inherit; text-align:left; text-decoration:none; cursor:pointer; }
-.lapp-exercise-menu__action strong{ font-size:.92rem; }
-.lapp-exercise-menu__action span{ color:var(--a-sub); font-size:.78rem; line-height:1.5; }
-.lapp-exercise-menu__action:hover{ color:var(--a-ink); border-color:#a9c3ad; text-decoration:none; }
-.lapp-exercise-menu__resume{ display:block; width:100%; min-height:48px; margin-top:18px; padding:12px; border:0; border-radius:13px; background:var(--a-teal-deep); color:#fff; font:inherit; font-size:.85rem; font-weight:700; cursor:pointer; }
-.lapp-exercise-menu__steps{ display:grid; gap:7px; }
-.lapp-exercise-menu__steps button{ display:flex; min-height:48px; align-items:center; gap:10px; padding:9px 12px; border:1px solid #d9e2d4; border-radius:12px; background:#fff; color:var(--a-ink); font:inherit; text-align:left; cursor:pointer; }
-.lapp-exercise-menu__steps button[aria-current]{ border-color:#9ebfa7; background:#eaf3e6; }
-.lapp-exercise-menu__steps button:disabled{ opacity:.45; cursor:default; }
-.lapp-exercise-menu__steps span{ color:var(--a-teal-deep); font-size:.78rem; }
-.lapp-exercise-menu__steps strong{ flex:1; font-size:.82rem; }
-.lapp-exercise-menu__steps small{ color:var(--a-sub); font-size:.68rem; }
-.lapp-exercise-menu button:focus-visible,.lapp-exercise-menu a:focus-visible,.lapp-exercise-return:focus-visible{ outline:3px solid #62aaa0; outline-offset:2px; }
 .lapp--exercises .lapp-exercise .sentence-builder{ gap:9px; min-height:54px; padding:0; border:0; border-radius:0; background:transparent; }
 .lapp--exercises .lapp-exercise .sentence-builder button{ display:inline-flex; gap:10px; align-items:center; justify-content:center; min-height:46px; padding:10px 13px; border:1px solid #cbdcc8; border-radius:12px; background:#edf5ea; color:var(--a-ink); line-height:1.5; }
 .lapp--exercises .lapp-exercise .sentence-builder button>span{ padding:0; color:#527c64; font-size:1.1rem; }

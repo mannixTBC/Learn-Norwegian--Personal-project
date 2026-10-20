@@ -4,7 +4,7 @@ import { pathToFileURL } from 'node:url';
 import assert from 'node:assert/strict';
 import React from 'react';
 import TestRenderer, { act } from 'react-test-renderer';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Switch } from 'react-router-dom';
 
 const root = resolve(import.meta.dirname, '..');
 const outDir = resolve(root, 'node_modules/.cache/lesson-exercise-tests');
@@ -143,7 +143,10 @@ const user = { id: 'lesson-app-test' };
 const key = `${lessonResumeKey('A1', 1, user)}_voice_v1`;
 localStorage.setItem(key, '5');
 const renderLesson = async () => act(async () => {
-  renderer = TestRenderer.create(React.createElement(MemoryRouter, null, React.createElement(LessonProgram, { match: { params: { level: 'a1', lessonId: '1' } } })), { createNodeMock: () => ({ focus() {}, scrollTo() {} }) });
+  renderer = TestRenderer.create(React.createElement(MemoryRouter, { initialEntries: ['/curs/a1/1'] }, React.createElement(Switch, null,
+    React.createElement(Route, { path: '/curs/:level/:lessonId', component: LessonProgram }),
+    React.createElement(Route, { exact: true, path: '/dashboard' }, React.createElement('p', { id: 'app-home' }, 'Acasă')),
+  )), { createNodeMock: () => ({ focus() {}, scrollTo() {} }) });
 });
 await renderLesson();
 assert.equal(byClass('lapp-heading').length, 0, 'the exercise stage uses a compact introduction');
@@ -153,7 +156,14 @@ assert.ok(text(renderer.root).includes('Hai să exersăm'));
 assert.equal(renderer.root.findByProps({ 'aria-label': 'Întrebări verificate' }).props['aria-valuenow'], 0);
 assert.equal(byClass('lapp-header__back').length, 0, 'the misleading course-exit arrow is replaced by the exercise menu');
 assert.ok(button('Meniu'));
-assert.equal(byClass('lapp-exercise__back')[0].props.disabled, true, 'the first question cannot navigate out of exercises with Back');
+assert.equal(byClass('lapp-exercise__back')[0].props.disabled, false, 'the first question can return to the previous lesson stage');
+assert.equal(byClass('lapp-exercise__back')[0].props['aria-label'], 'Etapa anterioară');
+const firstQuestionBack = byClass('lapp-exercise__back')[0].props.onClick;
+await act(async () => { firstQuestionBack(); firstQuestionBack(); });
+assert.equal(byClass('lapp-grammar').length, 1, 'Back from the first exercise reaches grammar exactly once');
+await click(byClass('lapp-bar__primary')[0]);
+assert.equal(byClass('lapp-options').length, 1, 'Continue from grammar returns to the first question');
+assert.equal(byClass('lapp-exercise__feedback').length, 0, 'an unanswered first question stays unanswered after reviewing grammar');
 await click(byClass('lapp-options')[0].findAllByType('button')[0]);
 assert.equal(readReviewItems().filter((item) => item.source === 'lesson').length, 1);
 globalThis.holdLessonSpeech = true;
@@ -168,6 +178,12 @@ globalThis.holdLessonSpeech = false;
 await renderLesson();
 assert.equal(byClass('lapp-options')[0].findAllByType('button')[0].props['aria-pressed'], true, 'reload restores the wrong selected answer');
 assert.equal(readReviewItems().filter((item) => item.source === 'lesson').length, 1, 'reload does not duplicate recap items');
+await click(byClass('lapp-exercise__back')[0]);
+assert.equal(byClass('lapp-grammar').length, 1);
+await click(byClass('lapp-bar__primary')[0]);
+assert.equal(byClass('lapp-options')[0].findAllByType('button')[0].props['aria-pressed'], true, 'leaving the first question for grammar preserves the selected answer');
+assert.ok(byClass('lapp-options')[0].findAllByType('button').every((node) => node.props.disabled), 'returning from grammar cannot reopen a checked answer');
+assert.equal(readReviewItems().filter((item) => item.source === 'lesson').length, 1, 'returning from grammar does not score or save the answer again');
 await click(continueExercise());
 assert.ok(text(renderer.root).includes('Mă numesc Anna'), 'the written question states the intended meaning');
 await act(async () => renderer.root.findByType('input').props.onChange({ target: { value: 'he' } }));
@@ -180,20 +196,11 @@ assert.equal(readReviewItems().filter((item) => item.source === 'lesson').length
 await click(continueExercise());
 assert.equal(renderer.root.findByType('input').props.value, 'he', 'an unfinished written answer survives Back and forward navigation');
 await click(button('Meniu'));
-assert.equal(byClass('lapp-header__menu')[0].props['aria-expanded'], true);
-await click(button('Etapele lecției'));
-const stageButtons = byClass('lapp-exercise-menu__steps')[0].findAllByType('button');
-assert.equal(stageButtons[6].props.disabled, true, 'the menu cannot skip unanswered exercises to reach voice');
-assert.equal(stageButtons[7].props.disabled, true, 'the menu cannot skip to a completed result');
-await click(stageButtons[4]);
-assert.equal(byClass('lapp-exercise-menu').length, 0);
-assert.equal(byClass('lapp-grammar').length, 1, 'the menu allows reviewing previously learned material');
-await click(byClass('lapp-exercise-return')[0]);
-assert.equal(renderer.root.findByType('input').props.value, 'he', 'returning from grammar retains the current exercise draft');
-await click(button('Meniu'));
-assert.ok(renderer.root.findAllByType('a').some((node) => node.props.href === '/invata?nivel=A1'), 'leaving through the menu retains the selected level');
-await act(async () => renderer.root.findByType('dialog').props.onCancel({ preventDefault() {} }));
-assert.equal(byClass('lapp-exercise-menu').length, 0, 'Escape closes the menu');
+assert.ok(renderer.root.findByProps({ id: 'app-home' }), 'Meniu navigates directly to the app home page');
+assert.equal(renderer.root.findAllByType('dialog').length, 0, 'the home action does not open an intermediate menu');
+assert.equal(byClass('lapp-exercise').length, 0, 'leaving through Meniu unmounts the lesson');
+assert.equal(JSON.parse(localStorage.getItem(`${key}_exercise_index`)), 1, 'leaving through Meniu retains the current question');
+assert.equal(JSON.parse(localStorage.getItem(`${key}_responses`))[1].value, 'he', 'leaving through Meniu retains the unfinished answer');
 await unmount();
 await renderLesson();
 assert.equal(renderer.root.findByType('input').props.value, 'he', 'reloading resumes at the same unfinished exercise with its draft');
@@ -231,7 +238,7 @@ assert.equal(readReviewItems().filter((item) => item.source === 'lesson').length
 assert.deepEqual(readCurrentLesson(user, courseCatalog), { level: 'A1', lessonId: 2 });
 await unmount();
 console.log('✓ Full installed-app lesson: immediate feedback → persisted recap → Continue → voice → original score and next lesson.');
-console.log('✓ Back/forward review locks original answers; written and ordered drafts survive navigation and reload; the menu safely reviews stages and exits at the active level.');
+console.log('✓ Back/forward review locks original answers; written and ordered drafts survive navigation and reload; Meniu opens app home directly and preserves the current question and draft.');
 
 document.documentElement.classList.contains = () => false;
 localStorage.setItem(key, '5');

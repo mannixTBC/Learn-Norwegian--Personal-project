@@ -109,7 +109,7 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
     onContinue();
   };
   const previousExercise = () => {
-    if (!onPrevious || index === 0 || continuing.current) return;
+    if (!onPrevious || continuing.current) return;
     continuing.current = true;
     audioController.current?.abort();
     onPrevious();
@@ -170,7 +170,7 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
       </div>}
       {!checked && <p className="lapp-exercise__review-note"><BookmarkIcon /> Greșelile se salvează la Recapitulare.</p>}
       <footer className="lapp-exercise__footer"><div className="lapp-exercise__navigation">
-        <button className="lapp-exercise__back" type="button" onClick={previousExercise} disabled={index === 0 || !onPrevious} aria-label="Exercițiul anterior"><span aria-hidden="true">←</span> Înapoi</button>
+        <button className="lapp-exercise__back" type="button" onClick={previousExercise} disabled={!onPrevious} aria-label={index === 0 ? 'Etapa anterioară' : 'Exercițiul anterior'}><span aria-hidden="true">←</span> Înapoi</button>
         {checked ? <button className="lapp-exercise__primary" type="button" onClick={continueExercise}>{reviewing ? 'Următorul' : 'Continuă'} <span aria-hidden="true">→</span></button>
           : manualCheck && (exercise.type === 'fill' ? <button className="lapp-exercise__primary" type="submit" form={formId} disabled={!complete}>Verifică răspunsul <span aria-hidden="true">→</span></button>
             : <button className="lapp-exercise__primary" type="button" disabled={!complete} onClick={() => submit()}>{exercise.type === 'order' ? 'Verifică ordinea' : 'Verifică răspunsul'} <span aria-hidden="true">→</span></button>)}
