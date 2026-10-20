@@ -248,7 +248,6 @@ const LessonAppView = (props) => {
           <section className="lapp-practice">
             <header className="lapp-practice__intro">
               <div><p className="lapp-practice__topic">Lecția {lesson.id} · {lesson.title}</p><h1>Hai să exersăm</h1></div>
-              <img src={art} alt="" aria-hidden="true" className="lapp-practice__art" />
             </header>
             <div className="lapp-practice__progress" role="progressbar" aria-label="Întrebări verificate" aria-valuemin={0} aria-valuemax={lessonExercises.length} aria-valuenow={answered}>
               <span>Întrebarea {exerciseIndex + 1}/{lessonExercises.length}</span>

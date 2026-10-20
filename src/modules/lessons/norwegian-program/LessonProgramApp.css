@@ -156,13 +156,12 @@
   --a-teal-deep:#18594f; --a-track:#e4e8dc; --a-border:#dee4d9;
   font-family:'Source Sans 3',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
-.lapp--exercises .lapp-content{ padding:20px 22px calc(100px + env(safe-area-inset-bottom,0px)); background:#faf8f0; }
+.lapp--exercises .lapp-content{ padding:20px 22px calc(100px + env(safe-area-inset-bottom,0px)); scroll-padding-bottom:calc(100px + env(safe-area-inset-bottom,0px)); background:#faf8f0; }
 .lapp--exercises .lapp-header{ background:#faf8f0; border-bottom-color:#e7e8dd; }
 .lapp--exercises .lapp-header__back{ background:#edf0e6; border-radius:13px; }
-.lapp-practice__intro{ display:grid; grid-template-columns:minmax(0,1fr) 96px; align-items:center; gap:12px; min-height:74px; margin-bottom:18px; }
+.lapp-practice__intro{ margin-bottom:18px; }
 .lapp-practice__intro h1{ margin:0; color:var(--a-ink); font-size:1.5rem; font-weight:750; letter-spacing:-.025em; line-height:1.2; }
 .lapp-practice__topic{ margin:0 0 6px; color:var(--a-teal-deep); font-size:.63rem; font-weight:750; letter-spacing:.07em; text-transform:uppercase; line-height:1.5; }
-.lapp-practice__art{ display:block; width:96px; height:74px; object-fit:cover; object-position:center 85%; border-radius:18px; mix-blend-mode:multiply; }
 .lapp-practice__progress{ display:flex; gap:18px; align-items:center; justify-content:space-between; margin-bottom:14px; }
 .lapp-practice__progress>span{ color:var(--a-sub); font-size:.78rem; font-weight:650; white-space:nowrap; }
 .lapp-practice__progress>div{ display:flex; flex:0 1 130px; gap:5px; }
@@ -171,6 +170,17 @@
 .lapp-practice__progress i.is-current{ background:#a6c9c3; }
 .lapp-exercise h2{ margin:0 0 20px; color:var(--a-ink); font-size:clamp(1.25rem,5.5vw,1.6rem); font-weight:750; letter-spacing:-.025em; line-height:1.3; overflow-wrap:anywhere; }
 .lapp-exercise h2:focus{ outline:none; }
+.lapp-exercise__instruction{ margin:-10px 0 18px; color:var(--a-sub); font-size:.88rem; line-height:1.5; }
+.lapp-exercise__card{ min-width:0; padding:18px; border:1px solid var(--a-border); border-radius:18px; background:#fff; box-shadow:0 3px 10px rgba(48,65,46,.025); }
+.lapp-exercise__inline-sentence{ display:flex; flex-wrap:wrap; gap:4px; align-items:center; color:var(--a-ink); font-size:1.15rem; line-height:1.6; }
+.lapp-exercise__inline-sentence>span{ white-space:pre-wrap; }
+.lapp-exercise .answer-input.answer-input--inline{ flex:0 1 130px; width:clamp(76px,28vw,160px); min-width:64px; max-width:100%; padding:8px; border-bottom:2px solid var(--a-teal); text-align:center; font-weight:650; }
+.lapp-exercise__card.is-correct .answer-input--inline{ border-color:#85b59b; background:#eaf4e9; color:#245c43; }
+.lapp-exercise__card.is-wrong .answer-input--inline{ border-color:#d8aaa0; background:#fcf0e9; color:#945344; }
+.lapp-exercise__dialogue{ margin:0 0 14px; padding-bottom:12px; border-bottom:1px solid #e7ece3; color:var(--a-ink); font-size:1rem; font-weight:650; line-height:1.5; }
+.lapp-exercise__context>span{ display:inline-block; padding:4px 9px; border-radius:9px; background:#edf4e9; color:var(--a-teal-deep); font-size:.66rem; font-weight:750; letter-spacing:.04em; line-height:1.5; text-transform:uppercase; }
+.lapp-exercise__context p{ margin:10px 0; color:var(--a-sub); font-size:.88rem; line-height:1.55; }
+.lapp-exercise__meaning{ margin:0 0 12px; padding-bottom:12px; border-bottom:1px solid #e7ece3; color:var(--a-ink); font-size:.9rem; line-height:1.5; }
 .lapp-options{ display:grid; gap:10px; }
 .lapp-options button{
   display:flex; width:100%; align-items:center; gap:12px; min-height:64px; padding:14px;
@@ -201,7 +211,7 @@
 .lapp-exercise .answer-input:focus{ border-color:var(--a-teal); outline:0; box-shadow:0 0 0 3px rgba(31,122,114,.13); }
 .lapp-answer-label{ display:block; margin:0 0 10px; color:var(--a-sub); font-size:.85rem; line-height:1.5; }
 .lapp-exercise__hint{ margin:14px 0 0; color:var(--a-sub); font-size:.76rem; line-height:1.5; }
-.lapp-exercise__feedback{ margin-top:18px; padding:16px; border:1px solid #d9e6d5; border-radius:18px; background:#eaf3e8; color:var(--a-ink); }
+.lapp-exercise__feedback{ margin-top:18px; padding:16px; border:1px solid #d9e6d5; border-radius:18px; background:#eaf3e8; color:var(--a-ink); scroll-margin-block:12px; }
 .lapp-exercise__feedback.is-wrong{ border-color:#e8dcc5; background:#f8f1e4; }
 .lapp-exercise__feedback>strong{ display:flex; align-items:center; gap:9px; margin-bottom:8px; font-size:.96rem; font-weight:750; line-height:1.4; }
 .lapp-exercise__feedback-icon{ display:grid; place-items:center; flex:0 0 26px; width:26px; height:26px; border-radius:50%; background:#d4e7cf; color:#2c6749; font-size:.9rem; font-weight:800; }
@@ -217,15 +227,29 @@
 .lapp-exercise__feedback svg,.lapp-exercise__review-note svg{ flex:0 0 15px; width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
 .lapp-exercise__footer{ position:fixed; right:0; bottom:0; left:0; z-index:50; padding:12px 22px calc(16px + env(safe-area-inset-bottom,0px)); border-top:1px solid #e8e8dd; background:#faf8f0; }
 .lapp-exercise__footer button{ display:flex; width:100%; max-width:620px; min-height:54px; align-items:center; justify-content:center; gap:12px; margin:0 auto; padding:14px 20px; border:0; border-radius:16px; background:var(--a-teal-deep); color:white; font:inherit; font-size:.98rem; font-weight:750; cursor:pointer; }
-.lapp--exercises .sentence-builder{ border-color:#bfd0bd; background:#f0f3e9; }
-.lapp--exercises .sentence-builder button,.lapp--exercises .word-bank button{ min-height:44px; border-radius:12px; border-color:var(--a-border); color:var(--a-ink); }
-.lapp--exercises .gap-sentence{ background:#f0f3e9; border-color:var(--a-border); font-family:inherit; }
+.lapp-exercise__footer button:disabled{ background:#a5beb2; cursor:not-allowed; }
+.lapp--exercises .lapp-exercise .sentence-builder{ gap:9px; min-height:54px; padding:0; border:0; border-radius:0; background:transparent; }
+.lapp--exercises .lapp-exercise .sentence-builder button{ display:inline-flex; gap:10px; align-items:center; justify-content:center; min-height:46px; padding:10px 13px; border:1px solid #cbdcc8; border-radius:12px; background:#edf5ea; color:var(--a-ink); line-height:1.5; }
+.lapp--exercises .lapp-exercise .sentence-builder button>span{ padding:0; color:#527c64; font-size:1.1rem; }
+.lapp--exercises .lapp-exercise .sentence-builder .lapp-exercise__word-slot{ display:block; width:78px; min-height:46px; padding:0; border:1px dashed #b6c9b9; border-radius:12px; background:#fafcf8; }
+.lapp--exercises .lapp-exercise .word-bank{ margin-top:16px; padding-top:14px; border-top:1px solid #edf0e8; }
+.lapp--exercises .lapp-exercise .word-bank button{ min-height:44px; padding:10px 13px; border-radius:12px; border-color:var(--a-border); background:#fff; color:var(--a-ink); font:inherit; }
+.lapp--exercises .lapp-exercise .gap-exercise{ display:block; }
+.lapp--exercises .lapp-exercise .gap-sentence{ gap:7px; min-height:56px; padding:0; border:0; border-radius:0; background:transparent; color:var(--a-ink); font-family:inherit; font-size:1.15rem; }
+.lapp--exercises .lapp-exercise .gap-slot{ min-width:70px; min-height:46px; max-width:100%; padding:7px 10px; border:1px dashed #b6c9b9; border-radius:12px; background:#fafcf8; color:var(--a-ink); box-shadow:none; font-family:inherit; overflow-wrap:anywhere; }
+.lapp--exercises .lapp-exercise .gap-slot.is-correct{ border-style:solid; border-color:#85b59b; background:#eaf4e9; color:#245c43; }
+.lapp--exercises .lapp-exercise .gap-slot.is-wrong{ border-style:solid; border-color:#d8aaa0; background:#fcf0e9; color:#945344; }
+.lapp--exercises .lapp-exercise .gap-word-bank{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.lapp--exercises .lapp-exercise .gap-word-bank button{ flex:1 1 64px; min-width:0; min-height:46px; padding:10px 12px; border:1px solid var(--a-border); border-radius:12px; background:#fff; color:var(--a-ink); box-shadow:none; cursor:pointer; overflow-wrap:anywhere; font:inherit; font-weight:650; }
+.lapp--exercises .lapp-exercise .gap-word-bank button:disabled{ cursor:default; }
+.lapp--exercises .lapp-exercise .gap-word-bank button.is-correct{ border-color:#85b59b; background:#eaf4e9; color:#245c43; opacity:1; }
+.lapp--exercises .lapp-exercise .gap-word-bank button.is-wrong{ border-color:#d8aaa0; background:#fcf0e9; color:#945344; opacity:1; }
 .lapp--exercises button:focus-visible,.lapp--exercises a:focus-visible{ outline:3px solid #62aaa0; outline-offset:3px; }
 @media(max-width:380px){
   .lapp--exercises .lapp-content{ padding:16px 18px calc(100px + env(safe-area-inset-bottom,0px)); }
-  .lapp-practice__intro{ grid-template-columns:minmax(0,1fr) 82px; gap:10px; margin-bottom:14px; }
+  .lapp-practice__intro{ margin-bottom:14px; }
   .lapp-practice__intro h1{ font-size:1.38rem; }
-  .lapp-practice__art{ width:82px; height:68px; }
+  .lapp-exercise__card{ padding:15px; }
   .lapp-exercise h2{ margin-bottom:18px; }
   .lapp-options button{ min-height:60px; padding:12px; gap:10px; }
   .lapp-exercise__footer{ padding-right:18px; padding-left:18px; }

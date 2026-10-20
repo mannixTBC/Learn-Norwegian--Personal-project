@@ -15,6 +15,7 @@ import VoiceLessonConversation from '../../chat/VoiceLessonConversation';
 import './LessonProgram.css';
 import LessonAppView from './LessonAppView';
 import { getLessonImage } from '../lessonVisuals';
+import { lessonExerciseAnswer, lessonExerciseReviewPrompt } from './lessonExerciseContent';
 import {
   getDialogueVoice,
   SpeakerAvatar,
@@ -44,6 +45,25 @@ const readLessonStep = (key, legacyKey) => {
   // than treating an old result as the new voice stage with no saved answers.
   const value = current === null ? Math.min(5, Number(readStorage(legacyKey, 0))) : Number(current);
   return Number.isFinite(value) ? Math.min(steps.length - 1, Math.max(0, Math.trunc(value))) : 0;
+};
+
+const readLessonExerciseState = (key, exercises, completed) => {
+  const savedAnswers = readStorage(`${key}_answers`, {});
+  const savedResponses = readStorage(`${key}_responses`, {});
+  const versions = readStorage(`${key}_exercise_versions`, {});
+  const answers = {};
+  const responses = {};
+  let revised = false;
+  exercises.forEach((exercise, index) => {
+    if (typeof savedAnswers[index] !== 'boolean') return;
+    if (!completed && exercise.answerRevision && versions[index] !== exercise.answerRevision) {
+      revised = true;
+      return;
+    }
+    answers[index] = savedAnswers[index];
+    if (savedResponses[index]) responses[index] = savedResponses[index];
+  });
+  return { answers, responses, revised };
 };
 
 
@@ -96,17 +116,23 @@ const LessonSession = ({ match }) => {
   const careerProfile = getCareerProfile(user) || { pathId: 'general' };
   const careerModule = useMemo(() => getCareerLessonModule(careerProfile.pathId, levelCode, lesson.id, lesson), [careerProfile.pathId, lesson, levelCode]);
   const lessonExercises = useMemo(() => [...lesson.exercises, careerModule.exercise], [careerModule, lesson.exercises]);
+  const completedLesson = readCourseProgress(levelCode, user, courseLessons).completed.includes(lesson.id);
+  const savedExerciseState = useMemo(() => readLessonExerciseState(lessonStepKey, lessonExercises, completedLesson), [lessonStepKey, lessonExercises, completedLesson]);
+  const resumeStep = () => {
+    const savedStep = readLessonStep(lessonStepKey, legacyStepKey);
+    return savedExerciseState.revised && savedStep > 5 ? 5 : savedStep;
+  };
   const lessonStartedAt = useRef(Date.now());
   const lessonContentRef = useRef(null);
   const skipStepSave = useRef(true);
-  const [step, setStep] = useState(() => readLessonStep(lessonStepKey, legacyStepKey));
+  const [step, setStep] = useState(resumeStep);
   const [vocabularyIndex, setVocabularyIndex] = useState(0);
   const [careerPhraseIndex, setCareerPhraseIndex] = useState(0);
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [showVocabularyTranslations, setShowVocabularyTranslations] = useState({});
   const [showTranslations, setShowTranslations] = useState({});
-  const [answers, setAnswers] = useState(() => readStorage(`${lessonStepKey}_answers`, {}));
-  const [exerciseResponses, setExerciseResponses] = useState(() => readStorage(`${lessonStepKey}_responses`, {}));
+  const [answers, setAnswers] = useState(() => savedExerciseState.answers);
+  const [exerciseResponses, setExerciseResponses] = useState(() => savedExerciseState.responses);
   const [voiceCompleted, setVoiceCompleted] = useState(() => readStorage(`${lessonStepKey}_voice_complete`, false) === true);
   const [progress, setProgress] = useState(() => readCourseProgress(levelCode, user, courseLessons));
   const score = Object.values(answers).filter(Boolean).length;
@@ -122,12 +148,13 @@ const LessonSession = ({ match }) => {
   useEffect(() => {
     lessonStartedAt.current = Date.now();
     skipStepSave.current = true;
-    setStep(readLessonStep(lessonStepKey, legacyStepKey));
+    setStep(resumeStep());
     setVocabularyIndex(0);
     setCareerPhraseIndex(0);
     setExerciseIndex(0);
-    setAnswers(readStorage(`${lessonStepKey}_answers`, {}));
-    setExerciseResponses(readStorage(`${lessonStepKey}_responses`, {}));
+    const saved = readLessonExerciseState(lessonStepKey, lessonExercises, completedLesson);
+    setAnswers(saved.answers);
+    setExerciseResponses(saved.responses);
     setVoiceCompleted(readStorage(`${lessonStepKey}_voice_complete`, false) === true);
     setShowVocabularyTranslations({});
     setShowTranslations({});
@@ -137,6 +164,7 @@ const LessonSession = ({ match }) => {
     if (!skipStepSave.current) {
       localStorage.setItem(`${lessonStepKey}_answers`, JSON.stringify(answers));
       localStorage.setItem(`${lessonStepKey}_responses`, JSON.stringify(exerciseResponses));
+      localStorage.setItem(`${lessonStepKey}_exercise_versions`, JSON.stringify(Object.fromEntries(lessonExercises.map((exercise, index) => [index, exercise.answerRevision || null]))));
     }
   }, [answers, exerciseResponses, lessonStepKey]);
   useEffect(() => {
@@ -176,8 +204,8 @@ const LessonSession = ({ match }) => {
         lessonId: lesson.id,
         source: 'lesson',
         id: `${lesson.uid}-${index}`,
-        prompt: exercise.prompt,
-        answer: Array.isArray(exercise.answer) ? exercise.answer.join(' ') : exercise.type === 'choice' ? exercise.options[exercise.answer] : exercise.answer,
+        prompt: lessonExerciseReviewPrompt(exercise),
+        answer: lessonExerciseAnswer(exercise),
       });
     }
   };

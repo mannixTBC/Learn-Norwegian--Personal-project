@@ -18,7 +18,7 @@ await build({ configFile: resolve(root, 'vite.config.js'), logLevel: 'error', pl
     if (id.endsWith('/PremiumGate')) return 'virtual:lesson-premium';
   },
   load(id) {
-    if (id === 'virtual:lesson-auth') return 'export const useAuth = () => ({ user: { id: "lesson-app-test" } });';
+    if (id === 'virtual:lesson-auth') return 'export const useAuth = () => ({ user: globalThis.lessonAppUser });';
     if (id === 'virtual:lesson-sync') return 'export const syncLearningProgress = async () => ({}); export const syncStudyActivity = async () => ({});';
     if (id === 'virtual:lesson-speech') return 'export const speakNorwegian = async (text, options = {}) => { globalThis.lessonSpeech.push({ text, options }); if (globalThis.holdLessonSpeech) return new Promise(resolve => options.signal.addEventListener("abort", () => resolve({ cancelled: true }), { once: true })); return { ok: true }; };';
     if (id === 'virtual:lesson-voice') return 'import React from "react"; export default () => React.createElement("p", { id: "voice-stage" }, "Dialog vocal");';
@@ -38,8 +38,8 @@ const load = (name) => import(pathToFileURL(resolve(outDir, `${name}.mjs`)));
 const { default: Exercise } = await load('exercise');
 const { default: LessonProgram } = await load('lesson');
 const { courseCatalog } = await load('content');
-const { lessonResumeKey, readCurrentLesson } = await load('progress');
-const { getCareerLessonModule } = await load('career');
+const { courseProgressKey, lessonResumeKey, readCurrentLesson } = await load('progress');
+const { careerPaths, getCareerLessonModule } = await load('career');
 const { readReviewItems } = await load('review');
 const storage = new Map();
 globalThis.localStorage = { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, String(value)), removeItem: (key) => storage.delete(key) };
@@ -47,6 +47,7 @@ globalThis.window = Object.assign(new EventTarget(), { localStorage, scrollTo() 
 globalThis.document = { documentElement: { classList: { contains: (name) => name === 'is-installed-app' } } };
 globalThis.lessonSpeech = [];
 globalThis.holdLessonSpeech = false;
+globalThis.lessonAppUser = { id: 'lesson-app-test' };
 const text = (node) => node.children.map((child) => typeof child === 'string' ? child : text(child)).join('');
 let renderer;
 const buttons = () => renderer.root.findAllByType('button');
@@ -83,8 +84,10 @@ for (const { course, lesson } of sampledLessons) {
         const bank = byClass(exercise.type === 'order' ? 'word-bank' : 'gap-word-bank')[0];
         await click(bank.findAllByType('button').find((node) => text(node) === word && !node.props.disabled));
       }
-      const confirm = button('Confirmă').props.onClick;
-      await act(async () => { confirm(); confirm(); });
+      if (exercise.type === 'order' || exercise.answer.length > 1) {
+        const confirm = button('Verifică').props.onClick;
+        await act(async () => { confirm(); confirm(); });
+      } else assert.equal(button('Verifică'), undefined, 'a single gap is checked immediately after selecting a word');
     }
     assert.equal(state.events.length, 1, 'one response records exactly one result, even when submitted twice');
     assert.equal(state.events[0][1], true);
@@ -116,7 +119,7 @@ await unmount();
 const fill = await renderExercise({ type: 'fill', prompt: 'Completează', answer: 'heter', explanation: 'Numele.' });
 const input = () => renderer.root.findByType('input');
 await act(async () => input().props.onChange({ target: { value: '  ' } }));
-assert.equal(button('Confirmă').props.disabled, true);
+assert.equal(button('Verifică').props.disabled, true);
 await act(async () => input().props.onChange({ target: { value: ' HETER ' } }));
 await act(async () => renderer.root.findByType('form').props.onSubmit({ preventDefault() {} }));
 assert.equal(fill.events[0][1], true, 'keyboard submission accepts normalized input');
@@ -127,10 +130,10 @@ const bank = () => byClass('word-bank')[0].findAllByType('button');
 const firstTap = bank()[1].props.onClick;
 await act(async () => { firstTap(); firstTap(); });
 assert.equal(byClass('sentence-builder')[0].findAllByType('button').length, 1, 'a repeated tap cannot insert the same token twice');
-assert.equal(button('Confirmă').props.disabled, true, 'incomplete sentences cannot be submitted');
+assert.equal(button('Verifică').props.disabled, true, 'incomplete sentences cannot be submitted');
 await click(bank()[0]);
 await click(bank()[2]);
-await click(button('Confirmă'));
+await click(button('Verifică'));
 assert.equal(order.events[0][1], true, 'repeated words retain their distinct token positions');
 await unmount();
 console.log('✓ Incorrect feedback persists without rescoring; keyboard input and repeated-word sentences remain usable.');
@@ -143,7 +146,8 @@ const renderLesson = async () => act(async () => {
 });
 await renderLesson();
 assert.equal(byClass('lapp-heading').length, 0, 'the exercise stage uses a compact introduction');
-assert.equal(byClass('lapp-practice__art').length, 1, 'the warm Nordic variant retains a compact lesson illustration');
+assert.equal(byClass('lapp-practice__art').length, 0, 'the exercise illustration is removed');
+assert.equal(renderer.root.findAllByType('img').length, 0, 'exercise screens have no decorative illustration');
 assert.ok(text(renderer.root).includes('Hai să exersăm'));
 assert.equal(renderer.root.findByProps({ 'aria-label': 'Întrebări verificate' }).props['aria-valuenow'], 0);
 await click(byClass('lapp-options')[0].findAllByType('button')[0]);
@@ -161,15 +165,21 @@ await renderLesson();
 assert.equal(byClass('lapp-options')[0].findAllByType('button')[0].props['aria-pressed'], true, 'reload restores the wrong selected answer');
 assert.equal(readReviewItems().filter((item) => item.source === 'lesson').length, 1, 'reload does not duplicate recap items');
 await click(button('Continuă'));
+assert.ok(text(renderer.root).includes('Mă numesc Anna'), 'the written question states the intended meaning');
 await act(async () => renderer.root.findByType('input').props.onChange({ target: { value: 'heter' } }));
 await act(async () => renderer.root.findByType('form').props.onSubmit({ preventDefault() {} }));
+await click(button('Ascultă'));
+assert.equal(lessonSpeech.at(-1).text, 'Jeg heter Anna.', 'writing feedback plays the full sentence');
 await click(button('Continuă'));
+assert.ok(text(renderer.root).includes('Hvordan har du det?'), 'word order is linked to the dialogue');
 for (const word of courseCatalog.A1.lessons[0].exercises[2].answer) await click(byClass('word-bank')[0].findAllByType('button').find((node) => text(node) === word && !node.props.disabled));
-await click(button('Confirmă'));
+await click(button('Verifică'));
+await click(button('Ascultă'));
+assert.equal(lessonSpeech.at(-1).text, 'Bra, takk.', 'the complete response includes natural punctuation');
 await click(button('Continuă'));
 const careerExercise = getCareerLessonModule('general', 'A1', 1, courseCatalog.A1.lessons[0]).exercise;
 for (const word of careerExercise.answer) await click(byClass('gap-word-bank')[0].findAllByType('button').find((node) => text(node) === word));
-await click(button('Confirmă'));
+assert.equal(button('Verifică'), undefined, 'the contextual gap does not need a second confirmation');
 assert.equal(renderer.root.findByProps({ 'aria-label': 'Întrebări verificate' }).props['aria-valuenow'], 4);
 await click(button('Continuă'));
 assert.ok(renderer.root.findByProps({ id: 'voice-stage' }), 'finishing exercises continues to the voice stage despite a wrong answer');
@@ -194,3 +204,66 @@ assert.equal(byClass('is-wrong').length, 0, 'returning to the app cannot show th
 assert.ok(text(byClass('lapp-exercise__feedback')[0]).includes('Exact!'));
 await unmount();
 console.log('✓ Alternating web and app keeps the latest result and removes stale answer selections.');
+
+const contextualQuestions = careerPaths.map((path) => getCareerLessonModule(path.id, 'A1', 1, courseCatalog.A1.lessons[0]).exercise);
+assert.equal(new Set(contextualQuestions.map((exercise) => exercise.context.description)).size, careerPaths.length, 'each direction has an appropriate situation');
+assert.equal(contextualQuestions.find((exercise) => exercise.careerPath === 'hospitality').context.title, 'Prima zi la hotel');
+for (const exercise of contextualQuestions) {
+  assert.deepEqual(exercise.answer, ['heter']);
+  assert.deepEqual(exercise.options, ['heter', 'er', 'har']);
+  assert.ok(exercise.translation.includes('Mă numesc Anna'), 'the requested meaning removes the er/heter ambiguity');
+}
+const contextual = await renderExercise(contextualQuestions[1]);
+const wrongGapTap = byClass('gap-word-bank')[0].findAllByType('button').find((node) => text(node) === 'er').props.onClick;
+await act(async () => { wrongGapTap(); wrongGapTap(); });
+assert.equal(contextual.events.length, 1, 'single-gap answers are scored once on touch');
+assert.equal(contextual.events[0][1], false);
+assert.ok(text(byClass('lapp-exercise__feedback')[0]).includes('Hei! Jeg heter Anna.'));
+assert.ok(byClass('gap-word-bank')[0].findAllByType('button').every((node) => node.props.disabled));
+await unmount();
+
+const writing = courseCatalog.A1.lessons[0].exercises[1];
+const ambiguousAnswer = await renderExercise(writing);
+await act(async () => renderer.root.findByType('input').props.onChange({ target: { value: 'er' } }));
+await act(async () => renderer.root.findByType('form').props.onSubmit({ preventDefault() {} }));
+assert.equal(ambiguousAnswer.events[0][1], false, 'er is not the requested translation of Mă numesc');
+assert.ok(text(renderer.root).includes('Eu sunt Anna'), 'feedback explains the actual distinction');
+await unmount();
+
+const multipleGaps = await renderExercise({ type: 'gaps', prompt: 'Completează', sentence: 'Jeg ___ og ___.', answer: ['spiser', 'drikker'], options: ['drikker', 'spiser'], explanation: 'Două verbe.' });
+await click(byClass('gap-word-bank')[0].findAllByType('button').find((node) => text(node) === 'spiser'));
+assert.equal(multipleGaps.events.length, 0);
+assert.equal(button('Verifică').props.disabled, true);
+await click(byClass('gap-word-bank')[0].findAllByType('button').find((node) => text(node) === 'drikker'));
+assert.equal(multipleGaps.events.length, 0, 'multiple gaps remain editable until manual verification');
+await click(button('Verifică'));
+assert.equal(multipleGaps.events[0][1], true);
+await unmount();
+console.log('✓ Clear er/heter meaning, ten contextual directions, immediate single-gap scoring and editable multi-gap answers.');
+
+globalThis.lessonAppUser = { id: 'lesson-app-migration' };
+const migrationKey = `${lessonResumeKey('A1', 1, lessonAppUser)}_voice_v1`;
+localStorage.setItem(migrationKey, '6');
+localStorage.setItem(`${migrationKey}_answers`, JSON.stringify({ 0: true, 1: true, 2: true, 3: true }));
+localStorage.setItem(`${migrationKey}_responses`, JSON.stringify({ 3: { gapAnswers: ['Hei'] } }));
+await renderLesson();
+assert.equal(byClass('lapp--exercises').length, 1, 'an unfinished old session returns to exercises when its contextual question changes');
+assert.equal(renderer.root.findByProps({ 'aria-label': 'Întrebări verificate' }).props['aria-valuenow'], 3, 'unchanged answers are preserved, the old context answer is not reused');
+await click(button('Continuă'));
+assert.equal(renderer.root.findByType('input').props.value, 'heter', 'legacy correct written answers restore the completed word');
+await click(button('Continuă'));
+assert.equal(byClass('sentence-builder')[0].findAllByType('button').length, 2, 'legacy correct order answers restore their tokens');
+await click(button('Continuă'));
+assert.equal(byClass('lapp-exercise__feedback').length, 0, 'the revised fourth question awaits a new answer');
+assert.ok(text(byClass('lapp-exercise__meaning')[0]).includes('Mă numesc Anna'));
+await click(byClass('gap-word-bank')[0].findAllByType('button').find((node) => text(node) === 'heter'));
+assert.equal(renderer.root.findByProps({ 'aria-label': 'Întrebări verificate' }).props['aria-valuenow'], 4);
+assert.equal(JSON.parse(localStorage.getItem(`${migrationKey}_exercise_versions`))[3], 'greetings-context-v2');
+await unmount();
+localStorage.setItem(migrationKey, '7');
+localStorage.setItem(`${migrationKey}_exercise_versions`, '{}');
+localStorage.setItem(courseProgressKey('A1', lessonAppUser), JSON.stringify({ completed: [1], unlocked: 2 }));
+await renderLesson();
+assert.ok(text(renderer.root).includes('100%'), 'previously completed lessons retain their historical result');
+await unmount();
+console.log('✓ Old unfinished sessions refresh the changed question without discarding other answers or completed-lesson results.');

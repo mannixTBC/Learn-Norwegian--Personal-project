@@ -30,6 +30,11 @@ export const a1Sections = [
     lessons: [
       reuse('A1', 1, {
         uid: 'a1-greetings', recycles: [], bridgeDialogue: [],
+        exercises: [
+          { type: 'choice', prompt: 'Cum întrebi o persoană cum se numește?', options: ['Hvordan har du det?', 'Hva heter du?', 'Bra, takk.'], answer: 1, explanation: '„Hva heter du?” înseamnă „Cum te numești?”.' },
+          { type: 'fill', prompt: 'Cum spui „Mă numesc Anna”?', instruction: 'Completează cuvântul lipsă.', sentence: 'Jeg ___ Anna.', answer: 'heter', answerSentence: 'Jeg heter Anna.', translation: 'Mă numesc Anna.', explanation: 'Folosește „heter” pentru a spune numele. „Jeg er Anna” înseamnă „Eu sunt Anna”.' },
+          { type: 'order', prompt: 'Răspunde la „Hvordan har du det?”', instruction: 'Construiește răspunsul „Bine, mulțumesc”.', dialogueCue: 'Hvordan har du det?', words: ['takk', 'Bra'], answer: ['Bra', 'takk'], answerSentence: 'Bra, takk.', translation: 'Bine, mulțumesc.', explanation: 'Un răspuns scurt și natural la „Hvordan har du det?”.' },
+        ],
         dialogueTail: [['Anna', 'Bra, takk. Hyggelig å møte deg!', 'Bine, mulțumesc. Încântată de cunoștință!'], ['Lars', 'Hyggelig å møte deg også!', 'Și eu sunt încântat de cunoștință!']],
         conversationPrompts: [['Hva heter du?', 'Cum te numești?'], ['Hvordan har du det?', 'Cum te simți?'], ['Hva sier du når du møter noen?', 'Ce spui când întâlnești pe cineva?']],
         production: production('Scrie un schimb de patru replici: salut, nume, întrebare despre stare și răspuns.', 'Salută, prezintă-te cu un nume fictiv și întreabă partenerul cum se simte.', ['Include un salut și numele.', 'Folosește „Jeg heter” și „Hvordan har du det?”.', 'Răspunde cu o formulă scurtă potrivită.']),

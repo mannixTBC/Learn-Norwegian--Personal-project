@@ -6,7 +6,6 @@ import './Navbar.css';
 
 const navigation = [
   { to: '/invata', label: 'Învață' },
-  { to: '/jocuri', label: 'Jocuri', mobileOnly: true },
   { to: '/descopera', label: 'Descoperă', appSecondary: true },
   { to: '/viata-in-norvegia', label: 'Viața în Norvegia', appSecondary: true },
 ];
@@ -107,7 +106,7 @@ export default function Navbar() {
             <NavLink
               key={item.to}
               to={item.to}
-              className={`nav-link${item.mobileOnly ? ' nav-link--mobile-only' : ''}${item.appSecondary ? ' nav-link--app-secondary' : ''}`}
+              className={`nav-link${item.appSecondary ? ' nav-link--app-secondary' : ''}`}
               activeClassName="nav-link--active"
               onClick={closeMenu}
             >

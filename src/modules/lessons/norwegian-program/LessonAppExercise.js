@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
+import { lessonExerciseAnswer, lessonExerciseSentence } from './lessonExerciseContent';
 
 const normalize = (value) => value.normalize('NFC').trim().toLocaleLowerCase('nb-NO').replace(/\s+/g, ' ');
 
@@ -8,9 +9,14 @@ const SpeakerIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m
 const matchText = (text) => normalize(text).replace(/[.!?]+$/, '');
 
 export default function LessonAppExercise({ exercise, vocabulary = [], index, onResult, onContinue, result, response }) {
-  const [value, setValue] = useState(response?.value || '');
-  const [wordIndexes, setWordIndexes] = useState(response?.wordIndexes || []);
-  const [gapAnswers, setGapAnswers] = useState(response?.gapAnswers || []);
+  const [value, setValue] = useState(() => response?.value ?? (result === true && exercise.type === 'choice' ? String(exercise.answer) : result === true && exercise.type === 'fill' ? exercise.answer : ''));
+  const [wordIndexes, setWordIndexes] = useState(() => {
+    if (response?.wordIndexes) return response.wordIndexes;
+    const indexes = [];
+    if (result === true && exercise.type === 'order') exercise.answer.forEach((word) => indexes.push(exercise.words.findIndex((candidate, position) => candidate === word && !indexes.includes(position))));
+    return indexes;
+  });
+  const [gapAnswers, setGapAnswers] = useState(() => response?.gapAnswers || (result === true && exercise.type === 'gaps' ? [...exercise.answer] : []));
   const [outcome, setOutcome] = useState(typeof result === 'boolean' ? result : null);
   const [playing, setPlaying] = useState(false);
   const [audioError, setAudioError] = useState('');
@@ -18,12 +24,18 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
   const submitted = useRef(typeof result === 'boolean');
   const continuing = useRef(false);
   const heading = useRef(null);
+  const feedback = useRef(null);
   const checked = outcome !== null;
   const words = wordIndexes.map((position) => exercise.words?.[position]);
-  const correctAnswer = exercise.type === 'choice' ? exercise.options[exercise.answer] : Array.isArray(exercise.answer) ? exercise.answer.join(' ') : exercise.answer;
+  const sentence = lessonExerciseSentence(exercise);
+  const correctAnswer = lessonExerciseAnswer(exercise);
   const spokenAnswer = exercise.type === 'choice'
     ? vocabulary.find(([norwegian, romanian]) => [norwegian, romanian].some((text) => matchText(text) === matchText(correctAnswer)))?.[0]
-    : exercise.type === 'gaps' ? exercise.sentence.split('___').map((part, position) => part + (exercise.answer[position] || '')).join('') : correctAnswer;
+    : correctAnswer;
+  const singleGap = exercise.type === 'gaps' && exercise.answer.length === 1;
+  const manualCheck = exercise.type === 'fill' || exercise.type === 'order' || (exercise.type === 'gaps' && !singleGap);
+  const formId = `lesson-answer-form-${index}`;
+  const formattedOrder = checked && outcome && exercise.answerSentence ? exercise.answerSentence.split(/\s+/) : [];
   const complete = exercise.type === 'choice' ? value !== ''
     : exercise.type === 'fill' ? Boolean(value.trim())
       : exercise.type === 'order' ? wordIndexes.length === exercise.words.length
@@ -31,6 +43,9 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
 
   useEffect(() => { heading.current?.focus(); }, []);
   useEffect(() => () => audioController.current?.abort(), []);
+  useEffect(() => {
+    if (checked) feedback.current?.scrollIntoView?.({ block: 'nearest', behavior: 'auto' });
+  }, [checked]);
 
   const playAnswer = async () => {
     if (!spokenAnswer || audioController.current) return;
@@ -49,16 +64,27 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
     }
   };
 
-  const submit = (choice = value) => {
-    if (submitted.current || (exercise.type === 'choice' ? choice === '' : !complete)) return;
+  const submit = (choice = value, nextGaps = gapAnswers) => {
+    const ready = exercise.type === 'choice' ? choice !== ''
+      : exercise.type === 'gaps' ? nextGaps.length === exercise.answer.length && nextGaps.every(Boolean) : complete;
+    if (submitted.current || !ready) return;
     const correct = exercise.type === 'choice' ? Number(choice) === exercise.answer
       : exercise.type === 'fill' ? normalize(value) === normalize(exercise.answer)
         : exercise.type === 'order' ? words.join(' ') === exercise.answer.join(' ')
-          : gapAnswers.every((answer, position) => answer === exercise.answer[position]);
+          : nextGaps.every((answer, position) => answer === exercise.answer[position]);
     submitted.current = true;
     setValue(choice);
     setOutcome(correct);
-    onResult(index, correct, exercise, { value: choice, wordIndexes, gapAnswers });
+    onResult(index, correct, exercise, { value: choice, wordIndexes, gapAnswers: nextGaps });
+  };
+  const placeGapAnswer = (option) => {
+    if (submitted.current || gapAnswers.includes(option)) return;
+    const nextGaps = Array.from({ length: exercise.answer.length }, (_, position) => gapAnswers[position] || '');
+    const empty = nextGaps.findIndex((word) => !word);
+    if (empty < 0) return;
+    nextGaps[empty] = option;
+    setGapAnswers(nextGaps);
+    if (singleGap) submit(value, nextGaps);
   };
   const continueExercise = () => {
     if (!submitted.current || continuing.current) return;
@@ -70,6 +96,7 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
   return (
     <div className="lapp-exercise">
       <h2 ref={heading} tabIndex={-1}>{exercise.prompt}</h2>
+      {exercise.instruction && <p className="lapp-exercise__instruction">{exercise.instruction}</p>}
       {exercise.type === 'choice' && <div className="lapp-options" role="group" aria-label="Variante de răspuns">
         {exercise.options.map((option, position) => {
           const selected = value !== '' && Number(value) === position;
@@ -82,41 +109,48 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
           </button>;
         })}
       </div>}
-      {exercise.type === 'fill' && <form onSubmit={(event) => { event.preventDefault(); submit(); }}>
-        <label className="lapp-answer-label" htmlFor={`lesson-answer-${index}`}>Răspunsul tău</label>
-        <input className="answer-input" id={`lesson-answer-${index}`} value={value} disabled={checked} lang="nb" autoComplete="off" autoCapitalize="none" autoCorrect="off" spellCheck={false} onChange={(event) => setValue(event.target.value)} placeholder="Scrie în norvegiană" />
-        {!checked && <button className="check-button" type="submit" disabled={!complete}>Confirmă răspunsul <span aria-hidden="true">→</span></button>}
+      {exercise.type === 'fill' && <form id={formId} onSubmit={(event) => { event.preventDefault(); submit(); }}>
+        <div className={`lapp-exercise__card${checked ? outcome ? ' is-correct' : ' is-wrong' : ''}`}>
+          <label className={sentence ? 'sr-only' : 'lapp-answer-label'} htmlFor={`lesson-answer-${index}`}>Cuvântul lipsă</label>
+          <div className={sentence ? 'lapp-exercise__inline-sentence' : ''} lang="nb">
+            {sentence && <span>{sentence.split('___')[0]}</span>}
+            <input className={`answer-input${sentence ? ' answer-input--inline' : ''}`} id={`lesson-answer-${index}`} value={value} disabled={checked} aria-invalid={checked && !outcome ? true : undefined} lang="nb" autoComplete="off" autoCapitalize="none" autoCorrect="off" spellCheck={false} onChange={(event) => setValue(event.target.value)} placeholder={sentence ? '…' : 'Scrie în norvegiană'} />
+            {sentence && <span>{sentence.split('___').slice(1).join('___')}</span>}
+          </div>
+        </div>
+        {!checked && <p className="lapp-exercise__hint">Scrie cuvântul, apoi verifică răspunsul.</p>}
       </form>}
       {exercise.type === 'order' && <>
-        <div className="sentence-builder" aria-label="Propoziția ta">{words.length ? words.map((word, position) => <button type="button" disabled={checked} key={wordIndexes[position]} aria-label={`Elimină ${word}`} onClick={() => !submitted.current && setWordIndexes((all) => all.filter((_, item) => item !== position))}>{word}</button>) : <span>Atinge cuvintele în ordinea corectă.</span>}</div>
-        <div className="word-bank" aria-label="Cuvinte disponibile">{exercise.words.map((word, position) => <button type="button" disabled={checked || wordIndexes.includes(position)} key={position} onClick={() => { if (!submitted.current) setWordIndexes((all) => all.includes(position) ? all : [...all, position]); }}>{word}</button>)}</div>
+        <div className="lapp-exercise__card">
+          {exercise.dialogueCue && <p className="lapp-exercise__dialogue" lang="nb">{exercise.dialogueCue}</p>}
+          <div className="sentence-builder" aria-label="Propoziția ta">{words.map((word, position) => <button type="button" disabled={checked} key={wordIndexes[position]} aria-label={checked ? word : `Elimină ${word}`} onClick={() => !submitted.current && setWordIndexes((all) => all.filter((_, item) => item !== position))}>{formattedOrder.length === exercise.answer.length ? formattedOrder[position] : word}{!checked && <span aria-hidden="true">×</span>}</button>)}{Array.from({ length: Math.max(0, exercise.words.length - wordIndexes.length) }, (_, position) => <span className="lapp-exercise__word-slot" key={`empty-${position}`} aria-hidden="true" />)}</div>
+          <div className="word-bank" aria-label="Cuvinte disponibile">{exercise.words.map((word, position) => <button type="button" disabled={checked || wordIndexes.includes(position)} key={position} onClick={() => { if (!submitted.current) setWordIndexes((all) => all.includes(position) ? all : [...all, position]); }}>{word}</button>)}</div>
+        </div>
+        {!checked && <p className="lapp-exercise__hint">Atinge cuvintele în ordine. Atinge un cuvânt ales pentru a-l elimina.</p>}
       </>}
-      {exercise.type === 'gaps' && <div className="gap-exercise">
-        <p className="lapp-answer-label">Atinge un cuvânt pentru a completa propoziția.</p>
-        <div className="gap-sentence">{exercise.sentence.split('___').map((part, position, parts) => <React.Fragment key={position}><span>{part}</span>{position < parts.length - 1 && <button type="button" className={`gap-slot${gapAnswers[position] ? ' gap-slot--filled' : ''}`} disabled={checked} aria-label={gapAnswers[position] ? `Elimină ${gapAnswers[position]}` : `Spațiul liber ${position + 1}`} onClick={() => !submitted.current && setGapAnswers((all) => all.map((word, item) => item === position ? '' : word))}>{gapAnswers[position] || <span className="gap-slot__placeholder" aria-hidden="true" />}</button>}</React.Fragment>)}</div>
-        <div className="gap-word-bank">{exercise.options.map((option) => <button type="button" disabled={checked || gapAnswers.includes(option)} key={option} onClick={() => {
-          if (submitted.current) return;
-          setGapAnswers((all) => {
-            if (all.includes(option)) return all;
-            const nextAnswers = Array.from({ length: exercise.answer.length }, (_, position) => all[position] || '');
-            const empty = nextAnswers.findIndex((word) => !word);
-            if (empty >= 0) nextAnswers[empty] = option;
-            return nextAnswers;
-          });
-        }}>{option}</button>)}</div>
+      {exercise.type === 'gaps' && <div className="lapp-exercise__card gap-exercise">
+        {exercise.context && <div className="lapp-exercise__context"><span>{exercise.context.title}</span><p>{exercise.context.description}</p></div>}
+        {exercise.translation && <p className="lapp-exercise__meaning">Spune: „{exercise.translation}”</p>}
+        <div className="gap-sentence" lang="nb">{exercise.sentence.split('___').map((part, position, parts) => <React.Fragment key={position}><span>{part}</span>{position < parts.length - 1 && <button type="button" className={`gap-slot${gapAnswers[position] ? ' gap-slot--filled' : ''}${checked ? outcome ? ' is-correct' : ' is-wrong' : ''}`} disabled={checked} aria-label={gapAnswers[position] ? checked ? gapAnswers[position] : `Elimină ${gapAnswers[position]}` : `Spațiul liber ${position + 1}`} onClick={() => !submitted.current && setGapAnswers((all) => all.map((word, item) => item === position ? '' : word))}>{gapAnswers[position] || <span className="gap-slot__placeholder" aria-hidden="true" />}</button>}</React.Fragment>)}</div>
+        <div className="gap-word-bank" aria-label="Cuvinte disponibile">{exercise.options.map((option) => <button type="button" disabled={checked || gapAnswers.includes(option)} className={checked && exercise.answer.includes(option) ? 'is-correct' : checked && gapAnswers.includes(option) ? 'is-wrong' : ''} key={option} onClick={() => placeGapAnswer(option)}>{option}</button>)}</div>
+        {!checked && <p className="lapp-exercise__hint">{singleGap ? 'Atinge varianta potrivită. Se verifică imediat.' : 'Completează toate spațiile, apoi verifică răspunsul.'}</p>}
       </div>}
-      {!checked && ['order', 'gaps'].includes(exercise.type) && <button className="check-button" type="button" disabled={!complete} onClick={() => submit()}>{exercise.type === 'order' ? 'Confirmă ordinea' : 'Confirmă răspunsul'} <span aria-hidden="true">→</span></button>}
       {!checked && exercise.type === 'choice' && <p className="lapp-exercise__hint">Atinge răspunsul. Se verifică imediat.</p>}
-      {checked && <div className={`lapp-exercise__feedback ${outcome ? 'is-correct' : 'is-wrong'}`} role="status" aria-live="polite">
+      {checked && <div ref={feedback} className={`lapp-exercise__feedback ${outcome ? 'is-correct' : 'is-wrong'}`} role="status" aria-live="polite">
         <strong><span className="lapp-exercise__feedback-icon" aria-hidden="true">{outcome ? '✓' : '!'}</span>{outcome ? 'Exact! Ai reținut bine.' : 'Să reținem diferența'}</strong>
-        {!outcome && <p className="lapp-exercise__answer">Răspuns corect: <b>{correctAnswer}</b></p>}
+        {(!outcome || exercise.type !== 'choice') && <p className="lapp-exercise__answer">{!outcome && 'Răspuns corect: '}<b lang={exercise.type === 'choice' ? undefined : 'nb'}>{correctAnswer}</b></p>}
+        {exercise.translation && <p>{exercise.translation}</p>}
         <p>{exercise.explanation}</p>
         {spokenAnswer && <button className="lapp-exercise__listen" type="button" onClick={playAnswer} disabled={playing} aria-label="Ascultă răspunsul corect"><SpeakerIcon />{playing ? 'Se redă…' : 'Ascultă'}</button>}
         {audioError && <p role="alert">{audioError}</p>}
         {!outcome && <small><BookmarkIcon /> Salvat la Recapitulare</small>}
       </div>}
-      {checked ? <footer className="lapp-exercise__footer"><button type="button" onClick={continueExercise}>Continuă <span aria-hidden="true">→</span></button></footer>
-        : <p className="lapp-exercise__review-note"><BookmarkIcon /> Greșelile se salvează la Recapitulare.</p>}
+      {!checked && <p className="lapp-exercise__review-note"><BookmarkIcon /> Greșelile se salvează la Recapitulare.</p>}
+      {(checked || manualCheck) && <footer className="lapp-exercise__footer">{checked
+        ? <button type="button" onClick={continueExercise}>Continuă <span aria-hidden="true">→</span></button>
+        : exercise.type === 'fill' ? <button type="submit" form={formId} disabled={!complete}>Verifică răspunsul <span aria-hidden="true">→</span></button>
+          : <button type="button" disabled={!complete} onClick={() => submit()}>{exercise.type === 'order' ? 'Verifică ordinea' : 'Verifică răspunsul'} <span aria-hidden="true">→</span></button>}
+      </footer>}
     </div>
   );
 }

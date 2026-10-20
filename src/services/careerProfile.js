@@ -394,7 +394,29 @@ const levelCoaching = {
 
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-const buildCareerGapExercise = (path, phrases) => {
+const lessonContexts = {
+  transport: { title: 'Prima zi la depozit', introduction: 'Un coleg din echipa de livrări te salută. Prezintă-te.', practice: 'Discuți cu un coleg din echipa de transport și logistică.' },
+  hospitality: { title: 'Prima zi la hotel', introduction: 'Un coleg de la hotel te salută. Prezintă-te.', practice: 'Discuți cu un coleg de la hotel sau restaurant.' },
+  construction: { title: 'În echipa de pe șantier', introduction: 'Întâlnești un coleg nou pe șantier. Prezintă-te.', practice: 'Discuți cu un coleg din echipa de pe șantier.' },
+  healthcare: { title: 'Prima zi în echipa de îngrijire', introduction: 'Un coleg din echipa de îngrijire te salută. Prezintă-te.', practice: 'Discuți cu un coleg din echipa de îngrijire.' },
+  cleaning: { title: 'La începutul turei', introduction: 'Cunoști un coleg nou din echipa de curățenie. Prezintă-te.', practice: 'Discuți cu un coleg din echipa de curățenie și mentenanță.' },
+  retail: { title: 'Prima zi în magazin', introduction: 'Un coleg din magazin te salută. Prezintă-te.', practice: 'Discuți cu un coleg din magazin.' },
+  office: { title: 'Un coleg nou la birou', introduction: 'Te întâlnești cu un coleg nou la birou. Prezintă-te.', practice: 'Discuți cu un coleg de la birou sau din echipa IT.' },
+  studies: { title: 'Prima zi de curs', introduction: 'Un coleg de curs te salută. Prezintă-te.', practice: 'Discuți cu un coleg de curs.' },
+  family: { title: 'Un vecin nou', introduction: 'Întâlnești un vecin nou. Prezintă-te.', practice: 'Discuți cu o persoană din comunitatea ta.' },
+  general: { title: 'O persoană nouă', introduction: 'Cunoști o persoană nouă. Salută și prezintă-te.', practice: 'Folosești o expresie învățată într-o conversație de zi cu zi.' },
+};
+
+const buildCareerGapExercise = (path, phrases, lesson) => {
+  const context = lessonContexts[path.id] || lessonContexts.general;
+  if (lesson?.uid === 'a1-greetings') return {
+    type: 'gaps', prompt: 'Prezintă-te unei persoane noi.',
+    context: { title: context.title, description: context.introduction },
+    sentence: 'Hei! Jeg ___ Anna.', translation: 'Salut! Mă numesc Anna.',
+    options: ['heter', 'er', 'har'], answer: ['heter'], answerSentence: 'Hei! Jeg heter Anna.',
+    explanation: 'Reutilizează „Jeg heter...” când spui cum te numești într-o situație nouă.',
+    careerPath: path.id, answerRevision: 'greetings-context-v2',
+  };
   const [sentence, translation, answer] = phrases[0];
   const options = Array.from(new Set(phrases.map((phrase) => phrase[2]).filter(Boolean)));
   const sentenceWithGap = answer
@@ -403,8 +425,11 @@ const buildCareerGapExercise = (path, phrases) => {
 
   return {
     type: 'gaps',
-    prompt: 'Adaugă cuvântul lipsă.',
+    prompt: answer?.includes(' ') ? 'Completează expresia în context.' : 'Completează replica în context.',
+    context: { title: `${path.shortTitle} · Aplică ce ai învățat`, description: context.practice },
     sentence: sentenceWithGap,
+    translation,
+    answerSentence: sentence,
     options,
     answer: [answer],
     explanation: `${sentence} — ${translation}`,
@@ -428,7 +453,7 @@ export const getCareerLessonModule = (pathId, level = 'A1', lessonId = 1, lesson
     return { path, phrases,
       scenario: { title: `${lesson.sectionTitle} · ${path.shortTitle}`, norwegian: lesson.conversationPrompts[0][0], romanian: `${lesson.production.speakingPrompt} Adaptează situația la domeniul „${path.title}”.` },
       coaching: `${levelCoaching[normalizedLevel] || levelCoaching.A1} Reutilizează structurile lecției în domeniul „${path.shortTitle}”, fără o listă nouă de memorat.`,
-      exercise: buildCareerGapExercise(path, phrases),
+      exercise: buildCareerGapExercise(path, phrases, lesson),
     };
   }
   const a1Phrases = a1CareerPhrases[path.id] || a1CareerPhrases.general;
