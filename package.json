@@ -45,6 +45,8 @@
     "test:mobile-exercises": "node scripts/test-mobile-exercises.mjs",
     "test:curriculum": "node scripts/test-curriculum.mjs && node scripts/test-curriculum-assessment.mjs",
     "test:lesson-exercises": "node scripts/test-lesson-app-exercises.mjs",
+    "test:lesson-web-exercises": "node scripts/test-lesson-web-exercises.mjs",
+    "test:lesson-grammar": "node scripts/test-lesson-grammar.mjs",
     "test:lesson-visuals": "node scripts/test-lesson-visuals.mjs",
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "preview:https": "vite preview --host 0.0.0.0 --port 4173 --mode https",

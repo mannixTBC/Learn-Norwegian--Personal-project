@@ -8,7 +8,8 @@ import { syncLearningProgress } from '../../../services/supabaseLearning';
 import { getCareerLessonModule, getCareerProfile } from '../../../services/careerProfile';
 import { useAuth } from '../../auth/AuthContext';
 import { courseProgressKey, currentLessonKey, lessonResumeKey, readCourseProgress } from '../../../services/curriculumProgress';
-import { CurriculumRecall, CurriculumReading, CurriculumProduction } from './CurriculumPractice';
+import { CurriculumRecall } from './CurriculumPractice';
+import LessonGrammar, { grammarStepDescription } from './LessonGrammar';
 import PremiumGate from '../../premium/PremiumGate';
 import ChatAssistant from '../../chat/ChatAssistant';
 import VoiceLessonConversation from '../../chat/VoiceLessonConversation';
@@ -91,7 +92,7 @@ const MobileExpressionNavigation = ({ current, total, onPrevious, onNext, onComp
 
 const MobileExerciseNavigation = ({ current, total, answeredCurrent, onPrevious, onNext, onComplete }) => (
   <nav className="mobile-expression-navigation mobile-exercise-navigation" aria-label="Navigare între întrebări">
-    <button type="button" onClick={onPrevious} disabled={current === 0} aria-label="Întrebarea anterioară">
+    <button type="button" onClick={onPrevious} aria-label={current === 0 ? 'Etapa anterioară' : 'Întrebarea anterioară'}>
       <span aria-hidden="true">←</span> Înapoi
     </button>
     <div className="mobile-expression-navigation__progress">
@@ -192,11 +193,16 @@ const LessonSession = ({ match }) => {
   }, [progress, progressKey]);
   useEffect(() => {
     if (lessonContentRef.current) lessonContentRef.current.scrollTo({ top: 0, behavior: 'auto' });
-  }, [careerPhraseIndex, exerciseIndex, step, vocabularyIndex]);
+  }, [careerPhraseIndex, step, vocabularyIndex]);
+  useEffect(() => {
+    if (!isInstalledAppView() && !window.matchMedia?.('(max-width: 520px)').matches) return;
+    lessonContentRef.current?.scrollTo({ top: 0, behavior: 'auto' });
+  }, [exerciseIndex]);
 
   const reviewItems = useMemo(() => lessonExercises.filter((_, index) => answers[index] === false), [answers, lessonExercises]);
 
   const recordResult = (index, correct, exercise, response) => {
+    setExerciseIndex(index);
     setAnswers((current) => ({ ...current, [index]: correct }));
     setExerciseResponses((current) => {
       const nextResponses = { ...current };
@@ -223,6 +229,7 @@ const LessonSession = ({ match }) => {
 
   const saveExerciseDraft = (index, response) => {
     if (typeof answers[index] === 'boolean') return;
+    setExerciseIndex(index);
     setExerciseResponses((current) => ({ ...current, [index]: response }));
   };
 
@@ -315,11 +322,9 @@ const LessonSession = ({ match }) => {
           <MobileExpressionNavigation current={careerPhraseIndex} total={Math.ceil(careerModule.phrases.length / 2)} onPrevious={() => setCareerPhraseIndex((current) => Math.max(0, current - 1))} onNext={() => setCareerPhraseIndex((current) => Math.min(Math.ceil(careerModule.phrases.length / 2) - 1, current + 1))} onComplete={() => { setStep(3); window.scrollTo(0, 0); }} label="grupuri de expresii"/>
         </section>}
         {step === 3 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 4</p><h1>Conversație</h1></div><div className="dialogue"><div className="dialogue__actions"><DialogueAudioButton dialogue={lesson.dialogue}/></div>{lesson.dialogue.map(([speaker, text, translation], index) => <article className="dialogue-line" key={`${speaker}-${index}`}><div className="dialogue-speaker"><SpeakerAvatar voice={getDialogueVoice(speaker, index)} /><strong>{speaker}</strong></div><div className="dialogue-line__content"><p>{text}</p>{showTranslations[index] && <small>{translation}</small>}<div><DialogueLineAudioButton text={text} voice={getDialogueVoice(speaker, index)}/><button className="translation-button" type="button" onClick={() => setShowTranslations((current) => ({...current,[index]:!current[index]}))}>{showTranslations[index] ? 'Ascunde' : 'În română'}</button></div></div></article>)}</div><PremiumGate feature="Asistentul virtual de conversație"><ChatAssistant key={`${levelCode}-${lesson.id}-${careerProfile.pathId}`} level={levelCode} lessonId={lesson.id} pathId={careerProfile.pathId} lessonTitle={lesson.title} /></PremiumGate></section>}
-        {step === 4 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 5</p><h1>{lesson.grammar.title}</h1><p>O regulă scurtă, urmată imediat de exemple.</p></div><div className="grammar-card"><div className="grammar-rule"><span>Regula</span><p>{lesson.grammar.rule}</p></div>{lesson.grammar.examples.map((example) => <div className="grammar-example" key={example}><span>✓</span><p>{example}</p></div>)}<div className="grammar-example grammar-example--wrong"><span>×</span><p><strong>Formulare de evitat în acest context: </strong>{lesson.grammar.wrong}</p></div></div></section>}
-        {step === 4 && <CurriculumReading key={lesson.uid} lesson={lesson} />}
-        {step === 4 && <CurriculumProduction key={`${lesson.uid}-production`} lesson={lesson} level={levelCode} />}
-        {step === 5 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 6</p><h1>Verifică ce ai învățat</h1><p>Răspunde la toate cele {lessonExercises.length} întrebări. Greșelile vor fi salvate pentru recapitulare.</p></div><div className="exercise-progress"><span style={{width:`${(answered/lessonExercises.length)*100}%`}}/><small>{answered} din {lessonExercises.length} răspunsuri verificate</small></div><div className="lesson-exercise-list">{lessonExercises.map((exercise,index) => <LessonExercise exercise={exercise} index={index} onResult={recordResult} isMobileActive={index === exerciseIndex} key={`${lesson.id}-${index}-${exercise.careerPath || 'general'}`}/>)}</div><MobileExerciseNavigation current={exerciseIndex} total={lessonExercises.length} answeredCurrent={Object.prototype.hasOwnProperty.call(answers, exerciseIndex)} onPrevious={() => { setExerciseIndex((current) => Math.max(0, current - 1)); window.scrollTo(0, 0); }} onNext={() => { setExerciseIndex((current) => Math.min(lessonExercises.length - 1, current + 1)); window.scrollTo(0, 0); }} onComplete={next}/></section>}
-        {step === resultStep && <section className="lesson-result"><div className="result-icon">✓</div><p className="lesson-eyebrow">Lecție finalizată</p><h1>Bravo! Ai terminat „{lesson.title}”</h1><p>Ai răspuns corect la {score} din {lessonExercises.length} întrebări.</p><div className="result-score"><strong>{Math.round((score/lessonExercises.length)*100)}%</strong><span>scorul lecției</span></div><div className="lesson-result__summary"><div><span><LessonMetaIcon type="vocabulary"/></span><strong>Exerciții</strong><b>{score}/{lessonExercises.length}</b></div><div><span><LessonMetaIcon type="voice"/></span><strong>{voiceCompleted ? 'Dialog vocal finalizat' : 'Dialog vocal de exersat'}</strong><b>{voiceCompleted ? '✓' : '—'}</b></div><div><span><LessonMetaIcon type="level"/></span><strong>{lesson.vocabulary.length} expresii</strong><b>✓</b></div></div>{reviewItems.length > 0 && <div className="review-box"><h2>De repetat</h2><p>Am salvat {reviewItems.length} {reviewItems.length === 1 ? 'răspuns' : 'răspunsuri'} pentru recapitulare.</p><button type="button" onClick={() => {setAnswers({});setExerciseIndex(0);setStep(5);}}>Repetă exercițiile</button></div>}<div className="result-actions">{lesson.id < courseLessons.length ? <button type="button" className="primary" onClick={goNextLesson}>Continuă cu lecția {lesson.id + 1} →</button> : <Link className="primary" to="/invata">Înapoi la curs</Link>}<button type="button" onClick={() => {setVocabularyIndex(0);setStep(1);}}>Revezi vocabularul</button></div></section>}
+        {step === 4 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 5</p><h1>{lesson.grammar.title}</h1><p>{grammarStepDescription(lesson)}</p></div><LessonGrammar key={lesson.uid} lesson={lesson} /></section>}
+        {step === 5 && <section><div className="lesson-heading"><p className="lesson-eyebrow">Pasul 6</p><h1>Verifică ce ai învățat</h1><p>Răspunde la toate cele {lessonExercises.length} întrebări. Greșelile vor fi salvate pentru recapitulare.</p></div><div className="exercise-progress"><span style={{width:`${(answered/lessonExercises.length)*100}%`}}/><small>{answered} din {lessonExercises.length} răspunsuri verificate</small></div><div className="lesson-exercise-list">{lessonExercises.map((exercise,index) => <LessonExercise exercise={exercise} index={index} onResult={recordResult} onDraft={saveExerciseDraft} result={answers[index]} response={exerciseResponses[index]} isMobileActive={index === exerciseIndex} key={`${lesson.id}-${index}-${exercise.careerPath || 'general'}`}/>)}</div><MobileExerciseNavigation current={exerciseIndex} total={lessonExercises.length} answeredCurrent={Object.prototype.hasOwnProperty.call(answers, exerciseIndex)} onPrevious={() => { if (exerciseIndex === 0) previous(); else setExerciseIndex((current) => current - 1); window.scrollTo(0, 0); }} onNext={() => { setExerciseIndex((current) => Math.min(lessonExercises.length - 1, current + 1)); window.scrollTo(0, 0); }} onComplete={next}/></section>}
+        {step === resultStep && <section className="lesson-result"><div className="result-icon">✓</div><p className="lesson-eyebrow">Lecție finalizată</p><h1>Bravo! Ai terminat „{lesson.title}”</h1><p>Ai răspuns corect la {score} din {lessonExercises.length} întrebări.</p><div className="result-score"><strong>{Math.round((score/lessonExercises.length)*100)}%</strong><span>scorul lecției</span></div><div className="lesson-result__summary"><div><span><LessonMetaIcon type="vocabulary"/></span><strong>Exerciții</strong><b>{score}/{lessonExercises.length}</b></div><div><span><LessonMetaIcon type="voice"/></span><strong>{voiceCompleted ? 'Dialog vocal finalizat' : 'Dialog vocal de exersat'}</strong><b>{voiceCompleted ? '✓' : '—'}</b></div><div><span><LessonMetaIcon type="level"/></span><strong>{lesson.vocabulary.length} expresii</strong><b>✓</b></div></div>{reviewItems.length > 0 && <div className="review-box"><h2>De repetat</h2><p>Am salvat {reviewItems.length} {reviewItems.length === 1 ? 'răspuns' : 'răspunsuri'} pentru recapitulare.</p><button type="button" onClick={() => {setAnswers({});setExerciseResponses({});setExerciseIndex(0);setStep(5);}}>Repetă exercițiile</button></div>}<div className="result-actions">{lesson.id < courseLessons.length ? <button type="button" className="primary" onClick={goNextLesson}>Continuă cu lecția {lesson.id + 1} →</button> : <Link className="primary" to="/invata">Înapoi la curs</Link>}<button type="button" onClick={() => {setVocabularyIndex(0);setStep(1);}}>Revezi vocabularul</button></div></section>}
       </main>
 
       {step < resultStep && <footer className={`lesson-navigation ${step === 1 || step === 2 ? 'lesson-navigation--expressions' : ''} ${step === 5 ? 'lesson-navigation--exercises' : ''} ${step === 6 ? 'lesson-navigation--voice' : ''}`}><button type="button" onClick={previous} disabled={step === 0}>← Înapoi</button><span>Pasul {step + 1} din {steps.length}</span><button type="button" className="primary" onClick={next} disabled={step === 5 && !canFinish}>{step === 5 ? (canFinish ? 'Dialog vocal →' : 'Răspunde la toate întrebările') : step === 6 ? 'Finalizează lecția' : 'Continuă →'}</button></footer>}

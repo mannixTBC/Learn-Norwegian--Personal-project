@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
-import { lessonExerciseAnswer } from './lessonExerciseContent';
+import { lessonExerciseAnswer, lessonExerciseSentence } from './lessonExerciseContent';
+import useLessonExercise from './useLessonExercise';
 
 /* Părți comune între lecția de web și cea din aplicația instalată.
    Mutate din LessonProgram.js fără schimbări de comportament. */
@@ -118,47 +119,9 @@ export const LessonMetaIcon = ({ type }) => {
 export const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 /* Cardul de exercițiu pentru lecția web. */
-export const LessonExercise = ({ exercise, index, onResult, isMobileActive }) => {
-  const [value, setValue] = useState('');
-  const [selectedWords, setSelectedWords] = useState([]);
-  const [gapAnswers, setGapAnswers] = useState([]);
-  const [checked, setChecked] = useState(false);
-
-  const cleanWords = selectedWords.map((entry) => entry.split('::')[0]);
-  const isCorrect = exercise.type === 'choice'
-    ? Number(value) === exercise.answer
-    : exercise.type === 'fill'
-      ? value.trim().toLocaleLowerCase() === exercise.answer.toLocaleLowerCase()
-      : exercise.type === 'gaps'
-        ? gapAnswers.length === exercise.answer.length && gapAnswers.every((answer, answerIndex) => answer === exercise.answer[answerIndex])
-        : cleanWords.join(' ') === exercise.answer.join(' ');
-  const canCheck = exercise.type === 'choice' || exercise.type === 'fill'
-    ? Boolean(value)
-    : exercise.type === 'gaps'
-      ? gapAnswers.length === exercise.answer.length && gapAnswers.every(Boolean)
-      : selectedWords.length > 0;
-
-  const check = () => {
-    if (!value && (exercise.type === 'choice' || exercise.type === 'fill')) return;
-    if (exercise.type === 'order' && !selectedWords.length) return;
-    if (exercise.type === 'gaps' && (gapAnswers.length !== exercise.answer.length || gapAnswers.some((answer) => !answer))) return;
-    setChecked(true);
-    onResult(index, isCorrect, exercise);
-  };
-
-  const reset = () => { setValue(''); setSelectedWords([]); setGapAnswers([]); setChecked(false); };
-  const addWord = (word, originalIndex) => setSelectedWords((words) => [...words, `${word}::${originalIndex}`]);
-  const placeGapAnswer = (word, preferredIndex) => {
-    if (checked || gapAnswers.includes(word)) return;
-    setGapAnswers((current) => {
-      const nextAnswers = [...current];
-      const emptyIndex = nextAnswers.findIndex((answer) => !answer);
-      const targetIndex = Number.isInteger(preferredIndex) ? preferredIndex : emptyIndex >= 0 ? emptyIndex : 0;
-      nextAnswers[targetIndex] = word;
-      return nextAnswers;
-    });
-  };
-  const clearGapAnswer = (gapIndex) => !checked && setGapAnswers((current) => current.map((answer, answerIndex) => answerIndex === gapIndex ? '' : answer));
+export const LessonExercise = ({ exercise, index, onResult, isMobileActive, onDraft, result, response }) => {
+  const { value, wordIndexes, gapAnswers, words, outcome, checked, complete, manualCheck, updateDraft, submit, addOrderWord, removeOrderWord, placeGapAnswer, clearGapAnswer } = useLessonExercise({ exercise, index, onResult, onDraft, result, response });
+  const sentence = lessonExerciseSentence(exercise);
 
   return (
     <div className={`practice-card ${checked ? 'practice-card--checked' : ''} ${isMobileActive ? 'mobile-exercise-card--active' : ''}`}>
@@ -167,17 +130,17 @@ export const LessonExercise = ({ exercise, index, onResult, isMobileActive }) =>
       {exercise.instruction && <p>{exercise.instruction}</p>}
       {exercise.context && <div><strong>{exercise.context.title}</strong><p>{exercise.context.description}</p></div>}
       {exercise.translation && exercise.type === 'gaps' && <p>Spune: „{exercise.translation}”</p>}
-      {exercise.type === 'fill' && exercise.sentence && <p lang="nb">{exercise.sentence}</p>}
+      {exercise.type === 'fill' && sentence && <p lang="nb">{sentence}</p>}
       {exercise.type === 'choice' && <div className="choice-list">{exercise.options.map((option, optionIndex) => {
         const selected = value !== '' && Number(value) === optionIndex;
         const stateClass = checked && optionIndex === exercise.answer ? 'is-correct' : checked && selected ? 'is-wrong' : '';
-        return <button type="button" disabled={checked} className={`${selected ? 'selected' : ''} ${stateClass}`} onClick={() => setValue(String(optionIndex))} key={option}>{option}</button>;
+        return <button type="button" disabled={checked} aria-pressed={selected} className={`${selected ? 'selected' : ''} ${stateClass}`} onClick={() => submit(String(optionIndex))} key={`${optionIndex}-${option}`}>{option}</button>;
       })}</div>}
-      {exercise.type === 'fill' && <input className="answer-input" value={value} disabled={checked} onChange={(event) => setValue(event.target.value)} onKeyDown={(event) => event.key === 'Enter' && check()} placeholder="Scrie răspunsul aici" />}
-      {exercise.type === 'order' && <><div className="sentence-builder">{cleanWords.length ? cleanWords.map((word, i) => <button type="button" disabled={checked} key={`${word}-${i}`} onClick={() => !checked && setSelectedWords((all) => all.filter((_, position) => position !== i))}>{word}</button>) : <span>Apasă cuvintele în ordinea corectă</span>}</div><div className="word-bank">{exercise.words.map((word, i) => <button type="button" disabled={checked || selectedWords.some((entry) => entry.endsWith(`::${i}`))} onClick={() => addWord(word, i)} key={`${word}-${i}`}>{word}</button>)}</div></>}
+      {exercise.type === 'fill' && <input className="answer-input" value={value} disabled={checked} aria-label="Cuvântul lipsă" lang="nb" autoComplete="off" spellCheck={false} onChange={(event) => updateDraft({ value: event.target.value })} onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); submit(); } }} placeholder="Scrie răspunsul aici" />}
+      {exercise.type === 'order' && <><div className="sentence-builder">{words.length ? words.map((word, i) => <button type="button" disabled={checked} key={wordIndexes[i]} onClick={() => removeOrderWord(i)}>{word}</button>) : <span>Apasă cuvintele în ordinea corectă</span>}</div><div className="word-bank">{exercise.words.map((word, i) => <button type="button" disabled={checked || wordIndexes.includes(i)} onClick={() => addOrderWord(i)} key={i}>{word}</button>)}</div></>}
       {exercise.type === 'gaps' && <div className="gap-exercise"><p className="gap-exercise__hint gap-exercise__hint--pointer">Trage cuvântul în spațiul liber.</p><p className="gap-exercise__hint gap-exercise__hint--touch">Atinge cuvântul pentru a completa propoziția.</p><div className="gap-sentence">{exercise.sentence.split('___').map((sentencePart, sentenceIndex, sentenceParts) => <React.Fragment key={`${sentencePart}-${sentenceIndex}`}><span>{sentencePart}</span>{sentenceIndex < sentenceParts.length - 1 && <button type="button" className={gapAnswers[sentenceIndex] ? 'gap-slot gap-slot--filled' : 'gap-slot'} disabled={checked} onClick={() => clearGapAnswer(sentenceIndex)} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); placeGapAnswer(event.dataTransfer.getData('text/plain'), sentenceIndex); }} aria-label={gapAnswers[sentenceIndex] ? `Cuvânt selectat: ${gapAnswers[sentenceIndex]}. Apasă pentru a-l elimina.` : `Spațiul liber ${sentenceIndex + 1}`}>{gapAnswers[sentenceIndex] || <span className="gap-slot__placeholder" aria-hidden="true"/>}</button>}</React.Fragment>)}</div><div className="gap-word-bank">{exercise.options.map((option) => { const used = gapAnswers.includes(option); return <button type="button" draggable={!checked && !used} disabled={checked || used} onClick={() => placeGapAnswer(option)} onDragStart={(event) => event.dataTransfer.setData('text/plain', option)} key={option}>{option}</button>; })}</div></div>}
-      {!checked && <button className="check-button" type="button" onClick={check} disabled={!canCheck}>Verifică răspunsul <span aria-hidden="true">→</span></button>}
-      {checked && <div className={`answer-feedback ${isCorrect ? 'answer-feedback--correct' : 'answer-feedback--wrong'}`} role="status"><strong>{isCorrect ? 'Corect! Foarte bine.' : 'Mai încearcă o dată.'}</strong><p>{exercise.explanation}</p>{!isCorrect && <p>Răspuns corect: <b>{lessonExerciseAnswer(exercise)}</b></p>}{!isCorrect && <button type="button" onClick={reset}>Încearcă din nou</button>}</div>}
+      {!checked && manualCheck && <button className="check-button" type="button" onClick={() => submit()} disabled={!complete}>Verifică răspunsul <span aria-hidden="true">→</span></button>}
+      {checked && <div className={`answer-feedback ${outcome ? 'answer-feedback--correct' : 'answer-feedback--wrong'}`} role="status"><strong>{outcome ? 'Corect! Foarte bine.' : 'Să reținem diferența.'}</strong><p>{exercise.explanation}</p>{(!outcome || exercise.type !== 'choice') && <p>{!outcome && 'Răspuns corect: '}<b>{lessonExerciseAnswer(exercise)}</b></p>}{!outcome && <p>Salvat la Recapitulare.</p>}</div>}
     </div>
   );
 };

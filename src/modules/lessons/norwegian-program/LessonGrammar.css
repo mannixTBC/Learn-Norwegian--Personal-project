@@ -1,0 +1,47 @@
+.lesson-grammar { display: grid; gap: 18px; color: #244744; min-width: 0; }
+.lesson-grammar__card { padding: 24px; background: #fffefa; border: 1px solid #e4e7dc; border-radius: 22px; box-shadow: 0 6px 22px #41645408; min-width: 0; }
+.lesson-grammar__meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 14px; }
+.lesson-grammar__meta > span { color: #346a60; background: #edf4ed; border: 1px solid #dce9df; border-radius: 20px; padding: 5px 11px; font-size: 12px; font-weight: 700; }
+.lesson-grammar__meta small { color: #697a72; font-size: 12px; }
+.lesson-grammar .lesson-grammar__card h2 { margin: 0 0 12px; font-size: 21px; line-height: 1.35; letter-spacing: -.35px; color: #244744; }
+.lesson-grammar__source { display: inline-block; color: #4b736b; font-size: 12px; line-height: 1.5; margin: 0 0 12px; text-decoration: underline; text-underline-offset: 3px; }
+.lesson-grammar .lesson-grammar__explanation { font-size: 15px; line-height: 1.7; color: #53665e; margin: 0 0 18px; }
+.lesson-grammar__examples { display: grid; gap: 10px; }
+.lesson-grammar__example { display: flex; gap: 12px; align-items: flex-start; padding: 15px; border-radius: 14px; background: #f3f6ee; }
+.lesson-grammar__example > div { flex: 1; min-width: 0; }
+.lesson-grammar__example p { margin: 0; overflow-wrap: anywhere; }
+.lesson-grammar__example p[lang="nb"] { font-size: 16px; font-weight: 600; line-height: 1.55; color: #234d45; }
+.lesson-grammar__example p[lang="ro"] { font-size: 13px; line-height: 1.6; color: #69766d; margin-top: 6px; }
+.lesson-grammar mark { background: #e3edda; color: #245447; padding: 1px 2px; border-radius: 3px; }
+.lesson-grammar .lesson-grammar__audio { flex: 0 0 44px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; margin: 0; border: 1px solid #d0dfcf; border-radius: 50%; background: #fffefa; color: #2d6658; cursor: pointer; }
+.lesson-grammar__audio svg { width: 21px; height: 21px; fill: currentColor; }
+.lesson-grammar .lesson-grammar__audio:hover, .lesson-grammar .lesson-grammar__audio.is-playing { background: #e3eddc; border-color: #80a18c; }
+.lesson-grammar__contrast { margin-top: 16px; border-top: 1px solid #e4e7dc; }
+.lesson-grammar summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; list-style: none; min-height: 44px; color: #38675b; font-size: 13px; font-weight: 600; }
+.lesson-grammar summary::-webkit-details-marker { display: none; }
+.lesson-grammar summary > [aria-hidden] { font-size: 20px; transition: transform .15s; }
+.lesson-grammar details[open] > summary > [aria-hidden] { transform: rotate(180deg); }
+.lesson-grammar__before, .lesson-grammar__after { padding: 12px 14px; border-radius: 12px; margin-top: 8px; }
+.lesson-grammar__before { background: #faf0e6; color: #785d43; }
+.lesson-grammar__after { background: #edf4e8; color: #2d5749; }
+.lesson-grammar__contrast small { font-size: 11px; font-weight: 600; }
+.lesson-grammar__contrast p[lang="nb"] { font-size: 14px; line-height: 1.65; margin: 5px 0 0; overflow-wrap: anywhere; }
+.lesson-grammar .lesson-grammar__reason { color: #677369; line-height: 1.65; font-size: 13px; margin: 12px 0 0; }
+.lesson-grammar__optional { border: 1px solid #dfe5d7; background: #f7f7ef; border-radius: 18px; padding: 8px 18px; min-width: 0; }
+.lesson-grammar__optional > summary { font-size: 14px; padding: 8px 0; line-height: 1.6; }
+.lesson-grammar__optional > summary small { display: block; color: #686e60; font-size: 11px; font-weight: 500; }
+.lesson-grammar__card--recall { margin: 10px 0; box-shadow: none; }
+.lesson-grammar__reading .curriculum-reading { border: 0; padding: 10px 0; margin: 0; background: transparent; box-shadow: none; }
+.lesson-grammar .lesson-grammar__next { font-size: 13px; line-height: 1.6; color: #686e60; margin: 0 4px; }
+.lesson-grammar__audio-error { padding: 12px; background: #fff1dd; border-radius: 12px; font-size: 13px; }
+.lesson-grammar button:focus-visible, .lesson-grammar summary:focus-visible, .lesson-grammar a:focus-visible { outline: 3px solid #9ebc9b; outline-offset: 4px; }
+@media (max-width: 600px) {
+  .lesson-grammar { gap: 14px; }
+  .lesson-grammar__card { padding: 20px 17px; border-radius: 20px; }
+  .lesson-grammar .lesson-grammar__card h2 { font-size: 20px; }
+  .lesson-grammar__example { padding: 13px 11px; gap: 9px; }
+  .lesson-grammar__example p[lang="nb"] { font-size: 15px; }
+  .lesson-grammar__optional { padding: 7px 13px; }
+  .lesson-grammar__card--recall { padding: 17px 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .lesson-grammar summary > [aria-hidden] { transition: none; } }

@@ -63,9 +63,9 @@ const renderExercise = async (exercise, extra = {}) => {
 };
 const unmount = async () => act(async () => renderer.unmount());
 
-const sampledLessons = Object.values(courseCatalog).flatMap((course, position) => (position < 2 ? [1, 8, 16, 24] : [1, 12, 24]).map((id) => ({ course, lesson: course.lessons.find((item) => item.id === id) })));
-assert.equal(sampledLessons.length, 20, 'keep the requested twenty-lesson sample');
-for (const { course, lesson } of sampledLessons) {
+const allLessons = Object.values(courseCatalog).flatMap((course) => course.lessons.map((lesson) => ({ course, lesson })));
+assert.equal(allLessons.length, 144, 'audit every lesson across all six levels');
+for (const { course, lesson } of allLessons) {
   const exercises = [...lesson.exercises, getCareerLessonModule('general', course.code, lesson.id, lesson).exercise];
   for (const exercise of exercises) {
     const state = await renderExercise(exercise, { vocabulary: lesson.vocabulary });
@@ -99,7 +99,7 @@ for (const { course, lesson } of sampledLessons) {
     await unmount();
   }
 }
-console.log('✓ 20 sampled A1–C2 lessons: choices, typing, ordering and career gaps; one score per answer and no skipped questions.');
+console.log('✓ All 144 A1–C2 lessons: choices, typing, ordering and career gaps; one score per answer and no skipped questions.');
 
 const choice = courseCatalog.A1.lessons[0].exercises[0];
 const wrong = await renderExercise(choice);
@@ -160,7 +160,7 @@ assert.equal(byClass('lapp-exercise__back')[0].props.disabled, false, 'the first
 assert.equal(byClass('lapp-exercise__back')[0].props['aria-label'], 'Etapa anterioară');
 const firstQuestionBack = byClass('lapp-exercise__back')[0].props.onClick;
 await act(async () => { firstQuestionBack(); firstQuestionBack(); });
-assert.equal(byClass('lapp-grammar').length, 1, 'Back from the first exercise reaches grammar exactly once');
+assert.equal(byClass('lesson-grammar').length, 1, 'Back from the first exercise reaches grammar exactly once');
 await click(byClass('lapp-bar__primary')[0]);
 assert.equal(byClass('lapp-options').length, 1, 'Continue from grammar returns to the first question');
 assert.equal(byClass('lapp-exercise__feedback').length, 0, 'an unanswered first question stays unanswered after reviewing grammar');
@@ -179,7 +179,7 @@ await renderLesson();
 assert.equal(byClass('lapp-options')[0].findAllByType('button')[0].props['aria-pressed'], true, 'reload restores the wrong selected answer');
 assert.equal(readReviewItems().filter((item) => item.source === 'lesson').length, 1, 'reload does not duplicate recap items');
 await click(byClass('lapp-exercise__back')[0]);
-assert.equal(byClass('lapp-grammar').length, 1);
+assert.equal(byClass('lesson-grammar').length, 1);
 await click(byClass('lapp-bar__primary')[0]);
 assert.equal(byClass('lapp-options')[0].findAllByType('button')[0].props['aria-pressed'], true, 'leaving the first question for grammar preserves the selected answer');
 assert.ok(byClass('lapp-options')[0].findAllByType('button').every((node) => node.props.disabled), 'returning from grammar cannot reopen a checked answer');
@@ -245,16 +245,19 @@ localStorage.setItem(key, '5');
 localStorage.setItem(`${key}_exercise_index`, '0');
 await renderLesson();
 const webQuestion = byClass('practice-card')[0];
-await click(webQuestion.findByProps({ className: 'choice-list' }).findAllByType('button')[choice.answer]);
-await click(webQuestion.findAllByType('button').find((node) => text(node).includes('Verifică răspunsul')));
-assert.equal(JSON.parse(localStorage.getItem(`${key}_responses`))[0], undefined, 'a new web attempt clears the old app answer selection');
+const webOptions = webQuestion.findByProps({ className: 'choice-list' }).findAllByType('button');
+assert.ok(webOptions.every((node) => node.props.disabled), 'desktop preserves the already checked app answer');
+assert.equal(webOptions[0].props['aria-pressed'], true, 'desktop restores the original wrong selection');
+await act(async () => webOptions[choice.answer].props.onClick());
+assert.equal(JSON.parse(localStorage.getItem(`${key}_responses`))[0].value, '0', 'a stale handler cannot replace the original app response');
+assert.equal(JSON.parse(localStorage.getItem(`${key}_answers`))[0], false);
 await unmount();
 document.documentElement.classList.contains = (name) => name === 'is-installed-app';
 await renderLesson();
-assert.equal(byClass('is-wrong').length, 0, 'returning to the app cannot show the previous wrong choice as the current answer');
-assert.ok(text(byClass('lapp-exercise__feedback')[0]).includes('Exact!'));
+assert.equal(byClass('lapp-options')[0].findAllByType('button')[0].props['aria-pressed'], true);
+assert.ok(text(byClass('lapp-exercise__feedback')[0]).includes('Să reținem diferența'), 'returning to the app retains the original feedback');
 await unmount();
-console.log('✓ Alternating web and app keeps the latest result and removes stale answer selections.');
+console.log('✓ Alternating web and app preserves the original result and actual answer without rescoring.');
 
 const contextualQuestions = careerPaths.map((path) => getCareerLessonModule(path.id, 'A1', 1, courseCatalog.A1.lessons[0]).exercise);
 assert.equal(new Set(contextualQuestions.map((exercise) => exercise.context.description)).size, careerPaths.length, 'each direction has an appropriate situation');

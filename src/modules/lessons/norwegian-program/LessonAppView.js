@@ -7,7 +7,8 @@ import VoiceLessonConversation from '../../chat/VoiceLessonConversation';
 import { LessonMetaIcon, HighlightedSentence, DialogueAudioButton, SpeakerAvatar, getDialogueVoice, DialogueLineAudioButton } from './lessonParts';
 import LessonAppExercise from './LessonAppExercise';
 import { getLessonImage } from '../lessonVisuals';
-import { CurriculumRecall, CurriculumReading, CurriculumProduction } from './CurriculumPractice';
+import { CurriculumRecall } from './CurriculumPractice';
+import LessonGrammar, { grammarStepDescription } from './LessonGrammar';
 import './LessonProgramApp.css';
 
 /* Vizualizarea lecției pentru aplicația instalată — replică ecranele
@@ -235,20 +236,8 @@ const LessonAppView = (props) => {
 
         {step === 4 && (
           <section>
-            <StepHeading eyebrow="Pasul 5" title={lesson.grammar.title} sub="O regulă scurtă, urmată imediat de exemple." art={art} />
-            <div className="lapp-card lapp-grammar">
-              <div className="lapp-card__top"><AppChip>Regulă</AppChip></div>
-              <div className="lapp-grammar__rule">
-                <span className="lapp-grammar__aa" aria-hidden="true">Aa</span>
-                <p>{lesson.grammar.rule}</p>
-              </div>
-              {lesson.grammar.examples.map((example) => (
-                <div className="lapp-grammar__example" key={example}><span className="is-ok"><CheckIcon /></span><p>{example}</p></div>
-              ))}
-              <div className="lapp-grammar__example is-wrong"><span className="is-no">×</span><p><strong>Formulare de evitat în acest context: </strong>{lesson.grammar.wrong}</p></div>
-            </div>
-            <CurriculumReading key={lesson.uid} lesson={lesson} />
-            <CurriculumProduction key={`${lesson.uid}-production`} lesson={lesson} level={levelCode} />
+            <StepHeading eyebrow="Pasul 5" title={lesson.grammar.title} sub={grammarStepDescription(lesson)} art={art} />
+            <LessonGrammar key={lesson.uid} lesson={lesson} />
           </section>
         )}
 

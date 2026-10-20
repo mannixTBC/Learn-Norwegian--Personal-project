@@ -120,7 +120,7 @@ export const a1Sections = [
         choice: ['Cum înlocuiești „Nora” când vorbești despre ea?', ['Han', 'Hun', 'De'], 1, '„Hun” înseamnă „ea”.'],
         fill: ['Completează: „De ___ i Oslo.”', 'bor', 'Forma „bor” este aceeași și pentru „de”.'],
         order: ['Construiește „Vecinul meu este amabil”.', ['Naboen', 'min', 'er', 'hyggelig'], 'Posesivul „min” urmează substantivul articulat.'],
-        conversationPrompts: [['Hva heter naboen i dialogen?', 'Cum se numește vecina din dialog?'], ['Hvordan er naboen din?', 'Cum este vecinul tău?'], ['Hvem bor i huset?', 'Cine locuiește în casă?']],
+        conversationPrompts: [['Hva heter naboen i dialogen?', 'Cum se numește vecinul sau vecina din dialog?'], ['Hvordan er naboen din?', 'Cum este vecinul tău?'], ['Hvem bor i huset?', 'Cine locuiește în casă?']],
         production: production('Scrie trei enunțuri despre doi vecini inventați. Folosește „han”, „hun” sau „de”.', 'Prezintă un vecin fictiv: nume, locuință și două calități.', ['Alege pronumele potrivit.', 'Păstrează aceeași formă a verbului.', 'Include două calități simple.']),
       }),
     ],
@@ -175,7 +175,7 @@ export const a1Sections = [
       reuse('A1', 3, {
         uid: 'a1-store-payment', recycles: ['Jeg vil ha', 'En kaffe'],
         bridgeDialogue: [['Anna', 'Jeg vil ha en kaffe. Hvor er kaffen?', 'Doresc o cafea. Unde este cafeaua?'], ['Ansatt', 'En kaffe koster tretti kroner her.', 'O cafea costă treizeci de coroane aici.']],
-        dialogueTail: [['Anna', 'Jeg betaler med kort.', 'Plătesc cu cardul.'], ['Ansatt', 'Vil du ha en kvittering?', 'Doriți un bon?']],
+        dialogueTail: [['Anna', 'Jeg betaler med kort.', 'Plătesc cu cardul.'], ['Ansatt', 'Vil du ha en kvittering?', 'Doriți un bon?'], ['Anna', 'Ja, takk.', 'Da, mulțumesc.']],
         conversationPrompts: [['Hvor er melken?', 'Unde este laptele?'], ['Hvordan spør du om prisen?', 'Cum întrebi prețul?'], ['Betaler du med kort?', 'Plătești cu cardul?']],
         production: production('Scrie patru replici: ceri un produs, întrebi prețul, spui cum plătești și ceri bonul.', 'Cumpără un produs într-un joc de rol și întreabă cât costă.', ['Distinge „Hvor er” de „Hvor mye”.', 'Folosește „med kort”.', 'Răspunde la întrebarea despre bon.']),
       }),
