@@ -20,7 +20,7 @@ await build({ configFile: entry('vite.config.js'), logLevel: 'error', plugins: [
 const load = (name) => import(pathToFileURL(resolve(outDir, `${name}.mjs`)));
 const { courseCatalog } = await load('catalog');
 const { levelLessons, levelDetails } = await load('overview');
-const { courseProgressKey, finalTestKey, lessonResumeKey, readCourseProgress } = await load('progress');
+const { courseProgressKey, currentLessonKey, finalTestKey, lessonResumeKey, readCourseProgress, readCurrentLesson } = await load('progress');
 const { getCareerLessonModule, careerPaths } = await load('career');
 const { default: LearningHub } = await load('hub');
 const { CurriculumProduction, CurriculumRecall } = await load('practice');
@@ -105,6 +105,25 @@ assert.notEqual(finalTestKey('A1', 'best', user), 'final_test_best_a1');
 assert.ok(localStorage.getItem('lesson_prog_progress'), 'legacy history remains untouched');
 console.log('✓ Versioned user progress, valid completion IDs and preserved legacy history.');
 
+const freshUser = { id: 'fresh-learner' };
+assert.equal(readCurrentLesson(freshUser, courseCatalog), null, 'unstarted levels have no lesson in progress');
+localStorage.setItem('norwegian_active_level', 'C2');
+assert.equal(readCurrentLesson(freshUser, courseCatalog), null, 'browsing a level does not start it');
+localStorage.setItem(`${lessonResumeKey('B1', 8, freshUser)}_voice_v1`, '2');
+assert.deepEqual(readCurrentLesson(freshUser, courseCatalog), { level: 'B1', lessonId: 8 }, 'existing saved lessons remain resumable');
+localStorage.setItem(currentLessonKey(freshUser), JSON.stringify({ level: 'A2', lessonId: 6 }));
+assert.deepEqual(readCurrentLesson(freshUser, courseCatalog), { level: 'A2', lessonId: 6 }, 'the last opened lesson takes priority over older partial lessons');
+localStorage.setItem(courseProgressKey('A2', freshUser), JSON.stringify({ completed: [6, 7] }));
+assert.deepEqual(readCurrentLesson(freshUser, courseCatalog), { level: 'A2', lessonId: 8 }, 'completion moves the current marker forward');
+localStorage.setItem(currentLessonKey(freshUser), JSON.stringify({ level: 'A2', lessonId: 999 }));
+assert.deepEqual(readCurrentLesson(freshUser, courseCatalog), { level: 'B1', lessonId: 8 }, 'invalid saved routes recover from real progress');
+localStorage.setItem(currentLessonKey(freshUser), '{invalid');
+assert.deepEqual(readCurrentLesson(freshUser, courseCatalog), { level: 'B1', lessonId: 8 });
+assert.notEqual(currentLessonKey(freshUser), currentLessonKey(user));
+localStorage.setItem(currentLessonKey(user), JSON.stringify({ level: 'A1', lessonId: 6 }));
+localStorage.setItem(`${lessonResumeKey('A1', 6, user)}_voice_v1`, '2');
+console.log('✓ Current lesson follows actual user progress and survives browsing, completion and invalid saved data.');
+
 const reviewNow = Date.now();
 const day = 86400000;
 saveReviewItem({ id: 'curriculum-schedule-check', level: 'C2', prompt: 'Ce înseamnă uttrykk?', answer: 'expresie', dueAt: new Date(reviewNow + day).toISOString() });
@@ -150,6 +169,13 @@ for (const level of Object.keys(courseCatalog)) {
     assert.equal(localStorage.getItem('norwegian_active_level'), expected);
     assert.doesNotMatch(hubText(hubRenderer.root), /în pregătire|în curând/i, 'all six levels are available');
     assert.equal(hubRenderer.root.findAll((node) => hubHasClass(node, 'curriculum-section__toggle')).length, 0, 'sections use headings rather than an accordion');
+    const currentRows = mobileRows().filter((node) => hubHasClass(node, 'is-current'));
+    assert.equal(currentRows.length, expected === 'A1' ? 1 : 0, 'only the actual current level has an in-progress lesson');
+    if (currentRows.length) assert.equal(currentRows[0].props.href, '/curs/a1/6', 'the current lesson is not inferred from the first unfinished row');
+    const resumeLinks = hubRenderer.root.findAll((node) => node.type === 'a' && hubText(node).includes('Continuă lecția'));
+    assert.equal(resumeLinks.length, expected === 'A1' ? 3 : 0, 'untouched levels offer start rather than resume');
+    for (const link of resumeLinks) assert.equal(link.props.href, '/curs/a1/6');
+    assert.deepEqual(readCurrentLesson(user, courseCatalog), { level: 'A1', lessonId: 6 }, 'switching tabs preserves the actual study position');
   };
   const assertRoutes = (expected) => {
     for (const link of hubRenderer.root.findAll((node) => node.type === 'a' && String(node.props.href || '').startsWith('/curs/'))) {
@@ -225,8 +251,10 @@ localStorage.setItem(`${lessonResumeKey('A1', 1, user)}_voice_v1`, '1');
 const renderLesson = (level, id) => React.createElement(MemoryRouter, null, React.createElement(LessonProgram, { match: { params: { level, lessonId: String(id) } } }));
 await act(async () => { renderer = TestRenderer.create(renderLesson('a1', 1)); });
 assert.ok(renderer.root.findByProps({ className: 'lesson-content lesson-content--step-1' }));
+assert.deepEqual(readCurrentLesson(user, courseCatalog), { level: 'A1', lessonId: 6 }, 'reviewing a completed lesson does not replace the study position');
 await act(async () => renderer.update(renderLesson('c1', 7)));
 assert.ok(renderer.root.findByProps({ className: 'lesson-content lesson-content--step-0' }));
+assert.deepEqual(readCurrentLesson(user, courseCatalog), { level: 'C1', lessonId: 7 }, 'opening an incomplete lesson records it even at the introduction');
 assert.deepEqual(readCourseProgress('C1', user, courseCatalog.C1.lessons), c1Progress, 'switching levels must not write the previous level state');
 assert.deepEqual(readCourseProgress('A1', user, courseCatalog.A1.lessons), a1Progress);
 await act(async () => renderer.unmount());

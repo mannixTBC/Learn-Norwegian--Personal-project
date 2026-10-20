@@ -7,7 +7,7 @@ import { recordStudyActivity } from '../../../services/learningActivity';
 import { syncLearningProgress } from '../../../services/supabaseLearning';
 import { getCareerLessonModule, getCareerProfile } from '../../../services/careerProfile';
 import { useAuth } from '../../auth/AuthContext';
-import { courseProgressKey, lessonResumeKey, readCourseProgress } from '../../../services/curriculumProgress';
+import { courseProgressKey, currentLessonKey, lessonResumeKey, readCourseProgress } from '../../../services/curriculumProgress';
 import { CurriculumRecall, CurriculumReading, CurriculumProduction } from './CurriculumPractice';
 import PremiumGate from '../../premium/PremiumGate';
 import ChatAssistant from '../../chat/ChatAssistant';
@@ -106,11 +106,18 @@ const LessonSession = ({ match }) => {
   const [showVocabularyTranslations, setShowVocabularyTranslations] = useState({});
   const [showTranslations, setShowTranslations] = useState({});
   const [answers, setAnswers] = useState(() => readStorage(`${lessonStepKey}_answers`, {}));
+  const [exerciseResponses, setExerciseResponses] = useState(() => readStorage(`${lessonStepKey}_responses`, {}));
   const [voiceCompleted, setVoiceCompleted] = useState(() => readStorage(`${lessonStepKey}_voice_complete`, false) === true);
   const [progress, setProgress] = useState(() => readCourseProgress(levelCode, user, courseLessons));
   const score = Object.values(answers).filter(Boolean).length;
   const answered = Object.keys(answers).length;
   const canFinish = answered === lessonExercises.length;
+
+  useEffect(() => {
+    if (!readCourseProgress(levelCode, user, courseLessons).completed.includes(lesson.id)) {
+      localStorage.setItem(currentLessonKey(user), JSON.stringify({ level: levelCode, lessonId: lesson.id }));
+    }
+  }, [levelCode, lesson.id, user?.id, courseLessons]);
 
   useEffect(() => {
     lessonStartedAt.current = Date.now();
@@ -120,14 +127,18 @@ const LessonSession = ({ match }) => {
     setCareerPhraseIndex(0);
     setExerciseIndex(0);
     setAnswers(readStorage(`${lessonStepKey}_answers`, {}));
+    setExerciseResponses(readStorage(`${lessonStepKey}_responses`, {}));
     setVoiceCompleted(readStorage(`${lessonStepKey}_voice_complete`, false) === true);
     setShowVocabularyTranslations({});
     setShowTranslations({});
     window.scrollTo(0, 0);
   }, [lesson.id, lessonStepKey, legacyStepKey, levelCode, resultStep]);
   useEffect(() => {
-    if (!skipStepSave.current) localStorage.setItem(`${lessonStepKey}_answers`, JSON.stringify(answers));
-  }, [answers, lessonStepKey]);
+    if (!skipStepSave.current) {
+      localStorage.setItem(`${lessonStepKey}_answers`, JSON.stringify(answers));
+      localStorage.setItem(`${lessonStepKey}_responses`, JSON.stringify(exerciseResponses));
+    }
+  }, [answers, exerciseResponses, lessonStepKey]);
   useEffect(() => {
     if (skipStepSave.current) {
       skipStepSave.current = false;
@@ -151,8 +162,14 @@ const LessonSession = ({ match }) => {
 
   const reviewItems = useMemo(() => lessonExercises.filter((_, index) => answers[index] === false), [answers, lessonExercises]);
 
-  const recordResult = (index, correct, exercise) => {
+  const recordResult = (index, correct, exercise, response) => {
     setAnswers((current) => ({ ...current, [index]: correct }));
+    setExerciseResponses((current) => {
+      const nextResponses = { ...current };
+      if (response) nextResponses[index] = response;
+      else delete nextResponses[index];
+      return nextResponses;
+    });
     if (!correct) {
       saveReviewItem({
         level: levelCode,
@@ -208,6 +225,7 @@ const LessonSession = ({ match }) => {
         careerPhraseIndex={careerPhraseIndex}
         exerciseIndex={exerciseIndex}
         answers={answers}
+        exerciseResponses={exerciseResponses}
         showVocabularyTranslations={showVocabularyTranslations}
         showTranslations={showTranslations}
         contentRef={lessonContentRef}
@@ -222,7 +240,7 @@ const LessonSession = ({ match }) => {
         goNextLesson={goNextLesson}
         onRecordResult={recordResult}
         onVoiceComplete={recordVoiceComplete}
-        onReplayExercises={() => { setAnswers({}); setExerciseIndex(0); setStep(5); }}
+        onReplayExercises={() => { setAnswers({}); setExerciseResponses({}); setExerciseIndex(0); setStep(5); }}
         onReviewVocabulary={() => { setVocabularyIndex(0); setStep(1); }}
       />
     );

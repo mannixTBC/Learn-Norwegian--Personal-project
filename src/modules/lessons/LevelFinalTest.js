@@ -124,7 +124,6 @@ const FinalTestSession = ({ course, user }) => {
 
   return (
     <ExerciseLayout className="final-test" level={course.code} title="Recapitulare finală" compact backTo={courseLink} backLabel={"Cursul " + course.code}>
-      <header className="final-test__hero"><div><span>Recapitulare finală · {course.code} {course.title}</span><h1>Verifică legăturile dintre lecții</h1><p>{questions.length} sarcini din cele {course.sections.length} secțiuni: vocabular, structuri, propoziții și ascultare. La final compari răspunsurile și continui cu scriere și vorbire evaluate separat.</p></div><div><small>Cel mai bun scor</small><strong>{bestScore}%</strong></div></header>
       <div className="final-test__layout">
         <details className="final-test__map"><summary>Harta întrebărilor <span>{answeredCount} / {questions.length} completate</span></summary><div aria-label="Navigarea întrebărilor">{questions.map((question, index) => {
           const complete = isCompleteAnswer(question, answers[question.id]);

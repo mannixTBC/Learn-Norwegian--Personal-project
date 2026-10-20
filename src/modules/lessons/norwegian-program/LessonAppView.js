@@ -4,7 +4,8 @@ import { speakNorwegian } from '../../../services/norwegianSpeech';
 import PremiumGate from '../../premium/PremiumGate';
 import ChatAssistant from '../../chat/ChatAssistant';
 import VoiceLessonConversation from '../../chat/VoiceLessonConversation';
-import { LessonExercise, LessonMetaIcon, HighlightedSentence, DialogueAudioButton, SpeakerAvatar, getDialogueVoice, DialogueLineAudioButton } from './lessonParts';
+import { LessonMetaIcon, HighlightedSentence, DialogueAudioButton, SpeakerAvatar, getDialogueVoice, DialogueLineAudioButton } from './lessonParts';
+import LessonAppExercise from './LessonAppExercise';
 import { getLessonImage } from '../lessonVisuals';
 import { CurriculumRecall, CurriculumReading, CurriculumProduction } from './CurriculumPractice';
 import './LessonProgramApp.css';
@@ -110,7 +111,7 @@ const AppExpressionBar = ({ current, total, onBack, onNext, onComplete, nextLabe
 const LessonAppView = (props) => {
   const {
     step, steps, lesson, course, levelCode, courseLessons, lessonExercises, careerModule, careerPathId, voiceCompleted,
-    vocabularyIndex, careerPhraseIndex, exerciseIndex, answers, showVocabularyTranslations, showTranslations,
+    vocabularyIndex, careerPhraseIndex, exerciseIndex, answers, exerciseResponses, showVocabularyTranslations, showTranslations,
     contentRef, resultStep,
     setVocabularyIndex, setCareerPhraseIndex, setExerciseIndex,
     toggleVocabularyTranslation, toggleTranslation, next, previous, goNextLesson, onRecordResult, onReplayExercises,
@@ -118,11 +119,10 @@ const LessonAppView = (props) => {
   const art = getLessonImage(levelCode, lesson.id);
   const score = Object.values(answers).filter(Boolean).length;
   const answered = Object.keys(answers).length;
-  const canFinish = answered === lessonExercises.length;
   const careerPages = Math.ceil(careerModule.phrases.length / 2);
 
   return (
-    <div className="lesson-shell lapp">
+    <div className={`lesson-shell lapp${step === 5 ? ' lapp--exercises' : ''}`}>
       <AppHeader title={steps[step]} step={step} totalSteps={steps.length} lessonId={lesson.id} />
 
       <main className="lapp-content" ref={contentRef}>
@@ -245,30 +245,25 @@ const LessonAppView = (props) => {
         )}
 
         {step === 5 && (
-          <section>
-            <StepHeading eyebrow="Pasul 6" title="Verifică ce ai învățat" sub={`Răspunde la toate cele ${lessonExercises.length} întrebări. Greșelile se salvează pentru recapitulare.`} art={art} />
-            <div className="lapp-status">
-              <div className="lapp-status__row">
-                <AppChip>{Math.min(exerciseIndex + 1, lessonExercises.length)} din {lessonExercises.length}</AppChip>
-                <small>{answered} din {lessonExercises.length} răspunsuri verificate</small>
-              </div>
-              <div className="lapp-status__dots" aria-hidden="true">
-                {lessonExercises.map((_, i) => <i className={answers[i] !== undefined ? 'is-done' : ''} key={i} />)}
-              </div>
+          <section className="lapp-practice">
+            <header className="lapp-practice__intro">
+              <div><p className="lapp-practice__topic">Lecția {lesson.id} · {lesson.title}</p><h1>Hai să exersăm</h1></div>
+              <img src={art} alt="" aria-hidden="true" className="lapp-practice__art" />
+            </header>
+            <div className="lapp-practice__progress" role="progressbar" aria-label="Întrebări verificate" aria-valuemin={0} aria-valuemax={lessonExercises.length} aria-valuenow={answered}>
+              <span>Întrebarea {exerciseIndex + 1}/{lessonExercises.length}</span>
+              <div aria-hidden="true">{lessonExercises.map((_, i) => <i className={answers[i] !== undefined ? 'is-done' : i === exerciseIndex ? 'is-current' : ''} key={i} />)}</div>
             </div>
-            <LessonExercise
+            <LessonAppExercise
               key={`${lesson.id}-${exerciseIndex}-${lessonExercises[exerciseIndex].careerPath || 'general'}`}
               exercise={lessonExercises[exerciseIndex]}
+              vocabulary={lesson.vocabulary}
               index={exerciseIndex}
               onResult={onRecordResult}
-              appLayout
+              result={answers[exerciseIndex]}
+              response={exerciseResponses?.[exerciseIndex]}
+              onContinue={() => exerciseIndex < lessonExercises.length - 1 ? setExerciseIndex((c) => c + 1) : next()}
             />
-            <AppExpressionBar current={exerciseIndex} total={lessonExercises.length} nextLabel="Următoarea"
-              onBack={() => exerciseIndex === 0 ? previous() : setExerciseIndex((c) => c - 1)}
-              onNext={() => setExerciseIndex((c) => Math.min(lessonExercises.length - 1, c + 1))}
-              onComplete={next}
-              nextDisabled={answers[exerciseIndex] === undefined}
-              completeLabel={canFinish ? 'Dialog vocal' : 'Verifică răspunsul'} />
           </section>
         )}
 
