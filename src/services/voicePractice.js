@@ -46,7 +46,8 @@ export const recordingPayload = (blob, signal) => new Promise((resolve, reject) 
   signal?.addEventListener('abort', abort, { once: true });
   reader.readAsDataURL(blob);
 });
-export const recordPracticeAnswer = async ({ signal, onComplete, onError, onNoSpeech }) => {
+export const recordPracticeAnswer = async ({ signal, onComplete, onError, onNoSpeech, maxSeconds = MAX_RECORDING_SECONDS }) => {
+  const recordingSeconds = Math.max(30, Math.min(120, Number(maxSeconds) || MAX_RECORDING_SECONDS));
   if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) throw new Error('Browserul nu permite înregistrarea vocală. Folosește un browser actualizat și HTTPS.');
   let stream;
   try { stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }); }
@@ -77,7 +78,7 @@ export const recordPracticeAnswer = async ({ signal, onComplete, onError, onNoSp
     recorder.ondataavailable = ({ data }) => { if (data.size) parts.push(data); };
     recorder.onerror = () => { cancelled = true; stop(); release(); onError(new Error('Înregistrarea s-a întrerupt. Încearcă din nou.')); };
     recorder.onstop = () => {
-      const duration = Math.min((Date.now() - started) / 1000, MAX_RECORDING_SECONDS);
+      const duration = Math.min((Date.now() - started) / 1000, recordingSeconds);
       release();
       if (!cancelled && !signal?.aborted) onComplete(new Blob(parts, { type: recorder.mimeType }), duration);
     };
@@ -107,7 +108,7 @@ export const recordPracticeAnswer = async ({ signal, onComplete, onError, onNoSp
         stop();
         onNoSpeech?.();
       }
-    }, MAX_RECORDING_SECONDS * 1000);
+    }, recordingSeconds * 1000);
     return { stop, cancel };
   } catch (error) { release(); throw error; }
 };

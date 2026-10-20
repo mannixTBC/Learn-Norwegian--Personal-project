@@ -19,6 +19,9 @@ const {
   sessionWithAssistantResponse,
   nextSession,
   publicUsage,
+  learningSummary,
+  feedbackFor,
+  situationFor,
 } = require('../chatTutor');
 
 const router = express.Router();
@@ -45,7 +48,10 @@ const validateKeys = (body, allowed, required = allowed) => {
   if (keys.some((key) => !allowed.includes(key)) || required.some((key) => !keys.includes(key))) throw fail('Cererea nu este validă.');
 };
 
-const commonResponse = ({ session, reply, question, questionTranslation = null, suggestions = [], correction = null, quotaRemaining, usage = null }) => ({
+const commonResponse = ({ session, reply, question, questionTranslation = null, suggestions = [], correction = null, quotaRemaining, usage = null }) => {
+  const context = lessonFor(session);
+  session = { ...session, support: { question, questionTranslation, suggestions } };
+  return ({
   sessionToken: signSession(session),
   reply,
   question,
@@ -58,7 +64,12 @@ const commonResponse = ({ session, reply, question, questionTranslation = null, 
   remainingTurns: session.done ? 0 : Math.max(0, MAX_TURNS - session.turn),
   ...(Number.isFinite(quotaRemaining) ? { quotaRemaining } : {}),
   usage,
+  situation: situationFor(context),
+  learning: learningSummary(session, context),
+  feedback: session.done ? feedbackFor(session, context) : null,
+  speechSpeed: session.speechSpeed || null,
 });
+};
 
 router.use((req, res, next) => {
   res.set('Cache-Control', 'no-store');
@@ -120,7 +131,7 @@ router.post('/turn', wrap(async (req, res) => {
   try {
     completion = await getOpenAI().chat.completions.create(
       buildCompletionRequest(context, session, message),
-      { timeout: 15_000 },
+      { timeout: 15_000, maxRetries: 0 },
     );
     result = finalizeTurn(parseCompletion(completion), session, context, message);
   } catch (error) {

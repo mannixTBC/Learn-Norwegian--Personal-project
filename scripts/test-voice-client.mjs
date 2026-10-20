@@ -40,7 +40,7 @@ try {
   globalThis.window = { RTCPeerConnection: FakePeer };
   globalThis.RTCPeerConnection = FakePeer;
   media = async () => stream;
-  globalThis.fetch = async (url) => url.startsWith('/api/')
+  globalThis.fetch = async (url) => url.endsWith('/api/chat/start') ? { ok: true, json: async () => ({ sessionToken: 'test-session', reply: 'Hei!', question: 'Hva heter du?', turn: 0, maxTurns: 8, done: false }) } : url.startsWith('/api/')
     ? { ok: true, json: async () => ({ value: 'temporary-test-token' }) }
     : { ok: true, text: async () => 'fake-answer' };
   const events = [];
@@ -54,32 +54,9 @@ try {
   session.mute(true); assert.equal(track.enabled, false);
   session.mute(false); assert.equal(track.enabled, true);
   currentPeer.channel.onmessage({ data: JSON.stringify({ type: 'response.output_audio_transcript.done', transcript: 'Hei!' }) });
-  assert.equal(events.find((event) => event.transcript)?.transcript, 'Hei!');
+  assert.equal(events.find((event) => event.transcript), undefined, 'UI uses the server-approved text');
   emit({ type: 'conversation.item.input_audio_transcription.completed', item_id: 'empty', transcript: ' ' });
   assert.equal(responses().length, 1, 'Empty audio must not trigger a paid response');
-  emit({ type: 'conversation.item.input_audio_transcription.completed', item_id: 'help', transcript: 'Repetă.' });
-  assert.equal(events.some((event) => event.type === 'practice.progress'), false, 'Help does not count as an answer');
-  emit({ type: 'output_audio_buffer.stopped' });
-  for (let index = 1; index <= 8; index += 1) {
-    const event = { type: 'conversation.item.input_audio_transcription.completed', item_id: `answer-${index}`, transcript: 'Jeg heter Anna.' };
-    emit(event); emit(event);
-    assert.equal(responses().length, 2 + index, 'Duplicate transcriptions must not generate extra replies');
-    if (index < 8) emit({ type: 'output_audio_buffer.stopped' });
-  }
-  assert.equal(events.filter((event) => event.type === 'practice.progress').length, 8);
-  assert.equal(events.filter((event) => event.type === 'practice.feedback_started').length, 1);
-  const lastProgressIndex = events.findLastIndex((event) => event.type === 'practice.progress');
-  const feedbackIndex = events.findIndex((event) => event.type === 'practice.feedback_started');
-  assert.equal(events[lastProgressIndex].answers, 8);
-  assert.ok(lastProgressIndex < feedbackIndex, 'Feedback starts only after the learner\'s eighth answer');
-  assert.match(currentPeer.events.at(-2).item.content[0].text, /25 de cuvinte/);
-  assert.equal(track.enabled, false);
-  emit({ type: 'conversation.item.input_audio_transcription.completed', item_id: 'late-answer', transcript: 'Hei' });
-  assert.equal(responses().length, 10, 'No ninth question after feedback begins');
-  emit({ type: 'response.done', response: { status: 'completed' } });
-  assert.equal(currentPeer.closed, false, 'Wait for feedback playback to finish before closing');
-  emit({ type: 'output_audio_buffer.stopped' });
-  assert.equal(currentPeer.closed, true);
   session.close(); session.close();
   assert.equal(stopped, 1); assert.equal(currentPeer.closed, true);
 

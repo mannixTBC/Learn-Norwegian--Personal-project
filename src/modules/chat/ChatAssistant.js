@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { sendChatTurn, startChatSession } from '../../services/chat';
+import DialogueFeedback from './DialogueFeedback';
 import './ChatAssistant.css';
 
-const MAX_MESSAGE_LENGTH = 350;
+const MAX_MESSAGE_LENGTH = 1600;
 
 const getNumber = (value, fallback = null) => (
   value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value))
@@ -30,6 +31,9 @@ const normalizeSession = (data, previousToken = null) => {
       ? data.correction.trim()
       : null,
     done: data?.done === true,
+    situation: data?.situation || '',
+    learning: data?.learning || null,
+    feedback: data?.feedback || '',
     turn,
     maxTurns,
     remainingTurns,
@@ -119,8 +123,8 @@ export default function ChatAssistant({ level, lessonId, pathId = 'general', les
     }
   }, [status]);
 
-  const handleSend = async () => {
-    const text = input.trim();
+  const handleSend = async (command = null) => {
+    const text = (command || input).trim();
     if (!text || status !== 'ready' || !session?.sessionToken || sendingRef.current) return;
     sendingRef.current = true;
 
@@ -174,7 +178,7 @@ export default function ChatAssistant({ level, lessonId, pathId = 'general', les
   const remainingLabel = session?.done
     ? 'Rundă încheiată'
     : session?.remainingTurns !== null && session?.remainingTurns !== undefined
-      ? `${session.remainingTurns} ${session.remainingTurns === 1 ? 'replică rămasă' : 'replici rămase'}`
+      ? `Încă maximum ${session.remainingTurns} ${session.remainingTurns === 1 ? 'răspuns' : 'răspunsuri'}`
       : 'Conversație activă';
 
   return (
@@ -191,14 +195,14 @@ export default function ChatAssistant({ level, lessonId, pathId = 'general', les
             </button>
           )}
         </div>
-        <p>Conversează în norvegiană pe baza lecției „{lessonTitle || `Lecția ${lessonId}`}”. Primești explicații în română doar când te ajută să continui.</p>
+        <p>{session?.situation || `Conversează în norvegiană pe baza lecției „${lessonTitle || `Lecția ${lessonId}`}”.`}</p>
       </div>
 
       <div className="chat-assistant__window" aria-busy={loading}>
         {session && (
           <div className="chat-assistant__session-status" aria-live="polite">
             <span className={session.done ? 'is-done' : ''}>{remainingLabel}</span>
-            {session.maxTurns !== null && <small>Replica {session.turn} din {session.maxTurns}</small>}
+            {session.maxTurns !== null && <small>{session.turn} răspunsuri · maximum {session.maxTurns}</small>}
           </div>
         )}
 
@@ -248,11 +252,17 @@ export default function ChatAssistant({ level, lessonId, pathId = 'general', les
           </div>
         )}
 
+        {status === 'ready' && <div className="chat-assistant__support">
+          <button type="button" onClick={() => handleSend('ajutor')}>Ajută-mă</button>
+          <button type="button" onClick={() => handleSend('repetă')}>Repetă întrebarea</button>
+          <button type="button" onClick={() => handleSend('stop')}>Încheie cu feedback</button>
+        </div>}
         {status === 'done' ? (
           <div className="chat-assistant__complete" role="status">
             <div>
               <strong>Ai încheiat această rundă.</strong>
-              <p>Poți continua cu o conversație nouă, păstrând aceeași lecție.</p>
+              <p>{session?.feedback}</p>
+              <DialogueFeedback key={session?.sessionToken} learning={session?.learning} level={level} lessonId={lessonId} />
             </div>
             <button type="button" onClick={start}>Continuă cu o rundă nouă</button>
           </div>

@@ -1,3 +1,4 @@
+const { inProcessFetch } = require('../testSupport');
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const express = require('express');
@@ -17,10 +18,9 @@ test('API vocal: lipsă cheie, validare, acces, token temporar și limitarea por
   let upstreamCalls = 0;
   let upstreamBody;
   const app = express(); app.use(express.json()); app.use('/api/voice', router);
-  const server = app.listen(0, '127.0.0.1');
-  await new Promise((resolve) => server.once('listening', resolve));
-  const base = `http://127.0.0.1:${server.address().port}/api/voice`;
-  const request = (body, token) => realFetch(`${base}/session`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(body) });
+  const localFetch = inProcessFetch(app);
+  const base = `http://127.0.0.1:5000/api/voice`;
+  const request = (body, token) => localFetch(`${base}/session`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(body) });
   try {
     delete process.env.OPENAI_API_KEY;
     assert.equal((await request({})).status, 503);
@@ -53,6 +53,5 @@ test('API vocal: lipsă cheie, validare, acces, token temporar și limitarea por
     for (const [key, value] of Object.entries({ OPENAI_API_KEY: saved.key, VITE_PREMIUM_DEV_BYPASS: saved.bypass, NODE_ENV: saved.env, NETLIFY: saved.netlify })) {
       if (value === undefined) delete process.env[key]; else process.env[key] = value;
     }
-    await new Promise((resolve) => server.close(resolve));
   }
 });

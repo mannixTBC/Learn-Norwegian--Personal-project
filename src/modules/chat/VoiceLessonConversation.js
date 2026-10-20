@@ -4,6 +4,7 @@ import { practiceRequest, audioBlob, recordPracticeAnswer, recordingPayload } fr
 import { createVoiceConversation } from '../../services/voiceConversation';
 import { getVoiceTranscriptPreference, saveVoiceTranscript } from '../../services/voiceTranscripts';
 import { apiUrl } from '../../services/api';
+import DialogueFeedback from './DialogueFeedback';
 import './VoiceLessonConversation.css';
 
 const normalizeDialog = (data, previousToken = null) => ({
@@ -16,6 +17,10 @@ const normalizeDialog = (data, previousToken = null) => ({
   done: data?.done === true,
   turn: Number.isFinite(Number(data?.turn)) ? Number(data.turn) : 0,
   maxTurns: Number.isFinite(Number(data?.maxTurns)) ? Number(data.maxTurns) : 8,
+  learning: data?.learning || null,
+  feedback: data?.feedback || '',
+  situation: data?.situation || '',
+  speechSpeed: data?.speechSpeed || null,
 });
 
 const assistantMessage = (dialog) => ({
@@ -45,7 +50,7 @@ const createConversationId = () => {
   return `${value.slice(0, 8)}-${value.slice(8, 12)}-${value.slice(12, 16)}-${value.slice(16, 20)}-${value.slice(20)}`;
 };
 
-export default function VoiceLessonConversation({ level, lessonId, pathId, lessonTitle, onComplete }) {
+export default function VoiceLessonConversation({ level, lessonId, pathId, lessonTitle, task, onComplete }) {
   const [configured, setConfigured] = useState(null);
   const [status, setStatus] = useState('idle');
   const [voiceSession, setVoiceSession] = useState(null);
@@ -71,6 +76,11 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   const autoStartTimer = useRef(null);
   const conversationId = useRef(null);
   const savedTranscriptFingerprint = useRef('');
+  const latestDialog = useRef(null);
+  const batchRetry = useRef(null);
+  const batchReplay = useRef(null);
+  const practiceDeadline = useRef(0);
+  const recordingSeconds = ['A1', 'A2'].includes(level) ? 45 : 120;
 
   const stopPlayback = () => {
     const player = playback.current;
@@ -137,6 +147,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     const objectUrl = data.streamUrl ? null : URL.createObjectURL(audioBlob(data));
     const url = data.streamUrl || objectUrl;
     const audio = new Audio(url);
+    if (kind !== 'feedback' && latestDialog.current?.speechSpeed) audio.playbackRate = latestDialog.current.speechSpeed;
     const player = { audio, objectUrl };
     playback.current = player;
     audio.onended = () => {
@@ -153,8 +164,8 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
         await onStreamError();
         return;
       }
-      setError('Vocea nu a putut fi redată. Pornește din nou dialogul.');
-      setStatus('ended');
+      setError('Vocea nu a putut fi redată. Replica rămâne afișată.');
+      setStatus(kind === 'feedback' ? 'ended' : 'retryAudio');
     };
     setStatus(kind === 'feedback' ? 'feedbackAudio' : 'speaking');
     try {
@@ -165,13 +176,15 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       if (mounted.current && data.streamUrl && onStreamError) {
         await onStreamError();
       } else if (mounted.current) {
-        setError('Redarea vocii a fost blocată de browser. Pornește din nou dialogul.');
-        setStatus('ended');
+        setError('Redarea vocii a fost blocată de browser. Reîncearcă redarea.');
+        setStatus(kind === 'feedback' ? 'ended' : 'retryAudio');
       }
     }
   };
 
   const stop = () => {
+    batchRetry.current = null;
+    batchReplay.current = null;
     clearTimeout(autoStartTimer.current);
     controller.current?.abort();
     realtime.current?.close();
@@ -187,32 +200,8 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     setStatus('ended');
   };
 
-  const finish = async (currentAnswers, currentVoiceSession) => {
-    const signal = controller.current.signal;
-    setStatus('evaluating');
-    setError('');
-    try {
-      const result = await practiceRequest('feedback', {
-        sessionToken: currentVoiceSession.sessionToken,
-        answers: currentAnswers,
-      }, signal);
-      if (signal.aborted || !mounted.current) return;
-      setFeedback(result);
-      onComplete?.();
-      if (result.audioBase64) await play(result, 'feedback');
-      else {
-        setStatus('ended');
-        setError('Feedbackul este disponibil în scris. Vocea nu a putut fi generată.');
-      }
-    } catch (err) {
-      if (!signal.aborted && mounted.current) {
-        setError(err.message);
-        setStatus('ended');
-      }
-    }
-  };
-
   const speak = async (currentVoiceSession, currentDialog, currentAnswers) => {
+    batchReplay.current = () => speak(currentVoiceSession, currentDialog, currentAnswers);
     const signal = controller.current.signal;
     setStatus('loading');
     const payload = {
@@ -223,8 +212,11 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       clearTimeout(autoStartTimer.current);
       autoStartTimer.current = setTimeout(() => {
         if (!mounted.current || signal.aborted) return;
-        if (currentDialog.done && currentAnswers.length >= 2) finish(currentAnswers, currentVoiceSession);
-        else if (currentDialog.done) setStatus('ended');
+        if (currentDialog.done) {
+          setFeedback({ text: currentDialog.feedback });
+          if (currentDialog.turn > 0) onComplete?.(currentDialog.learning);
+          playRealtimeFeedback(currentDialog.feedback);
+        }
         else record(currentVoiceSession, currentDialog, currentAnswers);
       }, currentDialog.done ? 450 : 1_000);
     };
@@ -239,7 +231,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       } catch (err) {
         if (!signal.aborted && mounted.current) {
           setError(err.message);
-          setStatus('ended');
+          setStatus('retryAudio');
         }
       }
     };
@@ -253,6 +245,10 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   };
 
   const startBatch = async (fallbackNotice = '') => {
+    batchRetry.current = null;
+    batchReplay.current = null;
+    realtimeFeedbackAudioText.current = '';
+    practiceDeadline.current = Date.now() + 7 * 60_000;
     if (busy.current) return;
     busy.current = true;
     controller.current?.abort();
@@ -281,6 +277,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       ]);
       if (abort.signal.aborted || !mounted.current) return;
       const nextDialog = normalizeDialog(chatData);
+      latestDialog.current = nextDialog;
       setVoiceSession(voiceData);
       setDialog(nextDialog);
       setMessages([assistantMessage(nextDialog)]);
@@ -296,6 +293,9 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   };
 
   const resetForStart = () => {
+    batchRetry.current = null;
+    batchReplay.current = null;
+    latestDialog.current = null;
     setVoiceSession(null);
     setDialog({ turn: 0, maxTurns: 8, done: false });
     setMessages([]);
@@ -327,6 +327,30 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
 
   const handleRealtimeEvent = (event) => {
     if (!mounted.current) return;
+    if (event.type === 'practice.dialog') {
+      const next = normalizeDialog(event.dialog);
+      latestDialog.current = next;
+      setDialog(next);
+      setMessages((current) => [...current, assistantMessage(next)]);
+      setError('');
+      return;
+    }
+    if (event.type === 'practice.user') {
+      setMessages((current) => [...current, { role: 'user', content: event.text, turn: (latestDialog.current?.turn || 0) + 1 }]);
+      setStatus('thinking');
+      return;
+    }
+    if (event.type === 'practice.feedback') {
+      setFeedback({ text: event.text });
+      if (event.learning?.answers > 0) onComplete?.(event.learning);
+      playRealtimeFeedback(event.text);
+      return;
+    }
+    if (event.type === 'practice.retry' || event.type === 'practice.audio_retry') {
+      setError(event.message);
+      setStatus(event.type === 'practice.retry' ? 'retryApi' : 'retryAudio');
+      return;
+    }
     if (event.type === 'input_audio_buffer.speech_started') {
       setStatus('recording');
       setTranscriptNotice('');
@@ -336,41 +360,18 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       setStatus('transcribing');
       return;
     }
-    if (event.type === 'conversation.item.input_audio_transcription.completed') {
-      const text = event.transcript?.trim();
-      if (text) {
-        setMessages((current) => [...current, { role: 'user', content: text, turn: current.filter((item) => item.role === 'user').length + 1 }]);
-      }
-      setStatus('thinking');
-      return;
-    }
     if (event.type === 'conversation.item.input_audio_transcription.failed') {
       setTranscriptNotice('Nu am putut transcrie clar răspunsul. Încearcă din nou.');
       setStatus('listening');
       return;
     }
     if (event.type === 'practice.progress') {
-      setDialog({ turn: event.answers, maxTurns: event.total, done: event.answers >= event.total });
+      setDialog((current) => ({ ...current, turn: event.answers, maxTurns: event.total, learning: event.learning || current?.learning }));
       return;
     }
     if (event.type === 'practice.feedback_started') {
       realtimeFinishing.current = true;
       setStatus('evaluating');
-      return;
-    }
-    if (event.type === 'response.output_audio_transcript.delta' || event.type === 'response.audio_transcript.delta') {
-      setStatus(realtimeFinishing.current ? 'feedbackAudio' : 'speaking');
-      return;
-    }
-    if (event.type === 'response.output_audio_transcript.done' || event.type === 'response.audio_transcript.done') {
-      const text = event.transcript?.trim();
-      if (!text) return;
-      if (realtimeFinishing.current) {
-        setFeedback({ text });
-        onComplete?.();
-        playRealtimeFeedback(text);
-      }
-      else setMessages((current) => [...current, { role: 'assistant', reply: text, question: null, turn: current.filter((item) => item.role === 'user').length }]);
       return;
     }
     if (event.type === 'output_audio_buffer.started') {
@@ -463,6 +464,26 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     realtime.current.feedback();
   };
 
+  const requestBatchSupport = async (command = 'ajutor') => {
+    if (mode !== 'batch' || !dialog?.sessionToken || !['recording', 'retrying', 'confirming'].includes(status)) return;
+    recording.current?.cancel();
+    clearTimeout(autoStartTimer.current);
+    busy.current = true;
+    setPendingTranscript(null);
+    setStatus('thinking');
+    try {
+      const result = await sendChatTurn({ sessionToken: dialog.sessionToken, message: command }, controller.current.signal);
+      if (!mounted.current || controller.current.signal.aborted) return;
+      const next = normalizeDialog(result);
+      latestDialog.current = next;
+      setDialog(next);
+      setMessages((current) => [...current, assistantMessage(next)]);
+      await speak(voiceSession, next, answers);
+    } catch (err) {
+      if (mounted.current && !controller.current.signal.aborted) { setError(err.message); setStatus('ended'); }
+    } finally { busy.current = false; }
+  };
+
   const resumeRealtimePlayback = async () => {
     try {
       await realtime.current?.play();
@@ -473,11 +494,12 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     }
   };
 
-  const continueDialog = async (transcript, currentVoiceSession, currentDialog, currentAnswers) => {
+  const continueDialog = async (transcript, currentVoiceSession, currentDialog, currentAnswers, display = true) => {
     const signal = controller.current.signal;
+    batchRetry.current = () => continueDialog(transcript, currentVoiceSession, currentDialog, currentAnswers, false);
     setPendingTranscript(null);
     setTranscriptNotice('');
-    setMessages((current) => [...current, {
+    if (display) setMessages((current) => [...current, {
       role: 'user',
       content: transcript.text,
       turn: currentDialog.turn + (transcript.consumeTurn === false ? 0 : 1),
@@ -488,7 +510,9 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       message: transcript.text,
     }, signal);
     if (signal.aborted || !mounted.current) return;
+    batchRetry.current = null;
     const nextDialog = normalizeDialog(response, currentDialog.sessionToken);
+    latestDialog.current = nextDialog;
     const consumeTurn = transcript.consumeTurn !== false && nextDialog.turn === currentDialog.turn + 1;
     const nextAnswers = consumeTurn ? [...currentAnswers, transcript] : currentAnswers;
     if (consumeTurn) setAnswers(nextAnswers);
@@ -499,11 +523,13 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
 
   const uploadAnswer = async (payload, currentVoiceSession, currentDialog, currentAnswers) => {
     const signal = controller.current.signal;
+    batchRetry.current = () => uploadAnswer(payload, currentVoiceSession, currentDialog, currentAnswers);
     setStatus('transcribing');
     setError('');
     try {
       const transcript = await practiceRequest('transcribe', payload, signal);
       if (signal.aborted || !mounted.current) return;
+      batchRetry.current = null;
       if (transcript.decision === 'retry') {
         setTranscriptNotice(transcript.message || 'Încearcă din nou; întrebarea rămâne aceeași.');
         setStatus('retrying');
@@ -526,11 +552,22 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     } catch (err) {
       if (!signal.aborted && mounted.current) {
         setError(err.message);
-        setStatus('ended');
+        setStatus('retryApi');
       }
     } finally {
       if (!signal.aborted) busy.current = false;
     }
+  };
+
+  const retryBatch = async () => {
+    if (busy.current || !batchRetry.current) return;
+    busy.current = true;
+    setError('');
+    setStatus('thinking');
+    try { await batchRetry.current(); }
+    catch (err) {
+      if (mounted.current && !controller.current.signal.aborted) { setError(err.message); setStatus('retryApi'); }
+    } finally { busy.current = false; }
   };
 
   const submitRecording = async (blob, duration, currentVoiceSession, currentDialog, currentAnswers) => {
@@ -558,6 +595,11 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
 
   const record = async (currentVoiceSession = voiceSession, currentDialog = dialog, currentAnswers = answers) => {
     if (busy.current) return;
+    if (practiceDeadline.current && Date.now() >= practiceDeadline.current) {
+      setTranscriptNotice('La sesiunea aceasta ne oprim aici. Poți relua practica atunci când dorești.');
+      setStatus('ended');
+      return;
+    }
     busy.current = true;
     stopPlayback();
     setError('');
@@ -566,6 +608,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     try {
       recording.current = await recordPracticeAnswer({
         signal,
+        maxSeconds: recordingSeconds,
         onComplete: (blob, duration) => submitRecording(blob, duration, currentVoiceSession, currentDialog, currentAnswers),
         onNoSpeech: () => {
           if (!signal.aborted && mounted.current) {
@@ -611,7 +654,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     } catch (err) {
       if (!signal.aborted && mounted.current) {
         setError(err.message);
-        setStatus('confirming');
+        setStatus(batchRetry.current ? 'retryApi' : 'confirming');
       }
     } finally {
       if (!signal.aborted) busy.current = false;
@@ -639,10 +682,12 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     playbackBlocked: 'Sunetul necesită confirmare',
     question: 'Răspunde când ești pregătit',
     microphone: 'Pornim microfonul…',
-    recording: mode === 'realtime' ? 'Te ascult · vorbește natural' : 'Te ascult · maximum 30 de secunde',
+    recording: mode === 'realtime' ? 'Te ascult · vorbește natural' : `Te ascult · maximum ${recordingSeconds} de secunde`,
     transcribing: 'Transcriem răspunsul…',
     confirming: 'Verifică ce am auzit',
     retrying: 'Mai încearcă o dată…',
+    retryApi: 'Răspuns păstrat · reîncearcă evaluarea',
+    retryAudio: 'Replica este afișată · reîncearcă redarea',
     thinking: 'Nora pregătește răspunsul…',
     evaluating: 'Pregătim feedbackul…',
     feedbackAudio: 'Feedbackul tău',
@@ -656,11 +701,11 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     <div className={`voice-lesson__card ${status === 'idle' ? 'voice-lesson__card--welcome' : ''}`}>
       {status === 'idle' && <div className="voice-lesson__art" aria-hidden="true" />}
       <div className="voice-lesson__partner"><span className="voice-lesson__avatar" aria-hidden="true"><span className="voice-lesson__avatar-letter">N</span><picture className="voice-lesson__portrait"><source media="(min-width: 861px)" srcSet="/images/voice/nora-avatar.webp" /><img alt="" width="56" height="56" /></picture></span><div><strong>Nora</strong><span>Voce AI · {level} · {mode === 'realtime' ? 'dialog live' : 'mod compatibil'}</span></div><span className={`voice-lesson__status ${active ? 'voice-lesson__status--active' : ''}`} role="status">{labels[status]}</span></div>
-      {status === 'idle' && <div className="voice-lesson__welcome"><h2>Exersează printr-un dialog real</h2><p>Nora răspunde natural și continuă conversația în limitele lecției curente.</p><ul><li>Până la 8 răspunsuri</li><li>Dialog adaptiv</li><li>Feedback final</li></ul></div>}
+      {status === 'idle' && <div className="voice-lesson__welcome"><h2>Situația ta</h2><p>{task || 'Exersează situația lecției împreună cu Nora.'} Poți inventa numele și detaliile.</p><ul><li>Până la 8 răspunsuri</li><li>Ajutor când ai nevoie</li><li>Feedback pe obiective</li></ul></div>}
       {configured === false && <p className="voice-lesson__notice">Practica vocală nu este disponibilă momentan. Poți finaliza lecția și reveni mai târziu.</p>}
       {error && <p className="voice-lesson__error" role="alert">{error}</p>}
       {transcriptNotice && <p className="voice-lesson__notice" role="status">{transcriptNotice}</p>}
-      {dialog && active && <div className="voice-lesson__progress"><span>Dialogul lecției</span><small>Replica {Math.min(dialog.turn + 1, dialog.maxTurns)} din {dialog.maxTurns}</small></div>}
+      {dialog && active && <div className="voice-lesson__progress"><span>Dialogul lecției</span><small>{dialog.turn} răspunsuri · maximum {dialog.maxTurns}</small></div>}
       {messages.length > 0 && <div className="voice-lesson__transcript" role="log" aria-label="Dialogul în norvegiană">
         {messages.map((message, messageIndex) => message.role === 'user'
           ? <div key={`${message.role}-${message.turn}-${messageIndex}`} className="voice-lesson__message voice-lesson__message--user"><small>Tu</small><p lang="nb">{message.content}</p></div>
@@ -674,7 +719,14 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
                 <button
                   type="button"
                   aria-expanded={revealedHelp[messageIndex] === true}
-                  onClick={() => setRevealedHelp((current) => ({ ...current, [messageIndex]: !current[messageIndex] }))}
+                  onClick={() => {
+                    if (!revealedHelp[messageIndex]) {
+                      if (mode === 'realtime' && status === 'listening') requestRealtimeHelp();
+                      else if (mode === 'batch') requestBatchSupport();
+                    }
+                    setRevealedHelp((current) => ({ ...current, [messageIndex]: !current[messageIndex] }));
+                  }}
+                  disabled={!['listening', 'recording', 'ended'].includes(status)}
                 >
                   {revealedHelp[messageIndex] ? 'Ascunde răspunsurile' : 'Ajută-mă să răspund'}
                 </button>
@@ -690,6 +742,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
           </div>)}
       </div>}
       {feedback && <div className="voice-lesson__message voice-lesson__feedback"><small>Feedbackul tău</small><p>{feedback.text}</p></div>}
+      {feedback && <DialogueFeedback key={conversationId.current} learning={dialog?.learning} level={level} lessonId={lessonId} />}
       {status === 'ended' && transcriptConsent && transcriptSaveStatus === 'saved' && <p className="voice-lesson__saved">Transcript salvat în siguranță pentru îmbunătățirea Norei · fără înregistrarea audio</p>}
       {pendingTranscript && <div className="voice-lesson__confirmation" role="status">
         <small>Verificare rapidă</small>
@@ -698,8 +751,16 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
       <div className="voice-lesson__controls">
         {!active && <button type="button" className="voice-lesson__primary" disabled={configured !== true} onClick={start}>{status === 'ended' ? 'Pornește un dialog nou' : 'Pornește dialogul'}</button>}
         {mode === 'batch' && status === 'recording' && <button type="button" className="voice-lesson__primary" onClick={() => recording.current?.stop()}>Am terminat răspunsul</button>}
+        {mode === 'batch' && status === 'recording' && <button type="button" onClick={() => requestBatchSupport()}>Ajută-mă</button>}
+        {mode === 'batch' && status === 'recording' && <button type="button" onClick={() => requestBatchSupport('repetă')}>Repetă</button>}
+        {mode === 'batch' && status === 'recording' && <button type="button" onClick={() => requestBatchSupport('mai lent')}>Mai lent</button>}
         {mode === 'realtime' && status === 'listening' && <button type="button" className="voice-lesson__primary" onClick={requestRealtimeHelp}>Ajută-mă</button>}
-        {mode === 'realtime' && dialog?.turn > 0 && !realtimeFinishing.current && active && <button type="button" onClick={finishRealtime}>Încheie cu feedback</button>}
+        {mode === 'realtime' && status === 'listening' && <button type="button" onClick={() => realtime.current?.slow()}>Mai lent</button>}
+        {mode === 'realtime' && status === 'listening' && <button type="button" onClick={() => realtime.current?.repeat()}>Repetă</button>}
+        {status === 'retryApi' && <button type="button" onClick={() => { if (mode === 'batch') retryBatch(); else { setStatus('thinking'); realtime.current?.retry(); } }}>Reîncearcă evaluarea</button>}
+        {status === 'retryAudio' && <button type="button" onClick={() => { setError(''); setStatus('speaking'); if (mode === 'batch') batchReplay.current?.(); else realtime.current?.replay(); }}>Reascultă replica</button>}
+        {mode === 'realtime' && dialog?.turn > 0 && status === 'listening' && <button type="button" onClick={finishRealtime}>Încheie cu feedback</button>}
+        {mode === 'batch' && dialog?.turn > 0 && status === 'recording' && <button type="button" onClick={() => requestBatchSupport('stop')}>Încheie cu feedback</button>}
         {mode === 'realtime' && status === 'playbackBlocked' && <button type="button" className="voice-lesson__primary" onClick={resumeRealtimePlayback}>Pornește sunetul</button>}
         {status === 'confirming' && <button type="button" className="voice-lesson__primary" onClick={acceptPendingTranscript}>Da, continuă</button>}
         {status === 'confirming' && <button type="button" onClick={retryPendingTranscript}>Mai încerc</button>}

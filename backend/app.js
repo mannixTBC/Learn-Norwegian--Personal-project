@@ -20,7 +20,7 @@ app.use(cors({ origin: true }));
 // Text chat never needs the multi-megabyte body allowance used by voice uploads.
 // Mount it first with a deliberately small parser so oversized requests are
 // rejected before they consume memory or reach the OpenAI integration.
-app.use('/api/chat', express.json({ limit: '8kb' }), chatRouter);
+app.use('/api/chat', express.json({ limit: '56kb' }), chatRouter);
 app.use(express.json({ limit: '6mb' }));
 
 app.get('/api/health', (req, res) => {

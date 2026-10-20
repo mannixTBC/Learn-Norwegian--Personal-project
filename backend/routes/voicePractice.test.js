@@ -1,3 +1,4 @@
+const { inProcessFetch } = require('../testSupport');
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const express = require('express');
@@ -106,9 +107,8 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     return { ok: true, json: async () => ({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify({ feedback: 'Ai răspuns clar; repetă expresia „Jeg heter”.' }) } }] }) };
   };
   const app = express(); app.use(express.json({ limit: '6mb' })); app.use('/practice', router);
-  const server = app.listen(0, '127.0.0.1');
-  await new Promise((resolve) => server.once('listening', resolve));
-  const request = (route, body, token = 'modular-free-user') => realFetch(`http://127.0.0.1:${server.address().port}/practice/${route}`, {
+  const localFetch = inProcessFetch(app);
+  const request = (route, body, token = 'modular-free-user') => localFetch(`http://127.0.0.1:5000/practice/${route}`, {
     method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(body),
   });
   try {
@@ -140,13 +140,13 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     assert.equal(stream.provider, 'cartesia');
     const ticket = new URL(stream.streamUrl, 'https://nordlingo.net').searchParams.get('ticket');
     assert.equal(ticket.includes('Hva'), false);
-    assert.equal(verifyVoiceStreamTicket(ticket).text, 'Hei! La oss øve sammen. Hva heter du?');
+    assert.equal(verifyVoiceStreamTicket(ticket).text, 'Hei! Hva heter du?');
     delete process.env.CARTESIA_API_KEY;
     delete process.env.CARTESIA_VOICE_ID;
     const spoken = await (await request('speak', { sessionToken: session.sessionToken, dialogToken })).json();
     assert.ok(spoken.audioBase64);
     assert.equal(spoken.provider, 'openai');
-    assert.equal(speechRequests.at(-1).input, 'Hei! La oss øve sammen. Hva heter du?');
+    assert.equal(speechRequests.at(-1).input, 'Hei! Hva heter du?');
     assert.match(speechRequests.at(-1).instructions, /speak both parts/i);
     assert.match(speechRequests.at(-1).instructions, /do not omit the final question/i);
     await request('speak', { sessionToken: session.sessionToken, dialogToken });
@@ -167,7 +167,7 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     const annaSpoken = await (await request('speak', { sessionToken: session.sessionToken, dialogToken: annaDialogToken })).json();
     assert.equal(annaSpoken.provider, 'elevenlabs');
     assert.equal(calls.elevenSpeech, 1);
-    assert.equal(elevenSpeechRequests[0].text, 'Hei! La oss øve sammen. Hva heter du?');
+    assert.equal(elevenSpeechRequests[0].text, 'Hei! Hva heter du?');
     assert.equal(elevenSpeechRequests[0].model_id, 'eleven_flash_v2_5');
     assert.equal(elevenSpeechRequests[0].language_code, 'no');
     assert.equal(elevenSpeechRequests[0].voice_settings.speed, 0.82);
@@ -176,7 +176,7 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     delete process.env.ELEVENLABS_MODEL_ID;
     assert.equal((await request('question', { ...questionBody, index: 4 })).status, 400);
     assert.equal((await request('transcribe', { ...questionBody, audioBase64: 'invalid', mimeType: 'text/plain', duration: 20 })).status, 400);
-    assert.equal((await request('transcribe', { ...questionBody, audioBase64: Buffer.alloc(120, 9).toString('base64'), mimeType: 'audio/webm', duration: 31.1 })).status, 400);
+    assert.equal((await request('transcribe', { ...questionBody, audioBase64: Buffer.alloc(120, 9).toString('base64'), mimeType: 'audio/webm', duration: 121.1 })).status, 400);
     assert.equal((await request('transcribe', {
       sessionToken: session.sessionToken,
       index: 0,
@@ -371,6 +371,5 @@ test('flux modular: dialog de opt replici, voce securizată și feedback final u
     })) {
       if (value === undefined) delete process.env[key]; else process.env[key] = value;
     }
-    await new Promise((resolve) => server.close(resolve));
   }
 });

@@ -374,3 +374,5 @@
   .chat-assistant__complete { align-items: stretch; flex-direction: column; gap: 12px; }
   .chat-assistant__complete button { width: 100%; }
 }
+.chat-assistant__support { display: flex; gap: .5rem; flex-wrap: wrap; padding: .75rem 1rem; }
+.chat-assistant__support button { padding: .5rem .75rem; border: 1px solid #b8d7ce; border-radius: .6rem; background: #f3faf7; color: #195d4b; cursor: pointer; font: inherit; }

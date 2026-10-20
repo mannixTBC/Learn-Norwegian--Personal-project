@@ -34,7 +34,7 @@ test('sesiunea respectă nivelul, permite ezitările și include contextul real 
   assert.ok(a1.audio.input.transcription.keywords.length > 0);
   assert.equal(a1.max_output_tokens, 1024);
   assert.match(a1.instructions, /maximum opt răspunsuri/);
-  assert.match(a1.instructions, /A opta și ultima replică evaluată trebuie să fie răspunsul cursantului/);
+  assert.match(a1.instructions, /aplicația poate încheia mai devreme/);
   assert.match(a1.instructions, /nu mai pune nicio întrebare/);
   assert.match(a1.instructions, /25 de cuvinte/);
   assert.doesNotMatch(a1.instructions, /6–10|80 de cuvinte|35 de cuvinte/);
@@ -69,7 +69,7 @@ test('vocea și chatul primesc lectura C1, expresiile reactivate și sarcina ora
     turn: 0, lastQuestion: question, askedQuestions: [question], memory: [], history: [],
   }, 'Jeg vil undersøke forutsetningen i teksten.');
   const prompt = request.messages[0].content;
-  const chatContext = JSON.parse(prompt.split('Folosește prioritar acest context curricular compact: ')[1]);
+  const chatContext = JSON.parse(prompt.split('Context curricular: ')[1]);
   assert.equal(chatContext.sectionTitle, lesson.sectionTitle);
   assert.equal(chatContext.reading.text, lesson.reading.text);
   assert.deepEqual(chatContext.recycledVocabulary[0], lesson.recycledVocabulary[0].entry.slice(0, 2));

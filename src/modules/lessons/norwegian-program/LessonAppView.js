@@ -270,7 +270,7 @@ const LessonAppView = (props) => {
                 level={levelCode}
                 lessonId={lesson.id}
                 pathId={careerPathId}
-                lessonTitle={lesson.title}
+                lessonTitle={lesson.title} task={lesson.production?.speakingPrompt}
                 onComplete={props.onVoiceComplete}
               />
             </PremiumGate>

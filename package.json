@@ -52,7 +52,9 @@
     "preview:https": "vite preview --host 0.0.0.0 --port 4173 --mode https",
     "android:sync": "npm run build:voice-context && npm run build:client && cap sync android",
     "android:open": "cap open android",
-    "android:apk": "npm run android:sync && cd android && gradlew.bat assembleDebug"
+    "android:apk": "npm run android:sync && cd android && gradlew.bat assembleDebug",
+    "test:dialogue": "node --test backend/routes/chat.test.js backend/routes/voice.test.js backend/routes/voicePractice.test.js backend/voiceTutor.test.js backend/voiceTranscriptDecision.test.js backend/voiceStreamTicket.test.js scripts/test-dialogue-audit.mjs scripts/test-dialogue-ui.mjs && node scripts/test-voice-client.mjs && node scripts/test-voice-practice-client.mjs",
+    "test:dialogue:live": "node scripts/test-dialogue-live.mjs"
   },
   "browserslist": {
     "production": [
