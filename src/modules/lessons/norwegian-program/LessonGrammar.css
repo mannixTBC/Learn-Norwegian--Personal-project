@@ -45,3 +45,97 @@
   .lesson-grammar__card--recall { padding: 17px 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .lesson-grammar summary > [aria-hidden] { transition: none; } }
+
+/* Atmosfera comună a lecției din aplicație. Regulele de pe web își
+   păstrează prezentarea, iar fiecare reper rămâne un card independent. */
+.lapp .lesson-grammar { gap: 16px; color: var(--a-ink); }
+.lapp .lesson-grammar__card {
+  padding: 21px 19px;
+  border-color: var(--a-border);
+  border-radius: 21px;
+  background: var(--a-card, #fffefa);
+  box-shadow: 0 3px 12px rgb(35 61 44 / 3%);
+}
+.lapp .lesson-grammar__meta { gap: 7px 12px; margin-bottom: 12px; }
+.lapp .lesson-grammar__meta > span {
+  padding: 5px 10px;
+  border-color: transparent;
+  background: var(--a-tint);
+  color: var(--a-teal-deep);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.lapp .lesson-grammar__meta small { color: var(--a-sub); font-size: 11px; line-height: 1.5; }
+.lapp .lesson-grammar .lesson-grammar__card h2 {
+  margin-bottom: 9px;
+  color: var(--a-ink);
+  font-size: clamp(1.12rem, 5vw, 1.3rem);
+  font-weight: 750;
+  line-height: 1.35;
+  letter-spacing: -.025em;
+  overflow-wrap: anywhere;
+}
+.lapp .lesson-grammar__source { margin-bottom: 10px; color: var(--a-teal); overflow-wrap: anywhere; }
+.lapp .lesson-grammar .lesson-grammar__explanation {
+  margin-bottom: 18px;
+  color: var(--a-sub);
+  font-size: .91rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.lapp .lesson-grammar__examples { gap: 15px; }
+.lapp .lesson-grammar__example { gap: 11px; padding: 0; border-radius: 0; background: transparent; }
+.lapp .lesson-grammar__example > div { padding-top: 2px; }
+.lapp .lesson-grammar__example p[lang="nb"] { color: var(--a-ink); font-size: .98rem; line-height: 1.55; font-weight: 650; }
+.lapp .lesson-grammar__example p[lang="ro"] { margin-top: 4px; color: var(--a-sub); font-size: .81rem; line-height: 1.55; }
+.lapp .lesson-grammar mark { background: #e4edda; color: var(--a-teal-deep); padding: 1px 3px; border-radius: 4px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.lapp .lesson-grammar .lesson-grammar__audio {
+  order: -1;
+  flex-basis: 44px;
+  width: 44px;
+  height: 44px;
+  border-color: transparent;
+  background: var(--a-tint);
+  color: var(--a-teal-deep);
+  box-shadow: none;
+}
+.lapp .lesson-grammar .lesson-grammar__audio:hover,
+.lapp .lesson-grammar .lesson-grammar__audio.is-playing { border-color: #a6bca7; background: #dfe9d9; }
+.lapp .lesson-grammar__audio svg { width: 18px; height: 18px; }
+.lapp .lesson-grammar__contrast {
+  margin-top: 19px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  background: var(--a-tint);
+}
+.lapp .lesson-grammar summary { min-height: 44px; color: var(--a-teal-deep); font-size: .8rem; line-height: 1.5; }
+.lapp .lesson-grammar summary > [aria-hidden] { flex: 0 0 auto; }
+.lapp .lesson-grammar__contrast[open] { padding-bottom: 13px; }
+.lapp .lesson-grammar__before,
+.lapp .lesson-grammar__after { margin-top: 8px; padding: 11px 12px; border-radius: 11px; }
+.lapp .lesson-grammar__before { background: #f8eddf; color: #73573e; }
+.lapp .lesson-grammar__after { background: var(--a-card, #fffefa); color: var(--a-teal-deep); }
+.lapp .lesson-grammar .lesson-grammar__reason { color: var(--a-sub); font-size: .8rem; overflow-wrap: anywhere; }
+.lapp .lesson-grammar__optional {
+  padding: 7px 16px;
+  border-color: var(--a-border);
+  border-radius: 18px;
+  background: #f1f2e7;
+}
+.lapp .lesson-grammar__optional > summary { padding: 7px 0; font-size: .87rem; }
+.lapp .lesson-grammar__optional > summary > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.lapp .lesson-grammar__optional > summary small { margin-bottom: 3px; color: var(--a-sub); font-size: .68rem; }
+.lapp .lesson-grammar__card--recall { margin: 9px 0 7px; padding: 17px 14px; border-radius: 15px; box-shadow: none; }
+.lapp .lesson-grammar__reading .curriculum-reading { color: var(--a-ink); }
+.lapp .lesson-grammar .lesson-grammar__next { margin: 0 3px; color: var(--a-sub); font-size: .78rem; }
+.lapp .lesson-grammar__audio-error { margin: 0; border: 1px solid #e6d5ba; background: #fbefdc; color: #73573e; line-height: 1.6; }
+.lapp .lesson-grammar button:focus-visible,
+.lapp .lesson-grammar summary:focus-visible,
+.lapp .lesson-grammar a:focus-visible { outline-color: #83aa89; outline-offset: 3px; }
+@media (max-width: 360px) {
+  .lapp .lesson-grammar__card { padding: 18px 14px; border-radius: 19px; }
+  .lapp .lesson-grammar__example { gap: 9px; }
+  .lapp .lesson-grammar__optional { padding-right: 12px; padding-left: 12px; }
+  .lapp .lesson-grammar__card--recall { padding: 16px 11px; }
+}

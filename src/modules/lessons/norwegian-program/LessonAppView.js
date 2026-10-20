@@ -11,8 +11,8 @@ import { CurriculumRecall } from './CurriculumPractice';
 import LessonGrammar, { grammarStepDescription } from './LessonGrammar';
 import './LessonProgramApp.css';
 
-/* Vizualizarea lecției pentru aplicația instalată — replică ecranele
-   de referință „La cafenea”. Web-ul folosește JSX-ul din LessonProgram. */
+/* Pașii aplicației împart aceeași atmosferă; ilustrația contextuală
+   însoțește introducerea și rezultatul. Web-ul folosește LessonProgram. */
 
 const PlayIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5Z" /></svg>;
 const PauseIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5h2.8v13H8Zm5.2 0H16v13h-2.8Z" /></svg>;
@@ -28,28 +28,23 @@ const ChevronIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m
 const CheckIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>;
 
 /* Meniul principal este separat de navigarea între întrebări. */
-const AppHeader = ({ title, step, totalSteps, lessonId, onMenu }) => (
+const AppHeader = ({ title, step, totalSteps, lessonId, levelCode, onMenu }) => (
   <header className="lapp-header">
     <div className="lapp-header__row">
-      {onMenu ? <>
-        <div className="lapp-header__copy"><strong className="lapp-header__title">{title}</strong><span className="lapp-header__meta">Pasul {step + 1} din {totalSteps} · Lecția {lessonId}</span></div>
-        <button type="button" className="lapp-header__menu" onClick={onMenu} aria-label="Meniu principal">Meniu</button>
-      </> : <>
-        <Link to="/invata" className="lapp-header__back" aria-label="Înapoi la curs">←</Link>
-        <strong className="lapp-header__title">{title}</strong>
-        <span className="lapp-header__meta">Pasul {step + 1} din {totalSteps} · Lecția {lessonId}</span>
-      </>}
+      <strong className="lapp-header__title">{levelCode} · Lecția {lessonId}</strong>
+      <button type="button" className="lapp-header__menu" onClick={onMenu} aria-label="Meniu principal">Meniu</button>
     </div>
-    <div className="lapp-header__track" role="progressbar" aria-valuenow={step + 1} aria-valuemin={1} aria-valuemax={totalSteps}>
+    <div className="lapp-header__track" role="progressbar" aria-label="Progresul lecției" aria-valuetext={`${title}, pasul ${step + 1} din ${totalSteps}`} aria-valuenow={step + 1} aria-valuemin={1} aria-valuemax={totalSteps}>
       <span style={{ width: `${((step + 1) / totalSteps) * 100}%` }} />
     </div>
+    <p className="lapp-header__meta">Pasul {step + 1} din {totalSteps}</p>
   </header>
 );
 
 /* Zona de titlu cu ilustrația contextuală sus-dreapta, ca în referințe. */
 const StepHeading = ({ eyebrow, title, sub, art, large }) => (
   <div className={`lapp-heading ${large ? 'lapp-heading--large' : ''}`}>
-    <img className="lapp-heading__art" src={art} alt="" aria-hidden="true" />
+    {art && <img className="lapp-heading__art" src={art} alt="" aria-hidden="true" />}
     {eyebrow && <p className="lapp-eyebrow">{eyebrow}</p>}
     <h1>{title}</h1>
     {sub && <p className="lapp-heading__sub">{sub}</p>}
@@ -96,23 +91,23 @@ const AppBar = ({ onBack, backDisabled, primaryLabel, onPrimary, primaryDisabled
   </footer>
 );
 
-const AppExpressionBar = ({ current, total, onBack, onNext, onComplete, nextLabel, nextDisabled = false, completeLabel = 'Continuă' }) => (
+const AppExpressionBar = ({ current, total, onBack, onNext, onComplete, nextLabel, nextDisabled = false, completeLabel = 'Continuă' }) => (<>
+  <div className="lapp-expression-progress" aria-live="polite">
+    <span>{current + 1} din {total}</span>
+    <div aria-hidden="true">{Array.from({ length: total }, (_, i) => <i className={i === current ? 'is-active' : ''} key={i} />)}</div>
+  </div>
   <footer className="lapp-bar lapp-bar--dots">
     <button type="button" className="lapp-bar__back" onClick={onBack} aria-label={current === 0 ? 'Etapa anterioară' : 'Elementul anterior'}>← Înapoi</button>
-    <div className="lapp-bar__dots" aria-live="polite">
-      <span>{current + 1} din {total}</span>
-      <div aria-hidden="true">{Array.from({ length: total }, (_, i) => <i className={i === current ? 'is-active' : ''} key={i} />)}</div>
-    </div>
     <button
       type="button"
-      className={`lapp-bar__next ${current === total - 1 ? 'is-solid' : ''}`}
+      className="lapp-bar__next is-solid"
       onClick={current === total - 1 ? onComplete : onNext}
       disabled={nextDisabled}
     >
       {current === total - 1 ? completeLabel : nextLabel} →
     </button>
   </footer>
-);
+</>);
 
 const LessonAppView = (props) => {
   const {
@@ -126,37 +121,39 @@ const LessonAppView = (props) => {
   const art = getLessonImage(levelCode, lesson.id);
   const score = Object.values(answers).filter(Boolean).length;
   const answered = Object.keys(answers).length;
+  const percentage = Math.round((score / lessonExercises.length) * 100);
+  const reviewCount = Object.values(answers).filter((value) => !value).length;
+  const nextLesson = courseLessons.find((item) => item.id === lesson.id + 1);
   const careerPages = Math.ceil(careerModule.phrases.length / 2);
 
   return (
-    <div className={`lesson-shell lapp${step === 5 ? ' lapp--exercises' : ''}`}
-      style={step === 5 ? { '--lapp-exercise-art': `url("${art}")` } : undefined}>
-      <AppHeader title={steps[step]} step={step} totalSteps={steps.length} lessonId={lesson.id}
-        onMenu={step === 5 ? () => history.push('/dashboard') : undefined} />
+    <div className={`lesson-shell lapp lapp--step-${step}${step === 5 ? ' lapp--exercises' : ''}`}>
+      <AppHeader title={steps[step]} step={step} totalSteps={steps.length} lessonId={lesson.id} levelCode={levelCode}
+        onMenu={() => history.push('/dashboard')} />
 
       <main className="lapp-content" ref={contentRef}>
         {step === 0 && (
           <section className="lapp-intro">
-            <StepHeading large eyebrow={`Lecția ${lesson.id} · Nivel ${levelCode} ${course.title}`} title={lesson.title} sub={`O lecție practică pe care o poți finaliza în aproximativ ${lesson.duration} minute.`} art={art} />
+            <StepHeading large eyebrow="Descoperă și folosește" title={lesson.title} sub={`O lecție practică de aproximativ ${lesson.duration} minute.`} art={art} />
             <div className="lapp-stats" aria-label="Detaliile lecției">
               <article><span><LessonMetaIcon type="time" /></span><div><strong>{lesson.duration} min</strong><small>Durata lecției</small></div></article>
               <article><span><LessonMetaIcon type="vocabulary" /></span><div><strong>{lesson.vocabulary.length} expresii</strong><small>Vocabular</small></div></article>
               <article><span><LessonMetaIcon type="level" /></span><div><strong>Nivel {levelCode}</strong><small>{course.title}</small></div></article>
             </div>
-            {lesson.buildsOn && (
-              <aside className="lapp-bridge"><span>Legătura cu ce știi deja</span><p>{lesson.buildsOn}</p></aside>
-            )}
-            <CurriculumRecall key={lesson.uid} lesson={lesson} level={levelCode} />
             <div className="lapp-objectives">
               <h2>După această lecție vei putea:</h2>
               {lesson.objectives.map((objective) => <div key={objective}><span><CheckIcon /></span><p>{objective}</p></div>)}
             </div>
+            {lesson.buildsOn && (
+              <aside className="lapp-bridge"><span>Legătura cu ce știi deja</span><p>{lesson.buildsOn}</p></aside>
+            )}
+            <CurriculumRecall key={lesson.uid} lesson={lesson} level={levelCode} />
           </section>
         )}
 
         {step === 1 && (
           <section>
-            <StepHeading eyebrow="Pasul 2" title="Vocabular esențial" sub="Ascultă expresia, observă cuvântul evidențiat și compară traducerea." art={art} />
+            <StepHeading title="Cuvinte în context" sub="Ascultă, observă și reține." />
             {lesson.vocabulary.map(([word, wordTranslation, example, sentenceTranslation, highlight], index) => index !== vocabularyIndex ? null : (
               <article className="lapp-card lapp-vocab" key={word}>
                 <div className="lapp-card__top">
@@ -172,7 +169,7 @@ const LessonAppView = (props) => {
                 </div>
                 <button type="button" className="lapp-reveal" aria-expanded={showVocabularyTranslations[index] === true} onClick={() => toggleVocabularyTranslation(index)}>
                   <BookIcon />
-                  <span>{showVocabularyTranslations[index] ? 'Ascunde traducerea' : 'Vezi traducerea și exemplul'}</span>
+                  <span>{showVocabularyTranslations[index] ? 'Ascunde traducerea' : 'Vezi traducerea exemplului'}</span>
                   <ChevronIcon />
                 </button>
               </article>
@@ -186,7 +183,7 @@ const LessonAppView = (props) => {
 
         {step === 2 && (
           <section>
-            <StepHeading eyebrow="Pasul 3 · Personalizat" title="Expresii pentru tine" sub={careerModule.coaching} art={art} />
+            <StepHeading title="Replici pe care le vei folosi" sub={careerModule.coaching} />
             <div className="lapp-career">
               {careerModule.phrases.map(([norwegian, romanian, highlight], index) => {
                 const visible = index >= careerPhraseIndex * 2 && index < careerPhraseIndex * 2 + 2;
@@ -211,8 +208,8 @@ const LessonAppView = (props) => {
 
         {step === 3 && (
           <section>
-            <StepHeading eyebrow="Pasul 4" title="Conversație" sub="Ascultă dialogul și compară cu traducerea." art={art} />
-            <div className="lapp-card lapp-dialogue">
+            <StepHeading title="Conversație în context" sub="Ascultă dialogul și descoperă cum se leagă replicile." />
+            <div className="lapp-dialogue">
               <DialogueAudioButton dialogue={lesson.dialogue} />
               {lesson.dialogue.map(([speaker, text, translation], index) => (
                 <article className="lapp-dialogue__line" key={`${speaker}-${index}`}>
@@ -236,7 +233,7 @@ const LessonAppView = (props) => {
 
         {step === 4 && (
           <section>
-            <StepHeading eyebrow="Pasul 5" title={lesson.grammar.title} sub={grammarStepDescription(lesson)} art={art} />
+            <StepHeading title={lesson.grammar.mode === 'review' ? 'Trei repere de recapitulare' : 'Două repere utile'} sub={grammarStepDescription(lesson)} />
             <LessonGrammar key={lesson.uid} lesson={lesson} />
           </section>
         )}
@@ -282,31 +279,30 @@ const LessonAppView = (props) => {
 
         {step === resultStep && (
           <section className="lapp-result">
-            <div className="lapp-result__badge" aria-hidden="true"><CheckIcon /></div>
-            <p className="lapp-eyebrow lapp-eyebrow--center">Lecție finalizată</p>
-            <h1>Bravo!</h1>
-            <p className="lapp-result__sub">Lecția „{lesson.title}” s-a încheiat cu succes.</p>
-            <div className="lapp-ring" role="img" aria-label={`Scorul lecției: ${Math.round((score / lessonExercises.length) * 100)}%`}>
-              <strong>{Math.round((score / lessonExercises.length) * 100)}%</strong>
-              <span>scorul lecției</span>
+            <div className="lapp-result__hero">
+              <img className="lapp-result__art" src={art} alt="" aria-hidden="true" />
+              <div className="lapp-result__badge" aria-hidden="true"><CheckIcon /></div>
+              <h1>Bravo!</h1>
+              <p className="lapp-result__sub">Ai terminat „{lesson.title}”.</p>
             </div>
             <div className="lapp-statscard">
-              <div><span><LessonMetaIcon type="vocabulary" /></span><strong>Exerciții corecte</strong><b>{score}/{lessonExercises.length}</b></div>
+              <div><span><LessonMetaIcon type="vocabulary" /></span><strong>{score} din {lessonExercises.length}<small>Exerciții corecte</small></strong><b>{percentage}%</b></div>
               <div><span><LessonMetaIcon type="voice" /></span><strong>{voiceCompleted ? 'Dialog vocal finalizat' : 'Dialog vocal de exersat'}</strong><b>{voiceCompleted ? '✓' : '—'}</b></div>
               <div><span><LessonMetaIcon type="level" /></span><strong>Expresii noi</strong><b>{lesson.introducedVocabulary.length}</b></div>
             </div>
-            {Object.values(answers).filter((v) => !v).length > 0 && (
+            {reviewCount > 0 && (
               <div className="lapp-review">
                 <h2>De repetat</h2>
-                <p>Am salvat {Object.values(answers).filter((v) => !v).length} {Object.values(answers).filter((v) => !v).length === 1 ? 'răspuns' : 'răspunsuri'} pentru recapitulare.</p>
+                <p>Am salvat {reviewCount} {reviewCount === 1 ? 'răspuns' : 'răspunsuri'} pentru recapitulare.</p>
                 <button type="button" onClick={onReplayExercises}>Repetă exercițiile</button>
               </div>
             )}
+            {nextLesson && <div className="lapp-result__next"><LessonMetaIcon type="level" /><div><span>Urmează</span><strong>{nextLesson.title}</strong></div><span aria-hidden="true">→</span></div>}
             <div className="lapp-result__actions">
-              {lesson.id < courseLessons.length
-                ? <button type="button" className="is-solid" onClick={goNextLesson}>Continuă cu lecția {lesson.id + 1} →</button>
-                : <Link className="is-solid" to="/invata">Înapoi la curs</Link>}
               <button type="button" onClick={() => props.onReviewVocabulary()}><BookIcon /> Revezi vocabularul</button>
+              {lesson.id < courseLessons.length
+                ? <button type="button" className="is-solid" onClick={goNextLesson}>Următoarea lecție →</button>
+                : <Link className="is-solid" to="/invata">Înapoi la curs</Link>}
             </div>
           </section>
         )}
@@ -314,7 +310,7 @@ const LessonAppView = (props) => {
 
       {step < resultStep && step !== 1 && step !== 2 && step !== 5 && (
         <AppBar onBack={previous} backDisabled={step === 0}
-          primaryLabel={step === 6 ? 'Finalizează lecția' : 'Continuă'}
+          primaryLabel={step === 0 ? 'Începe lecția' : step === 6 ? 'Finalizează lecția' : 'Continuă'}
           onPrimary={next} primarySolid />
       )}
     </div>

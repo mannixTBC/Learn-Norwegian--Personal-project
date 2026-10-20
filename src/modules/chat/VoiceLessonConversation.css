@@ -128,3 +128,135 @@
   html.is-installed-app .voice-lesson__transcript{scrollbar-width:none}
   html.is-installed-app .voice-lesson__transcript::-webkit-scrollbar{display:none}
 }
+
+/* The lesson app shares its warm palette without changing the desktop dialog. */
+html .lapp .voice-lesson{
+  --fjord:var(--a-teal);
+  --fjord-light:#b9cec2;
+  padding-top:0;
+  color:var(--a-ink);
+}
+html .lapp .voice-lesson>.lesson-eyebrow,
+html .lapp .voice-lesson>h1,
+html .lapp .voice-lesson>.lesson-lead{max-width:none}
+html .lapp .voice-lesson>.lesson-eyebrow{
+  margin:0 0 8px;
+  color:var(--a-teal);
+  font-size:.65rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+html .lapp .voice-lesson>h1{
+  margin:0 0 10px;
+  color:var(--a-ink);
+  font-size:clamp(1.55rem,6.8vw,1.9rem);
+  font-weight:800;
+  line-height:1.14;
+  letter-spacing:-.025em;
+}
+html .lapp .voice-lesson>.lesson-lead{
+  margin:0;
+  color:var(--a-sub);
+  font-size:.85rem;
+  line-height:1.65;
+}
+html .lapp .voice-lesson__card,
+html .lapp .voice-lesson__card--welcome{
+  min-height:0;
+  margin-top:24px;
+  padding:0;
+  overflow:visible;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+html .lapp .voice-lesson__card--welcome>.voice-lesson__art,
+html .lapp .voice-lesson__portrait{display:none}
+html .lapp .voice-lesson__card--welcome>.voice-lesson__partner,
+html .lapp .voice-lesson__card--welcome>.voice-lesson__welcome,
+html .lapp .voice-lesson__card--welcome>.voice-lesson__controls,
+html .lapp .voice-lesson__card--welcome>.voice-lesson__start-caption,
+html .lapp .voice-lesson__card--welcome>.voice-lesson__notice,
+html .lapp .voice-lesson__card--welcome>.voice-lesson__error{max-width:none}
+html .lapp .voice-lesson__partner{gap:12px;flex-wrap:wrap}
+html .lapp .voice-lesson__avatar{
+  width:52px;
+  height:52px;
+  flex:0 0 52px;
+  overflow:hidden;
+  border:1px solid #d7e2d3;
+  border-radius:50%;
+  color:var(--a-teal);
+  background:var(--a-tint);
+  font-size:1.3rem;
+  font-weight:800;
+}
+html .lapp .voice-lesson__avatar-letter{display:block}
+html .lapp .voice-lesson__partner strong{color:var(--a-ink);font-size:1rem}
+html .lapp .voice-lesson__partner>div>span{color:var(--a-sub);font-size:.7rem;line-height:1.5}
+html .lapp .voice-lesson__status,
+html .lapp .voice-lesson__card--welcome .voice-lesson__status{
+  flex-basis:100%;
+  margin:5px 0 0;
+  padding:11px 13px;
+  border:1px solid var(--a-border);
+  border-radius:14px;
+  color:var(--a-sub);
+  background:var(--a-card);
+  font-size:.76rem;
+  line-height:1.55;
+  overflow-wrap:anywhere;
+}
+html .lapp .voice-lesson__status--active{color:var(--a-teal-deep);border-color:#d6e1d1;background:var(--a-tint)}
+html .lapp .voice-lesson__card--welcome .voice-lesson__status::before{display:none}
+html .lapp .voice-lesson__welcome{margin-top:24px}
+html .lapp .voice-lesson__welcome h2{margin:0;color:var(--a-ink);font-size:1.12rem;line-height:1.4;letter-spacing:-.015em}
+html .lapp .voice-lesson__welcome p{margin:10px 0 0;color:var(--a-sub);font-size:.83rem;line-height:1.65}
+html .lapp .voice-lesson__welcome ul{gap:8px;margin-top:16px;color:var(--a-sub);font-size:.7rem;line-height:1.5}
+html .lapp .voice-lesson__welcome li{padding:6px 9px;border:1px solid var(--a-border);border-radius:9px;background:var(--a-card)}
+html .lapp .voice-lesson__welcome li+li::before{display:none}
+html .lapp .voice-lesson__progress{align-items:center;gap:10px;margin-top:20px;padding:11px 13px;border:1px solid #d6e1d1;border-radius:14px;color:var(--a-sub);background:var(--a-tint);font-size:.72rem;line-height:1.5}
+html .lapp .voice-lesson__progress span{color:var(--a-teal)}
+html .lapp .voice-lesson__progress small{font-size:.7rem;white-space:nowrap}
+html .lapp .voice-lesson__transcript{gap:14px;max-height:380px;margin:20px 0;padding:2px;scrollbar-width:thin;scrollbar-color:#b8c9b9 transparent;overscroll-behavior:contain}
+html .lapp .voice-lesson__message{max-width:94%;box-sizing:border-box;padding:15px 16px;border:1px solid var(--a-border);border-radius:19px;background:var(--a-card);overflow-wrap:anywhere}
+html .lapp .voice-lesson__message--assistant{border-bottom-left-radius:7px}
+html .lapp .voice-lesson__message--user{border-color:#d6e1d1;border-bottom-right-radius:7px;background:var(--a-tint)}
+html .lapp .voice-lesson__message small{color:var(--a-teal);font-size:.66rem;letter-spacing:.02em}
+html .lapp .voice-lesson__message p{color:var(--a-ink);font-size:.88rem;line-height:1.65}
+html .lapp .voice-lesson__message .voice-lesson__dialog-question{color:var(--a-teal-deep);font-weight:750}
+html .lapp .voice-lesson__message .voice-lesson__question-translation{gap:8px;margin-top:10px;color:var(--a-sub);font-size:.75rem;line-height:1.55}
+html .lapp .voice-lesson__question-translation>span{padding:3px 5px;border-radius:5px;color:var(--a-teal);background:var(--a-tint)}
+html .lapp .voice-lesson__answer-help{margin-top:14px;padding-top:12px;border-top-color:var(--a-border)}
+html .lapp .voice-lesson__answer-help>button{min-height:42px;padding:10px 12px;border:1px solid #bdcdbf;border-radius:12px;color:var(--a-teal-deep);background:transparent;font-size:.73rem;line-height:1.4;text-align:left;touch-action:manipulation}
+html .lapp .voice-lesson__answer-help>button:hover{background:var(--a-tint)}
+html .lapp .voice-lesson__suggestions{gap:9px;margin-top:12px}
+html .lapp .voice-lesson__suggestions>div{gap:4px;padding:11px 12px;border-radius:12px;background:var(--a-tint)}
+html .lapp .voice-lesson__suggestions strong{color:var(--a-teal-deep);font-size:.8rem;line-height:1.55}
+html .lapp .voice-lesson__suggestions span{color:var(--a-sub);font-size:.73rem;line-height:1.55}
+html .lapp .voice-lesson__controls{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:24px}
+html .lapp .voice-lesson__controls button{width:100%;min-height:48px;box-sizing:border-box;padding:12px 15px;border:1px solid #bdcdbf;border-radius:14px;color:var(--a-teal-deep);background:var(--a-card);font-size:.82rem;line-height:1.5;touch-action:manipulation}
+html .lapp .voice-lesson__controls button.voice-lesson__primary,
+html .lapp .voice-lesson__card--welcome .voice-lesson__primary{max-width:none;color:var(--a-card);border-color:var(--a-teal);background:var(--a-teal);box-shadow:0 4px 10px rgba(32,93,84,.1)}
+html .lapp .voice-lesson__controls button:disabled{opacity:.55;box-shadow:none}
+html .lapp .voice-lesson__controls button:focus-visible,
+html .lapp .voice-lesson__answer-help>button:focus-visible{outline:3px solid #9fb9a7;outline-offset:3px}
+html .lapp .voice-lesson__hint,
+html .lapp .voice-lesson__start-caption{margin-top:14px;color:var(--a-sub);font-size:.73rem;line-height:1.65}
+html .lapp .voice-lesson__start-caption{text-align:center}
+html .lapp .voice-lesson__notice{padding:13px 15px;border:1px solid var(--a-border);border-radius:14px;color:var(--a-sub);background:var(--a-card);font-size:.8rem;line-height:1.65}
+html .lapp .voice-lesson__error{padding:13px 15px;border:1px solid #e9d0c9;border-radius:14px;color:#8a4037;background:#fbede6;font-size:.8rem;line-height:1.65}
+html .lapp .voice-lesson__correction,
+html .lapp .voice-lesson__confirmation,
+html .lapp .voice-lesson__feedback{border-color:#e0d2a9;border-radius:14px;color:#64552f;background:#f8f0d8;line-height:1.65}
+html .lapp .voice-lesson__correction{max-width:94%;box-sizing:border-box;border-left:3px solid #c5a457;padding:11px 13px;font-size:.76rem}
+html .lapp .voice-lesson__confirmation small{color:#786537}
+html .lapp .voice-lesson__feedback{max-width:100%}
+html .lapp .voice-lesson__saved{color:var(--a-sub);font-size:.72rem;line-height:1.65}
+html .lapp .voice-lesson__saved::before{color:var(--a-teal)}
+@media(max-width:360px){
+  html .lapp .voice-lesson__message{max-width:100%;padding:13px}
+  html .lapp .voice-lesson__progress{align-items:flex-start;flex-direction:column;gap:3px}
+}
