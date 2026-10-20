@@ -151,7 +151,7 @@ const renderLesson = async () => act(async () => {
 await renderLesson();
 assert.equal(byClass('lapp-heading').length, 0, 'the exercise stage uses a compact introduction');
 assert.equal(byClass('lapp-practice__art').length, 0, 'the exercise illustration is removed');
-assert.equal(renderer.root.findAllByType('img').length, 0, 'exercise screens have no decorative illustration');
+assert.equal(renderer.root.findAllByType('img').length, 0, 'the background scene adds no separate image to the exercise layout');
 assert.ok(text(renderer.root).includes('Hai să exersăm'));
 assert.equal(renderer.root.findByProps({ 'aria-label': 'Întrebări verificate' }).props['aria-valuenow'], 0);
 assert.equal(byClass('lapp-header__back').length, 0, 'the misleading course-exit arrow is replaced by the exercise menu');

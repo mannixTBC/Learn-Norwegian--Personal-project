@@ -128,7 +128,8 @@ const LessonAppView = (props) => {
   const careerPages = Math.ceil(careerModule.phrases.length / 2);
 
   return (
-    <div className={`lesson-shell lapp${step === 5 ? ' lapp--exercises' : ''}`}>
+    <div className={`lesson-shell lapp${step === 5 ? ' lapp--exercises' : ''}`}
+      style={step === 5 ? { '--lapp-exercise-art': `url("${art}")` } : undefined}>
       <AppHeader title={steps[step]} step={step} totalSteps={steps.length} lessonId={lesson.id}
         onMenu={step === 5 ? () => history.push('/dashboard') : undefined} />
 

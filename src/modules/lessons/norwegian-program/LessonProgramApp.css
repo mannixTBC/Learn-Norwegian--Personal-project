@@ -158,10 +158,22 @@
 .lapp--exercises{
   --a-ink:#183b3a; --a-sub:#5c706a; --a-meta:#74877e; --a-teal:#236e61;
   --a-teal-deep:#18594f; --a-track:#e4e8dc; --a-border:#dee4d9;
+  --a-exercise-bg:#fdfbf7;
   font-family:'Source Sans 3',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
-.lapp--exercises .lapp-content{ padding:20px 22px calc(100px + env(safe-area-inset-bottom,0px)); scroll-padding-bottom:calc(100px + env(safe-area-inset-bottom,0px)); background:#faf8f0; }
-.lapp--exercises .lapp-header{ background:#faf8f0; border-bottom-color:#e7e8dd; }
+.lapp--exercises .lapp-content{
+  padding:20px 22px calc(100px + env(safe-area-inset-bottom,0px));
+  scroll-padding-bottom:calc(100px + env(safe-area-inset-bottom,0px));
+  background-color:var(--a-exercise-bg);
+  background-image:
+    linear-gradient(90deg,var(--a-exercise-bg) 20%,rgba(253,251,247,.75) 60%,rgba(253,251,247,.32)),
+    linear-gradient(180deg,rgba(253,251,247,.05),var(--a-exercise-bg) 98%),
+    var(--lapp-exercise-art);
+  background-size:100% 180px,100% 180px,auto 320px;
+  background-position:left top,left top,right top -160px;
+  background-repeat:no-repeat;
+}
+.lapp--exercises .lapp-header{ background:var(--a-exercise-bg); border-bottom-color:#e7e8dd; }
 .lapp-practice__intro{ margin-bottom:18px; }
 .lapp-practice__intro h1{ margin:0; color:var(--a-ink); font-size:1.5rem; font-weight:750; letter-spacing:-.025em; line-height:1.2; }
 .lapp-practice__topic{ margin:0 0 6px; color:var(--a-teal-deep); font-size:.63rem; font-weight:750; letter-spacing:.07em; text-transform:uppercase; line-height:1.5; }
@@ -229,7 +241,7 @@
 .lapp-exercise__listen svg{ width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
 .lapp-exercise__review-note{ margin:24px 0 0; color:var(--a-sub); }
 .lapp-exercise__feedback svg,.lapp-exercise__review-note svg{ flex:0 0 15px; width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
-.lapp-exercise__footer{ position:fixed; right:0; bottom:0; left:0; z-index:50; padding:12px 22px calc(16px + env(safe-area-inset-bottom,0px)); border-top:1px solid #e8e8dd; background:#faf8f0; }
+.lapp-exercise__footer{ position:fixed; right:0; bottom:0; left:0; z-index:50; padding:12px 22px calc(16px + env(safe-area-inset-bottom,0px)); border-top:1px solid #e8e8dd; background:var(--a-exercise-bg); }
 .lapp-exercise__navigation{ display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:14px; width:100%; max-width:620px; margin:0 auto; }
 .lapp-exercise__footer button{ display:flex; min-width:0; min-height:54px; align-items:center; justify-content:center; gap:8px; border:0; font:inherit; font-weight:750; cursor:pointer; }
 .lapp-exercise__footer .lapp-exercise__primary{ padding:12px 10px; border-radius:16px; background:var(--a-teal-deep); color:#fff; font-size:.9rem; line-height:1.4; }
