@@ -55,15 +55,20 @@ const readLessonExerciseState = (key, exercises, completed) => {
   const responses = {};
   let revised = false;
   exercises.forEach((exercise, index) => {
-    if (typeof savedAnswers[index] !== 'boolean') return;
+    if (typeof savedAnswers[index] !== 'boolean' && !savedResponses[index]) return;
     if (!completed && exercise.answerRevision && versions[index] !== exercise.answerRevision) {
       revised = true;
       return;
     }
-    answers[index] = savedAnswers[index];
+    if (typeof savedAnswers[index] === 'boolean') answers[index] = savedAnswers[index];
     if (savedResponses[index]) responses[index] = savedResponses[index];
   });
   return { answers, responses, revised };
+};
+
+const readExerciseIndex = (key, total) => {
+  const index = Number(readStorage(`${key}_exercise_index`, 0));
+  return Number.isInteger(index) ? Math.max(0, Math.min(total - 1, index)) : 0;
 };
 
 
@@ -128,7 +133,7 @@ const LessonSession = ({ match }) => {
   const [step, setStep] = useState(resumeStep);
   const [vocabularyIndex, setVocabularyIndex] = useState(0);
   const [careerPhraseIndex, setCareerPhraseIndex] = useState(0);
-  const [exerciseIndex, setExerciseIndex] = useState(0);
+  const [exerciseIndex, setExerciseIndex] = useState(() => readExerciseIndex(lessonStepKey, lessonExercises.length));
   const [showVocabularyTranslations, setShowVocabularyTranslations] = useState({});
   const [showTranslations, setShowTranslations] = useState({});
   const [answers, setAnswers] = useState(() => savedExerciseState.answers);
@@ -151,7 +156,7 @@ const LessonSession = ({ match }) => {
     setStep(resumeStep());
     setVocabularyIndex(0);
     setCareerPhraseIndex(0);
-    setExerciseIndex(0);
+    setExerciseIndex(readExerciseIndex(lessonStepKey, lessonExercises.length));
     const saved = readLessonExerciseState(lessonStepKey, lessonExercises, completedLesson);
     setAnswers(saved.answers);
     setExerciseResponses(saved.responses);
@@ -164,9 +169,10 @@ const LessonSession = ({ match }) => {
     if (!skipStepSave.current) {
       localStorage.setItem(`${lessonStepKey}_answers`, JSON.stringify(answers));
       localStorage.setItem(`${lessonStepKey}_responses`, JSON.stringify(exerciseResponses));
+      localStorage.setItem(`${lessonStepKey}_exercise_index`, JSON.stringify(exerciseIndex));
       localStorage.setItem(`${lessonStepKey}_exercise_versions`, JSON.stringify(Object.fromEntries(lessonExercises.map((exercise, index) => [index, exercise.answerRevision || null]))));
     }
-  }, [answers, exerciseResponses, lessonStepKey]);
+  }, [answers, exerciseResponses, exerciseIndex, lessonStepKey]);
   useEffect(() => {
     if (skipStepSave.current) {
       skipStepSave.current = false;
@@ -213,6 +219,15 @@ const LessonSession = ({ match }) => {
   const recordVoiceComplete = () => {
     setVoiceCompleted(true);
     localStorage.setItem(`${lessonStepKey}_voice_complete`, JSON.stringify(true));
+  };
+
+  const saveExerciseDraft = (index, response) => {
+    if (typeof answers[index] === 'boolean') return;
+    setExerciseResponses((current) => ({ ...current, [index]: response }));
+  };
+  const navigateLessonStep = (target) => {
+    if (!Number.isInteger(target) || target < 0 || target > 6 || (target === 6 && !canFinish)) return;
+    setStep(target);
   };
 
   const finishLesson = () => {
@@ -267,6 +282,8 @@ const LessonSession = ({ match }) => {
         previous={previous}
         goNextLesson={goNextLesson}
         onRecordResult={recordResult}
+        onDraftExercise={saveExerciseDraft}
+        onNavigateStep={navigateLessonStep}
         onVoiceComplete={recordVoiceComplete}
         onReplayExercises={() => { setAnswers({}); setExerciseResponses({}); setExerciseIndex(0); setStep(5); }}
         onReviewVocabulary={() => { setVocabularyIndex(0); setStep(1); }}
