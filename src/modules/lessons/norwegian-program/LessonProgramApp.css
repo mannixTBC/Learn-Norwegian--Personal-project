@@ -393,7 +393,7 @@ html.is-installed-app .lesson-shell.lapp{ display:grid; grid-template-columns:mi
 .lapp .chat-assistant__exchange .chat-bubble{ background:var(--a-tint); color:var(--a-ink); }
 .lapp .chat-assistant__restart,.lapp .chat-assistant__input{ border-color:var(--a-border); background:var(--a-card); color:var(--a-ink); }
 .lapp .chat-assistant__send,.lapp .chat-assistant__complete button{ background:var(--a-teal-deep); }
-.lapp--step-7 .lapp-content{ padding-bottom:calc(26px + env(safe-area-inset-bottom,0px)); }
+.lapp--result .lapp-content{ padding-bottom:calc(26px + env(safe-area-inset-bottom,0px)); }
 
 /* ── Ecrane înguste ────────────────────────────────────────── */
 @media(max-width:380px){

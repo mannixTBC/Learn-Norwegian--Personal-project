@@ -5,6 +5,10 @@
    Pentru un proiect Supabase creat anterior acestei funcționalități, rulează și
    `schema_chat.sql` și `schema_voice_transcripts.sql`; instalările noi primesc
    deja cota de chat și tabelele pentru transcriptele vocale prin `schema.sql`.
+   Rulează apoi `schema_learning_sync.sql` pentru salvarea atomică a progresului,
+   restaurarea pe alte dispozitive și indexul necesar activității de studiu.
+   Pentru baze existente, migrarea `curriculum_levels_a1_c2` din `migrations/`
+   extinde nivelurile acceptate fără modificarea datelor existente.
 3. În `Authentication > Providers`, păstrează activ `Email`.
 4. Activează `Anonymous Sign-Ins` pentru butonul „Continuă ca vizitator”.
 5. Opțional, activează Google și completează datele OAuth cerute de Supabase.

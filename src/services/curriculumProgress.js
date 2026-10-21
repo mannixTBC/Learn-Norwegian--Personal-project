@@ -1,4 +1,5 @@
 import { CURRICULUM_VERSION } from '../modules/lessons/curriculumMetadata';
+import { LESSON_FLOW_VERSION } from '../modules/lessons/norwegian-program/lessonFlow';
 
 const owner = (user) => user?.id || 'guest';
 export const courseProgressKey = (level, user) => `curriculum_${CURRICULUM_VERSION}_${owner(user)}_${level.toLowerCase()}_progress`;
@@ -41,7 +42,8 @@ export const readCurrentLesson = (user, courses) => {
       const key = lessonResumeKey(course.code, lesson.id, user);
       try {
         const raw = localStorage.getItem(`${key}_voice_v1`) ?? localStorage.getItem(key);
-        const step = JSON.parse(raw);
+        const savedStep = JSON.parse(raw);
+        const step = typeof savedStep === 'number' ? savedStep : savedStep?.version === LESSON_FLOW_VERSION ? savedStep.step : null;
         return typeof step === 'number' && Number.isFinite(step) && step >= 0;
       } catch (_) { return false; }
     });

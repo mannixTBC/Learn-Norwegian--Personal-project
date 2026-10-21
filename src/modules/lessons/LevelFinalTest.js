@@ -6,6 +6,7 @@ import { curriculumLevels } from './curriculumMetadata';
 import { buildExam, correctAnswerText, givenAnswerText, isCompleteAnswer, isCorrectAnswer } from './curriculumAssessment';
 import { useAuth } from '../auth/AuthContext';
 import { finalTestKey } from '../../services/curriculumProgress';
+import { syncLearningProgress } from '../../services/supabaseLearning';
 import { speakNorwegian } from '../../services/norwegianSpeech';
 import { saveReviewItem } from '../../services/spacedReview';
 import { recordStudyActivity } from '../../services/learningActivity';
@@ -82,6 +83,8 @@ const FinalTestSession = ({ course, user }) => {
     if (!previewMode) {
       localStorage.setItem(finalTestKey(course.code, 'best', user), String(nextBest));
       if (passed) localStorage.setItem(finalTestKey(course.code, 'passed', user), 'true');
+      void syncLearningProgress(finalTestKey(course.code, 'best', user), nextBest).catch(console.warn);
+      if (passed) void syncLearningProgress(finalTestKey(course.code, 'passed', user), true).catch(console.warn);
       questions.filter((question) => !isCorrectAnswer(question, answers[question.id])).forEach((question) => {
         saveReviewItem({ id: question.id, level: course.code, lessonId: question.lessonId, lessonUid: question.lessonUid, source: 'final-test', prompt: question.type === 'audio' ? `Ce înseamnă „${question.audioText}”?` : question.prompt, answer: correctAnswerText(question) });
       });

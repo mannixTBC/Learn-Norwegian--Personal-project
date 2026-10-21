@@ -13,3 +13,224 @@
   .curriculum-recall>div{grid-template-columns:minmax(0,1fr)}
   .curriculum-reading__text{font-size:1rem;line-height:1.85}
 }
+
+/* The separate recall step uses the same warm, open layout as the lesson. */
+.curriculum-practice.curriculum-recall--standalone,
+.lapp .curriculum-practice.curriculum-recall--standalone{
+  --recall-ink:var(--a-ink,#173d3f);
+  --recall-teal:var(--a-teal,#205d54);
+  --recall-sub:var(--a-sub,#5a6c62);
+  --recall-card:var(--a-card,#fffefa);
+  --recall-tint:var(--a-tint,#eaf0e4);
+  --recall-border:var(--a-border,#dfddd0);
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:var(--recall-ink);
+}
+.curriculum-recall--standalone .curriculum-recall__heading{
+  min-width:0;
+  margin:0 0 24px;
+  padding-top:12px;
+}
+.curriculum-recall--standalone .curriculum-practice__label{
+  margin:0 0 8px;
+  color:var(--recall-teal);
+  font-size:.68rem;
+  font-weight:750;
+  letter-spacing:.09em;
+  line-height:1.6;
+}
+.curriculum-recall--standalone .curriculum-recall__heading h1{
+  margin:0 0 10px;
+  color:var(--recall-ink);
+  font-size:clamp(1.55rem,6.5vw,1.95rem);
+  font-weight:750;
+  letter-spacing:-.025em;
+  line-height:1.16;
+  overflow-wrap:anywhere;
+}
+.curriculum-recall--standalone .curriculum-recall__heading p{
+  margin:0;
+  color:var(--recall-sub);
+  font-size:.94rem;
+  line-height:1.65;
+}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));
+  gap:16px;
+  margin:0;
+}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__card{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 44px;
+  align-content:start;
+  align-items:center;
+  column-gap:12px;
+  padding:20px;
+  border:1px solid var(--recall-border);
+  border-radius:20px;
+  background:var(--recall-card);
+  box-shadow:0 3px 10px rgba(48,65,46,.025);
+}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__card>small{
+  grid-column:1/-1;
+  margin:0 0 12px;
+  color:var(--recall-sub);
+  font-size:.76rem;
+  line-height:1.6;
+}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__card>strong{
+  grid-column:1;
+  margin:0;
+  color:var(--recall-ink);
+  font-size:1.22rem;
+  font-weight:750;
+  line-height:1.5;
+}
+.curriculum-recall.curriculum-recall--standalone button{
+  min-width:0;
+  min-height:44px;
+  margin:0;
+  border:1px solid var(--recall-border);
+  border-radius:12px;
+  background:var(--recall-card);
+  color:var(--recall-teal);
+  font:inherit;
+  font-size:.82rem;
+  font-weight:650;
+  line-height:1.5;
+}
+.curriculum-recall.curriculum-recall--standalone button:focus-visible{
+  outline:3px solid var(--recall-teal);
+  outline-offset:3px;
+}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__audio{
+  display:grid;
+  grid-column:2;
+  width:44px;
+  height:44px;
+  place-items:center;
+  padding:0;
+  border-color:var(--recall-teal);
+  border-radius:50%;
+  background:var(--recall-teal);
+  color:#fff;
+}
+.curriculum-recall__audio svg{width:18px;height:18px;fill:currentColor}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__reveal{
+  display:flex;
+  grid-column:1/-1;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:18px;
+  padding:10px 12px;
+  text-align:left;
+}
+.curriculum-recall__reveal svg{
+  flex:0 0 18px;
+  width:18px;
+  height:18px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.curriculum-recall__reveal svg.is-expanded{transform:rotate(180deg)}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__meaning{
+  grid-column:1/-1;
+  margin:10px 0 0;
+  padding:12px 14px;
+  border-radius:12px;
+  background:var(--recall-tint);
+  color:var(--recall-ink);
+  font-size:.94rem;
+  line-height:1.65;
+}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__save{
+  display:flex;
+  grid-column:1/-1;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin-top:10px;
+  padding:10px 12px;
+  font-size:.78rem;
+  text-align:center;
+}
+.curriculum-recall__save svg{
+  flex:0 0 18px;
+  width:18px;
+  height:18px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__save:disabled{
+  border-color:var(--recall-tint);
+  background:var(--recall-tint);
+  color:var(--recall-teal);
+  cursor:default;
+  opacity:1;
+}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__note{
+  margin:20px 0 0;
+  color:var(--recall-sub);
+  font-size:.78rem;
+  line-height:1.65;
+}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__first-lesson{
+  padding:24px;
+  border:1px solid var(--recall-border);
+  border-radius:20px;
+  background:var(--recall-card);
+}
+.curriculum-recall__first-icon{
+  display:grid;
+  width:44px;
+  height:44px;
+  place-items:center;
+  margin-bottom:16px;
+  border-radius:50%;
+  background:var(--recall-tint);
+  color:var(--recall-teal);
+}
+.curriculum-recall__first-icon svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__first-lesson h2{
+  margin:0 0 10px;
+  color:var(--recall-ink);
+  font-size:1.16rem;
+  line-height:1.4;
+}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__first-lesson>p{
+  margin:0;
+  color:var(--recall-sub);
+  font-size:.9rem;
+  line-height:1.7;
+}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__first-lesson h3{
+  margin:22px 0 12px;
+  color:var(--recall-ink);
+  font-size:.86rem;
+  font-weight:650;
+  line-height:1.5;
+}
+.curriculum-recall__first-lesson dl{margin:0 0 18px}
+.curriculum-recall__first-lesson dl>div{margin-top:9px;padding:12px 14px;border-radius:12px;background:var(--recall-tint)}
+.curriculum-recall__first-lesson dt{color:var(--recall-ink);font-size:1rem;font-weight:750;line-height:1.5}
+.curriculum-recall__first-lesson dd{margin:3px 0 0;color:var(--recall-sub);font-size:.85rem;line-height:1.6}
+.curriculum-recall.curriculum-recall--standalone .curriculum-recall__first-lesson .curriculum-recall__first-note{font-size:.8rem}
+@media(max-width:680px){
+  .curriculum-recall.curriculum-recall--standalone .curriculum-recall__cards{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:380px){
+  .curriculum-recall.curriculum-recall--standalone .curriculum-recall__card,
+  .curriculum-recall.curriculum-recall--standalone .curriculum-recall__first-lesson{padding:18px}
+}

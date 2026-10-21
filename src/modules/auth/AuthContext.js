@@ -3,6 +3,7 @@ import { isSupabaseConfigured, supabase } from '../../services/supabaseClient';
 import { fetchEntitlements, isDevBypassActive } from '../../services/entitlements';
 import { clearLocalAccountData, deleteRemoteAccount } from '../../services/account';
 import { isNativeApp, webUrl } from '../../services/api';
+import { restoreLearningProgress, flushLearningProgress } from '../../services/supabaseLearning';
 
 const SESSION_KEY = 'norwegiata_frontend_session';
 const GUEST_SESSION = '__norwegiata_guest__';
@@ -46,6 +47,7 @@ const authRedirectUrl = (path) => (isNativeApp() ? webUrl(path) : `${window.loca
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [initializing, setInitializing] = useState(true);
+  const [progressOwner, setProgressOwner] = useState(null);
   const [passwordRecovery, setPasswordRecovery] = useState(false);
   const [entitlements, setEntitlements] = useState(FREE_ENTITLEMENTS);
 
@@ -67,6 +69,7 @@ export const AuthProvider = ({ children }) => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       if (!mounted) return;
       if (event === 'PASSWORD_RECOVERY') setPasswordRecovery(true);
+      if (!session?.user) setProgressOwner(null);
       setUser(formatUser(session && session.user));
       setInitializing(false);
     });
@@ -76,6 +79,29 @@ export const AuthProvider = ({ children }) => {
       if (data && data.subscription) data.subscription.unsubscribe();
     };
   }, []);
+
+  // Restore before protected screens mount, so empty local defaults cannot overwrite cloud data.
+  useEffect(() => {
+    let current = true;
+    if (!user?.id || user.id === 'guest' || !supabase) return undefined;
+    void restoreLearningProgress(user.id, () => current)
+      .catch((error) => console.warn('Progresul local rămâne disponibil.', error.message))
+      .finally(() => { if (current) setProgressOwner(user.id); });
+    return () => { current = false; };
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (!user?.id || !supabase) return undefined;
+    const retry = () => void flushLearningProgress(user.id).catch((error) =>
+      console.warn('Sincronizarea rămâne în așteptare.', error.message));
+    window.addEventListener('online', retry);
+    const visible = () => { if (document.visibilityState === 'visible') retry(); };
+    document.addEventListener('visibilitychange', visible);
+    return () => {
+      window.removeEventListener('online', retry);
+      document.removeEventListener('visibilitychange', visible);
+    };
+  }, [user?.id]);
 
   // Reîncarcă entitlement-urile când se schimbă utilizatorul.
   // În dev bypass, fetchEntitlements returnează constant premium (fără apel DB).
@@ -189,7 +215,7 @@ export const AuthProvider = ({ children }) => {
   const value = useMemo(() => ({
     user,
     isAuthenticated: Boolean(user),
-    initializing,
+    initializing: initializing || Boolean(supabase && user && user.id !== 'guest' && progressOwner !== user.id),
     isSupabaseConfigured,
     passwordRecovery,
     setPasswordRecovery,
@@ -208,7 +234,7 @@ export const AuthProvider = ({ children }) => {
     entitlementSource: entitlements.entitlementSource,
     isDevBypass: isDevBypassActive(),
     refreshEntitlements,
-  }), [entitlements, initializing, passwordRecovery, user]);
+  }), [entitlements, initializing, passwordRecovery, progressOwner, user]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -1,3 +1,4 @@
+import DialogueWalkthrough from './DialogueWalkthrough';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
@@ -9,6 +10,7 @@ import LessonAppExercise from './LessonAppExercise';
 import { getLessonImage } from '../lessonVisuals';
 import { CurriculumRecall } from './CurriculumPractice';
 import LessonGrammar, { grammarStepDescription } from './LessonGrammar';
+import { LESSON_STAGE } from './lessonFlow';
 import './LessonProgramApp.css';
 
 /* Pașii aplicației împart aceeași atmosferă; ilustrația contextuală
@@ -127,12 +129,12 @@ const LessonAppView = (props) => {
   const careerPages = Math.ceil(careerModule.phrases.length / 2);
 
   return (
-    <div className={`lesson-shell lapp lapp--step-${step}${step === 5 ? ' lapp--exercises' : ''}`}>
+    <div className={`lesson-shell lapp lapp--step-${step}${step === LESSON_STAGE.EXERCISES ? ' lapp--exercises' : ''}${step === resultStep ? ' lapp--result' : ''}`}>
       <AppHeader title={steps[step]} step={step} totalSteps={steps.length} lessonId={lesson.id} levelCode={levelCode}
         onMenu={() => history.push('/dashboard')} />
 
       <main className="lapp-content" ref={contentRef}>
-        {step === 0 && (
+        {step === LESSON_STAGE.INTRO && (
           <section className="lapp-intro">
             <StepHeading large eyebrow="Descoperă și folosește" title={lesson.title} sub={`O lecție practică de aproximativ ${lesson.duration} minute.`} art={art} />
             <div className="lapp-stats" aria-label="Detaliile lecției">
@@ -147,11 +149,16 @@ const LessonAppView = (props) => {
             {lesson.buildsOn && (
               <aside className="lapp-bridge"><span>Legătura cu ce știi deja</span><p>{lesson.buildsOn}</p></aside>
             )}
-            <CurriculumRecall key={lesson.uid} lesson={lesson} level={levelCode} />
           </section>
         )}
 
-        {step === 1 && (
+        {step === LESSON_STAGE.RECALL && (
+          <section className="lapp-stage--recall">
+            <CurriculumRecall key={lesson.uid} lesson={lesson} level={levelCode} standalone />
+          </section>
+        )}
+
+        {step === LESSON_STAGE.VOCABULARY && (
           <section>
             <StepHeading title="Cuvinte în context" sub="Ascultă, observă și reține." />
             {lesson.vocabulary.map(([word, wordTranslation, example, sentenceTranslation, highlight], index) => index !== vocabularyIndex ? null : (
@@ -181,7 +188,7 @@ const LessonAppView = (props) => {
           </section>
         )}
 
-        {step === 2 && (
+        {step === LESSON_STAGE.CAREER && (
           <section>
             <StepHeading title="Replici pe care le vei folosi" sub={careerModule.coaching} />
             <div className="lapp-career">
@@ -206,39 +213,25 @@ const LessonAppView = (props) => {
           </section>
         )}
 
-        {step === 3 && (
+        {step === LESSON_STAGE.DIALOGUE && (
           <section>
             <StepHeading title="Conversație în context" sub="Ascultă dialogul și descoperă cum se leagă replicile." />
-            <div className="lapp-dialogue">
-              <DialogueAudioButton dialogue={lesson.dialogue} />
-              {lesson.dialogue.map(([speaker, text, translation], index) => (
-                <article className="lapp-dialogue__line" key={`${speaker}-${index}`}>
-                  <div className="lapp-dialogue__speaker"><SpeakerAvatar voice={getDialogueVoice(speaker, index)} /><strong>{speaker}</strong></div>
-                  <div className="lapp-dialogue__bubble">
-                    <p lang="no">{text}</p>
-                    {showTranslations[index] && <small lang="ro">{translation}</small>}
-                    <div className="lapp-dialogue__actions">
-                      <DialogueLineAudioButton text={text} voice={getDialogueVoice(speaker, index)} />
-                      <button type="button" className="lapp-dialogue__translate" onClick={() => toggleTranslation(index)}>{showTranslations[index] ? 'Ascunde' : 'În română'}</button>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
+            <DialogueWalkthrough key={lesson.uid} dialogue={lesson.dialogue}>
             <PremiumGate feature="Asistentul virtual de conversație">
               <ChatAssistant key={`${levelCode}-${lesson.id}-${careerPathId}-app`} level={levelCode} lessonId={lesson.id} pathId={careerPathId} lessonTitle={lesson.title} />
             </PremiumGate>
+            </DialogueWalkthrough>
           </section>
         )}
 
-        {step === 4 && (
+        {step === LESSON_STAGE.GRAMMAR && (
           <section>
             <StepHeading title={lesson.grammar.mode === 'review' ? 'Trei repere de recapitulare' : 'Două repere utile'} sub={grammarStepDescription(lesson)} />
             <LessonGrammar key={lesson.uid} lesson={lesson} />
           </section>
         )}
 
-        {step === 5 && (
+        {step === LESSON_STAGE.EXERCISES && (
           <section className="lapp-practice">
             <header className="lapp-practice__intro">
               <div><p className="lapp-practice__topic">Lecția {lesson.id} · {lesson.title}</p><h1>Hai să exersăm</h1></div>
@@ -262,10 +255,11 @@ const LessonAppView = (props) => {
           </section>
         )}
 
-        {step === 6 && (
+        {step === LESSON_STAGE.VOICE && (
           <section>
             <PremiumGate feature="Dialogul vocal cu AI">
               <VoiceLessonConversation
+                stepNumber={LESSON_STAGE.VOICE + 1}
                 key={`${levelCode}-${lesson.id}-${careerPathId}-app`}
                 level={levelCode}
                 lessonId={lesson.id}
@@ -308,9 +302,9 @@ const LessonAppView = (props) => {
         )}
       </main>
 
-      {step < resultStep && step !== 1 && step !== 2 && step !== 5 && (
-        <AppBar onBack={previous} backDisabled={step === 0}
-          primaryLabel={step === 0 ? 'Începe lecția' : step === 6 ? 'Finalizează lecția' : 'Continuă'}
+      {step < resultStep && step !== LESSON_STAGE.VOCABULARY && step !== LESSON_STAGE.CAREER && step !== LESSON_STAGE.EXERCISES && (
+        <AppBar onBack={previous} backDisabled={step === LESSON_STAGE.INTRO}
+          primaryLabel={step === LESSON_STAGE.INTRO ? 'Începe lecția' : step === LESSON_STAGE.VOICE ? 'Finalizează lecția' : 'Continuă'}
           onPrimary={next} primarySolid />
       )}
     </div>

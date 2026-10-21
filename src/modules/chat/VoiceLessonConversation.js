@@ -50,7 +50,7 @@ const createConversationId = () => {
   return `${value.slice(0, 8)}-${value.slice(8, 12)}-${value.slice(12, 16)}-${value.slice(16, 20)}-${value.slice(20)}`;
 };
 
-export default function VoiceLessonConversation({ level, lessonId, pathId, lessonTitle, task, onComplete }) {
+export default function VoiceLessonConversation({ level, lessonId, pathId, lessonTitle, task, stepNumber, onComplete }) {
   const [configured, setConfigured] = useState(null);
   const [status, setStatus] = useState('idle');
   const [voiceSession, setVoiceSession] = useState(null);
@@ -695,7 +695,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   };
 
   return <section className="voice-lesson" aria-labelledby="voice-lesson-title">
-    <p className="lesson-eyebrow">Pasul 7 · Practică vocală</p>
+    <p className="lesson-eyebrow">{stepNumber ? `Pasul ${stepNumber} · ` : ''}Practică vocală</p>
     <h1 id="voice-lesson-title">Hai să vorbim în norvegiană</h1>
     <p className="lesson-lead">Dialog ghidat din „{lessonTitle}”. Nora reacționează la răspunsurile tale și rămâne la materia lecției.</p>
     <div className={`voice-lesson__card ${status === 'idle' ? 'voice-lesson__card--welcome' : ''}`}>

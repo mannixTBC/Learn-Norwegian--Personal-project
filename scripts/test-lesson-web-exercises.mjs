@@ -32,6 +32,7 @@ await build({ configFile: resolve(root, 'vite.config.js'), logLevel: 'error', pl
     progress: resolve(root, 'src/services/curriculumProgress.js'),
     career: resolve(root, 'src/services/careerProfile.js'),
     review: resolve(root, 'src/services/spacedReview.js'),
+    flow: resolve(root, 'src/modules/lessons/norwegian-program/lessonFlow.js'),
   }, output: { entryFileNames: '[name].mjs' },
 } } });
 const load = (name) => import(pathToFileURL(resolve(outDir, `${name}.mjs`)));
@@ -41,6 +42,7 @@ const { courseCatalog } = await load('content');
 const { lessonResumeKey, readCurrentLesson } = await load('progress');
 const { getCareerLessonModule } = await load('career');
 const { readReviewItems } = await load('review');
+const { LESSON_STAGE, lessonStepState } = await load('flow');
 
 const storage = new Map();
 globalThis.localStorage = { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, String(value)), removeItem: (key) => storage.delete(key) };
@@ -240,7 +242,7 @@ console.log('✓ Desktop edge cases: wrong answers stay locked, Enter scores onc
 
 storage.clear();
 const key = `${lessonResumeKey('A1', 1, webExerciseUser)}_voice_v1`;
-localStorage.setItem(key, '5');
+localStorage.setItem(key, JSON.stringify(lessonStepState(LESSON_STAGE.EXERCISES)));
 let lessonScrollCalls = 0;
 const renderLesson = async () => act(async () => {
   renderer = TestRenderer.create(React.createElement(MemoryRouter, { initialEntries: ['/curs/a1/1'] },

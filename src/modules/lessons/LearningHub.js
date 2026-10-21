@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { courseCatalog } from './norwegian-program/lessonContent';
+import { LESSON_STEPS, readLessonStep } from './norwegian-program/lessonFlow';
 import { getLearningLevel } from './learningLevel';
 import { finalTestKey, lessonResumeKey, readCourseProgress, readCurrentLesson } from '../../services/curriculumProgress';
 import { levelDetails, levelLessons, levels } from './courseData';
@@ -15,7 +16,7 @@ import './FinalTestCard.css';
 import './ReviewBadge.css';
 
 const ACTIVE_LEVEL_KEY = 'norwegian_active_level';
-const LESSON_PROGRESS_STEPS = 7;
+const LESSON_PROGRESS_STEPS = LESSON_STEPS.length;
 
 const BookIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -25,20 +26,9 @@ const BookIcon = () => (
 
 const ChevronIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>;
 
-const readStoredNumber = (key) => {
-  try {
-    const raw = localStorage.getItem(key);
-    if (raw === null) return null;
-    const value = Number(JSON.parse(raw));
-    return Number.isFinite(value) ? value : null;
-  } catch (_) {
-    return null;
-  }
-};
-
 const readLessonSteps = (levelCode, lessonId, user) => {
-  const value = readStoredNumber(`${lessonResumeKey(levelCode, lessonId, user)}_voice_v1`) || 0;
-  return Math.min(LESSON_PROGRESS_STEPS, Math.max(0, Math.trunc(value)));
+  const legacyKey = lessonResumeKey(levelCode, lessonId, user);
+  return readLessonStep(`${legacyKey}_voice_v1`, legacyKey);
 };
 
 const SectionHeading = ({ section }) => (

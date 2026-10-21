@@ -35,6 +35,7 @@ await build({ configFile: resolve(root, 'vite.config.js'), logLevel: 'error', pl
     catalog: resolve(root, 'src/modules/lessons/norwegian-program/lessonContent.js'),
     lesson: resolve(root, 'src/modules/lessons/norwegian-program/LessonProgram.js'),
     progress: resolve(root, 'src/services/curriculumProgress.js'),
+    flow: resolve(root, 'src/modules/lessons/norwegian-program/lessonFlow.js'),
   }, output: { entryFileNames: '[name].mjs' },
 } } });
 const load = (name) => import(pathToFileURL(resolve(outDir, `${name}.mjs`)));
@@ -42,6 +43,7 @@ const { default: Grammar, GrammarHighlight } = await load('grammar');
 const { courseCatalog } = await load('catalog');
 const { default: LessonProgram } = await load('lesson');
 const { lessonResumeKey } = await load('progress');
+const { LESSON_STAGE, lessonStepState } = await load('flow');
 const normalize = (text) => text.normalize('NFC').toLocaleLowerCase('nb-NO').replace(/[.!?,]/g, '').replace(/\s+/g, ' ').trim();
 const all = Object.values(courseCatalog).flatMap((course) => course.lessons.map((lesson) => ({ course, lesson })));
 const positions = new Map(all.map(({ lesson }, index) => [lesson.uid, index]));
@@ -108,7 +110,7 @@ for (const isMobile of [true, false]) {
   mobile = isMobile;
   for (const { course, lesson } of all) {
     storage.clear();
-    localStorage.setItem(`${lessonResumeKey(course.code, lesson.id, { id: 'grammar-test' })}_voice_v1`, '4');
+    localStorage.setItem(`${lessonResumeKey(course.code, lesson.id, { id: 'grammar-test' })}_voice_v1`, JSON.stringify(lessonStepState(LESSON_STAGE.GRAMMAR)));
     await act(async () => { renderer = TestRenderer.create(React.createElement(MemoryRouter, { initialEntries: [`/curs/${course.code.toLowerCase()}/${lesson.id}`] }, React.createElement(Route, { path: '/curs/:level/:lessonId', component: LessonProgram })), { createNodeMock: () => ({ scrollTo() {}, focus() {} }) }); });
     assert.equal(nodes(renderer, 'lesson-grammar').length, 1, `${lesson.uid}: actual ${mobile ? 'mobile' : 'web'} route renders grammar`);
     assert.equal(nodes(renderer, 'lesson-grammar__card').length, lesson.grammar.points.length + (lesson.grammar.recall ? 1 : 0));

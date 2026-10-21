@@ -32,6 +32,7 @@ await build({ configFile: resolve(root, 'vite.config.js'), logLevel: 'error', pl
     progress: resolve(root, 'src/services/curriculumProgress.js'),
     career: resolve(root, 'src/services/careerProfile.js'),
     review: resolve(root, 'src/services/spacedReview.js'),
+    flow: resolve(root, 'src/modules/lessons/norwegian-program/lessonFlow.js'),
   }, output: { entryFileNames: '[name].mjs' },
 } } });
 const load = (name) => import(pathToFileURL(resolve(outDir, `${name}.mjs`)));
@@ -41,6 +42,7 @@ const { courseCatalog } = await load('content');
 const { courseProgressKey, lessonResumeKey, readCurrentLesson } = await load('progress');
 const { careerPaths, getCareerLessonModule } = await load('career');
 const { readReviewItems } = await load('review');
+const { LESSON_STEPS, LESSON_STAGE, decodeLessonStep, lessonStepState } = await load('flow');
 const storage = new Map();
 globalThis.localStorage = { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, String(value)), removeItem: (key) => storage.delete(key) };
 globalThis.window = Object.assign(new EventTarget(), { localStorage, scrollTo() {}, location: { search: '' } });
@@ -141,13 +143,75 @@ console.log('✓ Incorrect feedback persists without rescoring; keyboard input a
 
 const user = { id: 'lesson-app-test' };
 const key = `${lessonResumeKey('A1', 1, user)}_voice_v1`;
-localStorage.setItem(key, '5');
-const renderLesson = async () => act(async () => {
-  renderer = TestRenderer.create(React.createElement(MemoryRouter, { initialEntries: ['/curs/a1/1'] }, React.createElement(Switch, null,
+const renderLesson = async (level = 'a1', lessonId = 1) => act(async () => {
+  renderer = TestRenderer.create(React.createElement(MemoryRouter, { initialEntries: [`/curs/${level}/${lessonId}`] }, React.createElement(Switch, null,
     React.createElement(Route, { path: '/curs/:level/:lessonId', component: LessonProgram }),
     React.createElement(Route, { exact: true, path: '/dashboard' }, React.createElement('p', { id: 'app-home' }, 'Acasă')),
   )), { createNodeMock: () => ({ focus() {}, scrollTo() {} }) });
 });
+assert.equal(LESSON_STEPS.length, 9);
+assert.equal(LESSON_STEPS[LESSON_STAGE.RECALL], 'Înainte de ceva nou');
+for (let oldStep = 0; oldStep <= 7; oldStep += 1) {
+  assert.equal(decodeLessonStep(oldStep), oldStep ? oldStep + 1 : 0, `legacy stage ${oldStep} retains its original purpose`);
+}
+for (let newStep = 0; newStep < LESSON_STEPS.length; newStep += 1) {
+  assert.equal(decodeLessonStep(lessonStepState(newStep)), newStep, 'a saved new stage is never shifted twice');
+}
+assert.equal(decodeLessonStep(null, 6), LESSON_STAGE.EXERCISES, 'older pre-voice results safely resume at exercises');
+assert.equal(decodeLessonStep({ version: 2, step: 'invalid' }), 0, 'malformed saved stages recover at the introduction');
+
+for (const app of [true, false]) {
+  storage.clear();
+  document.documentElement.classList.contains = (name) => app && name === 'is-installed-app';
+  const recallKey = `${lessonResumeKey('A1', 13, user)}_voice_v1`;
+  const forward = () => app ? byClass('lapp-bar__primary')[0] : byClass('lesson-navigation')[0].findByProps({ className: 'primary' });
+  const back = () => app ? byClass('lapp-bar__back')[0] : byClass('lesson-navigation')[0].findAllByType('button')[0];
+  await renderLesson('a1', 13);
+  assert.equal(byClass('curriculum-recall').length, 0, 'introduction keeps its own purpose without the recall block');
+  await click(forward());
+  assert.equal(byClass('curriculum-recall').length, 1, 'step two contains recall as its own activity');
+  assert.ok(text(byClass('curriculum-recall')[0]).includes('Înainte de ceva nou'));
+  assert.deepEqual(JSON.parse(localStorage.getItem(recallKey)), lessonStepState(LESSON_STAGE.RECALL));
+  if (app) {
+    const progress = renderer.root.findByProps({ 'aria-label': 'Progresul lecției' });
+    assert.equal(progress.props['aria-valuenow'], 2);
+    assert.equal(progress.props['aria-valuemax'], 9);
+  } else assert.equal(byClass('lesson-stepper')[0].findAllByType('button').length, 9, 'web navigation exposes the same nine steps');
+  const recalled = courseCatalog.A1.lessons[12].recycledVocabulary[0];
+  await click(renderer.root.findByProps({ 'aria-label': `Ascultă ${recalled.entry[0]}` }));
+  assert.equal(lessonSpeech.at(-1).text, recalled.entry[0], 'the separate recall stage still plays the original expression');
+  await click(button('Verifică sensul'));
+  assert.ok(text(byClass('curriculum-recall')[0]).includes(recalled.entry[1]), 'recall reveals the original saved meaning');
+  await click(button('Mai am nevoie să repet'));
+  const recalledReview = readReviewItems().find((item) => item.source === 'curriculum-recall');
+  assert.equal(recalledReview.answer, recalled.entry[1], 'recall still saves the original expression meaning for review');
+  assert.ok(button('Adăugat în recapitulare').props.disabled);
+  await click(back());
+  assert.equal(byClass('curriculum-recall').length, 0, 'recall Back returns to introduction');
+  await click(forward());
+  await click(forward());
+  assert.equal(byClass('curriculum-recall').length, 0, 'vocabulary remains a separate step after recall');
+  assert.ok(text(renderer.root).includes(app ? 'Cuvinte în context' : 'Vocabular esențial'));
+  await click(app ? byClass('lapp-bar__back')[0] : back());
+  assert.equal(byClass('curriculum-recall').length, 1, 'the first vocabulary item can return to recall');
+  await unmount();
+  await renderLesson('a1', 13);
+  assert.equal(byClass('curriculum-recall').length, 1, 'reload stays on new recall step instead of remapping it');
+  await unmount();
+  storage.clear();
+  localStorage.setItem(key, JSON.stringify(lessonStepState(LESSON_STAGE.RECALL)));
+  await renderLesson();
+  assert.equal(byClass('curriculum-recall').length, 1, 'the very first lesson has a useful recall-step alternative');
+  assert.ok(text(byClass('curriculum-recall')[0]).trim().length > 100, 'first-lesson preparation is useful even without earlier vocabulary');
+  await click(forward());
+  assert.ok(text(renderer.root).includes(app ? 'Cuvinte în context' : 'Vocabular esențial'), 'first-lesson preparation can continue without a blocking answer');
+  await unmount();
+}
+console.log('✓ Shared nine-step flow: introduction → recall → vocabulary, Back, reload and first-lesson preparation work on app and web.');
+storage.clear();
+lessonSpeech.length = 0;
+document.documentElement.classList.contains = (name) => name === 'is-installed-app';
+localStorage.setItem(key, JSON.stringify(lessonStepState(LESSON_STAGE.EXERCISES)));
 await renderLesson();
 assert.equal(byClass('lapp-heading').length, 0, 'the exercise stage uses a compact introduction');
 assert.equal(byClass('lapp-practice__art').length, 0, 'the exercise illustration is removed');
@@ -244,6 +308,7 @@ document.documentElement.classList.contains = () => false;
 localStorage.setItem(key, '5');
 localStorage.setItem(`${key}_exercise_index`, '0');
 await renderLesson();
+assert.equal(decodeLessonStep(JSON.parse(localStorage.getItem(key))), LESSON_STAGE.EXERCISES, 'legacy exercise progress resumes at its original purpose without changing response keys');
 const webQuestion = byClass('practice-card')[0];
 const webOptions = webQuestion.findByProps({ className: 'choice-list' }).findAllByType('button');
 assert.ok(webOptions.every((node) => node.props.disabled), 'desktop preserves the already checked app answer');

@@ -14,7 +14,7 @@ await build({ configFile: entry('vite.config.js'), logLevel: 'error', plugins: [
   resolveId(id) { if (id.endsWith('/AuthContext')) return 'virtual:curriculum-auth'; if (id.endsWith('/supabaseLearning')) return 'virtual:curriculum-sync'; },
   load(id) { if (id === 'virtual:curriculum-auth') return 'export const useAuth = () => ({ user: { id: "curriculum-test" } });'; if (id === 'virtual:curriculum-sync') return 'export const syncLearningProgress = async () => ({}); export const syncStudyActivity = async () => ({});'; },
 }], build: { ssr: true, outDir, emptyOutDir: false, rollupOptions: {
-  input: { review: entry('src/services/spacedReview.js'), catalog: entry('src/modules/lessons/norwegian-program/lessonContent.js'), overview: entry('src/modules/lessons/courseData.js'), progress: entry('src/services/curriculumProgress.js'), hub: entry('src/modules/lessons/LearningHub.js'), practice: entry('src/modules/lessons/norwegian-program/CurriculumPractice.js'), career: entry('src/services/careerProfile.js'), lesson: entry('src/modules/lessons/norwegian-program/LessonProgram.js') },
+  input: { review: entry('src/services/spacedReview.js'), catalog: entry('src/modules/lessons/norwegian-program/lessonContent.js'), overview: entry('src/modules/lessons/courseData.js'), progress: entry('src/services/curriculumProgress.js'), hub: entry('src/modules/lessons/LearningHub.js'), practice: entry('src/modules/lessons/norwegian-program/CurriculumPractice.js'), career: entry('src/services/careerProfile.js'), lesson: entry('src/modules/lessons/norwegian-program/LessonProgram.js'), flow: entry('src/modules/lessons/norwegian-program/lessonFlow.js') },
   output: { entryFileNames: '[name].mjs' },
 } } });
 const load = (name) => import(pathToFileURL(resolve(outDir, `${name}.mjs`)));
@@ -26,6 +26,7 @@ const { default: LearningHub } = await load('hub');
 const { CurriculumProduction, CurriculumRecall } = await load('practice');
 const { default: LessonProgram } = await load('lesson');
 const { saveReviewItem, rateReviewItem, getDueReviewItems } = await load('review');
+const { LESSON_STAGE, lessonStepState } = await load('flow');
 const normalize = (text) => text.normalize('NFC').toLocaleLowerCase('nb-NO').replace(/[.!?,]/g, '').replace(/\s+/g, ' ').trim();
 const seenUids = new Set();
 const known = new Set();
@@ -111,6 +112,8 @@ localStorage.setItem('norwegian_active_level', 'C2');
 assert.equal(readCurrentLesson(freshUser, courseCatalog), null, 'browsing a level does not start it');
 localStorage.setItem(`${lessonResumeKey('B1', 8, freshUser)}_voice_v1`, '2');
 assert.deepEqual(readCurrentLesson(freshUser, courseCatalog), { level: 'B1', lessonId: 8 }, 'existing saved lessons remain resumable');
+localStorage.setItem(`${lessonResumeKey('B1', 8, freshUser)}_voice_v1`, JSON.stringify(lessonStepState(LESSON_STAGE.RECALL)));
+assert.deepEqual(readCurrentLesson(freshUser, courseCatalog), { level: 'B1', lessonId: 8 }, 'versioned recall progress is recognized as a started lesson without a current marker');
 localStorage.setItem(currentLessonKey(freshUser), JSON.stringify({ level: 'A2', lessonId: 6 }));
 assert.deepEqual(readCurrentLesson(freshUser, courseCatalog), { level: 'A2', lessonId: 6 }, 'the last opened lesson takes priority over older partial lessons');
 localStorage.setItem(courseProgressKey('A2', freshUser), JSON.stringify({ completed: [6, 7] }));
@@ -121,7 +124,7 @@ localStorage.setItem(currentLessonKey(freshUser), '{invalid');
 assert.deepEqual(readCurrentLesson(freshUser, courseCatalog), { level: 'B1', lessonId: 8 });
 assert.notEqual(currentLessonKey(freshUser), currentLessonKey(user));
 localStorage.setItem(currentLessonKey(user), JSON.stringify({ level: 'A1', lessonId: 6 }));
-localStorage.setItem(`${lessonResumeKey('A1', 6, user)}_voice_v1`, '2');
+localStorage.setItem(`${lessonResumeKey('A1', 6, user)}_voice_v1`, JSON.stringify(lessonStepState(LESSON_STAGE.RECALL)));
 console.log('✓ Current lesson follows actual user progress and survives browsing, completion and invalid saved data.');
 
 const reviewNow = Date.now();
@@ -149,6 +152,10 @@ for (const level of Object.keys(courseCatalog)) {
     { createNodeMock: ({ props }) => ({ focus() { hubFocusedId = props.id; } }) });
   });
   assert.equal(hubRenderer.root.findAll((node) => hubHasClass(node, 'learn-page')).length, 1, 'the earlier page shell is retained');
+  if (level === 'A1') {
+    assert.ok(hubText(hubRenderer.root).includes('1 din 9 pași'), 'hub progress includes the new recall step in the total');
+    assert.ok(!hubText(hubRenderer.root).includes('din 7 pași'), 'the earlier seven-step count is no longer displayed');
+  }
   const mobile = () => hubRenderer.root.find((node) => hubHasClass(node, 'learn-app'));
   const web = () => hubRenderer.root.find((node) => hubHasClass(node, 'level-section'));
   const mobileRows = () => mobile().findAll((node) => node.type === 'a' && hubHasClass(node, 'learn-app__lesson'));
@@ -247,10 +254,10 @@ const a1Progress = { unlocked: 3, completed: [1, 2] };
 const c1Progress = { unlocked: 7, completed: [3, 4, 5, 6] };
 localStorage.setItem(courseProgressKey('A1', user), JSON.stringify(a1Progress));
 localStorage.setItem(courseProgressKey('C1', user), JSON.stringify(c1Progress));
-localStorage.setItem(`${lessonResumeKey('A1', 1, user)}_voice_v1`, '1');
+localStorage.setItem(`${lessonResumeKey('A1', 1, user)}_voice_v1`, JSON.stringify(lessonStepState(LESSON_STAGE.VOCABULARY)));
 const renderLesson = (level, id) => React.createElement(MemoryRouter, null, React.createElement(LessonProgram, { match: { params: { level, lessonId: String(id) } } }));
 await act(async () => { renderer = TestRenderer.create(renderLesson('a1', 1)); });
-assert.ok(renderer.root.findByProps({ className: 'lesson-content lesson-content--step-1' }));
+assert.ok(renderer.root.findByProps({ className: `lesson-content lesson-content--step-${LESSON_STAGE.VOCABULARY}` }));
 assert.deepEqual(readCurrentLesson(user, courseCatalog), { level: 'A1', lessonId: 6 }, 'reviewing a completed lesson does not replace the study position');
 await act(async () => renderer.update(renderLesson('c1', 7)));
 assert.ok(renderer.root.findByProps({ className: 'lesson-content lesson-content--step-0' }));
