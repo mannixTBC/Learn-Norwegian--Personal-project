@@ -60,7 +60,7 @@ function Session({ section, level, user }) {
   const progress = state.stage === 'intro' ? 0 : state.stage === 'result' ? 100 : ((state.stage === 'practical' ? 6 : 0) + state.index) / 8 * 100;
   const reviewing = reviewIndex !== null ? summary.wrong[reviewIndex] : null;
   return <div className="section-test"><div className="st-shell">
-    <header className="st-header"><Link to={home} aria-label="Salvează și închide testul">×</Link><div><strong>Test de secțiune</strong><small>{level} · {section.title}</small></div><span>{section.number}/6</span></header>
+    <header className="st-header"><Link to={home} aria-label="Salvează și închide testul">×</Link><div><strong>Test final</strong><small>{level} · {section.title}</small></div><span>{section.number}/6</span></header>
     <div className="st-track" role="progressbar" aria-label="Progresul testului" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}><span style={{ width: `${progress}%` }}/></div>
     <main className="st-content">
       {storageError && <p role="status">Salvarea locală nu este disponibilă. Păstrează pagina deschisă până termini.</p>}
