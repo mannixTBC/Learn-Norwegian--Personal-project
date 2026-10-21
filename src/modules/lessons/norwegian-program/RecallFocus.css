@@ -1,0 +1,51 @@
+.recall-focus {
+  --r-ink:var(--a-ink,#173d3f);
+  --r-sub:var(--a-sub,#5c706a);
+  --r-teal:var(--a-teal,#205d54);
+  --r-card:var(--a-card,#fffefa);
+  --r-tint:var(--a-tint,#eaf0e4);
+  --r-line:var(--a-border,#dfddd0);
+  width:100%; max-width:620px; margin:0 auto; color:var(--r-ink);
+}
+.recall-focus * { box-sizing:border-box; }
+.recall-focus__heading { padding:12px 0 0; margin-bottom:20px; }
+.recall-focus__eyebrow { color:var(--r-teal); font-size:.68rem; font-weight:800; letter-spacing:.09em; text-transform:uppercase; }
+.recall-focus__heading h1 { margin:8px 0; color:var(--r-ink); font-size:clamp(1.55rem,6.5vw,1.95rem); line-height:1.16; font-weight:750; letter-spacing:-.025em; }
+.recall-focus__heading p { margin:0; color:var(--r-sub); font-size:.94rem; line-height:1.55; }
+.recall-focus__progress { display:flex; justify-content:space-between; align-items:center; gap:16px; margin:0 0 12px; color:var(--r-sub); font-size:.8rem; }
+.recall-focus__progress>div { display:flex; flex-wrap:wrap; gap:5px; }
+.recall-focus__progress i { width:7px; height:7px; border-radius:50%; background:var(--a-dots,#dce5d7); }
+.recall-focus__progress .is-current { width:20px; border-radius:6px; background:var(--r-teal); }
+.recall-focus__progress .is-done { background:var(--r-teal); }
+.recall-focus__card { padding:24px; border:1px solid var(--r-line); border-radius:22px; background:var(--r-card); box-shadow:0 4px 16px rgba(48,65,46,.025); text-align:center; overflow-wrap:anywhere; }
+.recall-focus__source { display:block; color:var(--r-sub); font-size:.78rem; line-height:1.5; }
+.recall-focus__card h2 { margin:28px 0 18px; color:var(--r-ink); font-size:clamp(1.55rem,6vw,2rem); font-weight:750; line-height:1.3; letter-spacing:-.02em; }
+.recall-focus button { min-height:48px; padding:11px 16px; border:1px solid var(--r-line); border-radius:13px; background:var(--r-card); color:var(--r-teal); font:inherit; font-size:.94rem; font-weight:650; line-height:1.4; cursor:pointer; }
+.recall-focus button:focus-visible { outline:3px solid #8bab8e; outline-offset:3px; }
+.recall-focus button:hover:not(:disabled) { filter:brightness(.97); }
+.recall-focus button:disabled { opacity:.45; cursor:default; }
+.recall-focus .recall-focus__primary { background:var(--r-teal); color:#fffefa; border-color:var(--r-teal); }
+.recall-focus .recall-focus__audio { display:grid; place-items:center; width:50px; height:50px; margin:0 auto; padding:0; border-radius:50%; background:var(--r-teal); color:#fffefa; border:0; box-shadow:0 4px 10px rgba(32,93,84,.12); }
+.recall-focus__audio svg { width:23px; height:23px; fill:currentColor; }
+.recall-focus__answer { display:grid; align-items:center; min-height:74px; margin-top:22px; }
+.recall-focus__answer button { background:var(--r-tint); border-color:transparent; }
+.recall-focus__answer p { margin:0; padding:18px; border-radius:14px; background:var(--r-tint); color:var(--r-ink); font-size:1.08rem; font-weight:650; line-height:1.5; }
+.recall-focus__choices { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px; }
+.recall-focus__hint { margin:12px 0 0; min-height:36px; text-align:center; color:var(--r-sub); font-size:.77rem; line-height:1.5; }
+.recall-focus__footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:12px; color:var(--r-sub); font-size:.75rem; }
+.recall-focus__footer button { padding:8px 0; background:transparent; border:0; font-size:.8rem; }
+.recall-focus__badge { display:grid; place-items:center; width:54px; height:54px; margin:0 auto; background:var(--r-tint); color:var(--r-teal); border-radius:50%; font-size:1.6rem; }
+.recall-focus__summary h2 { margin:20px 0 12px; font-size:1.4rem; }
+.recall-focus__summary p { color:var(--r-sub); line-height:1.65; margin:0 0 24px; }
+.recall-focus__summary button { width:100%; }
+.recall-focus__error { color:var(--r-ink); padding:10px; border-left:3px solid var(--r-teal); font-size:.85rem; }
+.lapp--step-1 .lapp-content { padding-bottom:calc(20px + env(safe-area-inset-bottom,0px)); scroll-padding-bottom:20px; }
+@media(max-height:740px) and (max-width:680px) {
+  .recall-focus__heading { margin-bottom:12px; padding-top:4px; }
+  .recall-focus__card { padding:18px; }
+  .recall-focus__card h2 { margin:18px 0 12px; }
+  .recall-focus__answer { margin-top:14px; min-height:60px; }
+  .recall-focus__choices { margin-top:12px; }
+  .recall-focus__footer { margin-top:0; }
+}
+@media(max-width:360px) { .recall-focus__choices { gap:8px; } .recall-focus__choices button { padding:10px 8px; font-size:.85rem; } }

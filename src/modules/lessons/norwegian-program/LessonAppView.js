@@ -1,3 +1,4 @@
+import RecallFocus from './RecallFocus';
 import DialogueWalkthrough from './DialogueWalkthrough';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
@@ -8,7 +9,7 @@ import VoiceLessonConversation from '../../chat/VoiceLessonConversation';
 import { LessonMetaIcon, HighlightedSentence, DialogueAudioButton, SpeakerAvatar, getDialogueVoice, DialogueLineAudioButton } from './lessonParts';
 import LessonAppExercise from './LessonAppExercise';
 import { getLessonImage } from '../lessonVisuals';
-import { CurriculumRecall } from './CurriculumPractice';
+
 import LessonGrammar, { grammarStepDescription } from './LessonGrammar';
 import { LESSON_STAGE } from './lessonFlow';
 import './LessonProgramApp.css';
@@ -154,7 +155,7 @@ const LessonAppView = (props) => {
 
         {step === LESSON_STAGE.RECALL && (
           <section className="lapp-stage--recall">
-            <CurriculumRecall key={lesson.uid} lesson={lesson} level={levelCode} standalone />
+            <RecallFocus key={lesson.uid} lesson={lesson} level={levelCode} onContinue={next} onBack={previous} />
           </section>
         )}
 
@@ -302,7 +303,7 @@ const LessonAppView = (props) => {
         )}
       </main>
 
-      {step < resultStep && step !== LESSON_STAGE.VOCABULARY && step !== LESSON_STAGE.CAREER && step !== LESSON_STAGE.EXERCISES && (
+      {step < resultStep && step !== LESSON_STAGE.RECALL && step !== LESSON_STAGE.VOCABULARY && step !== LESSON_STAGE.CAREER && step !== LESSON_STAGE.EXERCISES && (
         <AppBar onBack={previous} backDisabled={step === LESSON_STAGE.INTRO}
           primaryLabel={step === LESSON_STAGE.INTRO ? 'Începe lecția' : step === LESSON_STAGE.VOICE ? 'Finalizează lecția' : 'Continuă'}
           onPrimary={next} primarySolid />
