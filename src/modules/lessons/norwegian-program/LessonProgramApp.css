@@ -474,3 +474,15 @@ html.is-installed-app .lesson-shell.lapp{ display:grid; grid-template-columns:mi
   .lapp-result__review-count{margin-top:12px}
   .lapp-result__actions{margin-top:14px}
 }
+
+/* Acțiunea finală ocupă aceeași poziție ca navigarea celorlalți pași. */
+.lapp--result .lapp-result__actions{
+  position:fixed;right:0;bottom:0;left:0;z-index:50;
+  display:grid;grid-template-columns:minmax(0,1fr);gap:9px;
+  margin:0;padding:12px max(20px,calc((100% - 620px)/2)) calc(16px + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--a-cardline);background:var(--a-bg);
+}
+.lapp--result .lapp-result__actions>button,
+.lapp--result .lapp-result__actions>a{min-height:52px;border-radius:14px}
+.lapp--result .lapp-content{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+@media(max-width:380px){.lapp--result .lapp-result__actions{padding-right:16px;padding-left:16px}}
