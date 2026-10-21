@@ -228,7 +228,7 @@ const LessonAppView = (props) => {
         {step === LESSON_STAGE.GRAMMAR && (
           <section>
             <StepHeading title={lesson.grammar.mode === 'review' ? 'Trei repere de recapitulare' : 'Două repere utile'} sub={grammarStepDescription(lesson)} />
-            <LessonGrammar key={lesson.uid} lesson={lesson} />
+            <LessonGrammar key={lesson.uid} lesson={lesson} onBack={previous} onContinue={next} />
           </section>
         )}
 
@@ -303,7 +303,7 @@ const LessonAppView = (props) => {
         )}
       </main>
 
-      {step < resultStep && step !== LESSON_STAGE.RECALL && step !== LESSON_STAGE.VOCABULARY && step !== LESSON_STAGE.CAREER && step !== LESSON_STAGE.EXERCISES && (
+      {step < resultStep && step !== LESSON_STAGE.GRAMMAR && step !== LESSON_STAGE.RECALL && step !== LESSON_STAGE.VOCABULARY && step !== LESSON_STAGE.CAREER && step !== LESSON_STAGE.EXERCISES && (
         <AppBar onBack={previous} backDisabled={step === LESSON_STAGE.INTRO}
           primaryLabel={step === LESSON_STAGE.INTRO ? 'Începe lecția' : step === LESSON_STAGE.VOICE ? 'Finalizează lecția' : 'Continuă'}
           onPrimary={next} primarySolid />
