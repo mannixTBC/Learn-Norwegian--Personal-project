@@ -60,7 +60,7 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
   };
 
   return (
-    <div className="lapp-exercise">
+    <div className={`lapp-exercise${checked ? ' is-checked' : ''}`}>
       {reviewing && <p className="lapp-exercise__reviewed">Răspuns deja verificat</p>}
       <h2 ref={heading} tabIndex={-1}>{exercise.prompt}</h2>
       {exercise.instruction && <p className="lapp-exercise__instruction">{exercise.instruction}</p>}

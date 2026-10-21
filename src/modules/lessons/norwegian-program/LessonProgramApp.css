@@ -434,3 +434,22 @@ html.is-installed-app .lesson-shell.lapp{ display:grid; grid-template-columns:mi
   .lapp-intro .lapp-objectives p{ font-size:.88rem; line-height:1.4; }
   .lapp-intro .lapp-bridge p{ font-size:.82rem; }
 }
+
+/* Pasul 7: la afișarea explicației recuperăm spațiul dintre elemente,
+   păstrând toate răspunsurile și explicația integrală accesibile. */
+@media(max-width:768px) and (max-height:900px){
+  .lapp--exercises:has(.lapp-exercise.is-checked) .lapp-content{ padding-top:4px; padding-bottom:calc(90px + env(safe-area-inset-bottom,0px)); }
+  .lapp-practice:has(.is-checked) .lapp-practice__intro{ margin:4px 0 10px; }
+  .lapp-practice:has(.is-checked) .lapp-practice__intro h1{ font-size:1.25rem; }
+  .lapp-practice:has(.is-checked) .lapp-practice__progress{ margin-bottom:10px; }
+  .lapp-exercise.is-checked h2{ margin-bottom:12px; font-size:clamp(1.15rem,5vw,1.4rem); }
+  .lapp-exercise.is-checked .lapp-exercise__instruction{ margin:0 0 10px; }
+  .lapp-exercise.is-checked .lapp-options{ gap:6px; }
+  .lapp-exercise.is-checked .lapp-options button{ min-height:44px; padding:8px 12px; font-size:.9rem; }
+  .lapp-exercise.is-checked .lapp-exercise__card{ padding:12px; }
+  .lapp-exercise.is-checked .lapp-exercise__feedback{ margin-top:10px; padding:11px 13px; }
+  .lapp-exercise.is-checked .lapp-exercise__feedback>strong{ margin-bottom:5px; font-size:.9rem; }
+  .lapp-exercise.is-checked .lapp-exercise__feedback p{ margin:4px 0; line-height:1.4; }
+  .lapp-exercise.is-checked .lapp-exercise__feedback small{ margin-top:7px; padding-top:6px; }
+  .lapp-exercise.is-checked .lapp-exercise__listen{ margin-top:4px; min-height:44px; }
+}
