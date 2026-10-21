@@ -146,9 +146,6 @@ const LessonAppView = (props) => {
               <h2>După această lecție vei putea:</h2>
               {lesson.objectives.map((objective) => <div key={objective}><span><CheckIcon /></span><p>{objective}</p></div>)}
             </div>
-            {lesson.buildsOn && (
-              <aside className="lapp-bridge"><span>Legătura cu ce știi deja</span><p>{lesson.buildsOn}</p></aside>
-            )}
           </section>
         )}
 
