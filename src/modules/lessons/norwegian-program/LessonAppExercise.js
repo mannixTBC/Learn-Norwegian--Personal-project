@@ -104,13 +104,15 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
       </div>}
       {!checked && exercise.type === 'choice' && <p className="lapp-exercise__hint">Atinge răspunsul. Se verifică imediat.</p>}
       {checked && <div ref={feedback} className={`lapp-exercise__feedback ${outcome ? 'is-correct' : 'is-wrong'}`} role="status" aria-live="polite">
-        <strong><span className="lapp-exercise__feedback-icon" aria-hidden="true">{outcome ? '✓' : '!'}</span>{outcome ? 'Exact! Ai reținut bine.' : 'Să reținem diferența'}</strong>
+        <div className="lapp-exercise__feedback-heading">
+          <strong><span className="lapp-exercise__feedback-icon" aria-hidden="true">{outcome ? '✓' : '!'}</span>{outcome ? 'Exact! Ai reținut bine.' : 'Să reținem diferența'}</strong>
+          {!outcome && <small className="lapp-exercise__saved"><BookmarkIcon /> Salvat la Recapitulare</small>}
+        </div>
         {(!outcome || exercise.type !== 'choice') && <p className="lapp-exercise__answer">{!outcome && 'Răspuns corect: '}<b lang={exercise.type === 'choice' ? undefined : 'nb'}>{correctAnswer}</b></p>}
         {exercise.translation && <p>{exercise.translation}</p>}
         <p>{exercise.explanation}</p>
         {spokenAnswer && <button className="lapp-exercise__listen" type="button" onClick={playAnswer} disabled={playing} aria-label="Ascultă răspunsul corect"><SpeakerIcon />{playing ? 'Se redă…' : 'Ascultă'}</button>}
         {audioError && <p role="alert">{audioError}</p>}
-        {!outcome && <small><BookmarkIcon /> Salvat la Recapitulare</small>}
       </div>}
       {!checked && <p className="lapp-exercise__review-note"><BookmarkIcon /> Greșelile se salvează la Recapitulare.</p>}
       <footer className="lapp-exercise__footer"><div className="lapp-exercise__navigation">

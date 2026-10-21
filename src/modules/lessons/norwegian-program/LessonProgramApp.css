@@ -237,7 +237,7 @@ html.is-installed-app .lesson-shell.lapp{ display:grid; grid-template-columns:mi
 .lapp-exercise__hint{ margin:14px 0 0; color:var(--a-sub); font-size:.76rem; line-height:1.5; }
 .lapp-exercise__feedback{ margin-top:18px; padding:16px; border:1px solid #d9e6d5; border-radius:18px; background:#eaf3e8; color:var(--a-ink); scroll-margin-block:12px; }
 .lapp-exercise__feedback.is-wrong{ border-color:#e8dcc5; background:#f8f1e4; }
-.lapp-exercise__feedback>strong{ display:flex; align-items:center; gap:9px; margin-bottom:8px; font-size:.96rem; font-weight:750; line-height:1.4; }
+.lapp-exercise__feedback-heading>strong{ display:flex; align-items:center; gap:9px; margin-bottom:8px; font-size:.96rem; font-weight:750; line-height:1.4; }
 .lapp-exercise__feedback-icon{ display:grid; place-items:center; flex:0 0 26px; width:26px; height:26px; border-radius:50%; background:#d4e7cf; color:#2c6749; font-size:.9rem; font-weight:800; }
 .lapp-exercise__feedback.is-wrong .lapp-exercise__feedback-icon{ background:#efe2c8; color:#87622f; }
 .lapp-exercise__feedback p{ margin:5px 0; color:var(--a-sub); font-size:.87rem; line-height:1.6; overflow-wrap:anywhere; }
@@ -448,8 +448,12 @@ html.is-installed-app .lesson-shell.lapp{ display:grid; grid-template-columns:mi
   .lapp-exercise.is-checked .lapp-options button{ min-height:44px; padding:8px 12px; font-size:.9rem; }
   .lapp-exercise.is-checked .lapp-exercise__card{ padding:12px; }
   .lapp-exercise.is-checked .lapp-exercise__feedback{ margin-top:10px; padding:11px 13px; }
-  .lapp-exercise.is-checked .lapp-exercise__feedback>strong{ margin-bottom:5px; font-size:.9rem; }
+  .lapp-exercise.is-checked .lapp-exercise__feedback-heading>strong{ margin-bottom:5px; font-size:.9rem; }
   .lapp-exercise.is-checked .lapp-exercise__feedback p{ margin:4px 0; line-height:1.4; }
   .lapp-exercise.is-checked .lapp-exercise__feedback small{ margin-top:7px; padding-top:6px; }
   .lapp-exercise.is-checked .lapp-exercise__listen{ margin-top:4px; min-height:44px; }
 }
+
+.lapp-exercise__feedback-heading{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px 12px; margin-bottom:6px; }
+.lapp-exercise__feedback-heading>strong{ margin-bottom:0; }
+.lapp-exercise__feedback .lapp-exercise__saved{ margin:0; padding:0; border:0; font-size:.68rem; }
