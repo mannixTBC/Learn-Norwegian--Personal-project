@@ -21,7 +21,6 @@ function GameArt({ type }) {
   </svg>;
 }
 
-const descriptions = { listen: 'Înțelege și selectează cuvântul corect.', pronunciation: 'Exersează pronunția corectă.', verbs: 'Învață și exersează verbele.', quiz: 'Extinde-ți vocabularul.', order: 'Construiește propoziții corecte.', word: 'Găsește cuvintele corecte.' };
 
 export default function GamesMosaic({ level, balance, streak, cards, activities, reviewStats }) {
   const byId = Object.fromEntries(cards.map(card => [card.id, card]));
@@ -31,14 +30,14 @@ export default function GamesMosaic({ level, balance, streak, cards, activities,
     const card = byId[id];
     return { ...card, percent: Math.min(100, Math.round(card.progress.completed / card.progress.target * 100)), label: id === 'pronunciation' ? card.progress.completed ? `Record: ${card.progress.completed}%` : 'Nou' : `${card.progress.completed} din ${card.progress.target}` };
   })];
-  return <main className="mini-games">
+  return <main className="mini-games mini-games--compact">
     <header className="mini-top"><Link to="/dashboard" className="mini-brand">Nordlingo</Link><ExerciseLevelSelect level={level}/><span className="mini-coins"><img src="/images/norwegian-gold-coin.svg" alt=""/>{balance.toLocaleString('ro-RO')}<span className="mini-sr"> monede</span></span></header>
     <div className="mini-heading"><h1>Jocuri</h1><span className="mini-streak"><span aria-hidden="true">🔥</span> {streak} {streak === 1 ? 'zi' : 'zile'}</span></div>
     <Link to={`/hangman?nivel=${level}`} className="mini-daily"><h2>Provocarea zilei</h2><p>Descoperă cuvinte în norvegiană</p><span className="mini-start">Începe <span aria-hidden="true">→</span></span></Link>
-    <h2 className="mini-section-title">Alege un joc</h2>
-    <section className="mini-grid" aria-label="Mini-jocuri">{tiles.map(card => <Link key={card.id} to={card.to} className={`mini-tile mini-tile--${card.id}`}><GameArt type={card.id}/><div className="mini-tile-copy"><h3>{card.title}</h3><p>{descriptions[card.id]}</p></div><div className="mini-progress" aria-label={card.label}><span className="mini-stars" aria-hidden="true">{[1, 2, 3].map(star => <span key={star} className={card.percent >= star * 100 / 3 ? 'earned' : ''}>★</span>)}</span><small>{card.label}</small></div></Link>)}</section>
-    <Link className="mini-missions" to={`${missions.to}?nivel=${level}`}><GameArt type="missions"/><div><h2>Misiuni la serviciu</h2><p>Situații reale din viața profesională.</p><small>{missions.meta}</small></div><b aria-hidden="true">›</b></Link>
-    <Link className="mini-review" to={byId.review.to}><GameArt type="review"/><div><h2>Recapitulare</h2><p>Consolidează ce ai învățat.</p></div><span>{reviewStats.due ? `${reviewStats.due} de repetat` : reviewStats.total ? 'La zi' : 'Nou'}</span><b aria-hidden="true">›</b></Link>
+    <h2 className="mini-section-title mini-sr">Alege un joc</h2>
+    <section className="mini-grid" aria-label="Mini-jocuri">{tiles.map(card => <Link key={card.id} to={card.to} className={`mini-tile mini-tile--${card.id}`}><GameArt type={card.id}/><div className="mini-tile-copy"><h3>{card.title}</h3></div><div className="mini-progress" aria-label={card.label}><span className="mini-rating" aria-hidden="true">★</span><small>{card.label}</small></div><span className="mini-chevron" aria-hidden="true">›</span></Link>)}</section>
+    <Link className="mini-missions" to={`${missions.to}?nivel=${level}`}><GameArt type="missions"/><div><h2>Misiuni la serviciu</h2><small>{missions.meta}</small></div><b aria-hidden="true">›</b></Link>
+    <Link className="mini-review" to={byId.review.to}><GameArt type="review"/><div><h2>Recapitulare</h2></div><span>{reviewStats.due ? `${reviewStats.due} de repetat` : reviewStats.total ? 'La zi' : 'Nou'}</span><b aria-hidden="true">›</b></Link>
     <MobileAppNav activeLevel={level}/>
   </main>;
 }
