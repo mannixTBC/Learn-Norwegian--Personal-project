@@ -1,3 +1,4 @@
+import './SectionFinalTest.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { courseCatalog } from './norwegian-program/lessonContent';
@@ -148,6 +149,7 @@ const LearningHub = () => {
                       ? <em className="is-current">{completedSteps ? `${completedSteps} din ${LESSON_PROGRESS_STEPS} pași` : 'În desfășurare'}</em>
                       : <span className="learn-app__lesson-chevron"><ChevronIcon /></span>}
                 </Link>
+                {lesson.kind === 'consolidation' && <Link className="section-test-link" to={`/test-sectiune/${activeLevel.toLowerCase()}/${section.id}`}>Test de secțiune →<small>6 întrebări · o situație practică</small></Link>}
                 </React.Fragment>
               );
             })}
@@ -231,6 +233,7 @@ const LearningHub = () => {
                     <div className="course-lesson__body"><div className="course-lesson__meta"><span>{lesson.duration}</span><span>{lesson.kind === 'consolidation' ? 'Consolidare' : `${lesson.vocabulary} expresii`}</span>{completed ? <span className="completed-label">Finalizată</span> : lesson.id === currentLessonId && <span className="in-progress-label">{completedSteps ? `${completedSteps} din ${LESSON_PROGRESS_STEPS} pași` : 'În desfășurare'}</span>}</div><h3>{lesson.title}</h3><p>{lesson.description}</p><div className="topic-list">{lesson.topics.map((topic) => <span key={topic}>{topic}</span>)}<span className="personalized-topic">+ {careerPath.shortTitle}</span></div></div>
                     {unlocked ? <Link className="lesson-action" to={`/curs/${activeLevel.toLowerCase()}/${lesson.id}`} aria-label={`Deschide lecția ${lesson.title}`}>Deschide →</Link> : <span className="lesson-locked"><span role="img" aria-label="Blocat">🔒</span> Termină lecția anterioară</span>}
                   </article>
+                  {lesson.kind === 'consolidation' && <Link className="section-test-link" to={`/test-sectiune/${activeLevel.toLowerCase()}/${section.id}`}>Test de secțiune →<small>6 întrebări · o situație practică</small></Link>}
                   </React.Fragment>
                 );
               })}
