@@ -694,14 +694,13 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
     ended: 'Practică încheiată',
   };
 
-  return <section className="voice-lesson" aria-labelledby="voice-lesson-title">
+  return <section className={`voice-lesson voice-lesson--redesigned${active ? ' voice-lesson--active' : ''}`} aria-labelledby="voice-lesson-title">
     <p className="lesson-eyebrow">{stepNumber ? `Pasul ${stepNumber} · ` : ''}Practică vocală</p>
     <h1 id="voice-lesson-title">Hai să vorbim în norvegiană</h1>
-    <p className="lesson-lead">Dialog ghidat din „{lessonTitle}”. Nora reacționează la răspunsurile tale și rămâne la materia lecției.</p>
     <div className={`voice-lesson__card ${status === 'idle' ? 'voice-lesson__card--welcome' : ''}`}>
       {status === 'idle' && <div className="voice-lesson__art" aria-hidden="true" />}
-      <div className="voice-lesson__partner"><span className="voice-lesson__avatar" aria-hidden="true"><span className="voice-lesson__avatar-letter">N</span><picture className="voice-lesson__portrait"><source media="(min-width: 861px)" srcSet="/images/voice/nora-avatar.webp" /><img alt="" width="56" height="56" /></picture></span><div><strong>Nora</strong><span>Voce AI · {level} · {mode === 'realtime' ? 'dialog live' : 'mod compatibil'}</span></div><span className={`voice-lesson__status ${active ? 'voice-lesson__status--active' : ''}`} role="status">{labels[status]}</span></div>
-      {status === 'idle' && <div className="voice-lesson__welcome"><h2>Situația ta</h2><p>{task || 'Exersează situația lecției împreună cu Nora.'} Poți inventa numele și detaliile.</p><ul><li>Până la 8 răspunsuri</li><li>Ajutor când ai nevoie</li><li>Feedback pe obiective</li></ul></div>}
+      <div className="voice-lesson__partner"><span className="voice-lesson__avatar" aria-hidden="true"><span className="voice-lesson__avatar-letter">N</span><picture className="voice-lesson__portrait"><source media="(min-width: 861px)" srcSet="/images/voice/nora-avatar.webp" /><img src="/images/voice/nora-avatar.webp" alt="" width="56" height="56" /></picture></span><div><strong className="voice-lesson__name">Nora{['speaking', 'feedbackAudio'].includes(status) && <span className="voice-lesson__wave" aria-hidden="true">{[0,1,2,3,4].map((bar) => <i key={bar} />)}</span>}</strong><span>Voce AI · {level} · {mode === 'realtime' ? 'dialog live' : 'mod compatibil'}</span></div><span className={`voice-lesson__status ${active ? 'voice-lesson__status--active' : ''}`} role="status">{labels[status]}</span></div>
+      {status === 'idle' && <div className="voice-lesson__welcome"><span className="voice-lesson__eyebrow">Misiunea ta</span><h2>{(lessonTitle || 'Conversația lecției').replace(/^Misiune:\s*/i, '')}</h2><p>{task || 'Exersează situația lecției împreună cu Nora.'} Poți inventa numele și detaliile.</p><aside className="voice-lesson__tip"><span aria-hidden="true">☼</span>Folosește expresiile învățate în lecții.</aside><ul><li>Până la 8 răspunsuri</li><li>Ajutor la nevoie</li></ul></div>}
       {configured === false && <p className="voice-lesson__notice">Practica vocală nu este disponibilă momentan. Poți finaliza lecția și reveni mai târziu.</p>}
       {error && <p className="voice-lesson__error" role="alert">{error}</p>}
       {transcriptNotice && <p className="voice-lesson__notice" role="status">{transcriptNotice}</p>}
@@ -710,6 +709,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
         {messages.map((message, messageIndex) => message.role === 'user'
           ? <div key={`${message.role}-${message.turn}-${messageIndex}`} className="voice-lesson__message voice-lesson__message--user"><small>Tu</small><p lang="nb">{message.content}</p></div>
           : <div key={`${message.role}-${message.turn}-${messageIndex}`} className="voice-lesson__exchange">
+            <img className="voice-lesson__chat-avatar" src="/images/voice/nora-avatar.webp" alt="" width="28" height="28" />
             <div className="voice-lesson__message voice-lesson__message--assistant">
               <small>Nora</small>
               {message.reply && <p lang="nb">{message.reply}</p>}
@@ -766,8 +766,8 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
         {status === 'confirming' && <button type="button" onClick={retryPendingTranscript}>Mai încerc</button>}
         {active && <button type="button" onClick={stop}>Oprește conversația</button>}
       </div>
-      {status === 'idle' && <p className="voice-lesson__start-caption">O singură apăsare pornește dialogul.</p>}
-      <p className="voice-lesson__hint">{mode === 'realtime' ? 'Microfonul rămâne conectat pe durata dialogului. După ce Nora termină, vorbește natural; dialogul continuă automat.' : 'După ce Nora termină replica, vorbește natural. Dialogul continuă automat după o pauză scurtă.'}</p>
+      {status === 'idle' && <p className="voice-lesson__start-caption">Nora vorbește prima. Apoi răspunzi natural.</p>}
+
     </div>
   </section>;
 }
