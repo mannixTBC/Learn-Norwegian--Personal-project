@@ -407,3 +407,30 @@ html.is-installed-app .lesson-shell.lapp{ display:grid; grid-template-columns:mi
   .lapp .chat-assistant{ padding:15px; }
 }
 @media(prefers-reduced-motion:reduce){ .lapp *, .lapp *::before, .lapp *::after{ animation:none!important; transition:none!important; } }
+
+/* Introducerea își păstrează compoziția, dar spațiul decorativ urmează
+   înălțimea disponibilă. Conținutul lung rămâne accesibil prin scroll. */
+@media(max-width:768px){
+  .lapp--step-0 .lapp-content{ padding-top:0; padding-bottom:calc(88px + env(safe-area-inset-bottom,0px)); }
+  .lapp-intro .lapp-heading--large{
+    min-height:clamp(136px,calc(42dvh - 126px),280px);
+    padding:clamp(12px,calc(18dvh - 100px),64px) 27% 12px 0;
+    margin-bottom:8px;
+  }
+  .lapp-intro .lapp-heading__art{ top:-20px; height:clamp(190px,calc(44dvh - 80px),340px); }
+  .lapp-intro .lapp-heading--large h1{ font-size:clamp(1.65rem,7vw,2.35rem); }
+  .lapp-intro .lapp-stats{ margin-bottom:clamp(8px,2dvh,18px); }
+  .lapp-intro .lapp-objectives{ padding:4px 0 8px; }
+  .lapp-intro .lapp-objectives>div{ padding:clamp(4px,1dvh,9px) 0; }
+  .lapp-intro .lapp-bridge{ margin-bottom:0; padding:10px 14px; }
+  .lapp-intro .lapp-bridge p{ line-height:1.4; }
+}
+@media(max-width:768px) and (max-height:700px){
+  .lapp--step-0 .lapp-header__row{ padding-top:calc(8px + env(safe-area-inset-top,0px)); padding-bottom:8px; }
+  .lapp-intro .lapp-heading__sub{ font-size:.88rem; line-height:1.4; }
+  .lapp-intro .lapp-objectives h2{ margin-bottom:8px; font-size:.98rem; }
+  .lapp-intro .lapp-objectives>div{ gap:9px; }
+  .lapp-intro .lapp-objectives span{ width:26px; height:26px; flex-basis:26px; }
+  .lapp-intro .lapp-objectives p{ font-size:.88rem; line-height:1.4; }
+  .lapp-intro .lapp-bridge p{ font-size:.82rem; }
+}
