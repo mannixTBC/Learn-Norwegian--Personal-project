@@ -457,3 +457,20 @@ html.is-installed-app .lesson-shell.lapp{ display:grid; grid-template-columns:mi
 .lapp-exercise__feedback-heading{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px 12px; margin-bottom:6px; }
 .lapp-exercise__feedback-heading>strong{ margin-bottom:0; }
 .lapp-exercise__feedback .lapp-exercise__saved{ margin:0; padding:0; border:0; font-size:.68rem; }
+
+.lapp-statscard>.lapp-result__vocabulary{display:flex;width:100%;min-width:0;min-height:74px;align-items:center;gap:11px;padding:15px;border:1px solid var(--a-cardline);border-radius:18px;background:var(--a-card);font:inherit;text-align:left;cursor:pointer}
+.lapp-result__vocabulary:hover{border-color:#a9bfae;background:var(--a-chip)}
+.lapp-result__actions{grid-template-columns:minmax(0,1fr)}
+@media(max-width:768px){
+  .lapp--result .lapp-content{padding-top:0;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+  .lapp-result{padding-top:4px}
+  .lapp-result__hero{min-height:clamp(130px,calc(36dvh - 80px),225px);padding:12px 30% 16px 0}
+  .lapp-result__art{height:clamp(170px,30dvh,260px)}
+  .lapp-result__badge{width:48px;height:48px;margin-bottom:10px}
+  .lapp-result h1{font-size:clamp(1.9rem,7vw,2.5rem)}
+  .lapp-result__sub{font-size:.92rem;line-height:1.4}
+  .lapp-statscard{gap:8px}
+  .lapp-statscard>div,.lapp-statscard>.lapp-result__vocabulary{min-height:60px;padding:11px 13px}
+  .lapp-result__review-count{margin-top:12px}
+  .lapp-result__actions{margin-top:14px}
+}

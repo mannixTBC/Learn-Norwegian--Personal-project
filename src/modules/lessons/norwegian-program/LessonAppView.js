@@ -279,13 +279,12 @@ const LessonAppView = (props) => {
             <div className="lapp-statscard">
               <div><span><LessonMetaIcon type="vocabulary" /></span><strong>{score} din {lessonExercises.length}<small>Exerciții corecte</small></strong><b>{percentage}%</b></div>
               <div><span><LessonMetaIcon type="voice" /></span><strong>{voiceCompleted ? 'Dialog vocal finalizat' : 'Dialog vocal de exersat'}</strong><b>{voiceCompleted ? '✓' : '—'}</b></div>
-              <div><span><LessonMetaIcon type="level" /></span><strong>Expresii noi</strong><b>{lesson.introducedVocabulary.length}</b></div>
+              <button type="button" className="lapp-result__vocabulary" onClick={() => props.onReviewVocabulary()}><span><BookIcon /></span><strong>Revezi vocabularul</strong><b aria-hidden="true">→</b></button>
             </div>
             {reviewCount > 0 && (
               <div className="lapp-result__review-count"><span>De repetat</span><strong>{reviewCount}</strong></div>
             )}
             <div className="lapp-result__actions">
-              <button type="button" onClick={() => props.onReviewVocabulary()}><BookIcon /> Revezi vocabularul</button>
               {lesson.id < courseLessons.length
                 ? <button type="button" className="is-solid" onClick={goNextLesson}>Următoarea lecție →</button>
                 : <Link className="is-solid" to="/invata">Înapoi la curs</Link>}
