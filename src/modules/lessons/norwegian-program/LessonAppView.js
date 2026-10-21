@@ -118,7 +118,7 @@ const LessonAppView = (props) => {
     vocabularyIndex, careerPhraseIndex, exerciseIndex, answers, exerciseResponses, showVocabularyTranslations, showTranslations,
     contentRef, resultStep,
     setVocabularyIndex, setCareerPhraseIndex, setExerciseIndex,
-    toggleVocabularyTranslation, toggleTranslation, next, previous, goNextLesson, onRecordResult, onReplayExercises, onDraftExercise,
+    toggleVocabularyTranslation, toggleTranslation, next, previous, goNextLesson, onRecordResult, onDraftExercise,
   } = props;
   const history = useHistory();
   const art = getLessonImage(levelCode, lesson.id);
@@ -126,7 +126,6 @@ const LessonAppView = (props) => {
   const answered = Object.keys(answers).length;
   const percentage = Math.round((score / lessonExercises.length) * 100);
   const reviewCount = Object.values(answers).filter((value) => !value).length;
-  const nextLesson = courseLessons.find((item) => item.id === lesson.id + 1);
   const careerPages = Math.ceil(careerModule.phrases.length / 2);
 
   return (
@@ -286,13 +285,8 @@ const LessonAppView = (props) => {
               <div><span><LessonMetaIcon type="level" /></span><strong>Expresii noi</strong><b>{lesson.introducedVocabulary.length}</b></div>
             </div>
             {reviewCount > 0 && (
-              <div className="lapp-review">
-                <h2>De repetat</h2>
-                <p>Am salvat {reviewCount} {reviewCount === 1 ? 'răspuns' : 'răspunsuri'} pentru recapitulare.</p>
-                <button type="button" onClick={onReplayExercises}>Repetă exercițiile</button>
-              </div>
+              <div className="lapp-result__review-count"><span>De repetat</span><strong>{reviewCount}</strong></div>
             )}
-            {nextLesson && <div className="lapp-result__next"><LessonMetaIcon type="level" /><div><span>Urmează</span><strong>{nextLesson.title}</strong></div><span aria-hidden="true">→</span></div>}
             <div className="lapp-result__actions">
               <button type="button" onClick={() => props.onReviewVocabulary()}><BookIcon /> Revezi vocabularul</button>
               {lesson.id < courseLessons.length

@@ -628,3 +628,6 @@
   html.is-installed-app .objectives{padding:15px}
   html.is-installed-app .mobile-expression-navigation{grid-template-columns:auto minmax(0,1fr) minmax(0,1.35fr)}
 }
+
+.lesson-result__review-count{display:flex;align-items:center;justify-content:center;gap:10px;width:fit-content;margin:16px auto 0;padding:8px 12px 8px 16px;border:1px solid #e7dcc4;border-radius:999px;background:#f8f0e0;color:#173d3f;font-size:.86rem}
+.lesson-result__review-count strong{display:grid;place-items:center;min-width:28px;height:28px;padding:0 6px;border-radius:50%;background:#ede1c7;font-size:.86rem;font-variant-numeric:tabular-nums}

@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
-import { saveReviewItem } from '../../../services/spacedReview';
 import './RecallFocus.css';
 
-export default function RecallFocus({ lesson, level, onContinue, onBack }) {
+export default function RecallFocus({ lesson, onContinue, onBack }) {
   const items = lesson.recycledVocabulary;
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
-  const [saved, setSaved] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [error, setError] = useState('');
   const audio = useRef(null);
@@ -29,16 +27,9 @@ export default function RecallFocus({ lesson, level, onContinue, onBack }) {
       if (audio.current === controller) { audio.current = null; setPlaying(false); }
     }
   };
-  const advance = (repeat) => {
-    if (!revealed || done) return;
-    if (repeat) {
-      try {
-        saveReviewItem({ id: `${lesson.uid}-recall-${index}`, level, lessonId: lesson.id, source: 'curriculum-recall', prompt: `Ce înseamnă „${items[index].entry[0]}”?`, answer: items[index].entry[1] });
-        setSaved((value) => value + 1);
-      } catch (_) { setError('Nu am putut salva expresia. Încearcă din nou.'); return; }
-    }
-    stop(); setError(''); setRevealed(false); setIndex((value) => value + 1);
-    heading.current?.focus();
+  const changeExpression = (nextIndex) => {
+    if (nextIndex < 0 || nextIndex >= items.length) return;
+    stop(); setError(''); setRevealed(false); setIndex(nextIndex);
   };
   const leave = (callback) => { stop(); callback?.(); };
   return <section className="recall-focus" aria-label="Înainte de ceva nou">
@@ -58,19 +49,18 @@ export default function RecallFocus({ lesson, level, onContinue, onBack }) {
         <div className="recall-focus__answer" aria-live="polite">
           {revealed ? <p lang="ro">{items[index].entry[1]}</p> : <button type="button" onClick={() => setRevealed(true)}>Arată sensul <span aria-hidden="true">↓</span></button>}
         </div>
+        <nav className="recall-focus__expressions" aria-label="Navigare expresii">
+          <button type="button" disabled={index === 0} onClick={() => changeExpression(index - 1)} aria-label="Expresia precedentă">←</button>
+          <span aria-live="polite">{index + 1} / {items.length}</span>
+          <button type="button" disabled={index === items.length - 1} onClick={() => changeExpression(index + 1)} aria-label="Expresia următoare">→</button>
+        </nav>
       </article>
-      <div className="recall-focus__choices">
-        <button type="button" disabled={!revealed} onClick={() => advance(true)}>Mai repet</button>
-        <button type="button" className="recall-focus__primary" disabled={!revealed} onClick={() => advance(false)}>Îmi amintesc <span aria-hidden="true">✓</span></button>
-      </div>
-      <p className="recall-focus__hint">{revealed ? '„Mai repet” salvează expresia în recapitulare.' : 'Descoperă sensul înainte să alegi.'}</p>
     </> : <article className="recall-focus__card recall-focus__summary">
       <span className="recall-focus__badge" aria-hidden="true">{items.length ? '✓' : '→'}</span>
       <h2>{items.length ? 'Reamintire încheiată' : 'Construim prima ta bază'}</h2>
-      <p>{!items.length ? 'Descoperi primele expresii la pasul următor, apoi le folosești în exemple și conversații.' : saved ? `${saved} ${saved === 1 ? 'expresie salvată' : 'expresii salvate'} pentru recapitulare.` : 'Ai reamintit toate expresiile. Continuăm cu vocabularul lecției.'}</p>
-      <button type="button" className="recall-focus__primary" onClick={() => leave(onContinue)}>Continuă la vocabular <span aria-hidden="true">→</span></button>
+      <p>{!items.length ? 'Descoperi primele expresii la pasul următor, apoi le folosești în exemple și conversații.' : 'Ai reamintit toate expresiile. Continuăm cu vocabularul lecției.'}</p>
     </article>}
     {error && <p className="recall-focus__error" role="status">{error}</p>}
-    <footer className="recall-focus__footer"><button type="button" onClick={() => leave(onBack)}>← Înapoi</button><span>Fără punctaj</span>{!done && <button type="button" onClick={() => leave(onContinue)}>Sari peste →</button>}</footer>
+    <footer className="recall-focus__footer"><button type="button" onClick={() => leave(onBack)}>← Înapoi</button><button type="button" className="recall-focus__primary" onClick={() => leave(onContinue)}>Continuă →</button></footer>
   </section>;
 }

@@ -304,15 +304,8 @@ html.is-installed-app .lesson-shell.lapp{ display:grid; grid-template-columns:mi
 .lapp-statscard strong{ flex:1; min-width:0; color:var(--a-ink); font-size:.92rem; font-weight:650; overflow-wrap:anywhere; }
 .lapp-statscard small{ display:block; margin-top:4px; color:var(--a-sub); font-size:.78rem; font-weight:400; }
 .lapp-statscard b{ color:var(--a-teal); font-size:.86rem; font-weight:600; }
-.lapp-review{ margin:16px 0 0; padding:16px; border:1px solid #e7dcc4; border-radius:18px; background:#f8f0e0; text-align:left; }
-.lapp-review h2{ margin:0 0 5px; font-size:1rem; }
-.lapp-review p{ margin:0 0 12px; color:var(--a-sub); font-size:.88rem; }
-.lapp-review button{ min-height:44px; padding:10px 14px; border:1px solid #cbd4c4; border-radius:12px; background:var(--a-card); color:var(--a-teal); font:inherit; font-size:.86rem; font-weight:650; cursor:pointer; }
-.lapp-result__next{ display:flex; align-items:center; gap:12px; margin-top:20px; padding:17px; border:1px solid var(--a-cardline); border-radius:18px; background:var(--a-inner); }
-.lapp-result__next>svg{ flex:0 0 26px; width:26px; height:26px; fill:none; stroke:var(--a-teal); stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
-.lapp-result__next>div{ flex:1; min-width:0; }
-.lapp-result__next strong{ display:block; color:var(--a-ink); font-size:1rem; overflow-wrap:anywhere; line-height:1.4; }
-.lapp-result__next span{ color:var(--a-sub); font-size:.8rem; }
+.lapp-result__review-count{ display:flex; align-items:center; justify-content:center; gap:10px; width:fit-content; margin:16px auto 0; padding:8px 12px 8px 16px; border:1px solid #e7dcc4; border-radius:999px; background:#f8f0e0; color:var(--a-ink); font-size:.86rem; }
+.lapp-result__review-count strong{ display:grid; place-items:center; min-width:28px; height:28px; padding:0 6px; border-radius:50%; background:#ede1c7; font-size:.86rem; font-variant-numeric:tabular-nums; }
 .lapp-result__actions{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); gap:10px; margin:22px 0 0; }
 .lapp-result__actions button,
 .lapp-result__actions a{
