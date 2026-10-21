@@ -200,7 +200,8 @@
   html.is-installed-app .learn-app__program>header h2{margin:2px 0 0;color:#0d2546;font-size:1.3rem;letter-spacing:-.025em}
   html.is-installed-app .learn-app__program>header>span{color:#748395;font-size:.63rem;font-weight:800}
   html.is-installed-app .learn-app__timeline{position:relative;display:grid;gap:8px}
-  html.is-installed-app .learn-app__timeline:before{position:absolute;z-index:0;top:30px;bottom:30px;left:24px;width:3px;border-radius:99px;background:linear-gradient(to bottom,#159c94 0,#159c94 var(--learn-timeline-progress),#d3e0e4 var(--learn-timeline-progress),#d3e0e4 100%);content:''}
+  html.is-installed-app .learn-app__lesson + .learn-app__lesson:before{position:absolute;top:-9px;left:23px;width:3px;height:8px;border-radius:99px;background:#d3e0e4;content:'';pointer-events:none}
+  html.is-installed-app .learn-app__lesson.is-complete + .learn-app__lesson:before{background:#159c94}
   html.is-installed-app .learn-app__lesson{position:relative;z-index:1;display:grid;grid-template-columns:45px minmax(0,1fr) auto;gap:11px;align-items:center;min-height:76px;padding:10px 12px 10px 7px;color:#14213d;border:1px solid #dce7e9;border-radius:17px;background:#fff;box-shadow:0 6px 17px rgba(20,52,72,.045);text-decoration:none;box-sizing:border-box}
   html.is-installed-app .learn-app__lesson:visited{color:#14213d}
   html.is-installed-app .learn-app__lesson.is-current{border-color:#62c5c1;background:linear-gradient(135deg,#fff,#f0fbfa);box-shadow:0 8px 20px rgba(7,128,128,.1)}
