@@ -226,7 +226,7 @@ const LessonAppView = (props) => {
 
         {step === LESSON_STAGE.GRAMMAR && (
           <section>
-            <StepHeading title={lesson.grammar.mode === 'review' ? 'Trei repere de recapitulare' : 'Două repere utile'} sub={grammarStepDescription(lesson)} />
+            <StepHeading title={lesson.grammar.mode === 'review' ? 'Trei repere de recapitulare' : 'Două repere utile'} sub={lesson.grammar.mode === 'review' ? grammarStepDescription(lesson) : undefined} />
             <LessonGrammar key={lesson.uid} lesson={lesson} onBack={previous} onContinue={next} />
           </section>
         )}
