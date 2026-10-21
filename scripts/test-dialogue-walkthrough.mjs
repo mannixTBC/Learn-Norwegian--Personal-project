@@ -23,7 +23,9 @@ await act(async()=>button('Activează sunetul').props.onClick());
 assert.equal(calls[1].text,'Takk');
 await act(async()=>button('În română').props.onClick());
 assert.equal(calls[1].options.signal.aborted,true);
-await act(async()=>button('↻ Reascultă').props.onClick());
+assert.equal(button('Înapoi'), undefined);
+assert.equal(button('Exersează în text'), undefined);
+await act(async()=>button('Reascultă scena').props.onClick());
 await act(async()=>renderer.unmount());
 assert.equal(calls[2].options.signal.aborted,true);
 // Pair playback stops after two lines, without advancing the scene.

@@ -74,7 +74,7 @@ export default function LessonGrammar({ lesson, onBack, onContinue }) {
   const change = (action) => {
     stop(); setAudioError(''); action(); titleRef.current?.focus();
   };
-  const changePoint = (index) => change(() => { setPointIndex(index); setExampleIndex(0); setPage(0); setView('rule'); });
+  const changePoint = (index) => change(() => { setOptional(null); setPointIndex(index); setExampleIndex(0); setPage(0); setView('rule'); });
   const changeView = (nextView) => change(() => { setView(nextView); setPage(0); });
   const openOptional = (nextOptional) => change(() => { setOptional(nextOptional); setPage(0); setView('rule'); setExampleIndex(0); });
   const back = () => {
@@ -85,6 +85,11 @@ export default function LessonGrammar({ lesson, onBack, onContinue }) {
     else change(() => onBack?.());
   };
   const next = () => {
+    if (optional === 'recall') {
+      if (pointIndex < lesson.grammar.points.length - 1) changePoint(pointIndex + 1);
+      else change(() => onContinue?.());
+      return;
+    }
     if (isReading) {
       if (page < readingPages.length) change(() => setPage(page + 1));
       else openOptional(null);
@@ -96,13 +101,15 @@ export default function LessonGrammar({ lesson, onBack, onContinue }) {
     if (pointIndex < lesson.grammar.points.length - 1) changePoint(pointIndex + 1);
     else change(() => onContinue?.());
   };
-  const nextLabel = isReading ? (readingQuestion ? 'Înapoi la regulă' : page === readingPages.length - 1 ? 'Întrebarea de lectură' : 'Pagina următoare')
+  const nextLabel = optional === 'recall' ? (pointIndex < lesson.grammar.points.length - 1 ? 'Următorul reper' : 'Continuă la exerciții')
+    : isReading ? (readingQuestion ? 'Înapoi la regulă' : page === readingPages.length - 1 ? 'Întrebarea de lectură' : 'Pagina următoare')
     : page < explanationPages.length - 1 ? 'Continuă explicația'
       : view === 'contrast' || optional ? 'Înapoi la regulă'
         : pointIndex < lesson.grammar.points.length - 1 ? 'Următorul reper' : 'Continuă la exerciții';
   const example = point.examples[exampleIndex];
   return <div className="lesson-grammar lesson-grammar--focused" data-lesson={lesson.uid}>
     <article className="lesson-grammar__card" data-concept={isReading ? 'reading' : point.concept}>
+      {optional === 'recall' && <button type="button" className="grammar-focus__return" onClick={() => openOptional(null)}><span aria-hidden="true">←</span> Înapoi la regulă</button>}
       <div className="lesson-grammar__meta"><span>{isReading ? 'Lectură opțională' : optional ? 'Reamintire opțională' : `Reperul ${pointIndex + 1} din ${lesson.grammar.points.length}`}</span><small>{isReading ? `${Math.min(page + 1, readingPages.length)} / ${readingPages.length}` : point.kind === 'usage' ? 'Exprimare și sens' : 'Gramatică'}</small></div>
       <h2 ref={titleRef} tabIndex={-1}>{isReading ? lesson.reading.title : point.title}</h2>
       {!isReading && <SourceLesson source={point.sourceLesson} />}
@@ -127,10 +134,6 @@ export default function LessonGrammar({ lesson, onBack, onContinue }) {
         <div className="lesson-grammar__example">
           <div><p lang="nb"><GrammarHighlight text={example.norwegian} focus={point.focus} /></p><p lang="ro">{example.romanian}</p></div>
           {audio(`${optional || pointIndex}-${exampleIndex}`, example.norwegian)}
-        </div>
-        <div className="grammar-focus__tools">
-          {point.examples.length > 1 && <button type="button" onClick={() => change(() => setExampleIndex((exampleIndex + 1) % point.examples.length))}>Alt exemplu <span>{exampleIndex + 1}/{point.examples.length}</span></button>}
-          <button type="button" onClick={() => changeView('contrast')}>Compară <span aria-hidden="true">⇄</span></button>
         </div>
       </>}
       {!isReading && explanationPages.length > 1 && <div className="grammar-focus__pages"><button type="button" disabled={page === 0} onClick={() => change(() => setPage(page - 1))}>←</button><span>Explicație {page + 1} / {explanationPages.length}</span><button type="button" disabled={page === explanationPages.length - 1} onClick={() => change(() => setPage(page + 1))}>→</button></div>}

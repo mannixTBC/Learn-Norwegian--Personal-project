@@ -4,6 +4,11 @@
 .dw-counter{font-size:.78rem;color:#637b72;font-weight:600}
 .dw-sound{display:grid;place-items:center;min-width:44px;height:44px;border:1px solid #d9e6df;border-radius:50%;background:#f5faf7;color:#276c52;cursor:pointer}
 .dw-sound svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.dw-header-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.dw-header-actions .dw-sound{width:44px;padding:0;border-color:var(--a-border,#dfddd0);background:var(--a-card,#fffefa);color:var(--a-teal,#205d54)}
+.dw-header-actions .dw-sound:hover:not(:disabled){background:var(--a-tint,#eaf0e4)}
+.dw-header-actions .dw-sound:focus-visible{outline:3px solid #8bab8e;outline-offset:3px}
+.dw-header-actions .dw-sound:disabled{opacity:.4;cursor:default}
 .dw-lines{display:grid;gap:12px}
 .dw-line{padding:16px 18px;border:1px solid #e0e8e2;border-radius:18px;background:#fff;transition:background .2s,border-color .2s}
 .dw-line.is-speaking{background:#eff9f2;border-color:#4c986e;box-shadow:0 0 0 2px #4c986e18}
@@ -14,7 +19,7 @@
 .dw-link{border:0;background:none;padding:10px 4px;min-height:44px;color:#38694f;font-size:.85rem;cursor:pointer}
 .dw-link:disabled{opacity:.4;cursor:default}
 .dw-line .dw-translation{font-size:.9rem;color:#64796c;margin-bottom:0}
-.dw-controls{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:16px;flex-wrap:wrap}
+.dw-controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:16px;flex-wrap:wrap}
 .dw-primary{border:0;border-radius:12px;background:#286c4c;color:white;padding:12px 18px;min-height:44px;font-weight:600;cursor:pointer}
 .dw-start{padding:24px 16px;text-align:center;background:#f4f8f2;border-radius:18px}
 .dw-start p{line-height:1.6;margin-bottom:20px}

@@ -27,6 +27,7 @@
 .grammar-focus__contrast small { font-size:.73rem; font-weight:650; }
 .lesson-grammar--focused .grammar-focus__link { margin-top:14px; background:transparent; border:0; padding-left:0; }
 .grammar-focus__extras { display:flex; flex-wrap:wrap; gap:10px; }
+.lesson-grammar--focused .grammar-focus__return { display:inline-flex; align-items:center; gap:8px; margin:0 0 12px; padding:8px 0; border:0; background:transparent; color:var(--g-teal); font-size:.82rem; }
 .grammar-focus__extras button { flex:1; background:transparent; display:flex; align-items:center; justify-content:space-between; gap:10px; }
 .grammar-focus__extras span { font-size:.72rem; font-weight:400; color:var(--g-sub); }
 .grammar-focus__navigation { display:flex; justify-content:space-between; gap:12px; padding:12px 0; background:var(--g-bg); }
