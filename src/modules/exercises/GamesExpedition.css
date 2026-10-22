@@ -1,0 +1,97 @@
+/* The approved ivory expedition hub. All selectors exclude the existing map dialog. */
+.mini-games.northern-games.northern-games--expedition {
+  --exp-ink: #143e4c;
+  --exp-line: #dfc58c;
+  max-width: 720px;
+  padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 48px clamp(140px, 20dvh, 168px) minmax(282px, 1fr) 104px 54px;
+  grid-template-areas: none;
+  gap: 10px;
+  overflow-y: auto;
+  color: var(--exp-ink);
+  background-color: #fffaf0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='170' viewBox='0 0 420 170'%3E%3Cg fill='none' stroke='%23d3b86e' stroke-opacity='.21' stroke-width='.7'%3E%3Cpath d='M-20 25C16-8 20 70 62 24s55 23 88-2 61 25 94-3 69 30 95 2 62 16 94-8M-24 45C18 12 23 91 66 45s59 26 91-1 61 24 93-3 67 28 96 1 61 16 94-5M-16 74C18 37 26 110 70 70s55 22 89-1 62 24 94-2 67 24 96 0 63 16 92-3'/%3E%3C/g%3E%3C/svg%3E"), radial-gradient(ellipse at 100% 8%, #f1ebd745, transparent 60%);
+  background-repeat: repeat-x, no-repeat;
+}
+.northern-games--expedition > :is(.mini-top, .mini-grid, .northern-overview, .northern-utilities, .mobile-app-nav) { grid-area: auto; }
+.northern-games--expedition > .mini-top { gap: 8px; }
+.northern-games--expedition > .mini-top .mini-brand { flex-basis: 165px; min-width: 100px; }
+.northern-games--expedition > .mini-top .mini-coins { gap: 5px; padding: 5px 8px; min-height: 38px; border: 1px solid var(--exp-line); background: #fffdf5; border-radius: 15px; color: var(--exp-ink); }
+.northern-games--expedition > .mini-top .mini-coins img { width: 27px; height: 27px; }
+.northern-games--expedition > .mini-top .exercise-level-select select { width: 60px; min-height: 44px; border-color: var(--exp-line); border-radius: 15px; background-color: #fffdf5; color: var(--exp-ink); }
+.northern-games--expedition > .expedition-feature { position: relative; isolation: isolate; display: block; padding: 13px 15px; overflow: hidden; border: 1px solid #d7b66b; border-radius: 20px; background: #fff9ed; box-shadow: 0 4px 12px #8c6e2910; }
+.expedition-feature__scene { position: absolute; z-index: -2; right: 0; bottom: 0; width: 67%; height: 100%; object-fit: cover; object-position: right center; pointer-events: none; }
+.expedition-feature::after { content: ''; position: absolute; z-index: -1; inset: 0; pointer-events: none; background: linear-gradient(90deg, #fff9ed 23%, #fff9edf5 36%, #fff9ed45 61%, transparent 75%); }
+.expedition-feature__copy { height: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.expedition-feature__copy h2 { max-width: 76%; margin: 0; font: 700 clamp(20px, 5.5vw, 26px)/1.12 Georgia, serif; letter-spacing: -.65px; color: var(--exp-ink); text-wrap: balance; }
+.expedition-feature__progress { display: flex; align-items: center; gap: 12px; width: 58%; color: var(--exp-ink); font-size: 13px; font-weight: 650; }
+.expedition-feature__progress span { flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.expedition-feature__progress progress { display: block; min-width: 0; flex: 1; height: 7px; appearance: none; border: 0; border-radius: 20px; overflow: hidden; background: #e1dfd0; color: #eab341; }
+.expedition-feature__progress progress::-webkit-progress-bar { background: #e1dfd0; }
+.expedition-feature__progress progress::-webkit-progress-value { background: linear-gradient(90deg, #efb437, #ffdb72); border-radius: 20px; }
+.expedition-feature__progress progress::-moz-progress-bar { background: #efb437; border-radius: 20px; }
+.expedition-feature__copy .northern-gold { padding: 9px 13px; min-height: 44px; max-width: 77%; gap: 9px; font: 700 16px/1.2 Georgia, serif; border: 1px solid #e3b64e; border-radius: 14px; background: linear-gradient(130deg, #ffe598, #ffd36b); color: #173e47 !important; box-shadow: 0 2px 3px #aa7f3220; text-align: left; }
+.expedition-feature__copy .northern-gold > span { font: 22px/1 'Segoe UI', sans-serif; }
+.expedition-streak { position: absolute; right: 9px; top: 10px; display: flex; gap: 5px; align-items: center; padding: 5px 7px; border: 1px solid #e6c276; border-radius: 13px; background: #fffbefed; color: #244852; font-size: 11px; line-height: 1; font-weight: 700; }
+.expedition-streak svg { width: 14px; height: 18px; color: #e8a32c; }
+.northern-games--expedition > .mini-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.northern-games--expedition .mini-grid > .mini-tile { position: relative; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 5px; min-height: 0; padding: 10px 13px; overflow: hidden; border: 1px solid var(--exp-line); border-radius: 19px; background: linear-gradient(145deg, #fffefa, #fff9ed); box-shadow: 0 3px 6px #927b2910; color: var(--exp-ink) !important; text-align: left; }
+.northern-games--expedition .mini-tile > .mini-art { align-self: center; width: 74px; height: clamp(42px, 7dvh, 66px); filter: drop-shadow(0 2px 1px #6d603915); }
+.northern-games--expedition .mini-tile h3 { font: 700 clamp(16px, 4.4vw, 20px)/1.12 Georgia, serif; letter-spacing: -.3px; overflow-wrap: normal; }
+.northern-games--expedition .mini-tile .mini-progress { display: flex; justify-content: flex-start; flex-wrap: wrap; gap: 5px 8px; padding-right: 12px; color: #42616a; }
+.northern-games--expedition .mini-progress small { font-size: 11px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.expedition-dots { display: inline-flex; gap: 4px; }
+.expedition-dots i { width: 7px; height: 7px; border-radius: 50%; background: #dedfd3; }
+.expedition-dots .is-earned { background: #efb33f; box-shadow: inset 0 0 0 1px #dea536; }
+.expedition-chevron { position: absolute; right: 10px; bottom: 9px; color: #214e5c; font: 28px/.9 'Segoe UI', sans-serif; }
+.expedition-earned { position: absolute; top: 9px; right: 9px; width: 23px; height: 29px; filter: drop-shadow(0 1px 1px #79591d20); }
+.expedition-earned svg { width: 100%; height: 100%; }
+.northern-games--expedition > .northern-utilities { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr 1fr; gap: 8px; }
+.northern-games--expedition .northern-utilities > a { gap: 12px; min-height: 44px; padding: 4px 13px; border: 1px solid var(--exp-line); border-radius: 15px; background: #fffdf6; color: var(--exp-ink) !important; box-shadow: 0 3px 6px #927b2910; }
+.northern-games--expedition .northern-utilities .mini-art { width: 38px; height: 36px; }
+.northern-games--expedition .northern-utilities h2 { font: 700 18px/1.15 Georgia, serif; letter-spacing: -.2px; }
+.northern-games--expedition .northern-utilities b { display: block; margin-left: auto; font-size: 28px; color: #214e5c; }
+.northern-games--expedition .mini-review .expedition-due { margin-left: auto; margin-top: 0; padding: 4px 7px; border-radius: 8px; background: #f7e5b6; color: #5b491e; font-size: 11px; font-weight: 700; }
+.northern-games--expedition .mini-review .expedition-due + b { margin-left: 0; }
+/* Reuse the original component and its colors/icons; only reserve its layout row. */
+html.is-installed-app .northern-games--expedition > .mobile-app-nav { position: static; inset: auto; width: 100%; align-self: end; }
+@media (max-height: 700px) {
+  .mini-games.northern-games.northern-games--expedition { padding-top: max(8px, env(safe-area-inset-top)); padding-bottom: max(8px, env(safe-area-inset-bottom)); gap: 8px; grid-template-rows: 44px 116px minmax(280px, 1fr) 92px 54px; }
+  .northern-games--expedition > .expedition-feature { padding: 10px 12px; border-radius: 17px; }
+  .expedition-feature__copy { gap: 6px; }
+  .expedition-feature__copy h2 { font-size: 20px; max-width: 77%; }
+  .expedition-feature__copy .northern-gold { min-height: 44px; padding: 7px 10px; font-size: 14px; }
+  .expedition-feature__progress { font-size: 11px; }
+  .expedition-streak { font-size: 10px; padding: 4px 5px; right: 7px; top: 9px; gap: 3px; }
+  .expedition-streak svg { width: 12px; height: 16px; }
+  .northern-games--expedition > .mini-grid { gap: 8px; }
+  .northern-games--expedition .mini-grid > .mini-tile { padding: 6px 10px; gap: 4px; border-radius: 16px; }
+  .northern-games--expedition .mini-tile > .mini-art { width: 45px; height: 31px; }
+  .northern-games--expedition .mini-tile h3 { font-size: 16px; }
+  .northern-games--expedition .mini-progress small { font-size: 10px; }
+  .northern-games--expedition .mini-tile .mini-progress { gap: 5px; }
+  .expedition-dots { gap: 3px; }
+  .expedition-dots i { width: 6px; height: 6px; }
+  .northern-games--expedition .northern-utilities { gap: 4px; }
+  .northern-games--expedition .northern-utilities h2 { font-size: 17px; }
+  .northern-games--expedition .northern-utilities .mini-art { width: 30px; height: 30px; }
+}
+@media (max-width: 350px) {
+  .mini-games.northern-games.northern-games--expedition { padding-inline: 12px; }
+  .northern-games--expedition > .mini-top { gap: 6px; }
+  .northern-games--expedition > .mini-top .mini-brand { flex-basis: 138px; }
+  .northern-games--expedition > .mini-top .mini-coins { padding-inline: 6px; gap: 3px; font-size: 12px; }
+  .northern-games--expedition > .mini-top .mini-coins img { width: 23px; height: 23px; }
+  .northern-games--expedition > .mini-top .exercise-level-select select { width: 52px; font-size: 12px; }
+  .expedition-feature__copy h2 { font-size: 19px; letter-spacing: -.6px; }
+  .expedition-streak { top: auto; bottom: 10px; }
+  .northern-games--expedition .mini-tile h3 { font-size: 15px; }
+  .northern-games--expedition .mini-tile .mini-progress { padding-right: 9px; }
+  .expedition-chevron { right: 7px; font-size: 24px; }
+  .northern-games--expedition .northern-utilities h2 { font-size: 16px; }
+}
+@media (hover: hover) {
+  .northern-games--expedition .mini-grid > .mini-tile:hover,
+  .northern-games--expedition .northern-utilities > a:hover { border-color: #ba984f; background: #fff5df; }
+}
