@@ -48,6 +48,7 @@
     "test:curriculum": "node scripts/test-curriculum.mjs && node scripts/test-curriculum-assessment.mjs",
     "test:learning-sync": "node --test scripts/test-learning-sync.mjs && node scripts/test-learning-restore.mjs",
     "test:lesson-exercises": "node scripts/test-lesson-app-exercises.mjs",
+    "test:lesson-feedback": "node scripts/test-nordic-choice.mjs && node scripts/test-lesson-feedback-ui.mjs",
     "test:lesson-web-exercises": "node scripts/test-lesson-web-exercises.mjs",
     "test:lesson-grammar": "node scripts/test-lesson-grammar.mjs",
     "test:lesson-visuals": "node scripts/test-lesson-visuals.mjs",

@@ -17,6 +17,8 @@ export default function useLessonExercise({ exercise, index, onResult, onDraft, 
   const [gapAnswers, setGapAnswers] = useState(() => Array.isArray(response?.gapAnswers) ? [...response.gapAnswers] : result === true && exercise.type === 'gaps' ? [...exercise.answer] : []);
   const [outcome, setOutcome] = useState(typeof result === 'boolean' ? result : null);
   const [reviewing] = useState(typeof result === 'boolean');
+  const [practicing, setPracticing] = useState(false);
+  const recorded = useRef(typeof result === 'boolean');
   const submitted = useRef(typeof result === 'boolean');
   const draft = useRef({ value, wordIndexes, gapAnswers });
   const checked = outcome !== null;
@@ -36,7 +38,7 @@ export default function useLessonExercise({ exercise, index, onResult, onDraft, 
     setValue(next.value);
     setWordIndexes(next.wordIndexes);
     setGapAnswers(next.gapAnswers);
-    onDraft?.(index, next);
+    if (!practicing) onDraft?.(index, next);
   };
   const submit = (choice = draft.current.value, nextGaps = draft.current.gapAnswers) => {
     const current = { ...draft.current, value: String(choice), gapAnswers: nextGaps };
@@ -49,7 +51,21 @@ export default function useLessonExercise({ exercise, index, onResult, onDraft, 
     draft.current = current;
     setValue(current.value);
     setOutcome(correct);
-    onResult(index, correct, exercise, { ...current, wordIndexes: [...current.wordIndexes], gapAnswers: [...current.gapAnswers] });
+    if (!recorded.current) {
+      recorded.current = true;
+      onResult(index, correct, exercise, { ...current, wordIndexes: [...current.wordIndexes], gapAnswers: [...current.gapAnswers] });
+    }
+  };
+  const repeatWrongAnswer = () => {
+    if (outcome !== false || !submitted.current) return;
+    // Practice stays local: neither its result nor its draft replaces the first attempt.
+    submitted.current = false;
+    draft.current = { value: '', wordIndexes: [], gapAnswers: [] };
+    setValue('');
+    setWordIndexes([]);
+    setGapAnswers([]);
+    setOutcome(null);
+    setPracticing(true);
   };
   const addOrderWord = (position) => {
     if (!Number.isInteger(position) || !exercise.words?.[position] || draft.current.wordIndexes.includes(position)) return;
@@ -67,5 +83,5 @@ export default function useLessonExercise({ exercise, index, onResult, onDraft, 
   };
   const clearGapAnswer = (position) => updateDraft({ gapAnswers: draft.current.gapAnswers.map((word, item) => item === position ? '' : word) });
 
-  return { value, wordIndexes, gapAnswers, words, outcome, reviewing, checked, complete, singleGap, manualCheck, submitted, updateDraft, submit, addOrderWord, removeOrderWord, placeGapAnswer, clearGapAnswer };
+  return { value, wordIndexes, gapAnswers, words, outcome, reviewing, practicing, checked, complete, singleGap, manualCheck, submitted, updateDraft, submit, repeatWrongAnswer, addOrderWord, removeOrderWord, placeGapAnswer, clearGapAnswer };
 }

@@ -14,6 +14,7 @@ html body .auth-fjord .auth-mobile-quick{display:block;text-align:center;padding
 html body .auth-fjord .auth-mobile-quick.is-hidden,html body .auth-fjord .auth-details{display:none}
 html body .auth-fjord .auth-details.is-open{display:block}
 html body .auth-fjord h1{font-size:clamp(26px,6vw,32px);letter-spacing:-.7px;line-height:1.15;margin:0 0 8px;color:#143b4b;font-weight:750;text-align:center}
+html body .auth-fjord .auth-mobile-quick>h1{margin-bottom:clamp(16px,3.2svh,26px)}
 html body .auth-fjord .auth-mobile-quick>p,html body .auth-fjord header p{font-size:15px;line-height:1.4;color:#637786;margin:0 0 20px;text-align:center}
 html body .auth-fjord .auth-google{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:50px;margin:0 0 12px;padding:10px 16px;background:#fff;border:1px solid #d6e3e7;border-radius:14px;box-shadow:0 3px 9px #153b4b09;color:#173b4b}
 html body .auth-fjord .auth-google__icon{background:none;border:0;box-shadow:none;width:24px;height:24px}

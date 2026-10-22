@@ -1,0 +1,40 @@
+/* Native modal feedback stays outside the question's document flow. */
+body:has(.lapp-exercise__feedback-dialog[open]) { overflow: hidden; }
+.lapp-exercise__feedback-dialog {
+  box-sizing: border-box; width: min(480px, calc(100vw - 28px));
+  max-width: none; max-height: calc(100vh - 28px); max-height: calc(100dvh - 28px);
+  margin: auto; padding: 0; border: 0; border-radius: 22px;
+  color: var(--a-ink, #173d3f); background: var(--a-card, #fffefa);
+  box-shadow: 0 18px 64px #112e4140; overscroll-behavior: contain;
+}
+.lapp-exercise__feedback-dialog:not([open]) { display: none; }
+.lapp-exercise__feedback-dialog::backdrop { background: #102c3e73; backdrop-filter: blur(3px); }
+.lapp-exercise.is-checked .lapp-exercise__feedback-dialog .lapp-exercise__feedback {
+  position: relative; margin: 0; padding: 24px; border: 1px solid #d9e6d5; border-radius: inherit;
+}
+.lapp-exercise__feedback-dialog .lapp-exercise__feedback-heading { padding-right: 26px; margin-bottom: 12px; }
+.lapp-exercise__feedback-dialog .lapp-exercise__feedback-close {
+  position: absolute; top: 5px; right: 5px; display: grid; place-items: center;
+  width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
+  color: var(--a-sub, #526b7b); background: transparent; font: inherit; font-size: 25px; cursor: pointer;
+}
+.lapp-exercise__feedback-dialog .lapp-exercise__listen { min-height: 44px; padding: 8px 14px; }
+.lapp-exercise__feedback-actions { display: flex; gap: 10px; margin-top: 18px; }
+.lapp-exercise__feedback-actions button {
+  display: flex; align-items: center; justify-content: center; gap: 7px; min-width: 0;
+  min-height: 48px; padding: 10px 15px; border: 1px solid var(--a-teal-deep, #173f49); border-radius: 13px;
+  color: var(--a-teal-deep, #173f49); background: #ffffffa6; font: inherit; font-size: .92rem; font-weight: 750; cursor: pointer;
+}
+.lapp-exercise__feedback-actions .lapp-exercise__modal-continue { flex: 1; color: #fff; background: var(--a-teal-deep, #173f49); }
+.lapp-exercise__navigation.has-feedback { grid-template-columns: auto 44px minmax(0, 1fr); gap: 10px; }
+.lapp-exercise__footer .lapp-exercise__feedback-trigger { width: 44px; padding: 0; color: var(--a-teal-deep); background: var(--a-card); border: 1px solid var(--a-border); border-radius: 13px; font-size: 21px; }
+.lapp-exercise__feedback-dialog button:focus-visible { outline: 3px solid #478994; outline-offset: -4px; }
+@media (max-width: 380px), (max-height: 540px) {
+  .lapp-exercise.is-checked .lapp-exercise__feedback-dialog .lapp-exercise__feedback { padding: 18px; }
+  .lapp-exercise__feedback-dialog .lapp-exercise__feedback-heading { margin-bottom: 9px; }
+  .lapp-exercise__feedback-actions { margin-top: 12px; gap: 8px; }
+  .lapp-exercise__feedback-actions button { min-height: 44px; padding: 8px 12px; font-size: .86rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lapp-exercise__feedback-dialog { scroll-behavior: auto; }
+}

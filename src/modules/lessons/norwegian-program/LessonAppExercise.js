@@ -3,19 +3,24 @@ import React, { useEffect, useRef, useState } from 'react';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
 import { lessonExerciseAnswer, lessonExerciseSentence } from './lessonExerciseContent';
 import useLessonExercise, { normalizeLessonAnswer } from './useLessonExercise';
+import './LessonExerciseFeedback.css';
 
 const BookmarkIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v17l-6-4-6 4Z" /></svg>;
 const SpeakerIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4ZM15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14" /></svg>;
 const matchText = (text) => normalizeLessonAnswer(text).replace(/[.!?]+$/, '');
 
 export default function LessonAppExercise({ exercise, vocabulary = [], index, onResult, onContinue, onPrevious, onDraft, result, response }) {
-  const { value, wordIndexes, gapAnswers, words, outcome, reviewing, checked, complete, singleGap, manualCheck, submitted, updateDraft, submit, addOrderWord, removeOrderWord, placeGapAnswer, clearGapAnswer } = useLessonExercise({ exercise, index, onResult, onDraft, result, response });
+  const { value, wordIndexes, gapAnswers, words, outcome, reviewing, practicing, checked, complete, singleGap, manualCheck, submitted, updateDraft, submit, repeatWrongAnswer, addOrderWord, removeOrderWord, placeGapAnswer, clearGapAnswer } = useLessonExercise({ exercise, index, onResult, onDraft, result, response });
   const [playing, setPlaying] = useState(false);
   const [audioError, setAudioError] = useState('');
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const audioController = useRef(null);
   const continuing = useRef(false);
   const heading = useRef(null);
   const feedback = useRef(null);
+  const feedbackTrigger = useRef(null);
+  const feedbackContinue = useRef(null);
+  const feedbackTitleId = `lesson-feedback-title-${index}`;
   const sentence = lessonExerciseSentence(exercise);
   const correctAnswer = lessonExerciseAnswer(exercise);
   const spokenAnswer = exercise.type === 'choice'
@@ -27,8 +32,33 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
   useEffect(() => { heading.current?.focus(); }, []);
   useEffect(() => () => audioController.current?.abort(), []);
   useEffect(() => {
-    if (checked) feedback.current?.scrollIntoView?.({ block: 'nearest', behavior: 'auto' });
+    if (checked) setFeedbackOpen(true);
   }, [checked]);
+  useEffect(() => {
+    const modal = feedback.current;
+    if (feedbackOpen && checked) {
+      if (!modal?.open) modal?.showModal?.();
+      feedbackContinue.current?.focus();
+    } else if (modal?.open) modal.close();
+  }, [feedbackOpen, checked]);
+
+  const closeFeedback = () => {
+    setFeedbackOpen(false);
+    audioController.current?.abort();
+    audioController.current = null;
+    setPlaying(false);
+    feedbackTrigger.current?.focus();
+  };
+  const repeatExercise = () => {
+    if (outcome !== false) return;
+    setFeedbackOpen(false);
+    audioController.current?.abort();
+    audioController.current = null;
+    setPlaying(false);
+    setAudioError('');
+    repeatWrongAnswer();
+    heading.current?.focus();
+  };
 
   const playAnswer = async () => {
     if (!spokenAnswer || audioController.current) return;
@@ -62,7 +92,7 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
 
   return (
     <div className={`lapp-exercise${exercise.type === 'choice' ? ' nordic-choice' : ''}${checked ? ' is-checked' : ''}`}>
-      {reviewing && <p className="lapp-exercise__reviewed">Răspuns deja verificat</p>}
+      {practicing ? <p className="lapp-exercise__reviewed">Repetare · scorul primei încercări se păstrează.</p> : reviewing && <p className="lapp-exercise__reviewed">Răspuns deja verificat</p>}
       {exercise.type === 'choice' ? <div className="nordic-choice__prompt">
         <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M26 14c0 6-5 10-11 10H9l-6 4 2-8a10 10 0 0 1-2-6C3 8 8 4 15 4s11 4 11 10Z" /><circle cx="10" cy="14" r="1" /><circle cx="15" cy="14" r="1" /><circle cx="20" cy="14" r="1" /></svg>
         <div><span>Alege răspunsul potrivit</span><h2 ref={heading} tabIndex={-1}>{exercise.prompt}</h2></div>
@@ -109,9 +139,11 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
       </div>}
       {!checked && exercise.type === 'choice' && <p className="lapp-exercise__hint">Poți schimba răspunsul înainte de verificare.</p>}
       {!checked && exercise.type === 'choice' && exercise.hint && <details className="nordic-choice__hint"><summary>Indiciu</summary><p>{exercise.hint}</p></details>}
-      {checked && <div ref={feedback} className={`lapp-exercise__feedback ${outcome ? 'is-correct' : 'is-wrong'}`} role="status" aria-live="polite">
+      <dialog ref={feedback} className="lapp-exercise__feedback-dialog" aria-labelledby={feedbackTitleId} onCancel={() => setFeedbackOpen(false)} onClose={closeFeedback}>
+      {checked && <div className={`lapp-exercise__feedback ${outcome ? 'is-correct' : 'is-wrong'}`}>
+        <button className="lapp-exercise__feedback-close" type="button" onClick={() => setFeedbackOpen(false)} aria-label="Închide rezultatul">×</button>
         <div className="lapp-exercise__feedback-heading">
-          <strong><span className="lapp-exercise__feedback-icon" aria-hidden="true">{outcome ? '✓' : '!'}</span>{outcome ? 'Exact! Ai reținut bine.' : 'Să reținem diferența'}</strong>
+          <strong id={feedbackTitleId}><span className="lapp-exercise__feedback-icon" aria-hidden="true">{outcome ? '✓' : '!'}</span>{outcome ? practicing ? 'Ai corectat răspunsul!' : 'Exact! Ai reținut bine.' : 'Să reținem diferența'}</strong>
           {!outcome && <small className="lapp-exercise__saved"><BookmarkIcon /> Salvat la Recapitulare</small>}
         </div>
         {(!outcome || exercise.type !== 'choice') && <p className="lapp-exercise__answer">{!outcome && 'Răspuns corect: '}<b lang={exercise.type === 'choice' ? undefined : 'nb'}>{correctAnswer}</b></p>}
@@ -119,10 +151,16 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
         <p>{exercise.explanation}</p>
         {spokenAnswer && <button className="lapp-exercise__listen" type="button" onClick={playAnswer} disabled={playing} aria-label="Ascultă răspunsul corect"><SpeakerIcon />{playing ? 'Se redă…' : 'Ascultă'}</button>}
         {audioError && <p role="alert">{audioError}</p>}
+        <div className="lapp-exercise__feedback-actions">
+          {!outcome && <button className="lapp-exercise__repeat" type="button" onClick={repeatExercise}><span aria-hidden="true">↻</span> Repetă</button>}
+          <button ref={feedbackContinue} className="lapp-exercise__primary lapp-exercise__modal-continue" type="button" onClick={continueExercise}>{reviewing ? 'Următorul' : 'Continuă'} <span aria-hidden="true">→</span></button>
+        </div>
       </div>}
+      </dialog>
       {!checked && <p className="lapp-exercise__review-note"><BookmarkIcon /> Greșelile se salvează la Recapitulare.</p>}
-      <footer className="lapp-exercise__footer"><div className="lapp-exercise__navigation">
+      <footer className="lapp-exercise__footer"><div className={`lapp-exercise__navigation${checked ? ' has-feedback' : ''}`}>
         <button className="lapp-exercise__back" type="button" onClick={previousExercise} disabled={!onPrevious} aria-label={index === 0 ? 'Etapa anterioară' : 'Exercițiul anterior'}><span aria-hidden="true">←</span> Înapoi</button>
+        {checked && <button ref={feedbackTrigger} className="lapp-exercise__feedback-trigger" type="button" onClick={() => setFeedbackOpen(true)} aria-label="Vezi rezultatul răspunsului" aria-haspopup="dialog"><span aria-hidden="true">ⓘ</span></button>}
         {checked ? <button className="lapp-exercise__primary" type="button" onClick={continueExercise}>{reviewing ? 'Următorul' : 'Continuă'} <span aria-hidden="true">→</span></button>
           : (manualCheck || exercise.type === 'choice') && (exercise.type === 'fill' ? <button className="lapp-exercise__primary" type="submit" form={formId} disabled={!complete}>Verifică răspunsul <span aria-hidden="true">→</span></button>
             : <button className="lapp-exercise__primary" type="button" disabled={!complete} onClick={() => submit()}>{exercise.type === 'order' ? 'Verifică ordinea' : exercise.type === 'choice' ? 'Verifică' : 'Verifică răspunsul'} <span aria-hidden="true">→</span></button>)}
