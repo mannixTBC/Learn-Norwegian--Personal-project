@@ -43,7 +43,7 @@
   .recall-focus__footer { margin-top:0; }
 }
 
-.recall-focus__expressions { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:20px; padding-top:14px; border-top:1px solid var(--r-line); color:var(--r-sub); font-size:.8rem; }
+.recall-focus__expressions { display:grid; grid-template-columns:44px minmax(0,1fr) 44px; align-items:center; gap:12px; margin-top:20px; padding-top:14px; border-top:1px solid var(--r-line); color:var(--r-sub); font-size:.8rem; text-align:center; }
 .recall-focus__expressions button { min-width:44px; min-height:44px; padding:8px; background:var(--r-tint); border:0; }
 .recall-focus__footer { display:flex; gap:12px; margin-top:20px; padding:12px 0; background:var(--a-bg,#f8f5ec); }
 .recall-focus__footer .recall-focus__primary { flex:1; }

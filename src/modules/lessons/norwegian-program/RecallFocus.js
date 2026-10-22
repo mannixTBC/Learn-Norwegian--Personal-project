@@ -52,7 +52,7 @@ export default function RecallFocus({ lesson, onContinue, onBack }) {
         <nav className="recall-focus__expressions" aria-label="Navigare expresii">
           <button type="button" disabled={index === 0} onClick={() => changeExpression(index - 1)} aria-label="Expresia precedentă">←</button>
           <span aria-live="polite">{index + 1} / {items.length}</span>
-          <button type="button" disabled={index === items.length - 1} onClick={() => changeExpression(index + 1)} aria-label="Expresia următoare">→</button>
+          {index < items.length - 1 && <button type="button" onClick={() => changeExpression(index + 1)} aria-label="Expresia următoare">→</button>}
         </nav>
       </article>
     </> : <article className="recall-focus__card recall-focus__summary">
