@@ -1,34 +1,47 @@
+/* Responsive fjord authentication: shared palette, compact forms, flexible artwork. */
 html body .App:has(.auth-fjord){background:#fffefa}
 html body .App:has(.auth-fjord)>.navbar,html body .App:has(.auth-fjord)>.footer{display:none!important}
 html body .App>.App__main:has(.auth-fjord){padding:0!important;background:#fffefa}
-html body .auth-page.auth-fjord{display:flex;flex-direction:column;min-height:100svh;max-width:520px;margin:auto;padding:0 0 max(24px,env(safe-area-inset-bottom));background:#fffefa;color:#143b4b;font-family:'Source Sans 3','Segoe UI',sans-serif}
-.auth-fjord__hero{position:relative;padding-top:max(28px,env(safe-area-inset-top));text-align:center}
-.auth-fjord__brand{display:block;position:relative;z-index:1;width:210px;max-width:58%;margin:auto}
+html body .auth-page.auth-fjord{display:flex;flex-direction:column;position:relative;isolation:isolate;box-sizing:border-box;min-height:100svh;max-width:520px;margin:auto;padding:0 0 max(16px,env(safe-area-inset-bottom));background:#fffefa;color:#143b4b;font-family:'Source Sans 3','Segoe UI',sans-serif}
+.auth-fjord *, .auth-fjord *:before,.auth-fjord *:after{box-sizing:border-box}
+.auth-fjord__hero{position:relative;flex:none;padding-top:max(20px,env(safe-area-inset-top));text-align:center}
+.auth-fjord__brand{display:block;position:relative;z-index:1;width:190px;max-width:54%;margin:auto}
 .auth-fjord__brand img{display:block;width:100%;height:auto}
-.auth-fjord__scene{display:block;width:100%;height:clamp(210px,34svh,340px);object-fit:cover;object-position:center 62%;margin-top:8px;mask-image:linear-gradient(transparent,#000 14%,#000 76%,transparent)}
-html body .auth-fjord .auth-panel{display:block;min-height:0;padding:0 24px;background:transparent}
-html body .auth-fjord .auth-panel__inner{width:100%;max-width:420px;margin:auto;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+.auth-fjord__scene{display:block;width:100%;height:clamp(70px,calc(100svh - 475px),300px);object-fit:cover;object-position:center 62%;margin-top:4px;mask-image:linear-gradient(transparent,#000 14%,#000 70%,transparent)}
+html body .auth-fjord .auth-panel{display:block;flex:none;min-height:0;padding:0 24px;background:transparent}
+html body .auth-fjord .auth-panel__inner{width:100%;max-width:400px;margin:auto;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
 html body .auth-fjord .auth-mobile-quick{display:block;text-align:center;padding:0;background:transparent}
 html body .auth-fjord .auth-mobile-quick.is-hidden,html body .auth-fjord .auth-details{display:none}
 html body .auth-fjord .auth-details.is-open{display:block}
-html body .auth-fjord .auth-mobile-quick h1{font-size:clamp(26px,7vw,34px);letter-spacing:-.7px;line-height:1.15;margin:0 0 10px;color:#143b4b;font-weight:750}
-html body .auth-fjord .auth-mobile-quick>p{font-size:16px;line-height:1.5;color:#637786;margin:0 0 24px}
-html body .auth-fjord .auth-google{display:flex;justify-content:center;gap:12px;width:100%;min-height:54px;margin:0 0 12px;padding:10px 16px;background:#fff;border:1px solid #d6e3e7;border-radius:16px;box-shadow:0 3px 9px #153b4b09;color:#173b4b}
-html body .auth-fjord .auth-google__icon{background:none;border:0;box-shadow:none;width:26px;height:26px}
+html body .auth-fjord h1{font-size:clamp(26px,6vw,32px);letter-spacing:-.7px;line-height:1.15;margin:0 0 8px;color:#143b4b;font-weight:750;text-align:center}
+html body .auth-fjord .auth-mobile-quick>p,html body .auth-fjord header p{font-size:15px;line-height:1.4;color:#637786;margin:0 0 20px;text-align:center}
+html body .auth-fjord .auth-google{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:50px;margin:0 0 12px;padding:10px 16px;background:#fff;border:1px solid #d6e3e7;border-radius:14px;box-shadow:0 3px 9px #153b4b09;color:#173b4b}
+html body .auth-fjord .auth-google__icon{background:none;border:0;box-shadow:none;width:24px;height:24px}
 html body .auth-fjord .auth-google small,html body .auth-fjord .auth-google__arrow,html body .auth-fjord .auth-guest small,html body .auth-fjord .auth-guest__icon{display:none}
 html body .auth-fjord .auth-google strong,html body .auth-fjord .auth-guest strong{font-size:16px;font-weight:650}
-html body .auth-fjord .auth-mobile-email,html body .auth-fjord .auth-submit{display:block;width:100%;min-height:54px;padding:12px 16px;border:0;border-radius:16px;background:#07818e;color:#fff;font:inherit;font-weight:700;box-shadow:0 4px 10px #07818e20;cursor:pointer}
-html body .auth-fjord .auth-guest{display:flex;justify-content:center;align-items:center;gap:10px;min-height:48px;margin:10px 0 0;padding:10px;border:0;background:transparent;box-shadow:none;color:#087b88;text-align:center}
+html body .auth-fjord .auth-mobile-email,html body .auth-fjord .auth-submit{display:block;width:100%;height:auto;min-height:50px;margin:0;padding:12px 16px;border:0;border-radius:14px;background:#07818e;color:#fff;font:inherit;font-weight:700;box-shadow:0 4px 10px #07818e20;cursor:pointer}
+html body .auth-fjord .auth-guest{display:flex;justify-content:center;align-items:center;gap:10px;width:100%;min-height:44px;margin:8px 0 0;padding:8px;border:0;background:transparent;box-shadow:none;color:#087b88;text-align:center}
 html body .auth-fjord .auth-guest__arrow{color:inherit}
-html body .auth-fjord .auth-mobile-quick>.auth-fjord__register{border-top:1px solid #dce7e9;padding-top:20px;margin:20px 0 0;font-size:14px}
-.auth-fjord__register button{border:0;background:none;color:#087b88;font:inherit;font-weight:700;cursor:pointer;min-height:44px;padding:6px}
-html body .auth-fjord .auth-mobile-back{display:block;min-height:44px;margin:0 0 12px;border:0;background:transparent;color:#087b88;font:inherit;cursor:pointer}
-html body .auth-fjord .auth-tabs{margin-bottom:20px;background:#eaf3f4;border-radius:14px}
-html body .auth-fjord .auth-tabs button.active{color:#087b88}
-html body .auth-fjord .auth-panel header{margin-bottom:18px}
-html body .auth-fjord .auth-panel header>span,html body .auth-fjord .auth-switch button{color:#087b88}
-html body .auth-fjord .auth-panel input{border-color:#cddfe3;border-radius:13px;font-size:16px}
+html body .auth-fjord .auth-mobile-quick>.auth-fjord__register{border-top:1px solid #dce7e9;padding-top:10px;margin:10px 0 0;font-size:14px}
+html body .auth-fjord .auth-fjord__register button,html body .auth-fjord .auth-switch button{border:0;background:none;color:#087b88;font:inherit;font-weight:700;cursor:pointer;min-height:44px;padding:6px}
+html body .auth-fjord .auth-fjord__back{position:absolute;left:16px;top:max(22px,env(safe-area-inset-top));z-index:2;width:44px;height:44px;border:0;background:transparent;color:#387381;font-size:26px;cursor:pointer}
+html body .auth-fjord .auth-panel header{margin:0 0 20px}
+html body .auth-fjord .auth-panel header p{margin:0}
+html body .auth-fjord .auth-panel form{display:grid;gap:12px}
+html body .auth-fjord .auth-panel label{display:block;margin:0}
+html body .auth-fjord .auth-panel label>span{margin:0 0 6px;color:#435b68;font-size:14px;font-weight:600}
+html body .auth-fjord .auth-panel input{width:100%;height:48px;border:1px solid #cddfe3;border-radius:12px;padding:0 14px;background:#fff;color:#143b4b;font-size:16px}
+html body .auth-fjord .auth-password input{padding-right:50px}
+html body .auth-fjord .auth-password button{top:2px;right:2px;width:44px;height:44px;display:grid;place-items:center;padding:10px;background:transparent;color:#63808a}
+.auth-fjord .auth-password svg{width:22px;height:22px}
+html body .auth-fjord .auth-panel label small{display:block;margin-top:5px;color:#73848b;font-size:12px;line-height:1.3}
+html body .auth-fjord .auth-forgot{justify-self:end;margin:-6px 0;min-height:36px;padding:6px 0;border:0;background:transparent;color:#087b88;font-size:13px;cursor:pointer}
+html body .auth-fjord .auth-switch{margin:12px 0 0;color:#637786;font-size:14px;text-align:center}
 html body .auth-fjord button:disabled{opacity:.55;cursor:wait}
 html body .auth-fjord :focus-visible{outline:3px solid #64bfca;outline-offset:3px}
-.auth-fjord--form .auth-fjord__scene{height:110px}
-@media(max-height:720px){.auth-fjord__scene{height:200px}.auth-fjord__hero{padding-top:18px}.auth-fjord__brand{width:170px}html body .auth-fjord .auth-mobile-quick>p{margin-bottom:16px}html body .auth-fjord .auth-mobile-quick>.auth-fjord__register{margin-top:12px;padding-top:12px}}
+.auth-fjord--form .auth-fjord__scene{height:clamp(30px,calc(100svh - 590px),120px);object-position:center 48%}
+.auth-fjord__foot{flex:1;min-height:12px;pointer-events:none}
+.auth-fjord--form .auth-fjord__foot{min-height:20px;background:url('/images/loading-fjord.webp') center 70% / cover;mask-image:linear-gradient(transparent,#000);opacity:.16;max-height:180px;margin-top:auto}
+@media(min-width:760px){html body .auth-page.auth-fjord{max-width:560px}.auth-fjord__brand{width:210px}.auth-fjord__hero{padding-top:24px}}
+@media(max-height:680px){.auth-fjord__hero{padding-top:max(10px,env(safe-area-inset-top))}.auth-fjord__brand{width:150px}html body .auth-fjord .auth-panel header{margin-bottom:12px}html body .auth-fjord .auth-panel form{gap:10px}html body .auth-fjord .auth-fjord__back{top:10px}}
+@media(max-height:540px){.auth-fjord__scene{height:30px}.auth-fjord--form .auth-fjord__scene{height:12px}.auth-fjord__foot{display:none}html body .auth-fjord .auth-mobile-quick>p{margin-bottom:12px}}
