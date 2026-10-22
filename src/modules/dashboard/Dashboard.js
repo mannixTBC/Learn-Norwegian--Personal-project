@@ -188,7 +188,6 @@ const Dashboard = () => {
         <div className="dashboard-mobile-start__welcome">
           <span>{greeting()}</span>
           <h1>{user && !user.isGuest ? user.name.split(' ')[0] : 'Hai să continuăm'}</h1>
-          <p>Următoarea lecție este pregătită pentru tine.</p>
         </div>
         <div className="dashboard-mobile-start__top">
           <div>
@@ -224,7 +223,6 @@ const Dashboard = () => {
           <div>
             <span>{greeting()}</span>
             <h1>{user && !user.isGuest ? user.name.split(' ')[0] : 'Hai să continuăm'}</h1>
-            <p>Următoarea lecție este pregătită pentru tine.</p>
           </div>
         </header>
 
