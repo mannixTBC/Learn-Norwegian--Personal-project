@@ -110,123 +110,48 @@ html body .App > .App__main:has(.listening-expedition) { min-height: 100svh; pad
 }
 @media (prefers-reduced-motion: reduce) { .is-playing .expedition-wave i { animation: none; } }
 
-/* Spend the available height on answers, reducing decorative space first. */
-.listening-expedition--playing {
-  min-height: 100dvh;
-  padding-block: max(6px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-bottom));
-}
-.listening-expedition--playing .expedition-header { min-height: 54px; margin-bottom: 6px; }
-.listening-expedition--playing .expedition-sheet { padding-block: clamp(10px, 1.8dvh, 18px); }
-.listening-expedition--playing .expedition-progress { margin-block: 8px 12px; }
-.listening-expedition--playing .expedition-subtitle { margin-top: 5px; }
-.listening-expedition--playing .expedition-headphones { width: 132px; height: clamp(50px, 10dvh, 90px); margin-block: 4px; }
-.listening-expedition--playing .expedition-player { min-height: 76px; padding-block: 10px; }
-.listening-expedition--playing .expedition-player-area { gap: 7px; }
-.listening-expedition--playing .expedition-meta { margin-top: 10px; }
-.listening-expedition--playing .expedition-question { margin-bottom: 9px; }
-.listening-expedition--playing .expedition-option { min-height: 54px; padding-block: 8px; }
-.listening-expedition--playing .expedition-hint { margin-top: 10px; }
-.listening-expedition--playing .expedition-submit { min-height: 50px; margin-top: 12px; }
-.listening-expedition--checked .expedition-headphones { height: 42px; width: 70px; margin-block: 2px; }
-.listening-expedition--checked .expedition-feedback { margin-top: 10px; padding: 10px 12px; }
-@media (max-height: 740px) {
-  .listening-expedition--playing .expedition-sheet { padding-block: 10px; }
-  .listening-expedition--playing .expedition-title { font-size: 26px; }
-  .listening-expedition--playing .expedition-progress { margin-block: 6px 9px; }
-  .listening-expedition--playing .expedition-headphones { width: 88px; height: 60px; margin-block: 2px; }
-  .listening-expedition--playing .expedition-player { min-height: 68px; padding-block: 8px; }
-  .listening-expedition--playing .expedition-play { width: 48px; height: 48px; flex-basis: 48px; }
-  .listening-expedition--playing .expedition-wave { height: 26px; }
-  .listening-expedition--playing .expedition-slow { min-height: 44px; padding-block: 6px; }
-  .listening-expedition--playing .expedition-meta { margin-block: 7px 5px; }
-  .listening-expedition--playing .expedition-question { font-size: 18px; }
-  .listening-expedition--playing .expedition-choices { gap: 7px; }
-  .listening-expedition--playing .expedition-option { min-height: 48px; padding-block: 5px; }
-  .listening-expedition--playing .expedition-hint { margin-top: 8px; font-size: 11px; }
-  .listening-expedition--playing .expedition-submit { min-height: 46px; margin-top: 9px; }
-  .listening-expedition--checked .expedition-headphones { display: none; }
-  .listening-expedition--checked .expedition-subtitle { display: none; }
-  .listening-expedition--checked .expedition-title { margin-bottom: 8px; }
-}
-@media (max-height: 680px) {
-  .listening-expedition--playing .expedition-headphones,
-  .listening-expedition--playing .expedition-subtitle { display: none; }
-  .listening-expedition--playing .expedition-title { margin-bottom: 10px; }
-  .listening-expedition--playing .expedition-header { min-height: 48px; margin-bottom: 4px; }
-}
 
-/* Compact playback keeps the choices and feedback inside ordinary phone screens.
-   Content may still grow naturally for large text or unusually long answers. */
-.listening-expedition--playing .expedition-player-area { flex-direction: row; align-items: stretch; gap: 8px; }
-.listening-expedition--playing .expedition-player { flex: 1; min-width: 0; }
-.listening-expedition--playing .expedition-slow { flex: 0 0 76px; align-self: center; min-height: 44px; margin: 0; padding: 8px 6px; justify-content: center; font-size: 12px; }
-.listening-expedition--playing .expedition-player { gap: 10px; padding-inline: 12px; }
-.listening-expedition--playing .expedition-sheet { padding-inline: clamp(10px, 3vw, 24px); }
-.listening-expedition--playing .expedition-submit { margin-top: 10px; }
-.listening-expedition--playing .expedition-error { display: grid; grid-template-columns: minmax(0, 1fr) 80px; align-items: center; gap: 8px; padding: 8px; margin-block: 6px; font-size: 12px; line-height: 1.3; }
-.listening-expedition--playing .expedition-error button { margin: 0; padding: 5px; font-size: 11px; }
-@media (max-height: 760px) {
-  .listening-expedition--playing { padding-block: max(5px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-bottom)); }
-  .listening-expedition--playing .expedition-header { min-height: 44px; margin-bottom: 5px; }
-  .listening-expedition--playing .expedition-sheet { padding-block: 10px; }
-  .listening-expedition--playing .expedition-stage { padding: 4px 12px; font-size: 10px; }
-  .listening-expedition--playing .expedition-progress { margin-block: 6px 8px; }
-  .listening-expedition--playing .expedition-title { font-size: 25px; margin-bottom: 8px; }
-  .listening-expedition--playing .expedition-headphones { display: none; }
-  .listening-expedition--playing .expedition-player { min-height: 58px; padding-block: 6px; border-radius: 23px; }
-  .listening-expedition--playing .expedition-play { width: 40px; height: 40px; flex-basis: 40px; }
-  .listening-expedition--playing .expedition-wave { height: 19px; }
-  .listening-expedition--playing .expedition-wave i { max-height: 19px; }
-  .listening-expedition--playing .expedition-track { gap: 2px; }
-  .listening-expedition--playing .expedition-play-label { font-size: 11px; }
-  .listening-expedition--playing .expedition-meta { margin-block: 8px 4px; font-size: 10px; }
-  .listening-expedition--playing .expedition-question { font-size: 17px; margin-block: 0 7px; }
-  .listening-expedition--playing .expedition-choices { gap: 6px; }
-  .listening-expedition--playing .expedition-option { min-height: 44px; padding: 5px 9px; font-size: 14px; line-height: 1.25; grid-template-columns: 28px minmax(0, 1fr); }
-  .listening-expedition--playing .expedition-letter { width: 28px; height: 28px; font-size: 12px; }
-  .listening-expedition--playing .expedition-submit { min-height: 44px; padding-block: 8px; margin-top: 9px; font-size: 16px; }
-  .listening-expedition--checked .expedition-feedback { padding: 7px 9px; margin-top: 8px; gap: 7px; }
-  .listening-expedition--checked .expedition-feedback h3 { font-size: 13px; margin-bottom: 2px; }
-  .listening-expedition--checked .expedition-feedback p { font-size: 12px; line-height: 1.25; }
-  .listening-expedition--checked .expedition-feedback small { font-size: 11px; }
+/* One stable frame for playback and answers, including while feedback is open. */
+.listening-expedition--playing { min-height:100dvh; display:flex; flex-direction:column; gap:12px; padding:max(10px,env(safe-area-inset-top)) 18px max(18px,env(safe-area-inset-bottom)); }
+.listening-expedition--playing .expedition-header { display:flex; justify-content:space-between; min-height:44px; margin:0; flex-shrink:0; }
+.listening-expedition--playing .expedition-sheet { width:100%; max-width:560px; margin:auto; padding:24px; border:1px solid #ddcba4; border-radius:24px; box-shadow:0 8px 24px #72562512; }
+.listening-expedition--playing .expedition-stage { padding:5px 13px; }
+.listening-expedition--playing .expedition-progress { margin:10px 0 18px; }
+.listening-expedition--playing .expedition-title { margin:0 0 22px; font-size:30px; }
+.listening-expedition--playing .expedition-player-area { flex-direction:row; align-items:stretch; gap:8px; }
+.listening-expedition--playing .expedition-player { flex:1; min-width:0; min-height:76px; padding:10px 12px; gap:10px; border-radius:24px; }
+.listening-expedition--playing .expedition-play { width:44px; height:44px; flex-basis:44px; }
+.listening-expedition--playing .expedition-slow { flex:0 0 72px; flex-direction:column; justify-content:center; gap:4px; padding:6px; border-radius:18px; font-size:12px; }
+.listening-expedition--playing .expedition-meta { margin:20px 0 8px; }
+.listening-expedition--playing .expedition-question { font-size:19px; margin:0 0 12px; }
+.listening-expedition--playing .expedition-option { min-height:54px; padding:8px 12px; font-size:15px; }
+.listening-expedition--playing .expedition-submit { min-height:48px; margin-top:18px; padding:10px 14px; font-size:16px; }
+.listening-expedition--playing .expedition-error { display:flex; align-items:center; gap:8px; padding:8px; margin:0 0 10px; font-size:12px; }
+.listening-expedition--playing .expedition-error button { flex:0 0 80px; margin:0; padding:6px; font-size:11px; }
+@media(max-height:700px) {
+ .listening-expedition--playing { gap:8px; padding:8px 12px 12px; }
+ .listening-expedition--playing .expedition-sheet { padding:14px; }
+ .listening-expedition--playing .expedition-title { font-size:26px; margin-bottom:14px; }
+ .listening-expedition--playing .expedition-progress { margin:7px 0 12px; }
+ .listening-expedition--playing .expedition-player { min-height:60px; padding:6px 10px; }
+ .listening-expedition--playing .expedition-wave { height:22px; }
+ .listening-expedition--playing .expedition-wave i { max-height:22px; }
+ .listening-expedition--playing .expedition-meta { margin:12px 0 5px; }
+ .listening-expedition--playing .expedition-question { font-size:17px; margin-bottom:8px; }
+ .listening-expedition--playing .expedition-choices { gap:7px; }
+ .listening-expedition--playing .expedition-option { min-height:44px; padding:5px 8px; font-size:14px; grid-template-columns:28px minmax(0,1fr); }
+ .listening-expedition--playing .expedition-letter { width:28px; height:28px; }
+ .listening-expedition--playing .expedition-submit { min-height:44px; margin-top:12px; }
 }
-@media (orientation: landscape) and (max-height: 500px) and (min-width: 550px) {
-  .listening-expedition--playing { max-width: 1000px; padding-inline: 12px; }
-  .listening-expedition--playing .expedition-sheet { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 5px 16px; }
-  .listening-expedition--playing .expedition-stage,
-  .listening-expedition--playing .expedition-progress,
-  .listening-expedition--playing .expedition-title,
-  .listening-expedition--playing .expedition-player-area,
-  .listening-expedition--playing .expedition-meta,
-  .listening-expedition--playing .expedition-question { grid-column: 1; margin-block: 0; }
-  .listening-expedition--playing .expedition-stage { justify-self: start; }
-  .listening-expedition--playing .expedition-title { text-align: left; font-size: 23px; }
-  .listening-expedition--playing .expedition-choices { grid-column: 2; grid-row: 1 / 5; }
-  .listening-expedition--playing .expedition-submit { grid-column: 2; grid-row: 5 / 7; margin-top: 0; align-self: end; }
-  .listening-expedition--playing .expedition-feedback,
-  .listening-expedition--playing .expedition-error { grid-column: 1; grid-row: 5 / 7; margin: 0; }
-  .listening-expedition--checked .expedition-meta,
-  .listening-expedition--checked .expedition-question,
-  .listening-expedition--playing:has(.expedition-error) .expedition-meta,
-  .listening-expedition--playing:has(.expedition-error) .expedition-question { display: none; }
+@media(orientation:landscape) and (max-height:500px) and (min-width:550px) {
+ .listening-expedition--playing { max-width:1000px; }
+ .listening-expedition--playing .expedition-sheet { max-width:900px; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:6px 18px; }
+ .listening-expedition--playing :is(.expedition-stage,.expedition-progress,.expedition-title,.expedition-player-area,.expedition-meta,.expedition-question,.expedition-error) { grid-column:1; margin:0; }
+ .listening-expedition--playing .expedition-title { font-size:24px; }
+ .listening-expedition--playing .expedition-choices { grid-column:2; grid-row:1 / 6; }
+ .listening-expedition--playing .expedition-sheet>.expedition-submit { grid-column:2; grid-row:6 / 9; margin:0; align-self:end; }
+ .listening-expedition--playing:has(.expedition-error) .expedition-meta { display:none; }
 }
-@media (max-height: 600px) {
-  .listening-expedition--playing .expedition-sheet { padding-block: 7px; }
-  .listening-expedition--checked .expedition-meta { display: none; }
-  .listening-expedition--checked .expedition-question { margin-top: 8px; }
-}
-@media (orientation: landscape) and (max-height: 500px) and (min-width: 550px) {
-  .listening-expedition--checked :is(.expedition-title, .expedition-stage, .expedition-progress),
-  .listening-expedition--playing:has(.expedition-error) :is(.expedition-title, .expedition-stage, .expedition-progress) { display: none; }
-  .listening-expedition--checked .expedition-player-area,
-  .listening-expedition--playing:has(.expedition-error) .expedition-player-area { grid-column: 1; grid-row: 1; }
-  .listening-expedition--playing .expedition-feedback,
-  .listening-expedition--playing .expedition-error { grid-column: 1; grid-row: 2 / 7; align-self: start; }
-}
-
-/* A quiet frame leaves the answers prominent; feedback uses the top layer. */
-.listening-expedition--playing .expedition-header { display: flex; justify-content: space-between; min-height: 44px; }
-.listening-expedition--playing .expedition-sheet { border: 1px solid #ddcba4; box-shadow: 0 8px 24px #72562512; }
 .expedition-popup { position: fixed; inset: 0; margin: auto; width: min(420px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow-y: auto; padding: 26px 22px; border: 1px solid #c7d9cd; border-radius: 26px; color: #214f46; background: #fffaf0; box-shadow: 0 20px 80px #123d4955; text-align: center; font-family: inherit; }
 .expedition-popup::backdrop { background: #123d4970; backdrop-filter: blur(4px); }
 .expedition-popup.wrong { border-color: #e2c19e; color: #80503b; }
@@ -242,4 +167,21 @@ html body .App > .App__main:has(.listening-expedition) { min-height: 100svh; pad
   .expedition-popup-icon { width: 36px; height: 36px; margin-bottom: 6px; }
   .expedition-popup h3 { font-size: 21px; margin-bottom: 6px; }
   .expedition-popup p { font-size: 14px; }
+}
+
+@media(max-height:700px) {
+ .listening-expedition--playing:has(.expedition-error) .expedition-meta { display:none; }
+ .listening-expedition--playing:has(.expedition-error) .expedition-question { margin-top:10px; }
+}
+@media(orientation:landscape) and (max-height:500px) and (min-width:550px) {
+ .listening-expedition--playing { padding-block:5px; gap:5px; }
+ .listening-expedition--playing .expedition-sheet { padding:10px 14px; gap:4px 16px; }
+ .listening-expedition--playing .expedition-meta { display:none; }
+ .listening-expedition--playing:has(.expedition-error) .expedition-stage,
+ .listening-expedition--playing:has(.expedition-error) .expedition-question { display:none; }
+ .listening-expedition--playing .expedition-error { grid-row:4 / 9; }
+}
+@media(max-height:700px) {
+ .listening-expedition--playing:has(.expedition-error) .expedition-title { margin-bottom:8px; }
+ .listening-expedition--playing:has(.expedition-error) .expedition-question { margin-top:6px; }
 }
