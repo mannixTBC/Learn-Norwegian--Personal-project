@@ -22,6 +22,8 @@ const ratings = [
 const ReviewSession = ({ level }) => {
   const ratedRef = useRef(false);
   const promptRef = useRef(null);
+  const answerRef = useRef(null);
+  const ratingsRef = useRef(null);
   const [queue, setQueue] = useState(() => getDueReviewItems(level));
   const [sessionTotal, setSessionTotal] = useState(() => getDueReviewItems(level).length);
   const [revealed, setRevealed] = useState(false);
@@ -33,6 +35,12 @@ const ReviewSession = ({ level }) => {
   const sessionFinished = sessionTotal > 0 && queue.length === 0;
 
   useEffect(() => { ratedRef.current = false; promptRef.current?.focus(); }, [current?.id]);
+
+  useEffect(() => {
+    if (!revealed) return;
+    answerRef.current?.focus({ preventScroll: true });
+    ratingsRef.current?.scrollIntoView?.({ block: 'nearest' });
+  }, [revealed]);
 
   const rateCurrent = (rating) => {
     if (!current || !revealed || ratedRef.current) return;
@@ -104,14 +112,14 @@ const ReviewSession = ({ level }) => {
             <h2 ref={promptRef} tabIndex={-1}>{current.prompt}</h2>
             {revealed ? (
               <>
-                <div className="review-answer" role="status"><small>Răspunsul corect</small><strong>{current.answer}</strong></div>
+                <div className="review-answer" ref={answerRef} tabIndex={-1} role="status"><small>Răspunsul corect</small><strong>{current.answer}</strong></div>
 
               </>
             ) : (
               <button className="review-reveal" type="button" onClick={() => setRevealed(true)}>Arată răspunsul</button>
             )}
           </article>
-          {revealed && <div className="ng-review-ratings"><div className="review-rating-intro"><strong>Cât de ușor ți-ai amintit?</strong><span>Alegerea stabilește următoarea repetare.</span></div>
+          {revealed && <div className="ng-review-ratings" ref={ratingsRef}><div className="review-rating-intro"><strong>Cât de ușor ți-ai amintit?</strong><span>Alegerea stabilește următoarea repetare.</span></div>
                 <div className="review-rating-actions">
                   {ratings.map((rating) => (
                     <button className={`review-rating review-rating--${rating.tone}`} type="button" onClick={() => rateCurrent(rating.id)} key={rating.id}>

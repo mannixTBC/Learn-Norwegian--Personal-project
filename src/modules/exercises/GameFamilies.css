@@ -41,6 +41,10 @@ html.is-installed-app .exercise-screen.nordic-exercise :is(button, a, input, sel
 html.is-installed-app .exercise-screen.nordic-exercise :is(button, a, input, select, summary):focus-visible { outline: 3px solid #319eac; outline-offset: 3px; }
 html.is-installed-app .exercise-screen.nordic-exercise .exercise-level-select select { min-height: 44px; }
 
+/* Keep the feedback and its next action visible together after checking. */
+html.is-installed-app .ng-answer-outcome { display: flow-root; scroll-margin-block: 16px; }
+html.is-installed-app .ng-review-ratings { scroll-margin-block: 16px; }
+
 /* Puzzle: one question, tactile pieces, feedback in the same surface. */
 html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-puzzle-card {
   padding: 23px; border-radius: 26px; border: 1px solid #f4ead4;

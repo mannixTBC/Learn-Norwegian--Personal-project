@@ -11,7 +11,7 @@ import ChallengeFillIn from './ChallengeFillIn';
 import ChallengeSentenceMatch from './ChallengeSentenceMatch';
 import './Challenge30.css';
 
-const steps = [['vocab', 'Învață'], ['drag', 'Asociază'], ['fill', 'Completează']];
+const steps = [['vocab', 'Învață'], ['drag', 'Asociază'], ['fill', 'Scrie']];
 const VerbSession = ({ level, userId }) => {
   const sessions = useMemo(() => getVerbSessions(level), [level]);
   const storageKey = 'challenge_verbs_progress_' + level.toLowerCase();

@@ -4,7 +4,12 @@ import { ExerciseArtwork, NordicHeader, NordicProgress } from './NordicExerciseU
 export default function ActivityPlayView({ game, details, level, requestedLevel, limitedMissions, pathId, question, current, total, retry, headingRef, audioBusy, audioStatus, selected, setSelected, checked, play, onExit, verify, next }) {
   const correct = selected === question.answer;
   const feedback = useRef(null);
-  useEffect(() => { if (checked) feedback.current?.focus(); }, [checked]);
+  const outcome = useRef(null);
+  useEffect(() => {
+    if (!checked) return;
+    feedback.current?.focus({ preventScroll: true });
+    outcome.current?.scrollIntoView?.({ block: 'nearest' });
+  }, [checked]);
   return <div className={`exercise-screen nordic-exercise nordic-exercise--${game} activity-game activity-game--${game} activity-game--playing`}>
     <NordicHeader title={details.title} subtitle="Înțelege situația. Alege ce spui." level={level} onExit={onExit} />
     <NordicProgress current={current + 1} total={total} />
@@ -24,8 +29,10 @@ export default function ActivityPlayView({ game, details, level, requestedLevel,
           const state = checked ? option === question.answer ? 'correct' : option === selected ? 'wrong' : '' : selected === option ? 'selected' : '';
           return <button type="button" aria-pressed={selected === option} className={state} disabled={checked} onClick={() => setSelected(option)} key={option}><span className="activity-choice-letter" aria-hidden="true">{state === 'correct' ? '✓' : state === 'wrong' ? '×' : selected === option ? '●' : String.fromCharCode(65 + index)}</span><span lang={question.kind === 'reply' ? 'nb' : 'ro'}>{option}</span>{checked && (state === 'correct' || state === 'wrong') && <small>{state === 'correct' ? 'Corect' : 'Ai ales'}</small>}</button>;
         })}</div>
-        {checked && <div ref={feedback} tabIndex={-1} role="status" className={`activity-feedback ${correct ? 'correct' : 'wrong'}`}><span aria-hidden="true">{correct ? '✓' : '↻'}</span><div><h3>{correct ? 'Exact, ai înțeles!' : 'Reține pentru data viitoare'}</h3><p>{question.explanation}</p>{!correct && <small>Salvat pentru recapitulare.</small>}{question.kind === 'reply' && <button className="activity-text-button" type="button" onClick={() => play(false, question.answer)} disabled={audioBusy}>▷ Ascultă replica potrivită</button>}</div></div>}
-        <footer className="activity-session-actions"><span>{checked ? 'Continuă când ești pregătit.' : 'Alege un răspuns, apoi verifică.'}</span><button className="activity-primary" type="button" disabled={!checked && selected === null} onClick={checked ? next : verify}>{checked ? current === total - 1 ? 'Vezi rezultatul' : 'Continuă' : 'Verifică'}<span aria-hidden="true">→</span></button></footer>
+        <div ref={outcome} className="ng-answer-outcome">
+          {checked && <div ref={feedback} tabIndex={-1} role="status" className={`activity-feedback ${correct ? 'correct' : 'wrong'}`}><span aria-hidden="true">{correct ? '✓' : '↻'}</span><div><h3>{correct ? 'Exact, ai înțeles!' : 'Reține pentru data viitoare'}</h3><p>{question.explanation}</p>{!correct && <small>Salvat pentru recapitulare.</small>}{question.kind === 'reply' && <button className="activity-text-button" type="button" onClick={() => play(false, question.answer)} disabled={audioBusy}>▷ Ascultă replica potrivită</button>}</div></div>}
+          <footer className="activity-session-actions"><span>{checked ? 'Continuă când ești pregătit.' : 'Alege un răspuns, apoi verifică.'}</span><button className="activity-primary" type="button" disabled={!checked && selected === null} onClick={checked ? next : verify}>{checked ? current === total - 1 ? 'Vezi rezultatul' : 'Continuă' : 'Verifică'}<span aria-hidden="true">→</span></button></footer>
+        </div>
       </div>
     </section>
   </div>;

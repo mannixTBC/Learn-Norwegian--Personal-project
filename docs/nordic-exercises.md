@@ -12,7 +12,9 @@ Listening keeps its existing playback gate and automatic progression after corre
 - `npm run test:games`: missions, listening gates, errors, scoring and retries.
 - `node scripts/test-word-discovery.mjs`: existing word-game interactions and all 120 illustrated entries.
 - `npm run build:client`: production client compilation.
-- Visual verification of this revision is still incomplete. The browser can open local pages, but the game screens load older code than the current working tree. These previews and the screenshots below do not validate this revision.
+- Visual QA now uses the published installed-app preview (`?appPreview=1`), since the local preview was serving older screens. Checked at 390×844 and 320×640: vocabulary choices and correct/wrong feedback; sentence assembly, undo and verification; verb steps and matching, including C2 phrases; both mission stages; listening playback gate and automatic progression; pronunciation layout and phrase navigation; review empty/revealed states and rating controls; and the preserved Word Discovery screen.
+- QA found that feedback could be visible while the next action remained below the viewport. Puzzle and mission feedback now bring the result and continuation into view together. Review reveal focuses the answer and brings its rating controls into view. The last verb tab is labelled “Scrie” so it fits narrow screens.
+- These checks cover browser layout and interaction. Actual microphone recording, pronunciation scoring on device and an installed APK are not covered by this visual pass. The screenshots below remain an earlier baseline.
 
 ## Previous visual baseline
 

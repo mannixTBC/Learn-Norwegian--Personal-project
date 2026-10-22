@@ -6,9 +6,14 @@ export default function PracticePuzzleView({ game, level, info, question, curren
   const isOrder = game === 'order';
   const instantChoice = !isOrder && question.type === 'choice';
   const feedback = useRef(null);
-  useEffect(() => { if (checked) feedback.current?.focus(); }, [checked]);
+  const outcome = useRef(null);
+  useEffect(() => {
+    if (!checked) return;
+    feedback.current?.focus({ preventScroll: true });
+    outcome.current?.scrollIntoView?.({ block: 'nearest' });
+  }, [checked]);
   return <ExerciseLayout className={'practice-game practice-game--session ng-puzzle ng-puzzle--' + game} level={level} icon={game} title={info.title} description={info.subtitle} onExit={onExit}>
-    <NordicProgress current={current + 1} total={total} detail={`${current + 1} / ${total} · ${score} corecte`} />
+    <NordicProgress current={current + 1} total={total} detail={`${current + 1} / ${total} · ${score} ${score === 1 ? 'corect' : 'corecte'}`} />
     <section className="game-question ng-puzzle-card">
       <div className="ng-question-meta"><span>Lecția {question.lessonId} · {level}</span><span>{isOrder ? 'CONSTRUIEȘTE' : 'GĂSEȘTE SENSUL'}</span></div>
       <div className="ng-puzzle-prompt">
@@ -36,8 +41,10 @@ export default function PracticePuzzleView({ game, level, info, question, curren
         <div className="order-bank" aria-label="Cuvinte disponibile">{question.words.map((word, index) => <button type="button" lang="nb" disabled={checked || selected.includes(index)} aria-pressed={selected.includes(index)} onClick={() => setSelected(all => all.includes(index) ? all : [...all, index])} key={index}>{word}</button>)}</div>
         <div className="ng-order-tools"><small>Atinge un cuvânt din propoziție ca să îl scoți.</small><button type="button" disabled={checked || !selected.length} onClick={() => setSelected(all => all.slice(0, -1))}>↶ Anulează</button></div>
       </>}
-      {checked && <div ref={feedback} tabIndex={-1} role="status" className={'game-feedback ' + (correct ? 'correct' : 'wrong')}><span aria-hidden="true">{correct ? '✓' : '↻'}</span><div><h3>{correct ? 'Corect!' : 'Răspunsul corect'}</h3><p>{correct ? question.example || question.explanation || 'Ai găsit răspunsul potrivit.' : question.answer}</p>{!correct && <small>Salvat pentru recapitulare.</small>}</div></div>}
-      {(!instantChoice || checked) && <footer className="session-actions"><button type="button" className="exercise-primary" disabled={!checked && !completeAnswer} onClick={checked ? onNext : () => onVerify()}>{checked ? current === total - 1 ? 'Vezi rezultatul' : 'Continuă' : isOrder && !completeAnswer ? 'Completează propoziția' : 'Verifică'} <span aria-hidden="true">→</span></button></footer>}
+      <div ref={outcome} className="ng-answer-outcome">
+        {checked && <div ref={feedback} tabIndex={-1} role="status" className={'game-feedback ' + (correct ? 'correct' : 'wrong')}><span aria-hidden="true">{correct ? '✓' : '↻'}</span><div><h3>{correct ? 'Corect!' : 'Răspunsul corect'}</h3><p>{correct ? question.example || question.explanation || 'Ai găsit răspunsul potrivit.' : question.answer}</p>{!correct && <small>Salvat pentru recapitulare.</small>}</div></div>}
+        {(!instantChoice || checked) && <footer className="session-actions"><button type="button" className="exercise-primary" disabled={!checked && !completeAnswer} onClick={checked ? onNext : () => onVerify()}>{checked ? current === total - 1 ? 'Vezi rezultatul' : 'Continuă' : isOrder && !completeAnswer ? 'Completează propoziția' : 'Verifică'} <span aria-hidden="true">→</span></button></footer>}
+      </div>
     </section>
   </ExerciseLayout>;
 }
