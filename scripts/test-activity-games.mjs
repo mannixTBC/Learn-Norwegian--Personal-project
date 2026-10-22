@@ -136,7 +136,7 @@ await click(choices()[0]);
 await click(findButton('Verifică'));
 assert.equal(renderer.root.findAllByType('dialog').length, 1);
 if (findButton('Repetă întrebarea')) {
-  const answer = renderer.root.findByType('dialog').findAllByType('p')[1].children.join('');
+  const answer = renderer.root.findByType('dialog').findAllByType('p')[0].children.join('');
   await click(findButton('Repetă întrebarea'));
   assert.ok(choices().every(button => button.props.disabled), 'repeat requires listening again');
   await click(findButton('Ascultă înregistrarea'));
