@@ -4,6 +4,7 @@ import { useAuth } from './AuthContext';
 import './AuthPage.css';
 import './GuestAuth.css';
 import './SupabaseAuth.css';
+import './AuthFjord.css';
 
 const GoogleIcon = () => (
   <svg className="auth-google__mark" viewBox="0 0 24 24" aria-hidden="true">
@@ -142,32 +143,31 @@ const AuthPage = () => {
   const isRecovery = mode === 'recovery';
 
   return (
-    <div className="auth-page">
-      <section className="auth-story">
-        <div><span className="auth-story__eyebrow">Spațiul tău de învățare</span><h1>Norvegiana ta,<br />pas cu pas.</h1><p>Învață printr-un curs modern, construit pentru situațiile reale pe care le vei întâlni în Norvegia.</p><div className="auth-story__features"><span>✓ Programă pe șase niveluri, A1–C2</span><span>✓ Lecții practice pentru viața din Norvegia</span><span>✓ Audio, exerciții și feedback personalizat</span><span>✓ Recapitulare inteligentă prin repetare spațiată și reamintire activă</span></div></div>
+    <div className={`auth-page auth-fjord ${mobileEmailOpen || isRecovery ? 'auth-fjord--form' : ''}`}>
+      <section className="auth-fjord__hero" aria-label="NordLingo">
+        <Link to="/" className="auth-fjord__brand"><img src="/branding/nordlingo-selected-color.png" alt="NordLingo" /></Link>
+        <img className="auth-fjord__scene" src="/images/loading-fjord.webp" alt="" />
       </section>
       <main className="auth-panel">
         <div className="auth-panel__inner">
-          <Link className="auth-panel__back" to="/">← Înapoi la pagina principală</Link>
 
           {!isRecovery && <section className={`auth-mobile-quick ${mobileEmailOpen ? 'is-hidden' : ''}`} aria-label="Alege cum vrei să continui">
-            <div className="auth-mobile-quick__brand" aria-hidden="true">NO</div>
-            <span>NordLingo</span>
-            <h1>Intră și continuă lecția</h1>
-            <p>Ajungi la următorul exercițiu în câteva secunde.</p>
+            <h1>Bine ai revenit!</h1>
+            <p>Continuă călătoria ta în norvegiană.</p>
             <button className="auth-google" type="button" disabled={submitting} onClick={continueWithGoogle}>
               <span className="auth-google__icon"><GoogleIcon /></span>
               <span className="auth-google__copy"><strong>Continuă cu Google</strong><small>Cea mai rapidă opțiune</small></span>
               <span className="auth-google__arrow" aria-hidden="true">→</span>
             </button>
             <button className="auth-mobile-email" type="button" disabled={submitting} onClick={() => { clearFeedback(); setMobileEmailOpen(true); }}>
-              Intră cu e-mail
+              Conectare cu e-mail
             </button>
             <button className="auth-guest" type="button" disabled={submitting} onClick={continueAsGuest}>
               <span className="auth-guest__icon"><GuestIcon /></span>
               <span><strong>Continuă ca vizitator</strong><small>Fără cont și fără parolă</small></span>
               <span className="auth-guest__arrow" aria-hidden="true">→</span>
             </button>
+            <p className="auth-fjord__register">Nu ai cont? <button type="button" onClick={() => { switchMode('register'); setMobileEmailOpen(true); }}>Creează un cont</button></p>
             {error && <div className="auth-error" role="alert">{error}</div>}
           </section>}
 
