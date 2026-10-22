@@ -13,6 +13,7 @@ import { workMissionData } from './workMissionData';
 import { ExerciseLayout } from './ExerciseUI';
 import './ActivityGame.css';
 import ActivityPlayView from './ActivityPlayView';
+import ListeningExpedition, { ListeningExpeditionLayout } from './ListeningExpedition';
 
 export const ActivityIcon = ({ game, ...props }) => (
   <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
@@ -59,6 +60,7 @@ const ActivitySession = ({ game }) => {
   const mistakes = results.filter((item) => !item.correct);
   const needsAudio = question?.kind === 'listen';
   const audioBusy = audioStatus === 'loading' || audioStatus === 'playing';
+  const ResultLayout = game === 'listen' ? ListeningExpeditionLayout : ExerciseLayout;
 
   useEffect(() => () => audioController.current?.abort(), []);
   useEffect(() => {
@@ -115,7 +117,7 @@ const ActivitySession = ({ game }) => {
   };
 
   if (screen === 'result') return (
-    <ExerciseLayout className={`activity-game activity-game--${game}`} title={details.title} icon={game} level={level} compact backTo={'/jocuri?nivel=' + requestedLevel}>
+    <ResultLayout className={`activity-game activity-game--${game}`} title={details.title} icon={game} level={level} requestedLevel={requestedLevel} compact backTo={'/jocuri?nivel=' + requestedLevel}>
       <section className="activity-result">
         <span className="activity-result__icon" aria-hidden="true">{mistakes.length ? '↗' : '✓'}</span><span className="activity-eyebrow">{retry ? 'Recapitulare încheiată' : 'Sesiune încheiată'} · {level}</span>
         <h1 ref={headingRef} tabIndex={-1}>{mistakes.length ? 'Fiecare încercare te duce înainte.' : 'Ai prins toate răspunsurile!'}</h1>
@@ -125,12 +127,13 @@ const ActivitySession = ({ game }) => {
         <div className="activity-result__actions">{mistakes.length > 0 && <button type="button" className="activity-primary" onClick={() => begin(mistakes.map((item) => item.question), true)}>Repetă greșelile ({mistakes.length})</button>}<button type="button" className={mistakes.length ? 'activity-secondary' : 'activity-primary'} onClick={start}>Sesiune nouă</button></div>
       </section>
       <section className="activity-review" aria-label="Răspunsurile sesiunii"><h2>Ce iei cu tine din sesiune</h2>{results.map(({ question: item, given, correct }) => <article className={correct ? 'correct' : 'wrong'} key={item.id}><span aria-hidden="true">{correct ? '✓' : '↻'}</span><div><small>{correct ? 'Corect' : 'De repetat'} · {item.topic}</small><h3 lang={item.kind === 'listen' || item.kind === 'intent' ? 'nb' : 'ro'}>{item.audioText || item.quote || item.context}</h3>{!correct && <p>Ai ales: {given}</p>}<p><strong lang={item.kind === 'reply' ? 'nb' : 'ro'}>{item.answer}</strong></p></div></article>)}</section>
-    </ExerciseLayout>
+    </ResultLayout>
   );
 
   if (!question) return <ExerciseLayout className="activity-game" title={details.title} icon={game} level={level} backTo={'/jocuri?nivel=' + requestedLevel}><p role="alert">Nu sunt întrebări disponibile pentru această sesiune.</p><Link to={'/jocuri?nivel=' + requestedLevel}>Înapoi la jocuri</Link></ExerciseLayout>;
 
-  return <ActivityPlayView game={game} details={details} level={level} requestedLevel={requestedLevel} limitedMissions={limitedMissions} pathId={pathId} question={question} current={current} total={questions.length} retry={retry} headingRef={headingRef} needsAudio={needsAudio} audioBusy={audioBusy} audioStatus={audioStatus} heard={heard} selected={selected} setSelected={setSelected} checked={checked} play={play} stopAudio={stopAudio} onExit={() => { stopAudio(); history.push('/jocuri?nivel=' + requestedLevel); }} verify={verify} next={next}/>;
+  const PlayView = game === 'listen' ? ListeningExpedition : ActivityPlayView;
+  return <PlayView game={game} details={details} level={level} requestedLevel={requestedLevel} limitedMissions={limitedMissions} pathId={pathId} question={question} current={current} total={questions.length} retry={retry} headingRef={headingRef} needsAudio={needsAudio} audioBusy={audioBusy} audioStatus={audioStatus} heard={heard} selected={selected} setSelected={setSelected} checked={checked} play={play} stopAudio={stopAudio} onExit={() => { stopAudio(); history.push('/jocuri?nivel=' + requestedLevel); }} verify={verify} next={next}/>;
 };
 
 const ActivityGame = ({ game }) => {

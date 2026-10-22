@@ -170,7 +170,7 @@ try {
 const observedTypes = new Set();
 let vocabularyAnswers = 0;
 for (let index = 0; index < 10; index++) {
-  const meta = renderer.root.findByProps({ className: 'activity-question__meta' }).findAllByType('span');
+  const meta = renderer.root.findByProps({ className: 'activity-question__meta expedition-meta' }).findAllByType('span');
   assert.match(buttonText(meta[0]), /^Lecția [1-4] ·/, 'questions stay inside this user’s completed and current lessons');
   const type = buttonText(meta[1]);
   observedTypes.add(type);
