@@ -31,7 +31,9 @@ const { courseProgressKey } = await import(pathToFileURL(resolve(outDir, 'progre
 const { buildAdaptiveListeningQuestions, buildListeningQuestions } = await import('../src/modules/exercises/practiceActivities.js');
 const storage = new Map();
 globalThis.localStorage = { getItem: (key) => storage.get(key) || null, setItem: (key, value) => storage.set(key, value), removeItem: (key) => storage.delete(key) };
-globalThis.window = Object.assign(new EventTarget(), { scrollTo() {}, speechSynthesis: { cancel() {} } });
+let advanceTimer;
+const advanceListening = async () => { assert.ok(advanceTimer); const callback = advanceTimer; advanceTimer = null; await act(async () => callback()); };
+globalThis.window = Object.assign(new EventTarget(), { scrollTo() {}, setTimeout(callback) { advanceTimer = callback; return 1; }, clearTimeout() { advanceTimer = null; }, speechSynthesis: { cancel() {} } });
 globalThis.document = { activeElement: null };
 globalThis.activityTestUser = { id: 'game-test' };
 globalThis.activityTestEvents = [];
@@ -73,10 +75,11 @@ console.log('✓ Adaptive listening: ten mixed questions at every curriculum pos
 let renderer;
 const buttonText = (node) => node.children.map((child) => typeof child === 'string' ? child : buttonText(child)).join('');
 const buttons = () => renderer.root.findAllByType('button');
-const findButton = (text) => buttons().find((button) => buttonText(button).includes(text));
+const normalize = (text) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const findButton = (text) => buttons().find((button) => normalize(buttonText(button)).includes(normalize(text)));
 const click = async (button) => { assert.ok(button, 'button exists'); assert.ok(!button.props.disabled, 'button is enabled'); await act(async () => { button.props.onClick(); }); };
 const renderGame = async (game, query = 'A1') => {
-  await act(async () => { renderer = TestRenderer.create(React.createElement(MemoryRouter, { initialEntries: [`/${game}?nivel=${query}`] }, React.createElement(Route, { exact: true, path: '/' + game }, React.createElement(ActivityGame, { game })), React.createElement(Route, { path: '/jocuri' }, React.createElement('p', { id: 'games-return' }, 'Jocuri și exerciții'))), { createNodeMock: () => ({ focus() { document.activeElement = this; } }) }); });
+  await act(async () => { renderer = TestRenderer.create(React.createElement(MemoryRouter, { initialEntries: [`/${game}?nivel=${query}`] }, React.createElement(Route, { exact: true, path: '/' + game }, React.createElement(ActivityGame, { game })), React.createElement(Route, { path: '/jocuri' }, React.createElement('p', { id: 'games-return' }, 'Jocuri și exerciții'))), { createNodeMock: () => ({ showModal() {}, close() {}, focus() { document.activeElement = this; } }) }); });
 };
 const unmount = async () => act(async () => renderer.unmount());
 const choices = () => buttons().filter((button) => button.props.className?.includes('selected') || button.props['aria-pressed'] !== undefined);
@@ -131,8 +134,17 @@ await act(async () => audio.onended());
 assert.ok(choices().every((button) => !button.props.disabled));
 await click(choices()[0]);
 await click(findButton('Verifică'));
-assert.ok(renderer.root.findAllByProps({ role: 'status' }).length);
-await click(findButton('Continuă'));
+assert.equal(renderer.root.findAllByType('dialog').length, 1);
+if (findButton('Repetă întrebarea')) {
+  const answer = renderer.root.findByType('dialog').findAllByType('p')[1].children.join('');
+  await click(findButton('Repetă întrebarea'));
+  assert.ok(choices().every(button => button.props.disabled), 'repeat requires listening again');
+  await click(findButton('Ascultă înregistrarea'));
+  await act(async () => { audios.at(-1).onplay(); audios.at(-1).onended(); });
+  await click(choices().find(button => buttonText(button).includes(answer)));
+  await click(findButton('Verifica'));
+}
+await advanceListening();
 assert.ok(choices().every((button) => button.props.disabled), 'next recording needs a new listen');
 await click(findButton('Ascultă înregistrarea'));
 audio = audios.at(-1);
@@ -184,7 +196,7 @@ for (let index = 0; index < 10; index++) {
   await act(async () => { recording.onplay(); recording.onended(); });
   await click(choices().find((option) => meanings.includes(buttonText(option.findAllByType('span')[1]))));
   await click(findButton('Verifică'));
-  await click(findButton(index === 9 ? 'Vezi rezultatul' : 'Continuă'));
+  await advanceListening();
 }
 assert.ok(observedTypes.has('Replică din dialog') && observedTypes.size >= 2);
 assert.equal(activityTestEvents.length, eventsBeforeListening + 1);
