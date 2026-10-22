@@ -1,12 +1,12 @@
 /* Only replace application chrome while session initialization is visible. */
-html body .App:has(.session-loading) {
+html.is-installed-app body .App:has(.session-loading) {
   background: #fffefa;
 }
-html body .App:has(.session-loading) > .navbar,
-html body .App:has(.session-loading) > .footer {
+html.is-installed-app body .App:has(.session-loading) > .navbar,
+html.is-installed-app body .App:has(.session-loading) > .footer {
   display: none !important;
 }
-html body .App > .App__main:has(.session-loading) {
+html.is-installed-app body .App > .App__main:has(.session-loading) {
   padding: 0 !important;
   background: #fffefa;
 }
@@ -74,6 +74,25 @@ html body .App > .App__main:has(.session-loading) {
   0% { transform: translateX(-50%); }
   100% { transform: translateX(170%); }
 }
+.session-loading--web {
+  min-height: min(60vh, 480px);
+  gap: 14px;
+  align-content: center;
+  padding: 48px 24px;
+  background: transparent;
+}
+.session-loading__web-ring {
+  width: 38px;
+  height: 38px;
+  box-sizing: border-box;
+  border: 3px solid #deedf6;
+  border-top-color: #69b7e2;
+  border-right-color: #69b7e2;
+  border-radius: 50%;
+  animation: session-loading-web-turn 1.05s linear infinite;
+}
+.session-loading--web p { margin: 0; color: #586d7b; font-size: 14px; }
+@keyframes session-loading-web-turn { to { transform: rotate(360deg); } }
 @media (max-height: 600px) {
   .session-loading__content { padding-top: 20px; padding-bottom: 24px; }
   .session-loading__logo { width: 175px; margin-bottom: 5px; }
@@ -82,6 +101,7 @@ html body .App > .App__main:has(.session-loading) {
   .session-loading__status p { margin-top: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .session-loading__web-ring { animation: none; }
   .session-loading__track > span {
     animation: none;
     transform: translateX(58%);

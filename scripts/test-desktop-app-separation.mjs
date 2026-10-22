@@ -17,9 +17,10 @@ import ${abs('node_modules/bootstrap/dist/css/bootstrap.min.css')};
 import {AppContent} from ${abs('src/App.js')};
 let run=0;
 const root=createRoot(document.getElementById('root'));
-window.audit={mount(path,app=false){
+window.audit={mount(path,app=false,initializing=false){
   document.documentElement.classList.toggle('is-installed-app',app);
   window.auditAuthenticated=!path.startsWith('/autentificare');
+  window.auditInitializing=initializing;
   root.render(<MemoryRouter key={++run} initialEntries={[path]}><AppContent/></MemoryRouter>);
 }};
 window.audit.mount('/dashboard');
@@ -34,7 +35,7 @@ await build({ configFile: resolve(root, 'vite.config.js'), publicDir: false, log
   }, load(id) {
     if (id === '\0desktop-auth') return `export const AuthProvider=({children})=>children;
       export const useAuth=()=>({user:window.auditAuthenticated?{id:'desktop-audit',name:'Vizitator',isGuest:true}:null,
-      initializing:false,isAuthenticated:!!window.auditAuthenticated,passwordRecovery:false,plan:'free',isPremium:false,isDevBypass:false,
+      initializing:!!window.auditInitializing,isAuthenticated:!!window.auditAuthenticated,passwordRecovery:false,plan:'free',isPremium:false,isDevBypass:false,
       refreshEntitlements:async()=>{},logout:async()=>{},deleteAccount:async()=>{},login:async()=>{},register:async()=>({}),loginAsGuest:async()=>{},loginWithGoogle:async()=>{},requestPasswordReset:async()=>{},updatePassword:async()=>{}});`;
     if (id === '\0desktop-sync') return 'export const syncStudyActivity=async()=>({});export const syncLearningProgress=async()=>({});';
     if (id === '\0desktop-onboarding') return 'export default Component=>Component;';
@@ -55,7 +56,7 @@ for (const candidate of [process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH, process.
   try { await access(candidate); executablePath = candidate; break; } catch { /* Try another browser. */ }
 }
 const browser = await chromium.launch({ ...(executablePath ? { executablePath } : {}), headless: true });
-const report = { desktop: [], app: [], logic: [], browserErrors: [] };
+const report = { desktop: [], app: [], loading: [], logic: [], browserErrors: [] };
 try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
   page.setDefaultTimeout(10000);
@@ -68,13 +69,39 @@ try {
     return route.abort();
   });
   await page.goto('http://desktop-audit.test/');
-  const mount = async (path, app = false) => {
-    await page.evaluate(({ path, app }) => window.audit.mount(path, app), { path, app });
+  const mount = async (path, app = false, initializing = false) => {
+    await page.evaluate(({ path, app, initializing }) => window.audit.mount(path, app, initializing), { path, app, initializing });
     await page.waitForTimeout(100);
     assert.equal(await page.locator('.App').count(), 1, path + ': application mounted');
   };
   const visible = async selector => page.locator(selector).evaluateAll(elements => elements.filter(el => el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden').length);
-  const mobileOnly = '.mobile-app-nav,.dashboard-app-home,.learn-app,.account-mobile,.northern-games,.listening-expedition,.pronunciation-cathedral,.nordic-exercise,.ng-header,.lapp,.auth-fjord';
+  for (const app of [false, true]) {
+    await page.setViewportSize(app ? { width: 390, height: 844 } : { width: 1440, height: 900 });
+    for (const path of ['/', '/dashboard']) {
+      await mount(path, app, true);
+      assert.equal(await visible('.session-loading'), 1, path + ': session initialization is visible');
+      assert.equal(await visible('.session-loading__logo'), app ? 1 : 0, 'Branded logo is installed-app only');
+      assert.equal(await visible('.session-loading__scene'), app ? 1 : 0, 'Fjord splash is installed-app only');
+      assert.equal(await visible('.session-loading__web-ring'), app ? 0 : 1, 'Web uses the small indicator');
+      assert.equal(await visible('.App > .navbar'), app ? 0 : 1, 'Web navigation remains visible while initializing');
+      assert.equal(await visible('.App > .footer'), app ? 0 : 1, 'Web footer remains visible while initializing');
+      assert.equal(await page.locator('.page-loading').count(), 0, 'Session and page loading never overlap');
+      await page.screenshot({ path: resolve(output, 'session-' + (app ? 'app' : 'web') + (path === '/' ? '-home' : '') + '.png'), fullPage: true });
+      await mount('/dashboard', app);
+      assert.equal(await page.locator('.session-loading').count(), 0, 'Session loader clears when initialization finishes');
+      report.loading.push({ path, app });
+    }
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await mount('/dashboard', app, true);
+    const ring = app ? '.session-loading__track > span' : '.session-loading__web-ring';
+    assert.equal(await page.locator(ring).evaluate(el => getComputedStyle(el).animationName), 'none', 'Reduced motion is respected');
+  }
+  if (process.argv.includes('--loading-only')) {
+    assert.deepEqual(report.browserErrors, []);
+    await writeFile(resolve(output, 'loading-report.json'), JSON.stringify(report, null, 2));
+    console.log(JSON.stringify(report, null, 2));
+  } else {
+  const mobileOnly = '.mobile-app-nav,.dashboard-app-home,.learn-app,.account-mobile,.northern-games,.listening-expedition,.pronunciation-cathedral,.nordic-exercise,.ng-header,.lapp,.auth-fjord,.session-loading__logo,.session-loading__scene';
   const desktopCases = [
     ['/dashboard', '.daily-dashboard'], ['/invata?nivel=A1', '.learn-page'], ['/cont', '.account-page'],
     ['/jocuri?nivel=A1', '.desktop-games-hub'], ['/pronuntie?nivel=A1', '.pronuntie'],
@@ -152,6 +179,7 @@ try {
   assert.deepEqual(report.browserErrors, []);
   await writeFile(resolve(output, 'report.json'), JSON.stringify(report, null, 2));
   console.log(JSON.stringify(report, null, 2));
+  }
 } catch (error) {
   const page = browser.contexts()[0]?.pages()[0];
   if (page) { await page.screenshot({ path: resolve(output, 'failure.png'), fullPage: true }); await writeFile(resolve(output, 'failure.txt'), await page.locator('body').innerText()); }
