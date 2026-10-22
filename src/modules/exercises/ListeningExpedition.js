@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './ListeningExpedition.css';
 
@@ -19,7 +19,7 @@ export function ListeningExpeditionLayout({ level, requestedLevel = level, onExi
     <header className="expedition-header">
       {onExit ? <button type="button" className="expedition-back" aria-label="Închide sesiunea" onClick={onExit}><Icon name="back" /></button>
         : <Link className="expedition-back" aria-label="Înapoi la jocuri" to={'/jocuri?nivel=' + requestedLevel}><Icon name="back" /></Link>}
-      <Link to="/dashboard" className="expedition-brand" aria-label="NordLingo — Acasă"><img src="/branding/nordlingo-selected-color.png" alt="NordLingo" /></Link>
+      {!onExit && <Link to="/dashboard" className="expedition-brand" aria-label="NordLingo — Acasă"><img src="/branding/nordlingo-selected-color.png" alt="NordLingo" /></Link>}
       <span className="expedition-level" aria-label={'Nivel ' + level}>{level}</span>
     </header>
     <section className="expedition-sheet" aria-label="Ascultă și alege">{children}</section>
@@ -46,15 +46,25 @@ function Headphones() {
   </svg>;
 }
 
-export default function ListeningExpedition({ level, requestedLevel, question, current, total, retry, headingRef, audioBusy, audioStatus, heard, selected, setSelected, checked, play, stopAudio, onExit, verify, next }) {
+export default function ListeningExpedition({ level, requestedLevel, question, current, total, retry, headingRef, audioBusy, audioStatus, heard, selected, setSelected, checked, play, stopAudio, onExit, verify, next, repeatQuestion }) {
   const correct = selected === question.answer;
+  const feedbackRef = useRef(null);
+  const nextRef = useRef(next);
+  nextRef.current = next;
+  useEffect(() => {
+    if (!checked) return;
+    const dialog = feedbackRef.current;
+    dialog?.showModal();
+    if (!correct) return () => dialog?.close();
+    const timer = window.setTimeout(() => nextRef.current(), 2400);
+    return () => { window.clearTimeout(timer); dialog?.close(); };
+  }, [checked, correct, current]);
   const playbackLabel = audioStatus === 'loading' ? 'Se încarcă…' : audioStatus === 'playing' ? 'Se redă…' : heard ? 'Ascultă din nou' : 'Ascultă înregistrarea';
   const type = { word: 'Cuvânt', expression: 'Expresie', dialogue: 'Replică din dialog' }[question.contentType];
   return <ListeningExpeditionLayout {...{ level, requestedLevel, onExit, checked }}>
     <div className="expedition-stage">{retry ? 'RECAPITULARE' : 'ETAPA'} {current + 1} / {total}</div>
     <progress className="expedition-progress" aria-label="Progresul sesiunii" value={current + 1} max={Math.max(1, total)} />
     <h1 className="expedition-title">Ascultă și alege</h1>
-    <p className="expedition-subtitle">Ascultă și alege varianta corectă.</p>
     <Headphones />
     <div className="expedition-player-area">
       <button type="button" className={'expedition-player' + (audioBusy ? ' is-playing' : '')} onClick={() => audioBusy ? stopAudio() : play()} aria-label={audioBusy ? 'Oprește redarea' : playbackLabel} aria-busy={audioStatus === 'loading'}>
@@ -70,8 +80,13 @@ export default function ListeningExpedition({ level, requestedLevel, question, c
       const state = checked ? option === question.answer ? 'correct' : option === selected ? 'wrong' : '' : selected === option ? 'selected' : '';
       return <button type="button" key={option} className={'expedition-option ' + state} aria-pressed={selected === option} disabled={checked || !heard} onClick={() => setSelected(option)}><span className="expedition-letter" aria-hidden="true">{state === 'correct' || state === 'wrong' ? <Icon name={state === 'correct' ? 'check' : 'cross'} /> : String.fromCharCode(65 + index)}</span><span>{option}</span></button>;
     })}</div>
-    {checked ? <div className={'expedition-feedback ' + (correct ? 'correct' : 'wrong')} role="status"><Icon name={correct ? 'check' : 'cross'} /><div><h3>{correct ? 'Corect, ai găsit sensul!' : 'Reține pentru data viitoare'}</h3><p lang="nb">{question.audioText}</p><p>{question.answer}</p>{!correct && <small>Salvat pentru recapitulare.</small>}</div></div>
-      : <p className="expedition-hint">{heard ? 'Poți asculta din nou, de câte ori ai nevoie.' : 'Ascultă până la capăt, apoi alege răspunsul.'}</p>}
-    <button className="expedition-submit" type="button" disabled={!checked && (selected === null || !heard)} onClick={checked ? next : verify}>{checked ? current === total - 1 ? 'Vezi rezultatul' : 'Continuă' : 'Verifică'}<Icon name="arrow" /></button>
+    {checked && <dialog ref={feedbackRef} className={'expedition-popup ' + (correct ? 'correct' : 'wrong')} aria-labelledby="listening-feedback-title" aria-describedby="listening-feedback-description" onCancel={(event) => { event.preventDefault(); if (!correct) repeatQuestion(); }}>
+      <span className="expedition-popup-icon"><Icon name={correct ? 'check' : 'cross'} /></span>
+      <h3 id="listening-feedback-title">{correct ? 'Corect!' : 'Mai încearcă o dată'}</h3>
+      <div id="listening-feedback-description"><p lang="nb">{question.audioText}</p><p>{question.answer}</p></div>
+      {!correct && <><small>Greșeala este salvată pentru recapitulare.</small><button type="button" className="expedition-submit" onClick={repeatQuestion} autoFocus>Repetă întrebarea<Icon name="arrow" /></button></>}
+      {correct && <span className="expedition-auto-next">Continuăm automat…</span>}
+    </dialog>}
+    {!checked && <button className="expedition-submit" type="button" disabled={selected === null || !heard} onClick={verify}>Verifică<Icon name="arrow" /></button>}
   </ListeningExpeditionLayout>;
 }
