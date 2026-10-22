@@ -13,7 +13,7 @@ body:has(.northern-games) { overflow: hidden; }
   display: grid; gap: clamp(6px, 1.1vh, 10px);
   grid-template-rows: 48px minmax(90px, 1fr) 54px clamp(146px, 23vh, 196px) 58px 62px;
   box-sizing: border-box; color: var(--pass-ink);
-  background: linear-gradient(155deg, #fffdf7, #eef9fd 55%, #e7f3f7);
+  background: linear-gradient(180deg, #f8fcfc, #f3f8f9 72%, #fff);
   font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
 }
 .northern-games *, .northern-dialog * { box-sizing: border-box; }
@@ -216,4 +216,43 @@ body:has(.northern-games) { overflow: hidden; }
 }
 @media (prefers-reduced-motion: reduce) {
   .northern-games *, .northern-dialog * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}
+
+/* Tărâmul legendelor: the same pale blue page surface as Home and Lessons. */
+.northern-dialog { background: linear-gradient(180deg, #f8fcfc, #f3f8f9 72%, #fff); }
+.mini-coins { padding: 4px 9px; border-radius: 18px; background: #edf2f3; }
+.mini-coins img { object-fit: contain; filter: drop-shadow(0 1px 1px #67441926); }
+.northern-overview { position: relative; border-color: #d8e6e9; background: #fff; box-shadow: 0 6px 20px #1434480b; }
+.northern-overview__heading { color: #12354b; background: #fff; }
+.northern-overview__heading > span { color: #617985; }
+.northern-overview__footer { color: #17384c; background: #fff; }
+.northern-overview__footer small { color: #617985; }
+.mini-daily { color: #17384c !important; border-color: #d8e6e9; background: linear-gradient(135deg, #fff, #f1f8f9); box-shadow: 0 3px 12px #14344808; }
+.mini-daily p { color: #617985; }
+.mini-start { color: #fff; border-color: #0c6672; background: linear-gradient(145deg, #174e59, #086f7a); }
+.mini-tile, .mini-tile--listen, .mini-tile--verbs, .mini-tile--quiz { color: #17384c !important; border-color: #e2e8e7; background: linear-gradient(145deg, #fff, #f6f5f0); box-shadow: 0 3px 10px #14344806; }
+.mini-tile--listen .mini-progress { color: #617985; }
+.mini-missions, .mini-review { color: #17384c !important; border-color: #d8e6e9; background: #fff; box-shadow: 0 3px 12px #14344808; }
+.mini-missions small { color: #617985; }
+.northern-dialog__logo { width: 148px; min-width: 0; margin-right: auto; }
+.northern-dialog__map { position: relative; border-color: #d8e6e9; }
+.northern-map-heading { position: absolute; z-index: 3; top: 0; left: 0; right: 0; padding: 12px 16px 22px; background: linear-gradient(#fffefaed, #fffefa99 65%, transparent); pointer-events: none; }
+.northern-map-heading h2 { margin: 0; color: #12354b; font-size: clamp(19px, 4.9vw, 27px); font-weight: 850; line-height: 1.15; }
+.northern-map-heading p { margin: 3px 0 0; font-size: 11px; color: #486774; }
+.northern-obstacle { border-color: #d8e6e9; background: #fff; box-shadow: 0 5px 18px #14344809; }
+.northern-obstacle__action { color: #fff !important; border-color: #0c6672; background: linear-gradient(145deg, #174e59, #086f7a); box-shadow: 0 3px 9px #174e591c; }
+.northern-requirements label:first-child progress::-webkit-progress-value { background: linear-gradient(90deg, #e9aa29, #ffdc76); }
+.northern-requirements label:first-child progress::-moz-progress-bar { background: linear-gradient(90deg, #e9aa29, #ffdc76); }
+.northern-badge { width: 58px; height: 58px; padding: 5px; border: 2px solid #bd8a32; border-radius: 50%; background: linear-gradient(145deg, #fff1b6, #e7b746); }
+.northern-badge__shield { fill: none; stroke: #bd8a32; }
+@media (min-height: 700px) and (max-width: 759px) and (orientation: portrait) {
+  .mini-tile > .mini-art { width: 58px; height: 49px; }
+  .northern-overview { grid-template-rows: 43px minmax(0, 1fr) 58px; }
+  .northern-overview__heading { padding-inline: 13px; }
+  .northern-overview__heading h2 { font-size: 18px; }
+}
+@media (max-height: 690px) {
+  .northern-map-heading { padding: 8px 12px 18px; }
+  .northern-map-heading h2 { font-size: 18px; }
+  .northern-map-heading p { font-size: 10px; }
 }

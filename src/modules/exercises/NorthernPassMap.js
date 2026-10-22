@@ -2,8 +2,8 @@ import React from 'react';
 import './NorthernPassMap.css';
 
 const PORTRAIT_POSITIONS = [
-  [12, 91], [29, 83], [46, 75], [63, 66], [46, 58],
-  [29, 49], [46, 40], [64, 31], [81, 20], [64, 10],
+  [18, 90], [18, 77], [33, 63], [65, 45], [84, 41],
+  [91, 32], [77, 27], [83, 20], [91, 13], [80, 6],
 ];
 
 const OVERVIEW_POSITIONS = [
@@ -58,8 +58,9 @@ export default function NorthernPassMap({ stops = [], completedCount = 0, select
   const overview = OVERVIEW_POSITIONS.slice(0, stops.length);
   const wide = WIDE_POSITIONS.slice(0, stops.length);
 
-  return <div className={`npass-map${compact ? ' npass-map--compact' : ''}`} role={compact ? 'img' : 'group'} aria-label={compact ? `Trecătoarea Nordului. ${description}` : 'Popasurile expediției Trecătoarea Nordului'}>
-    <img className="npass-map__art" src={compact ? '/images/games/northern-pass-overview.webp' : '/images/games/northern-pass-map.webp'} alt="" draggable="false" />
+  return <div className={`npass-map${compact ? ' npass-map--compact' : ''}`} role={compact ? 'img' : 'group'} aria-label={compact ? `Tărâmul legendelor. ${description}` : 'Popasurile expediției Tărâmul legendelor'}>
+    <img className="npass-map__art" src={compact ? '/images/games/realm-of-legends-overview.jpg' : '/images/games/realm-of-legends-map.jpg'} alt="" draggable="false" />
+    {!compact && <img className="npass-map__art npass-map__art--wide" src="/images/games/realm-of-legends-overview.jpg" alt="" draggable="false" />}
     <div className="npass-map__wash" aria-hidden="true" />
     <div className="npass-map__canvas" aria-hidden={compact || undefined}>
       <Route positions={compact ? overview : portrait} completedCount={finished} variant="portrait" />

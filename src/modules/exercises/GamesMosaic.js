@@ -26,9 +26,16 @@ function GameArt({ type }) {
 
 
 const number = (value) => Math.max(0, Math.floor(Number(value) || 0)).toLocaleString('ro-RO');
-const stopNames = ['Port', 'Far', 'Fiord', 'Podul rupt', 'Pădure', 'Cascadă', 'Trecătoare', 'Ghețar', 'Vârf', 'Auroră'];
-const mapStops = NORTHERN_PASS_STOPS.map((stop, index) => ({ ...stop, name: stopNames[index] }));
-const CoinBalance = ({ balance }) => <span className="mini-coins" aria-label={`${number(balance)} monede`}><img src="/images/norwegian-gold-coin.svg" alt="" /><strong>{balance >= 10000 ? new Intl.NumberFormat('ro-RO', { notation: 'compact', maximumFractionDigits: 1 }).format(balance) : number(balance)}</strong></span>;
+const stopNames = ['Port', 'Far', 'Fiord', 'Podul trolului', 'Pădure', 'Cascadă', 'Poarta runelor', 'Ghețar', 'Sala vikingilor', 'Auroră'];
+// Presentation only: keep saved stop IDs, prices and session requirements intact.
+const legendCopy = {
+  port: { title: 'Portul vikingilor' },
+  pod: { title: 'Podul trolului', action: 'Repară podul trolului', description: 'Adună resurse și redeschide trecerea peste cascadă.', reward: 'Prietenul trolilor' },
+  trecatoare: { title: 'Poarta runelor', action: 'Deschide poarta runelor', description: 'Urmează semnele nordice spre înălțimile muntelui.' },
+  varf: { title: 'Sala vikingilor', action: 'Ajungi la sala vikingilor', description: 'Strânge provizii pentru urcarea spre sala de pe culme.' },
+};
+const mapStops = NORTHERN_PASS_STOPS.map((stop, index) => ({ ...stop, ...legendCopy[stop.id], name: stopNames[index] }));
+const CoinBalance = ({ balance }) => <span className="mini-coins" aria-label={`${number(balance)} monede`}><img src="/images/games/viking-coin.png" alt="" /><strong>{balance >= 10000 ? new Intl.NumberFormat('ro-RO', { notation: 'compact', maximumFractionDigits: 1 }).format(balance) : number(balance)}</strong></span>;
 
 const badgePaths = {
   port: <><path d="m4 15 3 5h10l3-5ZM12 3v12M11 4 5 12h6m3-6 5 7h-5" /></>,
@@ -46,6 +53,7 @@ const ExpeditionBadge = ({ stop }) => <span className="northern-badge" aria-hidd
 
 export default function GamesMosaic({ level, balance = 0, cards, activities, reviewStats, expedition, onClaimStop }) {
   const status = getNorthernPassStatus(expedition || { version: 1, coins: balance });
+  const rank = mapStops[status.completedCount - 1]?.reward || status.rank;
   const [mapOpen, setMapOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(status.currentStop?.id || 'aurora');
   const [notice, setNotice] = useState('');
@@ -77,7 +85,7 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
     setMapOpen(true);
   };
   const closeMap = () => setMapOpen(false);
-  const selected = NORTHERN_PASS_STOPS.find(stop => stop.id === selectedId) || status.currentStop || NORTHERN_PASS_STOPS[9];
+  const selected = mapStops.find(stop => stop.id === selectedId) || mapStops[status.currentIndex] || mapStops[9];
   const selectedIndex = NORTHERN_PASS_STOPS.findIndex(stop => stop.id === selected.id);
   const selectedCompleted = selectedIndex < status.completedCount;
   const selectedCurrent = selected.id === status.currentStop?.id;
@@ -94,12 +102,12 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
   };
 
   return <main className="mini-games northern-games">
-    <h1 className="mini-sr">Jocuri și expediția Trecătoarea Nordului</h1>
+    <h1 className="mini-sr">Jocuri și expediția Tărâmul legendelor</h1>
     <header className="mini-top"><Link to="/dashboard" className="mini-brand" aria-label="NordLingo — Acasă"><NorwegianFlagIcon className="northern-logo" /></Link><ExerciseLevelSelect level={level} /><CoinBalance balance={status.state.coins} /></header>
     <section className="northern-overview" aria-labelledby="northern-pass-heading">
-      <div className="northern-overview__heading"><h2 id="northern-pass-heading">Trecătoarea Nordului</h2><span>{status.completedCount} din 10 popasuri</span></div>
+      <div className="northern-overview__heading"><h2 id="northern-pass-heading">Tărâmul legendelor</h2><span>{status.completedCount} din 10 popasuri</span></div>
       <NorthernPassMap stops={mapStops} completedCount={status.completedCount} selectedId={status.currentStop?.id} compact />
-      <div className="northern-overview__footer"><div><small>{status.finished ? 'Ai ajuns la destinație' : 'Următorul obstacol'}</small><strong>{status.currentStop?.title || 'Aurora boreală'}</strong></div><button type="button" ref={mapTrigger} className="northern-gold" onClick={openMap} aria-haspopup="dialog">Vezi harta <span aria-hidden="true">→</span></button></div>
+      <div className="northern-overview__footer"><div><small>{status.finished ? 'Ai ajuns la destinație' : 'Următorul popas'}</small><strong>{mapStops[status.currentIndex]?.title || 'Aurora boreală'}</strong></div><button type="button" ref={mapTrigger} className="northern-gold" onClick={openMap} aria-haspopup="dialog">Vezi harta <span aria-hidden="true">→</span></button></div>
     </section>
     <Link to={`/hangman?nivel=${level}`} className="mini-daily"><div><h2>Provocarea zilei</h2><p>Descoperă cuvinte în norvegiană</p></div><span className="mini-start">Joacă <span aria-hidden="true">→</span></span></Link>
     <section className="mini-grid" aria-label="Mini-jocuri">{tiles.map(card => <Link key={card.id} to={card.to} className={`mini-tile mini-tile--${card.id}`}><GameArt type={card.id} /><div className="mini-tile-copy"><h3>{card.title}</h3></div><div className="mini-progress" aria-label={card.label}><span className="mini-rating" aria-hidden="true">★</span><small>{card.label}</small></div></Link>)}</section>
@@ -109,13 +117,13 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
     </div>
     <MobileAppNav activeLevel={level}/>
     <dialog ref={dialog} className="northern-dialog" aria-labelledby="northern-map-title" onCancel={(event) => { event.preventDefault(); closeMap(); }} onClose={closeMap}>
-      <header className="northern-dialog__header"><button type="button" ref={backButton} onClick={closeMap} className="northern-back" aria-label="Înapoi la jocuri">←</button><h2 id="northern-map-title">Harta expediției<small>Rang: {status.rank}</small></h2><CoinBalance balance={status.state.coins} /></header>
+      <header className="northern-dialog__header"><button type="button" ref={backButton} onClick={closeMap} className="northern-back" aria-label="Înapoi la jocuri">←</button><NorwegianFlagIcon className="northern-logo northern-dialog__logo" /><CoinBalance balance={status.state.coins} /></header>
       <div className="northern-dialog__body">
-        <div className="northern-dialog__map"><NorthernPassMap stops={mapStops} completedCount={status.completedCount} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setNotice(''); }} /></div>
+        <div className="northern-dialog__map"><div className="northern-map-heading"><h2 id="northern-map-title">Tărâmul legendelor</h2><p>Expediția ta nordică · {rank}</p></div><NorthernPassMap stops={mapStops} completedCount={status.completedCount} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setNotice(''); }} /></div>
         <section className="northern-obstacle" aria-labelledby="northern-obstacle-title">
-          <div className="northern-obstacle__copy"><p className="northern-obstacle__eyebrow">{status.finished ? 'Expediție încheiată' : selectedCompleted ? 'Popas încheiat' : selectedCurrent ? `Popasul ${selectedIndex + 1} din 10` : 'Mai departe pe traseu'}</p><h3 id="northern-obstacle-title" ref={obstacleHeading} tabIndex={-1}>{selectedCompleted ? selected.title : selected.action}</h3><p className="northern-obstacle__description">{selectedCompleted ? 'Insigna ta este câștigată. Jocurile rămân deschise pentru practică.' : selected.description}</p>
+          <div className="northern-obstacle__copy"><p className="northern-obstacle__eyebrow">{status.finished ? 'Expediție încheiată' : selectedCompleted ? 'Popas încheiat' : selectedCurrent ? `Popasul ${selectedIndex + 1} din 10` : 'Mai departe pe traseu'}</p><h3 id="northern-obstacle-title" ref={obstacleHeading} tabIndex={-1}>{selected.title}</h3><p className="northern-obstacle__description">{selectedCompleted ? 'Insigna ta este câștigată. Jocurile rămân deschise pentru practică.' : selected.description}</p>
             {!selectedCompleted && <div className="northern-requirements">
-              <label><span><img src="/images/norwegian-gold-coin.svg" alt="" />{selected.cost ? `${number(selectedCurrent ? Math.min(status.state.coins, selected.cost) : 0)} / ${number(selected.cost)} monede` : 'Fără cost de monede'}</span><progress max={selected.cost || 1} value={selected.cost ? selectedCurrent ? Math.min(status.state.coins, selected.cost) : 0 : 1} /></label>
+              <label><span><img src="/images/games/viking-coin.png" alt="" />{selected.cost ? `${number(selectedCurrent ? Math.min(status.state.coins, selected.cost) : 0)} / ${number(selected.cost)} monede` : 'Fără cost de monede'}</span><progress max={selected.cost || 1} value={selected.cost ? selectedCurrent ? Math.min(status.state.coins, selected.cost) : 0 : 1} /></label>
               <label><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3" /><path d="m8 8 2 2 5-4M8 15h8" /></svg>{selectedCurrent ? Math.min(status.stageSessions, selected.sessions) : 0} / {selected.sessions} {selected.sessions === 1 ? 'sesiune încheiată' : 'sesiuni încheiate'}</span><progress max={selected.sessions} value={selectedCurrent ? Math.min(status.stageSessions, selected.sessions) : 0} /></label>
             </div>}
           </div>
