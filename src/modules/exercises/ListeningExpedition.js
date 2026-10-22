@@ -26,26 +26,6 @@ export function ListeningExpeditionLayout({ level, requestedLevel = level, onExi
   </div>;
 }
 
-function Headphones() {
-  return <svg className="expedition-headphones" viewBox="0 0 180 122" fill="none" aria-hidden="true">
-    <defs>
-      <linearGradient id="expedition-band" x1="48" y1="8" x2="132" y2="85" gradientUnits="userSpaceOnUse"><stop stopColor="#47929a" /><stop offset=".5" stopColor="#155461" /><stop offset="1" stopColor="#0f3a47" /></linearGradient>
-      <linearGradient id="expedition-ear" x1="40" y1="60" x2="67" y2="110" gradientUnits="userSpaceOnUse"><stop stopColor="#ffdb7b" /><stop offset="1" stopColor="#d39b32" /></linearGradient>
-    </defs>
-    <ellipse cx="90" cy="115" rx="43" ry="4" fill="#254b51" opacity=".1" />
-    <path d="M49 74V54a41 41 0 0 1 82 0v20" stroke="#113f4b" strokeWidth="16" />
-    <path d="M49 66V53a41 41 0 0 1 82 0v13" stroke="url(#expedition-band)" strokeWidth="13" />
-    <path d="M55 40a36 36 0 0 1 64-9" stroke="#84bec0" strokeWidth="3" strokeLinecap="round" opacity=".6" />
-    <rect x="36" y="62" width="27" height="43" rx="12" fill="url(#expedition-ear)" />
-    <rect x="51" y="58" width="18" height="51" rx="9" fill="#205968" />
-    <rect x="55" y="63" width="10" height="41" rx="5" fill="#123d49" />
-    <rect x="117" y="62" width="27" height="43" rx="12" fill="url(#expedition-ear)" />
-    <rect x="111" y="58" width="18" height="51" rx="9" fill="#205968" />
-    <rect x="115" y="63" width="10" height="41" rx="5" fill="#123d49" />
-    <path d="m20 53 7 7M14 76h10m128-16 7-7m-3 23h10" stroke="#edbc54" strokeWidth="4" strokeLinecap="round" />
-  </svg>;
-}
-
 export default function ListeningExpedition({ level, requestedLevel, question, current, total, retry, headingRef, audioBusy, audioStatus, heard, selected, setSelected, checked, play, stopAudio, onExit, verify, next, repeatQuestion }) {
   const correct = selected === question.answer;
   const feedbackRef = useRef(null);
@@ -65,7 +45,7 @@ export default function ListeningExpedition({ level, requestedLevel, question, c
     <div className="expedition-stage">{retry ? 'RECAPITULARE' : 'ETAPA'} {current + 1} / {total}</div>
     <progress className="expedition-progress" aria-label="Progresul sesiunii" value={current + 1} max={Math.max(1, total)} />
     <h1 className="expedition-title">Ascultă și alege</h1>
-    <Headphones />
+
     <div className="expedition-player-area">
       <button type="button" className={'expedition-player' + (audioBusy ? ' is-playing' : '')} onClick={() => audioBusy ? stopAudio() : play()} aria-label={audioBusy ? 'Oprește redarea' : playbackLabel} aria-busy={audioStatus === 'loading'}>
         <span className="expedition-play"><Icon name={audioBusy ? 'stop' : 'play'} /></span>
@@ -83,10 +63,10 @@ export default function ListeningExpedition({ level, requestedLevel, question, c
     {checked && <dialog ref={feedbackRef} className={'expedition-popup ' + (correct ? 'correct' : 'wrong')} aria-labelledby="listening-feedback-title" aria-describedby="listening-feedback-description" onCancel={(event) => { event.preventDefault(); if (!correct) repeatQuestion(); }}>
       <span className="expedition-popup-icon"><Icon name={correct ? 'check' : 'cross'} /></span>
       <h3 id="listening-feedback-title">{correct ? 'Corect!' : 'Mai încearcă o dată'}</h3>
-      <div id="listening-feedback-description"><p lang="nb">{question.audioText}</p><p>{question.answer}</p></div>
+      <div id="listening-feedback-description"><p lang="ro">{question.answer}</p></div>
       {!correct && <><small>Greșeala este salvată pentru recapitulare.</small><button type="button" className="expedition-submit" onClick={repeatQuestion} autoFocus>Repetă întrebarea<Icon name="arrow" /></button></>}
       {correct && <span className="expedition-auto-next">Continuăm automat…</span>}
     </dialog>}
-    {!checked && <button className="expedition-submit" type="button" disabled={selected === null || !heard} onClick={verify}>Verifică<Icon name="arrow" /></button>}
+    <button className="expedition-submit" type="button" style={{ visibility: checked ? 'hidden' : undefined }} disabled={checked || selected === null || !heard} onClick={verify}>Verifică<Icon name="arrow" /></button>
   </ListeningExpeditionLayout>;
 }
