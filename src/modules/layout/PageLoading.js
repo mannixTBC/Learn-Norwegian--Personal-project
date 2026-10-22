@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { imageReady, visiblePageImages } from './pageImageReadiness';
 import './PageLoading.css';
+import { isInstalledAppView } from '../../services/appExperience';
 
 const pageThemes = {
   '/dashboard': 'home',
@@ -18,7 +19,7 @@ export default function PageLoading({ contentRef }) {
 
   useEffect(() => {
     setLoadingPath(null);
-    if (!theme) return undefined;
+    if (!theme || !isInstalledAppView()) return undefined;
     const controller = new AbortController();
     let cancelled = false;
     let finished = false;
@@ -58,7 +59,7 @@ export default function PageLoading({ contentRef }) {
     };
   }, [pathname, theme, contentRef]);
 
-  if (!theme || loadingPath !== pathname) return null;
+  if (!isInstalledAppView() || !theme || loadingPath !== pathname) return null;
   return <div className={`page-loading page-loading--${theme}`} role="status" aria-live="polite">
     <span className="page-loading__ring" aria-hidden="true" />
     <span className="page-loading__label">Se încarcă pagina…</span>

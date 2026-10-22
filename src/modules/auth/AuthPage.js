@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { isInstalledAppView } from '../../services/appExperience';
 import './AuthPage.css';
 import './GuestAuth.css';
 import './SupabaseAuth.css';
@@ -142,18 +143,28 @@ const AuthPage = () => {
   };
 
   const isRecovery = mode === 'recovery';
+  const installedApp = isInstalledAppView();
+  const FormHeading = installedApp ? 'h1' : 'h2';
 
   return (
-    <div className={`auth-page auth-fjord ${mobileEmailOpen || isRecovery ? 'auth-fjord--form' : ''}`}>
-      <section className="auth-fjord__hero" aria-label="NordLingo">
+    <div className={`auth-page ${installedApp ? `auth-fjord ${mobileEmailOpen || isRecovery ? 'auth-fjord--form' : ''}` : 'auth-web'}`}>
+      {installedApp ? <section className="auth-fjord__hero" aria-label="NordLingo">
         {mobileEmailOpen && !isRecovery && <button className="auth-fjord__back" type="button" aria-label="Înapoi la opțiunile de conectare" onClick={() => { clearFeedback(); setMobileEmailOpen(false); }}>←</button>}
         <Link to="/" className="auth-fjord__brand"><img src="/branding/nordlingo-selected-color.png" alt="NordLingo" /></Link>
         <img className="auth-fjord__scene" src="/images/loading-fjord.webp" alt="" />
-      </section>
+      </section> : <section className="auth-story" aria-labelledby="auth-story-title">
+        <div>
+          <span className="auth-story__eyebrow">Norvegiană pentru viața ta</span>
+          <h1 id="auth-story-title">Învață pas cu pas.</h1>
+          <p>Construiește-ți încrederea în norvegiană, de la primele cuvinte la conversațiile de zi cu zi.</p>
+          <div className="auth-story__features"><span>Lecții practice</span><span>Ascultare și pronunție</span><span>Progresul tău</span></div>
+        </div>
+      </section>}
       <main className="auth-panel">
         <div className="auth-panel__inner">
+          {!installedApp && <Link className="auth-panel__back" to="/">← Înapoi la pagina principală</Link>}
 
-          {!isRecovery && <section className={`auth-mobile-quick ${mobileEmailOpen ? 'is-hidden' : ''}`} aria-label="Alege cum vrei să continui">
+          {installedApp && !isRecovery && <section className={`auth-mobile-quick ${mobileEmailOpen ? 'is-hidden' : ''}`} aria-label="Alege cum vrei să continui">
             <h1>Bine ai revenit!</h1>
             <button className="auth-google" type="button" disabled={submitting} onClick={continueWithGoogle}>
               <span className="auth-google__icon"><GoogleIcon /></span>
@@ -175,7 +186,7 @@ const AuthPage = () => {
           <div className={`auth-details ${mobileEmailOpen || isRecovery ? 'is-open' : ''}`}>
 
             <header>
-              <h1>{isRecovery ? 'Parolă nouă' : mode === 'login' ? 'Conectare' : 'Creează un cont'}</h1>
+              <FormHeading>{isRecovery ? 'Parolă nouă' : mode === 'login' ? 'Conectare' : 'Creează un cont'}</FormHeading>
               <p>{isRecovery ? 'Alege o parolă pentru contul tău.' : mode === 'login' ? 'Intră în contul tău.' : 'Începe călătoria ta în norvegiană.'}</p>
             </header>
 
@@ -192,11 +203,24 @@ const AuthPage = () => {
 
             {!isRecovery && <>
               <p className="auth-switch">{mode === 'login' ? 'Nu ai cont?' : 'Ai deja un cont?'} <button type="button" onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}>{mode === 'login' ? 'Creează un cont' : 'Conectează-te'}</button></p>
+              {!installedApp && <section className="auth-web__alternatives" aria-label="Alte opțiuni de conectare">
+                <div className="auth-guest-separator">sau continuă cu</div>
+                <button className="auth-google" type="button" disabled={submitting} onClick={continueWithGoogle}>
+                  <span className="auth-google__icon"><GoogleIcon /></span>
+                  <span className="auth-google__copy"><strong>Continuă cu Google</strong><small>Folosește contul tău Google</small></span>
+                  <span className="auth-google__arrow" aria-hidden="true">→</span>
+                </button>
+                <button className="auth-guest" type="button" disabled={submitting} onClick={continueAsGuest}>
+                  <span className="auth-guest__icon"><GuestIcon /></span>
+                  <span><strong>Continuă ca vizitator</strong><small>Fără cont și fără parolă</small></span>
+                  <span className="auth-guest__arrow" aria-hidden="true">→</span>
+                </button>
+              </section>}
             </>}
           </div>
         </div>
       </main>
-      <div className="auth-fjord__foot" aria-hidden="true" />
+      {installedApp && <div className="auth-fjord__foot" aria-hidden="true" />}
     </div>
   );
 };

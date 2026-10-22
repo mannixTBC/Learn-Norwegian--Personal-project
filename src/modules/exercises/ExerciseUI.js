@@ -3,6 +3,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 import { learningLevels } from '../lessons/learningLevel';
 import './ExerciseUI.css';
 import { NordicHeader } from './NordicExerciseUI';
+import { isInstalledAppView } from '../../services/appExperience';
 
 const paths = {
   quiz: <><rect x="5" y="3" width="14" height="18" rx="3" /><path d="m8 8 1 1 2-2m-3 6 1 1 2-2m3-4h2m-2 6h2M8 18h8" /></>,
@@ -42,7 +43,7 @@ const CourseExerciseLayout = ({ title, description, icon, level, className = '',
   </div>
 );
 
-export const ExerciseLayout = ({ title, description, icon, level, className = '', compact = false, allowLevelChange = false, onExit, backTo, backLabel, children }) => className.split(' ').includes('final-test') ? <CourseExerciseLayout {...{title, description, icon, level, className, compact, allowLevelChange, onExit, backTo, backLabel, children}} /> : (
+export const ExerciseLayout = ({ title, description, icon, level, className = '', compact = false, allowLevelChange = false, onExit, backTo, backLabel, children }) => !isInstalledAppView() || className.split(' ').includes('final-test') ? <CourseExerciseLayout {...{title, description, icon, level, className, compact, allowLevelChange, onExit, backTo, backLabel, children}} /> : (
   <div className={'exercise-screen nordic-exercise nordic-exercise--' + (icon || 'games') + ' ' + className}>
     <NordicHeader title={title} subtitle={description} level={level} onExit={onExit} backTo={backTo} heading={!compact} levelControl={allowLevelChange ? <ExerciseLevelSelect level={level} /> : undefined} />
     {children}

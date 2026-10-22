@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import NorwegianFlagIcon from '../layout/Navbar/NorwegianFlagIcon';
 import { getStudySummary } from '../../services/learningActivity';
+import { isInstalledAppView } from '../../services/appExperience';
 import './WordDiscovery.css';
 
 const rows = ['QWERTYUIOP', 'ASDFGHJKLÅ', 'ZXCVBNMÆØ'];
@@ -9,6 +10,7 @@ const lettersOf = text => Array.from(text.normalize('NFC').toLocaleUpperCase('nb
 const Icon = ({ name }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{name === 'bulb' ? <><path d="M9 18h6m-5 3h4M8.5 14.5a6 6 0 1 1 7 0C14.6 15.2 15 17 15 18H9c0-1 .4-2.8-.5-3.5Z"/></> : name === 'menu' ? <path d="M4 5h16M4 12h16M4 19h16"/> : name === 'back' ? <path d="m10 5-7 7 7 7M3 12h18"/> : <path fill="currentColor" stroke="none" d="M13 1c1 6-4 6-2 11 2-1 3-3 3-5 5 4 7 8 4 12-2 4-10 5-13 0-3-5 1-10 4-13-1 4 0 5 1 5-1-4 3-6 3-10Z"/>}</svg>;
 
 export default function WordDiscovery({ question, current, total, level, checked, onResolve, onNext, onSpeak }) {
+  const installedApp = isInstalledAppView();
   const [guessed, setGuessed] = useState([]);
   const [last, setLast] = useState('');
   const resolved = useRef(false);
@@ -39,12 +41,12 @@ export default function WordDiscovery({ question, current, total, level, checked
     return () => window.removeEventListener('keydown', keydown);
   });
   const tile = Number.isInteger(question.tile) ? question.tile : 0;
-  return <section className={'word-discovery' + (checked ? ' word-discovery--checked' : '')} aria-label="Descoperă cuvântul">
-    <header className="wd-brand wd-brand--game">
+  return <section className={'word-discovery' + (installedApp ? '' : ' word-discovery--web') + (checked ? ' word-discovery--checked' : '')} aria-label="Descoperă cuvântul">
+    {installedApp && <header className="wd-brand wd-brand--game">
       <Link to="/dashboard" aria-label="NordLingo — Acasă"><NorwegianFlagIcon className="wd-logo"/></Link>
       <span className="wd-streak" aria-label={streak + ' zile consecutive'}><Icon name="flame"/>{streak}</span>
-    </header>
-    <Link className="wd-back" to={'/jocuri?nivel=' + level}><Icon name="back"/><span>Provocarea zilei</span></Link>
+    </header>}
+    <Link className="wd-back" to={'/jocuri?nivel=' + level}><Icon name="back"/><span>{installedApp ? 'Provocarea zilei' : 'Înapoi la exerciții'}</span></Link>
     <div className="wd-heading"><h1>Descoperă cuvântul</h1><p>Găsește cuvântul norvegian</p></div>
     <div className="wd-progress"><span className="wd-hearts" aria-label={remaining + ' încercări rămase'}>{[0,1,2].map(i => <span aria-hidden="true" key={i} className={i >= remaining ? 'empty' : ''}>♥</span>)}</span><progress aria-label={'Cuvântul ' + (current + 1) + ' din ' + total} value={current + 1} max={total}/><span>{remaining} {remaining === 1 ? 'încercare' : 'încercări'}</span></div>
     <article className="wd-card" style={{ '--wd-letter-count': longest, '--wd-word-length': Array.from(question.answer).length }}>
@@ -64,9 +66,10 @@ export default function WordDiscovery({ question, current, total, level, checked
 
 
 export function WordDiscoveryResult({ level, score, results, onRestart, onRetry }) {
+  const installedApp = isInstalledAppView();
   const mistakes = results.filter(result => !result.correct);
-  return <section className="word-discovery word-discovery--result">
-    <header className="wd-brand"><Link to={'/jocuri?nivel=' + level} aria-label="Înapoi la jocuri"><Icon name="back"/></Link><Link to="/dashboard"><NorwegianFlagIcon className="wd-logo"/></Link><span className="wd-streak">{level}</span></header>
+  return <section className={'word-discovery word-discovery--result' + (installedApp ? '' : ' word-discovery--web')}>
+    {installedApp ? <header className="wd-brand"><Link to={'/jocuri?nivel=' + level} aria-label="Înapoi la jocuri"><Icon name="back"/></Link><Link to="/dashboard"><NorwegianFlagIcon className="wd-logo"/></Link><span className="wd-streak">{level}</span></header> : <Link className="wd-back" to={'/jocuri?nivel=' + level}><Icon name="back"/><span>Înapoi la exerciții</span></Link>}
     <div className="wd-heading"><h1>Sesiune încheiată</h1><p>{mistakes.length ? 'Fiecare cuvânt contează' : 'Le-ai descoperit pe toate!'}</p></div>
     <article className="wd-result-card"><span className="wd-result-star" aria-hidden="true">✦</span><h2>{score} din {results.length}</h2><p>Cuvinte descoperite</p><div className="wd-result-words">{results.map(result => <span lang="nb" key={result.question.id} className={result.correct ? 'correct' : 'wrong'}>{result.correct ? '✓' : '↻'} {result.question.answer}</span>)}</div><div className="wd-result-actions">{mistakes.length > 0 && <button type="button" onClick={onRetry}>Repetă greșelile ({mistakes.length})</button>}<button type="button" onClick={onRestart}>Sesiune nouă →</button><Link to={'/jocuri?nivel=' + level}>Înapoi la jocuri</Link></div></article>
   </section>;

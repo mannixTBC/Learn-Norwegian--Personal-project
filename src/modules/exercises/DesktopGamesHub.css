@@ -1,0 +1,70 @@
+.desktop-games-hub {
+  width: min(1100px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 38px 0 80px;
+  color: #183a4b;
+}
+.desktop-games-hub * { box-sizing: border-box; }
+.desktop-games-hub__back { display: inline-flex; min-height: 44px; gap: 9px; align-items: center; color: #456771; font-size: .84rem; font-weight: 700; text-decoration: none; }
+.desktop-games-hub__heading { display: flex; gap: 32px; justify-content: space-between; align-items: center; margin: 20px 0 36px; padding: 30px 32px; border: 1px solid #d4e5e8; border-radius: 22px; background: linear-gradient(120deg, #f2fafb, #fff); }
+.desktop-games-hub__eyebrow { display: block; margin-bottom: 8px; color: #33797f; font-size: .69rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.desktop-games-hub__heading h1 { margin: 0 0 10px; color: #183a4b; font-size: clamp(1.9rem, 3.4vw, 2.65rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.12; }
+.desktop-games-hub__heading p { max-width: 600px; margin: 0; color: #657a85; font-size: .96rem; line-height: 1.6; }
+.desktop-games-hub__level { flex-shrink: 0; }
+.desktop-games-hub__level label { color: #637b84; }
+.desktop-games-hub__level select { min-width: 72px; border-color: #ccdee2; color: #276e77; }
+.desktop-games-hub__level select:focus-visible { outline: 3px solid #73b9bf; outline-offset: 3px; }
+.desktop-games-hub__section + .desktop-games-hub__section { margin-top: 38px; }
+.desktop-games-hub__section-heading { display: flex; gap: 16px; justify-content: space-between; align-items: center; margin-bottom: 17px; }
+.desktop-games-hub__section-heading h2 { margin: 0; color: #183a4b; font-size: 1.4rem; font-weight: 750; letter-spacing: -.025em; }
+.desktop-games-hub__section-heading > span { color: #53717b; font-size: .8rem; font-weight: 700; }
+.desktop-games-hub__section-heading p { margin: 6px 0 0; color: #72838c; font-size: .86rem; line-height: 1.5; }
+.desktop-games-hub__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.desktop-games-hub__card { display: flex; min-width: 0; flex-direction: column; padding: 24px; border: 1px solid #dce6e9; border-radius: 17px; background: #fff; box-shadow: 0 4px 16px #173e4b07; color: #183a4b; text-decoration: none; transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.desktop-games-hub__icon { display: grid; width: 48px; height: 48px; flex: 0 0 48px; place-items: center; border-radius: 14px; color: #24767d; background: #eaf5f5; }
+.desktop-games-hub__icon svg { display: block; width: 27px; height: 27px; }
+.desktop-games-hub__card--pronunciation .desktop-games-hub__icon { color: #6b66a4; background: #f1eff9; }
+.desktop-games-hub__card--word .desktop-games-hub__icon { color: #967535; background: #fcf5e6; }
+.desktop-games-hub__card--review .desktop-games-hub__icon { color: #39856c; background: #edf7f1; }
+.desktop-games-hub__card h3 { margin: 18px 0 8px; color: #183a4b; font-size: 1.12rem; font-weight: 750; line-height: 1.25; }
+.desktop-games-hub__card > p { margin: 0 0 24px; color: #6b7f89; font-size: .86rem; line-height: 1.55; }
+.desktop-games-hub__progress { display: grid; gap: 8px; margin-top: auto; }
+.desktop-games-hub__progress > span { color: #657b85; font-size: .73rem; line-height: 1.4; }
+.desktop-games-hub__progress progress { display: block; width: 100%; height: 5px; overflow: hidden; border: 0; border-radius: 99px; background: #e8eff1; appearance: none; }
+.desktop-games-hub__progress progress::-webkit-progress-bar { border-radius: 99px; background: #e8eff1; }
+.desktop-games-hub__progress progress::-webkit-progress-value { border-radius: 99px; background: #38989b; }
+.desktop-games-hub__progress progress::-moz-progress-bar { border-radius: 99px; background: #38989b; }
+.desktop-games-hub__action { display: flex; min-height: 44px; gap: 12px; justify-content: space-between; align-items: center; margin-top: 12px; color: #24737c; font-size: .81rem; font-weight: 800; }
+.desktop-games-hub__action > span { font-size: 1.2rem; font-weight: 500; }
+.desktop-games-hub__activities { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.desktop-games-hub__activity { display: grid; min-width: 0; grid-template-columns: 48px minmax(0, 1fr) 24px; gap: 17px; align-items: start; padding: 24px; border: 1px solid #dce6e9; border-radius: 17px; color: #183a4b; background: #f9fcfc; text-decoration: none; transition: border-color .18s ease, box-shadow .18s ease; }
+.desktop-games-hub__activity-copy { min-width: 0; }
+.desktop-games-hub__activity-copy small { display: block; color: #4f7a80; font-size: .69rem; font-weight: 700; line-height: 1.4; }
+.desktop-games-hub__activity h3 { margin: 5px 0 7px; color: #183a4b; font-size: 1.08rem; font-weight: 750; line-height: 1.25; }
+.desktop-games-hub__activity p { margin: 0; color: #6b7f89; font-size: .83rem; line-height: 1.5; }
+.desktop-games-hub__activity-copy > span { display: block; margin-top: 16px; color: #50737c; font-size: .73rem; line-height: 1.5; }
+.desktop-games-hub__activity-arrow { align-self: center; color: #377c83; font-size: 1.4rem; }
+.desktop-games-hub a:hover { color: #183a4b; text-decoration: none; }
+.desktop-games-hub__back:hover { color: #24737c; }
+.desktop-games-hub__card:hover { border-color: #a9ced1; box-shadow: 0 10px 26px #173e4b10; transform: translateY(-2px); }
+.desktop-games-hub__activity:hover { border-color: #a9ced1; box-shadow: 0 8px 22px #173e4b0a; }
+.desktop-games-hub a:focus-visible { outline: 3px solid #73b9bf; outline-offset: 4px; }
+@media (max-width: 900px) {
+  .desktop-games-hub__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .desktop-games-hub__activities { grid-template-columns: 1fr; }
+  .desktop-games-hub__heading { gap: 20px; padding: 26px; }
+}
+@media (max-width: 540px) {
+  .desktop-games-hub { width: calc(100% - 32px); padding: 20px 0 56px; }
+  .desktop-games-hub__heading { flex-direction: column; align-items: flex-start; margin-top: 12px; padding: 22px; }
+  .desktop-games-hub__heading p { font-size: .87rem; }
+  .desktop-games-hub__grid { grid-template-columns: 1fr; gap: 12px; }
+  .desktop-games-hub__card { padding: 22px; }
+  .desktop-games-hub__section-heading h2 { font-size: 1.22rem; }
+  .desktop-games-hub__activity { grid-template-columns: 42px minmax(0, 1fr) 18px; gap: 12px; padding: 20px 17px; }
+  .desktop-games-hub__activity .desktop-games-hub__icon { width: 42px; height: 42px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .desktop-games-hub__card, .desktop-games-hub__activity { transition: none; }
+  .desktop-games-hub__card:hover { transform: none; }
+}

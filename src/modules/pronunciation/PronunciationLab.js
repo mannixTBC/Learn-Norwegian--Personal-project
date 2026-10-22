@@ -7,6 +7,7 @@ import PremiumGate from '../premium/PremiumGate';
 import { apiUrl, isNativeApp } from '../../services/api';
 import './PronunciationLab.css';
 import { ExerciseArtwork } from '../exercises/NordicExerciseUI';
+import PronunciationCathedral from './PronunciationCathedral';
 
 const MAX_SECONDS = 30;
 
@@ -116,7 +117,7 @@ const sendForEvaluation = async (blob, referenceText) => {
 
 const formatTime = (seconds) => `0:${String(seconds).padStart(2, '0')}`;
 
-const PronunciationLab = ({ phrase, phraseIndex, level, lessonId, rewardAttemptsRef }) => {
+const PronunciationLab = ({ phrase, phraseIndex, level, lessonId, rewardAttemptsRef, appearance }) => {
   const { user } = useAuth();
   const [status, setStatus] = useState('ready');
   const [elapsed, setElapsed] = useState(0);
@@ -354,6 +355,8 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId, rewardAttempts
       if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
     };
   }, []);
+
+  if (appearance === 'cathedral') return <PronunciationCathedral {...{ phrase, phraseIndex, level, lessonId, status, elapsed, result, error, audioUrl, bestScore, attempts }} onRecord={startRecording} onStop={stopRecording} onRetry={resetAttempt} />;
 
   return (
     <section className="pronunciation-lab" aria-labelledby="pronunciation-lab-title">

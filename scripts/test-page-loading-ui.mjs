@@ -40,7 +40,7 @@ await build({ configFile: resolve(root, 'vite.config.js'), logLevel: 'error', pu
 const files = await readdir(output);
 const js = await readFile(resolve(output, 'fixture.js'), 'utf8');
 const css = (await Promise.all(files.filter(name => name.endsWith('.css')).map(name => readFile(resolve(output, name), 'utf8')))).join('\n');
-const html = '<!doctype html><html lang="ro"><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+css+'</style></head><body style="margin:0"><div id="root"></div><script>'+js.replaceAll('</script','<\\/script')+'</script></body></html>';
+const html = '<!doctype html><html lang="ro" class="is-installed-app"><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+css+'</style></head><body style="margin:0"><div id="root"></div><script>'+js.replaceAll('</script','<\\/script')+'</script></body></html>';
 let executablePath;
 for (const candidate of [process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH, process.platform === 'win32' && 'C:/Program Files/Google/Chrome/Application/chrome.exe', chromium.executablePath()].filter(Boolean)) {
   try { await access(candidate); executablePath = candidate; break; } catch { /* Try another installation. */ }
@@ -54,7 +54,7 @@ try {
  const picture = '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="160"><rect width="240" height="160" fill="#9fcac1"/></svg>';
  await page.route('**/*', async route => {
   const url = new URL(route.request().url());
-  if (url.pathname === '/') return route.fulfill({contentType:'text/html',body:html});
+  if (url.pathname === '/') return route.fulfill({contentType:'text/html',body:url.searchParams.has('web') ? html.replace(' class="is-installed-app"','') : html});
   if (url.pathname.startsWith('/assets/')) { requests.set(url.pathname.split('/').pop().replace('.svg',''),route); return; }
   return route.abort();
  });
@@ -122,6 +122,19 @@ try {
  await page.emulateMedia({reducedMotion:'reduce'}); await navigate('/away'); await navigate('/cont?kind=img&asset=motion'); await pause();
  assert.equal(await page.locator('.page-loading__ring').evaluate(el=>getComputedStyle(el).animationName),'none');
  await release('motion'); report.checks.push('Reduced-motion preference respected');
+ await page.goto('http://loading.test/?web=1');
+ await page.waitForFunction(() => Boolean(window.loadingQa));
+ assert.equal(await page.locator('html').evaluate(el=>el.classList.contains('is-installed-app')),false);
+ for(const [path,asset] of [['/dashboard','web-home'],['/cont','web-account'],['/invata','web-lessons']]){
+  await navigate('/away'); await navigate(path+'?kind=img&asset='+asset); await pause();
+  assert.ok(requests.has(asset),'The web fixture has a real pending image for '+path);
+  assert.equal(await visible(),false,'The web page must not show the installed-app indicator');
+  assert.equal(await page.locator('main').getAttribute('aria-busy'),null,'Web navigation must not set aria-busy');
+  await release(asset); await pause();
+  assert.equal(await visible(),false);
+  assert.equal(await page.locator('main').getAttribute('aria-busy'),null);
+ }
+ report.checks.push('Web without is-installed-app never shows the indicator or sets aria-busy for pending home/account/lessons images');
  assert.deepEqual(report.browserErrors,[]);
  await writeFile(resolve(output,'report.json'),JSON.stringify(report,null,2));
  console.log(JSON.stringify(report,null,2));

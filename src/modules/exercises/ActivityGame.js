@@ -14,6 +14,8 @@ import { ExerciseLayout } from './ExerciseUI';
 import './ActivityGame.css';
 import ActivityPlayView from './ActivityPlayView';
 import ListeningExpedition, { ListeningExpeditionLayout } from './ListeningExpedition';
+import DesktopActivityView from './DesktopActivityView';
+import { isInstalledAppView } from '../../services/appExperience';
 
 export const ActivityIcon = ({ game, ...props }) => (
   <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
@@ -61,7 +63,7 @@ const ActivitySession = ({ game }) => {
   const mistakes = results.filter((item) => !item.correct);
   const needsAudio = question?.kind === 'listen';
   const audioBusy = audioStatus === 'loading' || audioStatus === 'playing';
-  const ResultLayout = game === 'listen' ? ListeningExpeditionLayout : ExerciseLayout;
+  const ResultLayout = isInstalledAppView() && game === 'listen' ? ListeningExpeditionLayout : ExerciseLayout;
 
   useEffect(() => () => audioController.current?.abort(), []);
   useEffect(() => {
@@ -136,7 +138,7 @@ const ActivitySession = ({ game }) => {
 
   if (!question) return <ExerciseLayout className="activity-game" title={details.title} icon={game} level={level} backTo={'/jocuri?nivel=' + requestedLevel}><p role="alert">Nu sunt întrebări disponibile pentru această sesiune.</p><Link to={'/jocuri?nivel=' + requestedLevel}>Înapoi la jocuri</Link></ExerciseLayout>;
 
-  const PlayView = game === 'listen' ? ListeningExpedition : ActivityPlayView;
+  const PlayView = !isInstalledAppView() ? DesktopActivityView : game === 'listen' ? ListeningExpedition : ActivityPlayView;
   return <PlayView game={game} details={details} level={level} requestedLevel={requestedLevel} limitedMissions={limitedMissions} pathId={pathId} question={question} current={current} total={questions.length} retry={retry} headingRef={headingRef} needsAudio={needsAudio} audioBusy={audioBusy} audioStatus={audioStatus} heard={heard} selected={selected} setSelected={setSelected} checked={checked} play={play} stopAudio={stopAudio} onExit={() => { stopAudio(); history.push('/jocuri?nivel=' + requestedLevel); }} verify={verify} next={next} repeatQuestion={() => { resetQuestion(true); headingRef.current?.focus(); }}/>;
 };
 

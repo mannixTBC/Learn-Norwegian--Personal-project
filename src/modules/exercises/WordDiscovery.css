@@ -1,8 +1,8 @@
 /* This screen owns its canvas. Global lesson/app styles must not change its layout. */
-html body .App:has(.word-discovery){min-height:100svh;background:#082f3f;color:#fff8e9}
-html body .App:has(.word-discovery)>.navbar,
-html body .App:has(.word-discovery)>.footer{display:none!important}
-html body .App>.App__main:has(.word-discovery){padding:0!important;margin:0!important;min-height:100svh;background:#082f3f url('/images/word-discovery/fjord-background.webp') center top/cover no-repeat!important}
+html.is-installed-app body .App:has(.word-discovery){min-height:100svh;background:#082f3f;color:#fff8e9}
+html.is-installed-app body .App:has(.word-discovery)>.navbar,
+html.is-installed-app body .App:has(.word-discovery)>.footer{display:none!important}
+html.is-installed-app body .App>.App__main:has(.word-discovery){padding:0!important;margin:0!important;min-height:100svh;background:#082f3f url('/images/word-discovery/fjord-background.webp') center top/cover no-repeat!important}
 .word-discovery{--wd-ivory:#fff8e9;--wd-gold:#ffd176;--wd-ink:#082d3d;box-sizing:border-box;position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:44px 27px 64px 35px minmax(240px,1fr) 46px 142px;gap:13px;width:min(100%,480px);height:100svh;min-height:760px;margin:0 auto;padding:18px 16px clamp(46px,10svh,92px);color:var(--wd-ivory);font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent}
 .word-discovery *, .word-discovery *::before, .word-discovery *::after{box-sizing:border-box}
 .word-discovery button,.word-discovery a{touch-action:manipulation}
@@ -60,12 +60,12 @@ html body .App>.App__main:has(.word-discovery){padding:0!important;margin:0!impo
 .wd-key-row button:not(:disabled):active{background:#ffd176;transform:translateY(1px)}
 .wd-menu{position:absolute;z-index:20;top:70px;left:16px;display:grid;gap:5px;min-width:190px;padding:10px;border:1px solid #e0d4b6;border-radius:14px;background:#fff8e9;box-shadow:0 8px 30px #001c2d60}
 .wd-menu a{display:flex;align-items:center;min-height:44px;padding:8px 12px;color:#123646}
-@media(min-width:600px){html body .App>.App__main:has(.word-discovery){background-size:cover!important}.word-discovery{padding-left:28px;padding-right:28px;max-height:1100px}.word-discovery .wd-heading h1{font-size:35px}.wd-heading p{font-size:21px}}
+@media(min-width:600px){html.is-installed-app body .App>.App__main:has(.word-discovery){background-size:cover!important}.word-discovery{padding-left:28px;padding-right:28px;max-height:1100px}.word-discovery .wd-heading h1{font-size:35px}.wd-heading p{font-size:21px}}
 @media(max-height:790px){.word-discovery{min-height:690px;padding-top:12px;padding-bottom:24px;gap:9px;grid-template-rows:40px 25px 58px 31px minmax(220px,1fr) 42px 132px}.word-discovery--checked{grid-template-rows:40px 25px 58px 31px minmax(210px,1fr) 58px 132px}.wd-brand,.word-discovery .wd-brand{height:40px}.wd-art{min-height:85px}.wd-slot{height:clamp(40px,15cqw,60px)}.wd-heading p{font-size:17px}.word-discovery .wd-card{padding-bottom:15px}.wd-card h2{margin-bottom:10px}.wd-key-row button{font-size:17px}}
 @media(max-height:690px){.word-discovery{min-height:620px;padding-bottom:16px;gap:7px;grid-template-rows:36px 24px 51px 28px minmax(195px,1fr) 38px 120px}.word-discovery--checked{grid-template-rows:36px 24px 51px 28px minmax(185px,1fr) 54px 120px}.word-discovery .wd-heading h1{font-size:26px}.wd-heading p{font-size:16px}.wd-art{min-height:70px}.wd-category{font-size:10px;margin-bottom:7px}.word-discovery .wd-card h2{font-size:18px}.wd-slot{height:42px}.wd-hearts{font-size:25px}}
 @media(max-width:350px){.word-discovery{padding-left:12px;padding-right:12px}.word-discovery .wd-heading h1{font-size:25px}.wd-progress{gap:10px;font-size:12px}.wd-logo{width:130px}.wd-key-row{gap:3px}.wd-key-row button{font-size:16px}.wd-heading p{font-size:17px}}
 @media(prefers-reduced-motion:reduce){.word-discovery *{transition:none!important;animation:none!important}}
-html body .App>.App__main:has(.word-discovery){background-image:linear-gradient(180deg,rgba(3,35,51,.5),rgba(3,35,51,.25) 48%,rgba(3,35,51,.1)),url('/images/word-discovery/fjord-background.webp')!important}
+html.is-installed-app body .App>.App__main:has(.word-discovery){background-image:linear-gradient(180deg,rgba(3,35,51,.5),rgba(3,35,51,.25) 48%,rgba(3,35,51,.1)),url('/images/word-discovery/fjord-background.webp')!important}
 @media(max-height:690px){.word-discovery{min-height:620px;padding-top:8px;padding-bottom:16px;gap:6px;grid-template-rows:32px 24px 51px 28px minmax(175px,1fr) 38px 120px}.word-discovery--checked{grid-template-rows:32px 24px 51px 28px minmax(165px,1fr) 54px 120px}.wd-brand,.word-discovery .wd-brand{height:32px}.wd-brand>a{height:32px}.wd-logo{height:32px}.wd-art{min-height:55px}.word-discovery .wd-card{padding-top:3px;padding-bottom:12px}.wd-slot{height:38px}.word-discovery .wd-card h2{margin-bottom:8px;font-size:17px}}
 .word-discovery--result{grid-template-rows:44px 80px minmax(0,1fr);height:auto;min-height:100svh;gap:25px;padding-bottom:40px}.word-discovery--result .wd-brand>a:first-child{justify-content:flex-start}.word-discovery--result .wd-brand>a:first-child svg{width:28px;height:28px}.word-discovery--result .wd-heading h1{white-space:normal}.wd-result-card{align-self:start;display:flex;flex-direction:column;align-items:center;padding:28px 22px;border-radius:23px;color:#082d3d;background:#fff8e9;text-align:center}.wd-result-star{color:#d2a23f;font-size:52px;line-height:1.1}.wd-result-card h2{margin:10px 0 5px;color:#082d3d;font:700 38px Georgia,serif}.wd-result-card>p{margin:0 0 20px;color:#48616a}.wd-result-words{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.wd-result-words>span{padding:8px 12px;border-radius:10px;background:#e4eedc;color:#244a3b}.wd-result-words>span.wrong{background:#f8e5bd;color:#856027}.wd-result-actions{display:grid;gap:12px;width:100%;margin-top:26px}.wd-result-actions button{min-height:46px;padding:9px;border:1px solid #d7ad53;border-radius:14px;color:#102f3e;background:#ffd176;font-weight:700}.wd-result-actions a{padding:9px;color:#1b5a65}
 
@@ -113,4 +113,57 @@ html body .App>.App__main:has(.word-discovery){background-image:linear-gradient(
   .word-discovery:not(.word-discovery--result) .wd-heading p{display:none}
   .word-discovery:not(.word-discovery--result) .wd-art{min-height:24px}
   .word-discovery:not(.word-discovery--result) .wd-card{padding-top:3px;padding-bottom:8px}
+}
+
+/* The website keeps its normal navigation and a page that can grow with content. */
+.word-discovery.word-discovery--web{
+  --wd-ivory:#173b4b;--wd-gold:#956520;--wd-ink:#082d3d;
+  grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
+  grid-template-rows:auto auto auto minmax(190px,1fr) auto;
+  grid-template-areas:"back back" "heading heading" "progress progress" "question keyboard" "question controls";
+  gap:20px 32px;width:min(100%,1040px);height:auto;min-height:0;max-height:none;
+  margin:32px auto 48px;padding:28px;border:1px solid #d5e2e7;border-radius:24px;
+  background:linear-gradient(145deg,#f7fbfc,#e9f2f5);color:var(--wd-ink);
+  box-shadow:0 10px 30px #1437460a;
+}
+.word-discovery--web>.wd-back{grid-area:back;min-height:36px;font:600 15px/1.3 Arial,sans-serif}
+.word-discovery--web>.wd-heading{grid-area:heading;padding:0 0 6px}
+.word-discovery.word-discovery--web .wd-heading h1{margin-bottom:8px;font-size:36px;line-height:1.15}
+.word-discovery.word-discovery--web .wd-heading p{display:block;font-size:19px}
+.word-discovery--web>.wd-progress{grid-area:progress;width:min(100%,640px);justify-self:center;color:#234c60}
+.word-discovery--web .wd-hearts{color:#b58027}
+.word-discovery.word-discovery--web .wd-card{
+  grid-area:question;min-height:420px;padding:12px 22px 24px;border:1px solid #e8dfce;
+  border-radius:20px;overflow:hidden;box-shadow:0 5px 18px #173b4b0a;
+}
+.word-discovery.word-discovery--web .wd-art{min-height:240px}
+.word-discovery.word-discovery--web .wd-card h2{margin-bottom:16px;font-size:25px}
+.word-discovery.word-discovery--web .wd-category{margin-bottom:10px;font-size:12px}
+.word-discovery.word-discovery--web .wd-slot{height:clamp(38px,12cqw,58px)}
+.word-discovery--web>.wd-keyboard{grid-area:keyboard;align-self:end;min-height:164px;height:164px;gap:8px}
+.word-discovery.word-discovery--web .wd-key-row button{min-height:44px;border:1px solid #d5dfe3;box-shadow:0 2px 2px #173b4b14}
+.word-discovery--web>.wd-controls{grid-area:controls;align-self:start;gap:14px;min-height:72px;padding:4px 0}
+.word-discovery.word-discovery--web .wd-controls button{min-height:44px;border-color:#9e793b;color:#694c1e;background:#fffaf0}
+.word-discovery--web .wd-controls>strong{color:#234c60;font-size:16px;line-height:1.4}
+.word-discovery--web.word-discovery--checked>.wd-keyboard{display:none}
+.word-discovery--web.word-discovery--checked{grid-template-rows:auto auto auto 1fr;grid-template-areas:"back back" "heading heading" "progress progress" "question controls"}
+.word-discovery--web.word-discovery--checked>.wd-controls{align-self:center}
+.word-discovery--web.word-discovery--result{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto;grid-template-areas:"back" "heading" "result";max-width:900px}
+.word-discovery--web>.wd-result-card{grid-area:result;width:100%;border:1px solid #e8dfce}
+.word-discovery--web .wd-result-words{max-width:680px}
+.word-discovery--web .wd-result-actions{max-width:440px}
+@media(max-width:760px){
+  .word-discovery.word-discovery--web{
+    grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto auto auto auto;
+    grid-template-areas:"back" "heading" "progress" "question" "controls" "keyboard";
+    gap:18px;width:calc(100% - 24px);margin:20px auto 32px;padding:20px;
+  }
+  .word-discovery.word-discovery--web .wd-heading h1{font-size:clamp(26px,6vw,34px)}
+  .word-discovery.word-discovery--web .wd-card{min-height:340px;padding:10px 16px 20px}
+  .word-discovery.word-discovery--web .wd-art{min-height:190px}
+  .word-discovery.word-discovery--web .wd-card h2{font-size:22px}
+  .word-discovery--web>.wd-keyboard{align-self:start;justify-self:center;max-width:520px}
+  .word-discovery--web>.wd-controls{min-height:44px;padding:0}
+  .word-discovery--web.word-discovery--checked{grid-template-rows:auto auto auto auto auto;grid-template-areas:"back" "heading" "progress" "question" "controls"}
+  .word-discovery--web.word-discovery--result{grid-template-rows:auto auto auto;grid-template-areas:"back" "heading" "result"}
 }

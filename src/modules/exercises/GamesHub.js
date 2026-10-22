@@ -6,6 +6,8 @@ import { useAuth } from '../auth/AuthContext';
 import { getCareerPath, getCareerProfile } from '../../services/careerProfile';
 import { readPracticeProgress } from './practiceActivities';
 import GamesMosaic from './GamesMosaic';
+import DesktopGamesHub from './DesktopGamesHub';
+import { isInstalledAppView } from '../../services/appExperience';
 import { readGameProgress } from './practiceGameData';
 import { getVerbSessions, readVerbProgress } from './challenge30/verbsForLevel';
 import { claimNorthernPassStop, NORTHERN_PASS_UPDATE_EVENT, readNorthernPassProgress } from '../../services/northernPassProgress';
@@ -78,6 +80,7 @@ const GamesHub = () => {
     { id: 'missions', to: '/misiuni-la-serviciu', title: 'Misiuni la serviciu', text: 'Situații reale. Replica potrivită.', meta: `${['C1', 'C2'].includes(level) ? 'Recapitulare B2' : level} · ${careerPath.shortTitle}` },
   ].map((game) => ({ ...game, progress: readPracticeProgress(localStorage, { game: game.id, level: game.id === 'missions' && ['C1', 'C2'].includes(level) ? 'B2' : level, pathId: careerPath.id, userId: user?.id || 'guest' }) }));
 
+  if (!isInstalledAppView()) return <DesktopGamesHub level={level} cards={appGameCards} activities={newGames} reviewStats={reviewStats} />;
   return <GamesMosaic level={level} cards={appGameCards} activities={newGames} reviewStats={reviewStats} expedition={expedition} onClaimStop={claimStop} />;
 };
 
