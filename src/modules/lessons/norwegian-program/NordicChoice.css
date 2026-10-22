@@ -1,6 +1,6 @@
-/* Nordic blue is limited to multiple-choice questions. */
+/* Nordic blue accents keep the shared lesson background. */
 .lapp:has(.nordic-choice) {
-  --a-bg:#f2f7fa; --a-exercise-bg:#f2f7fa; --a-card:#fff;
+  --a-card:#fff;
   --a-ink:#173f49; --a-sub:#526b7b; --a-teal:#173f49;
   --a-teal-deep:#173f49; --a-border:#d8e4eb; --a-track:#dfe8ee;
 }
@@ -30,7 +30,7 @@
 .nordic-choice__hint summary { cursor:pointer; padding:12px; text-align:center; }
 .nordic-choice__hint p { padding:12px; background:#fff; border-radius:12px; }
 .nordic-choice .lapp-exercise__review-note { justify-content:center; color:#526b7b; }
-.nordic-choice .lapp-exercise__footer { border-color:#d8e4eb; background:#f2f7fa; }
+.nordic-choice .lapp-exercise__footer { border-color:#d8e4eb; background:var(--a-bg); }
 .nordic-choice .lapp-exercise__footer .lapp-exercise__primary { background:#173f49; border-radius:14px; font-size:1rem; }
 .nordic-choice .lapp-exercise__footer .lapp-exercise__primary:disabled { background:#c5d5df; color:#496272; cursor:not-allowed; }
 .nordic-choice .lapp-exercise__footer .lapp-exercise__back { border-color:#d8e4eb; background:#fff; }
