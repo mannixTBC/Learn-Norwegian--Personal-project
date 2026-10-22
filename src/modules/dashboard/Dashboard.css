@@ -397,15 +397,15 @@
 
   .dashboard-app-home__discover{
     position:relative;display:grid;grid-template-columns:minmax(0,1fr) 34px;gap:13px;align-items:center;
-    min-height:96px;overflow:hidden;padding:15px 16px;color:#fff!important;border:1px solid rgba(113,185,181,.4);
-    border-radius:20px;background:linear-gradient(90deg,rgba(5,30,48,.94) 0%,rgba(5,39,53,.77) 52%,rgba(5,39,53,.23) 100%),url('/images/discover-v2/aurora-v2.webp') center 43%/cover no-repeat;
-    box-shadow:0 9px 23px rgba(13,45,65,.13);
+    min-height:96px;overflow:hidden;padding:15px 16px;color:#0d3546!important;border:1px solid #f0e4c7;
+    border-radius:20px;background:linear-gradient(90deg,#fff8e8 0%,#fff8e8 48%,rgba(255,248,232,.78) 60%,rgba(255,248,232,0) 76%),url('/images/discover-nordic-cabin.svg') right center/auto 132% no-repeat,#fff6e2;
+    box-shadow:0 7px 18px rgba(20,52,72,.055);
   }
   .dashboard-app-home__discover>span{position:relative;z-index:1;display:grid;min-width:0}
-  .dashboard-app-home__discover small{color:#a9e3d5;font-size:.58rem;font-weight:950;letter-spacing:.1em;text-transform:uppercase}
-  .dashboard-app-home__discover strong{margin:3px 0;color:#fff;font-size:1.05rem;line-height:1.15}
-  .dashboard-app-home__discover em{overflow:hidden;color:#e2edf0;font-size:.65rem;font-style:normal;text-overflow:ellipsis;white-space:nowrap}
-  .dashboard-app-home__discover>b{position:relative;z-index:1;width:34px;height:34px;color:#fff;border:1px solid rgba(255,255,255,.34);border-radius:11px;background:rgba(255,255,255,.16);backdrop-filter:blur(7px)}
+  .dashboard-app-home__discover small{color:#3b6973;font-size:.58rem;font-weight:950;letter-spacing:.1em;text-transform:uppercase}
+  .dashboard-app-home__discover strong{margin:3px 0;color:#0d3546;font-size:1.05rem;line-height:1.15}
+  .dashboard-app-home__discover em{max-width:83%;overflow:hidden;color:#426775;font-size:.65rem;font-style:normal;text-overflow:ellipsis;white-space:nowrap}
+  .dashboard-app-home__discover>b{position:relative;z-index:1;align-self:end;width:34px;height:34px;color:#fff;border:2px solid #fffaf0;border-radius:50%;background:#087581;box-shadow:0 3px 8px rgba(17,74,78,.16)}
   .dashboard-app-home__discover:active{transform:scale(.985)}
 }
 

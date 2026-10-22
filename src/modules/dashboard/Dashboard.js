@@ -263,7 +263,7 @@ const Dashboard = () => {
         </div>
 
         <Link className="dashboard-app-home__discover" to="/descopera">
-          <span><small>Cultură și viață</small><strong>Descoperă Norvegia</strong><em>Locuri, tradiții și viața de zi cu zi.</em></span>
+          <span><small>O mică explorare</small><strong>Descoperă Norvegia</strong><em>Cunoaște locul, nu doar limba.</em></span>
           <b aria-hidden="true">→</b>
         </Link>
       </section>
