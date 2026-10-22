@@ -38,8 +38,8 @@ const { getVerbSessions } = await load('verbData');
 const { createPracticeQuestions, normalizePracticeAnswer, saveGameProgress, readGameProgress } = await load('practiceData');
 const storage = new Map();
 globalThis.localStorage = { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, String(value)), removeItem: (key) => storage.delete(key) };
-globalThis.window = Object.assign(new EventTarget(), { localStorage, scrollTo() {}, location: { search: '', hostname: 'localhost' }, setInterval, clearInterval, setTimeout, clearTimeout });
-globalThis.document = { activeElement: null, getElementById: () => null };
+globalThis.window = Object.assign(new EventTarget(), { localStorage, scrollTo() {}, matchMedia: () => ({ matches: false, addEventListener() {}, removeEventListener() {} }), location: { search: '', hostname: 'localhost' }, setInterval, clearInterval, setTimeout, clearTimeout });
+globalThis.document = { activeElement: null, documentElement: { classList: { contains: (name) => name === 'is-installed-app' } }, getElementById: () => null };
 globalThis.mobileEvents = [];
 let renderer;
 const text = (node) => node.children.map((child) => typeof child === 'string' ? child : text(child)).join('');
@@ -48,7 +48,7 @@ const button = (label) => buttons().find((node) => text(node).includes(label));
 const byClass = (value) => renderer.root.findAll((node) => typeof node.type === 'string' && node.props.className?.split(' ').includes(value));
 const click = async (node) => { assert.ok(node, 'control exists'); assert.ok(!node.props.disabled, 'control is enabled'); await act(async () => { node.props.onClick(); }); };
 const render = async (name, props = {}, level = 'A1') => {
-  await act(async () => { renderer = TestRenderer.create(React.createElement(MemoryRouter, { initialEntries: ['/?nivel=' + level + '&appPreview=1'] }, React.createElement(Route, { exact: true, path: '/' }, React.createElement(components[name], props)), React.createElement(Route, { path: '/jocuri' }, React.createElement('p', { id: 'games-return' }, 'Jocuri și exerciții'))), { createNodeMock: () => ({ focus() {}, querySelector: () => ({ focus() {} }) }) }); });
+  await act(async () => { renderer = TestRenderer.create(React.createElement(MemoryRouter, { initialEntries: ['/?nivel=' + level + '&appPreview=1'] }, React.createElement(Route, { exact: true, path: '/' }, React.createElement(components[name], props)), React.createElement(Route, { path: '/jocuri' }, React.createElement('p', { id: 'games-return' }, 'Jocuri și exerciții'))), { createNodeMock: () => ({ focus() {}, getBoundingClientRect: () => ({ width: 390, height: 844 }), querySelector: () => ({ focus() {} }) }) }); });
 };
 const unmount = async () => act(async () => renderer.unmount());
 
@@ -97,9 +97,10 @@ for (let index = 0; index < 5; index++) {
   const choices = byClass('game-choices')[0].findAllByType('button');
   const choice = choices.find((node) => meanings.includes(text(node.findByType('strong'))));
   assert.ok(choice);
-  await click(index === 0 ? choices.find((node) => node !== choice) : choice);
-  const verify = button('Verifică');
-  await act(async () => { verify.props.onClick(); verify.props.onClick(); });
+  const selected = index === 0 ? choices.find((node) => node !== choice) : choice;
+  assert.equal(button('Verifică'), undefined, 'a single choice is checked immediately');
+  await act(async () => { selected.props.onClick(); selected.props.onClick(); });
+  assert.ok(byClass('game-choices')[0].findAllByType('button').every(node => node.props.disabled));
   const next = button(index === 4 ? 'Vezi rezultatul' : 'Continuă');
   await act(async () => { next.props.onClick(); next.props.onClick(); });
 }
@@ -110,7 +111,7 @@ const originalRecord = localStorage.getItem('practice_game_v2_mobile-test_B2_qui
 await click(button('Repetă greșelile'));
 const correctMeaning = JSON.parse(localStorage.getItem('norwegian_review_items'))[0].answer;
 await click(byClass('game-choices')[0].findAllByType('button').find((node) => text(node.findByType('strong')) === correctMeaning));
-await click(button('Verifică')); await click(button('Vezi rezultatul'));
+await click(button('Vezi rezultatul'));
 assert.equal(localStorage.getItem('practice_game_v2_mobile-test_B2_quiz'), originalRecord, 'a one-question retry cannot inflate the record');
 await click(button('Sesiune nouă'));
 assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props.max, 5);

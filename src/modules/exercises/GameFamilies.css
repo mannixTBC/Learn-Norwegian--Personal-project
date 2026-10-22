@@ -1,0 +1,236 @@
+/* Nordlingo game families: shared controls, layouts shaped by the activity.
+   Word Discovery and lesson assessments do not use these selectors. */
+html.is-installed-app body .App > .App__main:has(.nordic-exercise):not(:has(.word-discovery)) {
+  background: radial-gradient(ellipse at 50% 0, #2e626e70, transparent 56%), linear-gradient(160deg, #123f4c, #072d3a 70%);
+}
+html.is-installed-app body .App:has(.nordic-exercise) .mobile-app-nav { display: none !important; }
+html.is-installed-app .exercise-screen.nordic-exercise {
+  width: min(calc(100% - 32px), 640px); min-height: 100svh;
+  padding: max(12px, env(safe-area-inset-top)) 0 max(24px, env(safe-area-inset-bottom));
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+}
+html.is-installed-app .exercise-screen.nordic-exercise .ng-header { margin-bottom: 20px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-brand { grid-template-columns: 72px minmax(0, 1fr) 72px; height: 44px; gap: 6px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-brand > :last-child { justify-self: end; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-logo { width: 135px; height: 38px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-exit {
+  display: grid; place-items: center; width: 44px; height: 44px; padding: 10px;
+  border: 1px solid #a6bdba40; border-radius: 14px; color: #fff8e9; background: #ffffff08;
+}
+html.is-installed-app .ng-exit svg { width: 22px; height: 22px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-heading { margin-top: 19px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-heading h1 { font: 600 clamp(26px, 6vw, 34px)/1.15 Georgia, serif; letter-spacing: -.7px; margin-bottom: 6px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-heading > p { font: 400 14px/1.45 'Source Sans 3', 'Segoe UI', sans-serif; color: #c6dbdb; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-progress { margin: 0 2px 18px; color: #dce8e4; font-size: 12px; gap: 14px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-progress progress { height: 5px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-progress progress::-webkit-progress-bar { background: #63818d65; }
+html.is-installed-app .exercise-screen.nordic-exercise :is(.exercise-primary, .activity-primary, .review-reveal, .challenge-fill__btn) {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 50px; border-radius: 15px; padding: 12px 18px; font-size: 16px; font-weight: 750;
+  color: #173b45; background: linear-gradient(150deg, #ffe2a0, #f2c56e); border: 1px solid #e0b45d; box-shadow: 0 3px 0 #b78e43;
+}
+html.is-installed-app .exercise-screen.nordic-exercise :is(.exercise-primary, .activity-primary, .challenge-fill__btn):disabled { background: #e9e2d1; border-color: #d4cdbd; box-shadow: none; color: #646d6b; opacity: 1; }
+html.is-installed-app .exercise-screen.nordic-exercise :is(.exercise-secondary, .activity-secondary) { min-height: 44px; border-radius: 13px; }
+html.is-installed-app .exercise-screen.nordic-exercise :is(.game-feedback, .activity-feedback) { display: flex; align-items: flex-start; gap: 10px; border: 1px solid #8bb59b; background: #e9f3e8; color: #27543f; padding: 13px; border-radius: 15px; }
+html.is-installed-app .exercise-screen.nordic-exercise :is(.game-feedback, .activity-feedback).wrong { border-color: #d8b39b; background: #fbebdd; color: #784a31; }
+html.is-installed-app .exercise-screen.nordic-exercise :is(.game-feedback, .activity-feedback) > span { flex: 0 0 25px; font-size: 23px; line-height: 1.15; }
+html.is-installed-app .exercise-screen.nordic-exercise :is(.game-feedback, .activity-feedback) p { margin: 0; line-height: 1.45; font-size: 15px; overflow-wrap: anywhere; }
+html.is-installed-app .exercise-screen.nordic-exercise :is(.game-feedback, .activity-feedback) small { display: block; margin-top: 6px; font-size: 12px; }
+html.is-installed-app .exercise-screen.nordic-exercise [tabindex='-1']:focus { outline: none; }
+html.is-installed-app .exercise-screen.nordic-exercise :is(button, a, input, select, summary) { touch-action: manipulation; }
+html.is-installed-app .exercise-screen.nordic-exercise :is(button, a, input, select, summary):focus-visible { outline: 3px solid #319eac; outline-offset: 3px; }
+html.is-installed-app .exercise-screen.nordic-exercise .exercise-level-select select { min-height: 44px; }
+
+/* Puzzle: one question, tactile pieces, feedback in the same surface. */
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-puzzle-card {
+  padding: 23px; border-radius: 26px; border: 1px solid #f4ead4;
+  background: #fff9ed; box-shadow: 0 18px 50px #00192335;
+}
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-question-meta { margin: 0 0 20px; color: #657571; font-size: 11px; }
+html.is-installed-app .ng-question-meta > span:last-child { letter-spacing: 1px; font-size: 10px; font-weight: 750; }
+html.is-installed-app .ng-puzzle-prompt { text-align: center; margin-bottom: 23px; }
+html.is-installed-app .ng-puzzle-symbol { display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid #dccba5; border-radius: 15px; background: #f4e6c6; color: #38636a; margin: 0 auto 13px; transform: rotate(-5deg); }
+html.is-installed-app .ng-puzzle-symbol svg { width: 25px; height: 25px; transform: rotate(5deg); }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-puzzle-prompt h2 { margin: 0; color: #143d49; font: 600 clamp(24px, 6.4vw, 32px)/1.25 Georgia, serif; text-wrap: balance; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-audio { display: inline-flex; width: auto; min-height: 44px; height: auto; gap: 8px; margin-top: 12px; padding: 8px 13px; border: 0; border-radius: 12px; background: #e8efea; color: #215864; font-size: 13px; font-weight: 650; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-audio svg { width: 20px; height: 20px; }
+html.is-installed-app .ng-action-hint { margin: 0 0 11px; color: #64736f; font-size: 12px; text-align: center; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .game-choices { gap: 10px; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .game-choices > button {
+  display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; min-height: 58px; padding: 10px 13px;
+  background: #fffdf7; border: 1px solid #ddd2b9; border-radius: 15px; box-shadow: 0 3px 0 #e6dcc5;
+  transition: background .15s, border-color .15s, transform .15s;
+}
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .game-choices strong { font: 650 17px/1.35 'Source Sans 3', 'Segoe UI', sans-serif; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-radio { width: 30px; height: 30px; border: 0; border-radius: 9px; background: #f0eadb; color: #66766e; font-size: 12px; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .game-choices > button.correct { border-color: #719c7b; background: #e6f0e2; box-shadow: 0 3px 0 #bccfb6; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .game-choices > button.wrong { border-color: #c79276; background: #faeadd; box-shadow: 0 3px 0 #e2c7b4; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .correct .ng-radio { color: #fff; background: #3b7551; font-size: 18px; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .wrong .ng-radio { color: #fff; background: #a86343; font-size: 20px; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .game-choices > button > small { grid-column: 2; font-size: 11px; color: #48644e; margin-top: -6px; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .game-choices > button.wrong > small { color: #784a31; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .order-zone { min-height: 132px; padding: 16px; border: 1px solid #90aaa5; border-radius: 18px; background: #eaf0e8; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .order-zone.is-correct { border-color: #6a956e; background: #e3efdf; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .order-zone.is-wrong { border-color: #ba896b; background: #f8e9dc; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .order-zone .ng-board-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 16px; color: #48675e; font-size: 11px; }
+html.is-installed-app .ng-board-label small { font-size: 10px; letter-spacing: 1px; font-weight: 700; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .order-zone .ng-assembled-words { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; min-height: 46px; margin: 0; }
+html.is-installed-app .ng-empty-sentence { width: 100%; padding: 9px 0; color: #5c7770; text-align: center; font-size: 14px; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle :is(.order-zone, .order-bank) button { min-height: 46px; padding: 10px 14px; border: 1px solid #d5c9ad; border-radius: 11px; background: #fffdf7; box-shadow: 0 3px 0 #d8cdb2; font: 650 18px/1.25 'Source Sans 3', 'Segoe UI', sans-serif; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .order-zone button { display: inline-flex; align-items: center; gap: 10px; border-color: #b4c7b9; box-shadow: 0 3px 0 #c3d2c2; animation: ng-piece-in .16s ease-out; }
+html.is-installed-app .order-zone button > span { color: #6e8377; font: 16px/1 'Segoe UI', sans-serif; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-empty-token { display: grid; place-items: center; width: 36px; min-height: 44px; color: #7b9b8d; }
+html.is-installed-app .ng-bank-label { margin: 20px 0 10px; color: #5c6e68; font-size: 12px; font-weight: 650; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .order-bank { justify-content: flex-start; gap: 10px; border: 0; min-height: 50px; margin: 0; padding: 0 0 5px; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .order-bank button:disabled { color: #66746b; background: #eeeade; box-shadow: none; opacity: .5; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-order-tools { margin-top: 13px; gap: 8px; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-order-tools small { max-width: 230px; font-size: 12px; line-height: 1.4; }
+html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-order-tools button { min-height: 44px; flex-shrink: 0; padding: 8px; font-size: 13px; }
+
+/* Missions: context and the speaker on one side, the user's answer on the other. */
+html.is-installed-app .exercise-screen.nordic-exercise.activity-game--missions { max-width: 900px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation { padding: 0; overflow: hidden; border-radius: 26px; border: 1px solid #d9e3d9; background: #fff9ed; }
+html.is-installed-app .ng-mission-context { padding: 20px; background: #edf1e8; border-bottom: 1px solid #d5ddcf; }
+html.is-installed-app .ng-scene-heading { display: flex; align-items: center; gap: 14px; margin-bottom: 15px; }
+html.is-installed-app .ng-scene-heading .ng-art { flex: 0 0 76px; width: 76px; height: 68px; border-radius: 15px; margin: 0; mask-image: none; -webkit-mask-image: none; border: 1px solid #d6dfd1; }
+html.is-installed-app .ng-scene-heading > div:last-child { display: grid; gap: 4px; }
+html.is-installed-app .ng-scene-heading span { color: #5f7c6d; font-size: 9px; letter-spacing: 1.5px; font-weight: 750; }
+html.is-installed-app .ng-scene-heading strong { font: 600 20px/1.2 Georgia, serif; color: #214e51; }
+html.is-installed-app .ng-scene-heading small { color: #647b6f; font-size: 11px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-scene { text-align: left; margin-bottom: 15px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-scene > small { display: block; margin-bottom: 4px; color: #4d6e60; font-size: 11px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-scene p { font: 400 14px/1.5 'Source Sans 3', 'Segoe UI', sans-serif; color: #3f6157; }
+html.is-installed-app .ng-speaker-row { display: flex; align-items: flex-start; gap: 10px; }
+html.is-installed-app .ng-speaker-avatar { display: grid; flex: 0 0 32px; height: 32px; place-items: center; color: #f9efd7; background: #356c6b; border-radius: 50%; }
+html.is-installed-app .ng-speaker-avatar svg { width: 20px; height: 20px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-quote { flex: 1; margin: 0; padding: 14px 15px 8px; text-align: left; background: #fffdf5; border: 1px solid #d6ddce; border-radius: 3px 17px 17px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-quote small { font-size: 11px; color: #5e776a; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-quote p { margin: 6px 0; font: 600 21px/1.3 Georgia, serif; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-text-button { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 0; font-size: 12px; }
+html.is-installed-app .ng-mission-task { padding: 12px 15px; border-left: 3px solid #d6b264; border-radius: 0 12px 12px 0; background: #fffaf0; }
+html.is-installed-app .ng-mission-task > span { font-size: 10px; font-weight: 750; letter-spacing: 1px; color: #7a693f; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-task { margin: 6px 0 0; font-size: 15px; line-height: 1.5; }
+html.is-installed-app .ng-mission-answer { padding: 20px; }
+html.is-installed-app .ng-your-turn { display: block; color: #8b7037; font-size: 10px; letter-spacing: 1.4px; font-weight: 750; margin-bottom: 6px; }
+html.is-installed-app .ng-mission-answer > h2 { font: 600 23px/1.25 Georgia, serif; margin: 0 0 16px; text-align: left; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-choices { gap: 10px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-choices > button { min-height: 56px; padding: 11px 12px; border-radius: 15px 15px 3px 15px; background: #fffdf7; box-shadow: 0 2px 0 #e4dbc5; font-size: 15px; line-height: 1.4; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-choices > button.selected { background: #edf2e9; border-color: #427b78; box-shadow: 0 2px 0 #6a9490; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-choices > button.correct { background: #e3efdd; border-color: #80a575; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-choices > button.wrong { background: #fae8da; border-color: #c7997d; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-choice-letter { border: 0; width: 25px; height: 25px; border-radius: 8px; background: #eee8d9; font-size: 11px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-choices > button > small { grid-column: 2; font-size: 11px; color: #596950; margin-top: -7px; }
+html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-session-actions > span { font-size: 12px; }
+
+/* Verbs: compact steps, a clearly labelled pairing board, readable writing fields. */
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__overview { padding: 9px 12px; margin-bottom: 14px; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__overview > div:first-child > span { display: none; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__panel-head { display: none; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__tabs { margin: 0 0 15px; padding: 0; gap: 8px; border: 0; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__tabs button { display: flex; flex-direction: row; gap: 6px; min-height: 48px; border: 1px solid #829e9866; color: #d6e3da; background: #ffffff08; border-radius: 13px; padding: 8px; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__tabs button > span { width: 22px; height: 22px; flex: 0 0 22px; border-radius: 50%; background: #2f5660; color: #e2eddf; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__tabs strong { font: 650 12px 'Segoe UI', sans-serif; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__tabs button.active { background: #f9dfaa; color: #214a51; border-color: #f4cf88; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__tabs button.active > span { background: #214e56; color: #fff5dc; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__content { padding: 21px; border-radius: 23px; background: #fff9ed; color: #204650; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__content h3 { font: 600 23px/1.2 Georgia, serif; color: #204650; margin: 0 0 8px; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 :is(.challenge30__instructions, .challenge-drag__inst, .challenge-fill__inst) { color: #596f65; font-size: 13px; line-height: 1.5; margin-bottom: 17px; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__verb-list article { padding: 14px 12px; background: #fffdf7; border: 1px solid #ded3ba; border-radius: 15px; box-shadow: 0 3px 0 #e6dcc5; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__verb-list article > button { min-height: 44px; width: 44px; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__verb-list strong { font: 600 20px/1.3 Georgia, serif; }
+html.is-installed-app .ng-match-labels { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 9px; color: #5f7569; font-size: 11px; font-weight: 700; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .ng-match-board { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__pool, html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__slots { display: grid; grid-auto-rows: minmax(80px, auto); align-content: start; gap: 10px; margin: 0; padding: 0; border: 0; background: transparent; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__token { display: flex; align-items: stretch; width: 100%; min-height: 80px; padding: 0; margin: 0; border: 1px solid #d7ccb4; border-radius: 13px; background: #fffdf6; box-shadow: 0 3px 0 #e2d7bf; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__token > button:first-child { flex: 1; padding: 11px 8px 11px 12px; min-height: 44px; font: 650 15px/1.35 'Segoe UI', sans-serif; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__token .challenge-audio-mini { align-self: stretch; width: 44px; min-width: 44px; flex-basis: 44px; height: auto; min-height: 44px; margin: 0; padding: 7px; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__token.is-selected { border: 2px solid #397f7a; background: #e4f0e8; box-shadow: 0 3px 0 #84aaa0; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__token.is-assigned { opacity: .48; box-shadow: none; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__target { height: 100%; min-height: 80px; padding: 11px 22px 11px 12px; border-radius: 13px; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__target strong { font: 650 14px/1.35 'Segoe UI', sans-serif; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__target span { font-size: 11px; line-height: 1.3; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .ng-match-board.is-selecting .challenge-drag__target { border-color: #72a49a; background: #f0f6ed; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__selection { min-height: 34px; font-size: 12px; margin: 15px 0 0; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__actions button { font-size: 13px; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__extra { border-color: #d9d2bd; color: #325d63; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__extra summary { min-height: 44px; font-size: 13px; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__continue { margin-top: 18px; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-fill__input { min-height: 48px; font-size: 16px; }
+html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-fill__btn--reset { background: #fffaf0; border-color: #cbbd9a; box-shadow: none; }
+
+/* Recall: a quiet, light surface with a single card to turn over. */
+html.is-installed-app body .App > .App__main:has(.nordic-exercise.review-page) { background: radial-gradient(ellipse at 50% 20%, #fffdf4, #ede9da); }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page { color: #204b51; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .ng-exit { color: #28545b; background: #fffdf480; border-color: #d5d9cb; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .ng-heading h1 { color: #204b51; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .ng-heading p { color: #63766b; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .exercise-level-select select { color: #28545b; background: #faf6e8; border-color: #b6c4b7; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .ng-review-stats { border-color: #d4d8c9; background: #ffffff40; color: #5b7264; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .ng-review-stats summary { min-height: 44px; display: list-item; padding: 12px 5px; font-size: 12px; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-progress > div:first-child { color: #586f60; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-progress strong { color: #2e6963; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-progress__track { background: #d4ddce; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-progress__track > span { background: #518b7b; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-card { position: relative; padding: 24px; border-color: #d9d3bd; border-radius: 24px; background: #fffcf3; box-shadow: 0 6px 0 -2px #eee6d1, 0 7px 0 -2px #d5cdb5, 0 16px 35px #3f554014; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-card__top { justify-content: space-between; color: #6b7b69; font-size: 11px; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-card__label { margin: 27px 0 14px; font-size: 13px; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-card h2 { margin: 0 0 28px; font-size: clamp(24px, 6vw, 31px); line-height: 1.3; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-reveal { width: 100%; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-answer { padding: 20px 0 5px; border-color: #d6ddcc; animation: ng-piece-in .2s ease-out; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-answer strong { color: #326c54; font-size: 27px; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-answer small { font-size: 12px; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-rating-intro { color: #294d44; margin-top: 26px; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-rating-intro > strong { font: 650 17px 'Segoe UI', sans-serif; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-rating-intro > span { color: #607463; font-size: 12px; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-rating { flex-direction: column; min-height: 104px; gap: 5px; border-color: #d3d6c5; background: #fffcf3; box-shadow: 0 3px 0 #ddd8c3; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-rating > small { font-size: 11px; line-height: 1.4; color: #53694f; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-rating--again .ng-rating-icon { color: #9e694a; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-rating--hard .ng-rating-icon { color: #7b754a; }
+html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-rating--good { border-color: #9cb49a; background: #e9f0e2; }
+
+@keyframes ng-piece-in { from { transform: translateY(5px); opacity: .45; } to { transform: translateY(0); opacity: 1; } }
+@media (hover: hover) {
+  html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .game-choices > button:not(:disabled):hover,
+  html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation .activity-choices > button:not(:disabled):hover { border-color: #62938c; background: #eef3e9; transform: translateY(-1px); }
+  html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .order-bank button:not(:disabled):hover { background: #f6e7c2; border-color: #b8a16b; }
+}
+@media (min-width: 800px) {
+  html.is-installed-app .exercise-screen.nordic-exercise { padding-top: 24px; }
+  html.is-installed-app .exercise-screen.nordic-exercise .ng-heading { margin-top: 25px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-puzzle-card { padding: 30px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.activity-game--missions { width: min(calc(100% - 64px), 900px); }
+  html.is-installed-app .exercise-screen.nordic-exercise .ng-conversation { display: grid; grid-template-columns: .95fr 1.05fr; align-items: stretch; }
+  html.is-installed-app .ng-mission-context { padding: 26px; border-bottom: 0; border-right: 1px solid #d5ddcf; }
+  html.is-installed-app .ng-mission-answer { padding: 26px; }
+}
+@media (max-width: 380px) {
+  html.is-installed-app .exercise-screen.nordic-exercise { width: calc(100% - 24px); }
+  html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-puzzle-card { padding: 17px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__content { padding: 15px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__tabs { gap: 5px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__tabs button { gap: 4px; padding: 6px 4px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__tabs strong { font-size: 11px; }
+  html.is-installed-app .ng-mission-context, html.is-installed-app .ng-mission-answer { padding: 16px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .ng-match-board, html.is-installed-app .ng-match-labels { gap: 8px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__token > button:first-child { font-size: 14px; padding-left: 8px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge-drag__target { padding-left: 8px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-card { padding: 20px; }
+}
+@media (max-height: 740px) {
+  html.is-installed-app .exercise-screen.nordic-exercise { padding-top: 8px; }
+  html.is-installed-app .exercise-screen.nordic-exercise .ng-header { margin-bottom: 13px; }
+  html.is-installed-app .exercise-screen.nordic-exercise .ng-heading { margin-top: 12px; }
+  html.is-installed-app .exercise-screen.nordic-exercise .ng-heading h1 { font-size: 27px; }
+  html.is-installed-app .exercise-screen.nordic-exercise .ng-heading > p { font-size: 13px; }
+  html.is-installed-app .exercise-screen.nordic-exercise .ng-progress { margin-bottom: 13px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-puzzle-card { padding: 16px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .ng-question-meta { margin-bottom: 12px; }
+  html.is-installed-app .ng-puzzle-prompt { margin-bottom: 15px; }
+  html.is-installed-app .ng-puzzle-symbol { display: none; }
+  html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .game-choices > button { min-height: 50px; padding: 8px 11px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.ng-puzzle .order-zone { min-height: 112px; padding: 12px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.challenge30 .challenge30__content { padding: 16px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-card__label { margin-top: 18px; }
+  html.is-installed-app .exercise-screen.nordic-exercise.review-page .review-card h2 { margin-bottom: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { html.is-installed-app .exercise-screen.nordic-exercise * { animation: none !important; transition: none !important; } }

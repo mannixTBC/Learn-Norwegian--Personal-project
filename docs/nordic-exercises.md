@@ -1,10 +1,20 @@
 # Nordic exercise theme
 
-The vocabulary, sentence builder, listening, work missions, verb practice, pronunciation and review screens share the dark fjord background, original logo, warm ivory cards and gold actions. Each retains its own interaction and persistence. Word Discovery and the course final test retain their original layouts.
+The installed-app games share petrol, ivory and gold, consistent exit controls and readable actions, with layouts shaped by each activity. `GameFamilies.css` extends the existing Nordic styles and is scoped to `html.is-installed-app`. The web version retains its separate page chrome; structural rules in `PracticeGame.css` support the shared puzzle interactions there.
 
-`NordicExerciseUI.js` provides the header, progress and reusable sprite artwork. `NordicExercises.css` scopes the theme to `.nordic-exercise`. Existing Word Discovery illustrations are reused without changing the source files. Only career-specific mission scenes use the additional sprite sheet. Listening deliberately has no illustration that could disclose an answer; recall uses a neutral library scene.
+`NordicExerciseUI.js` provides the compact header, progress and reusable mission artwork. Vocabulary checks a single choice immediately, locks the answered choices and lets the learner continue at their own pace. Sentence building keeps explicit verification, removable word pieces and undo. Verb matching has labelled columns and a clear next action. Work missions separate the context and speaker from the learner's answer. Review uses a quiet light surface, without decorative artwork or premature answer clues.
 
-## Validation
+Listening keeps its existing playback gate and automatic progression after correct answers, with an explicit continue button as well. Pronunciation distinguishes the model from recording and disables model playback while recording or processing. The Word Discovery layout, illustrations and lesson final test are outside this redesign.
+
+## Current validation (2026-10-22)
+
+- `npm run test:mobile-exercises`: A1–C2 content, immediate vocabulary feedback, repeated taps, complete sentence verification, verb matching and writing, microphone cleanup and review persistence.
+- `npm run test:games`: missions, listening gates, errors, scoring and retries.
+- `node scripts/test-word-discovery.mjs`: existing word-game interactions and all 120 illustrated entries.
+- `npm run build:client`: production client compilation.
+- Visual verification of this revision is still incomplete. The browser can open local pages, but the game screens load older code than the current working tree. These previews and the screenshots below do not validate this revision.
+
+## Previous visual baseline
 
 - Production client build.
 - `npm run test:games`: listening across A1–C2, playback gate, failures, mission career selection, duplicate answers, retry and progress.

@@ -34,7 +34,7 @@ globalThis.localStorage = { getItem: (key) => storage.get(key) || null, setItem:
 let advanceTimer;
 const advanceListening = async () => { assert.ok(advanceTimer); const callback = advanceTimer; advanceTimer = null; await act(async () => callback()); };
 globalThis.window = Object.assign(new EventTarget(), { scrollTo() {}, setTimeout(callback) { advanceTimer = callback; return 1; }, clearTimeout() { advanceTimer = null; }, speechSynthesis: { cancel() {} } });
-globalThis.document = { activeElement: null };
+globalThis.document = { activeElement: null, documentElement: { classList: { contains: (name) => name === 'is-installed-app' } } };
 globalThis.activityTestUser = { id: 'game-test' };
 globalThis.activityTestEvents = [];
 const audios = [];

@@ -43,7 +43,7 @@ const PracticeSession = ({ game, level, user }) => {
   const mistakes = results.filter((result) => !result.correct);
   const given = game === 'order' && question ? selected.map((index) => question.words[index]).join(' ') : answer;
   const completeAnswer = game === 'order' ? selected.length === question?.words.length : Boolean(answer.trim());
-  const isCorrect = () => (question.acceptedAnswers || [question.answer]).some((accepted) => normalizePracticeAnswer(given) === normalizePracticeAnswer(accepted));
+  const isCorrect = (value = given) => (question.acceptedAnswers || [question.answer]).some((accepted) => normalizePracticeAnswer(value) === normalizePracticeAnswer(accepted));
 
   useEffect(() => {
     moving.current = false;
@@ -66,11 +66,14 @@ const PracticeSession = ({ game, level, user }) => {
     resetAnswer(); setRetry(isRetry); setQuestions(pool); setCurrent(0); setResults([]); setScreen('game'); finished.current = false; startedAt.current = Date.now();
   };
   const start = () => begin(createSession());
-  const verify = () => {
-    if (answered.current || !completeAnswer) return;
+  const verify = (choice) => {
+    const immediateChoice = game === 'quiz' && question.type === 'choice' && typeof choice === 'string';
+    if (answered.current || (immediateChoice ? !question.options.includes(choice) : !completeAnswer)) return;
     answered.current = true;
-    const correct = isCorrect();
-    setChecked(true); setResults((all) => [...all, { question, correct, given }]);
+    const response = immediateChoice ? choice : given;
+    if (immediateChoice) setAnswer(choice);
+    const correct = isCorrect(response);
+    setChecked(true); setResults((all) => [...all, { question, correct, given: response }]);
     if (!correct) saveReviewItem({ id: 'practice-' + level + '-' + question.id, level, lessonId: question.lessonId, source: 'practice', prompt: question.prompt, answer: question.answer });
   };
   const next = () => {

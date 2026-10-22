@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import NorwegianFlagIcon from '../layout/Navbar/NorwegianFlagIcon';
 import { wordDiscoveryCatalog } from './wordDiscoveryCatalog';
 import './NordicExercises.css';
+import './GameFamilies.css';
 
 const missionPaths = ['transport', 'hospitality', 'construction', 'healthcare', 'cleaning', 'retail', 'office', 'studies', 'family', 'general'];
 const defaults = {
@@ -34,24 +35,13 @@ export function ExerciseArtwork({ kind, text, pathId, className = '' }) {
 }
 
 export function NordicHeader({ title, subtitle, level, onExit, backTo, levelControl, heading = true }) {
-  const [open, setOpen] = useState(false);
-  const menuRef = useRef(null);
-  const toggleRef = useRef(null);
-  useEffect(() => {
-    if (!open) return undefined;
-    const close = event => {
-      if (event.type === 'keydown' && event.key !== 'Escape') return;
-      if (event.type === 'pointerdown' && (menuRef.current?.contains(event.target) || toggleRef.current?.contains(event.target))) return;
-      setOpen(false);
-      if (event.type === 'keydown') toggleRef.current?.focus();
-    };
-    document.addEventListener('keydown', close); document.addEventListener('pointerdown', close);
-    return () => { document.removeEventListener('keydown', close); document.removeEventListener('pointerdown', close); };
-  }, [open]);
+  const backIcon = <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m10 5-7 7 7 7M3 12h18" /></svg>;
   return <header className="ng-header">
-    <div className="ng-brand"><button ref={toggleRef} type="button" className="ng-menu-toggle" aria-label="Meniu" aria-expanded={open} aria-controls="nordic-exercise-menu" onClick={() => setOpen(value => !value)}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16" /></svg></button><Link to="/dashboard" aria-label="NordLingo — Acasă"><NorwegianFlagIcon className="ng-logo" /></Link>{levelControl || <span className="ng-level">{level}</span>}</div>
-    {open && <nav ref={menuRef} id="nordic-exercise-menu" className="ng-menu" aria-label="Navigație"><Link to="/dashboard">Acasă</Link><Link to={'/jocuri?nivel=' + level}>Jocuri</Link><Link to="/cont">Contul meu</Link></nav>}
-    {onExit ? <button type="button" className="ng-back" aria-label="Închide sesiunea" onClick={onExit}><span aria-hidden="true">←</span> Jocuri</button> : <Link className="ng-back" to={backTo || '/jocuri?nivel=' + level}><span aria-hidden="true">←</span> Jocuri</Link>}
+    <div className="ng-brand">
+      {onExit ? <button type="button" className="ng-exit" aria-label="Închide sesiunea" onClick={onExit}>{backIcon}</button> : <Link className="ng-exit" aria-label="Înapoi la jocuri" to={backTo || '/jocuri?nivel=' + level}>{backIcon}</Link>}
+      <Link to="/dashboard" aria-label="NordLingo — Acasă"><NorwegianFlagIcon className="ng-logo" /></Link>
+      {levelControl || <span className="ng-level" aria-label={'Nivel ' + level}>{level}</span>}
+    </div>
     {heading && <div className="ng-heading"><h1>{title}</h1>{subtitle && <p>{subtitle}</p>}</div>}
   </header>;
 }

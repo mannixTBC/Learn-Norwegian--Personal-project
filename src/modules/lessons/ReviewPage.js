@@ -12,7 +12,6 @@ import { recordStudyActivity } from '../../services/learningActivity';
 import { getLearningLevel } from './learningLevel';
 import { ExerciseLayout } from '../exercises/ExerciseUI';
 import './ReviewPage.css';
-import { ExerciseArtwork } from '../exercises/NordicExerciseUI';
 
 const ratings = [
   { id: 'again', label: 'Mai repet', help: 'Nu mi-am amintit', tone: 'again' },
@@ -22,6 +21,7 @@ const ratings = [
 
 const ReviewSession = ({ level }) => {
   const ratedRef = useRef(false);
+  const promptRef = useRef(null);
   const [queue, setQueue] = useState(() => getDueReviewItems(level));
   const [sessionTotal, setSessionTotal] = useState(() => getDueReviewItems(level).length);
   const [revealed, setRevealed] = useState(false);
@@ -32,7 +32,7 @@ const ReviewSession = ({ level }) => {
   const allLevelItems = getReviewItemsForLevel(level);
   const sessionFinished = sessionTotal > 0 && queue.length === 0;
 
-  useEffect(() => { ratedRef.current = false; }, [current?.id]);
+  useEffect(() => { ratedRef.current = false; promptRef.current?.focus(); }, [current?.id]);
 
   const rateCurrent = (rating) => {
     if (!current || !revealed || ratedRef.current) return;
@@ -95,14 +95,13 @@ const ReviewSession = ({ level }) => {
             <div><span>Sesiunea de astăzi</span><strong>{reviewed + 1} / {sessionTotal}</strong></div>
             <div className="review-progress__track" role="progressbar" aria-label="Elemente repetate" aria-valuemin={0} aria-valuemax={sessionTotal} aria-valuenow={reviewed}><span style={{ width: `${(reviewed / sessionTotal) * 100}%` }} /></div>
           </div>
-          <article className="review-card">
-            <ExerciseArtwork kind="review"/>
+          <article className={'review-card' + (revealed ? ' is-revealed' : '')}>
             <div className="review-card__top">
               <span>{level}{current.source === 'work-missions' ? ' · Situație de la serviciu' : current.lessonId ? ' · Lecția ' + current.lessonId : ''}</span>
               <span>{current.source === 'final-test' ? 'Test final' : ['practice', 'listening-game', 'work-missions'].includes(current.source) ? 'Exercițiu' : 'Lecție'}</span>
             </div>
             <p className="review-card__label">Răspunde în minte înainte să verifici</p>
-            <h2>{current.prompt}</h2>
+            <h2 ref={promptRef} tabIndex={-1}>{current.prompt}</h2>
             {revealed ? (
               <>
                 <div className="review-answer" role="status"><small>Răspunsul corect</small><strong>{current.answer}</strong></div>
