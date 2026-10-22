@@ -154,3 +154,92 @@ html body .App > .App__main:has(.listening-expedition) { min-height: 100svh; pad
   .listening-expedition--playing .expedition-title { margin-bottom: 10px; }
   .listening-expedition--playing .expedition-header { min-height: 48px; margin-bottom: 4px; }
 }
+
+/* Compact playback keeps the choices and feedback inside ordinary phone screens.
+   Content may still grow naturally for large text or unusually long answers. */
+.listening-expedition--playing .expedition-player-area { flex-direction: row; align-items: stretch; gap: 8px; }
+.listening-expedition--playing .expedition-player { flex: 1; min-width: 0; }
+.listening-expedition--playing .expedition-slow { flex: 0 0 76px; align-self: center; min-height: 44px; margin: 0; padding: 8px 6px; justify-content: center; font-size: 12px; }
+.listening-expedition--playing .expedition-player { gap: 10px; padding-inline: 12px; }
+.listening-expedition--playing .expedition-sheet { padding-inline: clamp(10px, 3vw, 24px); }
+.listening-expedition--playing .expedition-submit { margin-top: 10px; }
+.listening-expedition--playing .expedition-error { display: grid; grid-template-columns: minmax(0, 1fr) 80px; align-items: center; gap: 8px; padding: 8px; margin-block: 6px; font-size: 12px; line-height: 1.3; }
+.listening-expedition--playing .expedition-error button { margin: 0; padding: 5px; font-size: 11px; }
+@media (max-height: 760px) {
+  .listening-expedition--playing { padding-block: max(5px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-bottom)); }
+  .listening-expedition--playing .expedition-header { min-height: 44px; margin-bottom: 5px; }
+  .listening-expedition--playing .expedition-sheet { padding-block: 10px; }
+  .listening-expedition--playing .expedition-stage { padding: 4px 12px; font-size: 10px; }
+  .listening-expedition--playing .expedition-progress { margin-block: 6px 8px; }
+  .listening-expedition--playing .expedition-title { font-size: 25px; margin-bottom: 8px; }
+  .listening-expedition--playing .expedition-headphones { display: none; }
+  .listening-expedition--playing .expedition-player { min-height: 58px; padding-block: 6px; border-radius: 23px; }
+  .listening-expedition--playing .expedition-play { width: 40px; height: 40px; flex-basis: 40px; }
+  .listening-expedition--playing .expedition-wave { height: 19px; }
+  .listening-expedition--playing .expedition-wave i { max-height: 19px; }
+  .listening-expedition--playing .expedition-track { gap: 2px; }
+  .listening-expedition--playing .expedition-play-label { font-size: 11px; }
+  .listening-expedition--playing .expedition-meta { margin-block: 8px 4px; font-size: 10px; }
+  .listening-expedition--playing .expedition-question { font-size: 17px; margin-block: 0 7px; }
+  .listening-expedition--playing .expedition-choices { gap: 6px; }
+  .listening-expedition--playing .expedition-option { min-height: 44px; padding: 5px 9px; font-size: 14px; line-height: 1.25; grid-template-columns: 28px minmax(0, 1fr); }
+  .listening-expedition--playing .expedition-letter { width: 28px; height: 28px; font-size: 12px; }
+  .listening-expedition--playing .expedition-submit { min-height: 44px; padding-block: 8px; margin-top: 9px; font-size: 16px; }
+  .listening-expedition--checked .expedition-feedback { padding: 7px 9px; margin-top: 8px; gap: 7px; }
+  .listening-expedition--checked .expedition-feedback h3 { font-size: 13px; margin-bottom: 2px; }
+  .listening-expedition--checked .expedition-feedback p { font-size: 12px; line-height: 1.25; }
+  .listening-expedition--checked .expedition-feedback small { font-size: 11px; }
+}
+@media (orientation: landscape) and (max-height: 500px) and (min-width: 550px) {
+  .listening-expedition--playing { max-width: 1000px; padding-inline: 12px; }
+  .listening-expedition--playing .expedition-sheet { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 5px 16px; }
+  .listening-expedition--playing .expedition-stage,
+  .listening-expedition--playing .expedition-progress,
+  .listening-expedition--playing .expedition-title,
+  .listening-expedition--playing .expedition-player-area,
+  .listening-expedition--playing .expedition-meta,
+  .listening-expedition--playing .expedition-question { grid-column: 1; margin-block: 0; }
+  .listening-expedition--playing .expedition-stage { justify-self: start; }
+  .listening-expedition--playing .expedition-title { text-align: left; font-size: 23px; }
+  .listening-expedition--playing .expedition-choices { grid-column: 2; grid-row: 1 / 5; }
+  .listening-expedition--playing .expedition-submit { grid-column: 2; grid-row: 5 / 7; margin-top: 0; align-self: end; }
+  .listening-expedition--playing .expedition-feedback,
+  .listening-expedition--playing .expedition-error { grid-column: 1; grid-row: 5 / 7; margin: 0; }
+  .listening-expedition--checked .expedition-meta,
+  .listening-expedition--checked .expedition-question,
+  .listening-expedition--playing:has(.expedition-error) .expedition-meta,
+  .listening-expedition--playing:has(.expedition-error) .expedition-question { display: none; }
+}
+@media (max-height: 600px) {
+  .listening-expedition--playing .expedition-sheet { padding-block: 7px; }
+  .listening-expedition--checked .expedition-meta { display: none; }
+  .listening-expedition--checked .expedition-question { margin-top: 8px; }
+}
+@media (orientation: landscape) and (max-height: 500px) and (min-width: 550px) {
+  .listening-expedition--checked :is(.expedition-title, .expedition-stage, .expedition-progress),
+  .listening-expedition--playing:has(.expedition-error) :is(.expedition-title, .expedition-stage, .expedition-progress) { display: none; }
+  .listening-expedition--checked .expedition-player-area,
+  .listening-expedition--playing:has(.expedition-error) .expedition-player-area { grid-column: 1; grid-row: 1; }
+  .listening-expedition--playing .expedition-feedback,
+  .listening-expedition--playing .expedition-error { grid-column: 1; grid-row: 2 / 7; align-self: start; }
+}
+
+/* A quiet frame leaves the answers prominent; feedback uses the top layer. */
+.listening-expedition--playing .expedition-header { display: flex; justify-content: space-between; min-height: 44px; }
+.listening-expedition--playing .expedition-sheet { border: 1px solid #ddcba4; box-shadow: 0 8px 24px #72562512; }
+.expedition-popup { position: fixed; inset: 0; margin: auto; width: min(420px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow-y: auto; padding: 26px 22px; border: 1px solid #c7d9cd; border-radius: 26px; color: #214f46; background: #fffaf0; box-shadow: 0 20px 80px #123d4955; text-align: center; font-family: inherit; }
+.expedition-popup::backdrop { background: #123d4970; backdrop-filter: blur(4px); }
+.expedition-popup.wrong { border-color: #e2c19e; color: #80503b; }
+.expedition-popup-icon { display: grid; place-items: center; width: 54px; height: 54px; margin: 0 auto 12px; border-radius: 50%; background: #e3eee3; }
+.expedition-popup.wrong .expedition-popup-icon { background: #f8e4cd; }
+.expedition-popup h3 { margin: 0 0 12px; font: 700 25px/1.2 Georgia, serif; }
+.expedition-popup p { margin: 6px 0; font-size: 17px; line-height: 1.4; overflow-wrap: anywhere; }
+.expedition-popup p[lang] { font-weight: 750; }
+.expedition-popup small, .expedition-auto-next { display: block; margin-top: 14px; font-size: 12px; }
+.expedition-popup .expedition-submit { margin-top: 18px; }
+@media (max-height: 400px) {
+  .expedition-popup { padding: 14px 18px; }
+  .expedition-popup-icon { width: 36px; height: 36px; margin-bottom: 6px; }
+  .expedition-popup h3 { font-size: 21px; margin-bottom: 6px; }
+  .expedition-popup p { font-size: 14px; }
+}
