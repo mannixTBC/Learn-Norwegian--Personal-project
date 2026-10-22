@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import { createCheckoutSession, createPortalSession } from '../../services/billing';
 import { getVoiceTranscriptPreference, setVoiceTranscriptPreference } from '../../services/voiceTranscripts';
 import MobileAppNav from '../layout/MobileAppNav';
+import NorwegianFlagIcon from '../layout/Navbar/NorwegianFlagIcon';
 import './AccountSettings.css';
 
 const deletionReasons = [
@@ -239,19 +240,21 @@ const AccountSettings = () => {
       </div>
 
       <div className="account-mobile" aria-label="Setările contului">
-        <div className="account-mobile__hero" aria-hidden="true" />
+        <header className="account-mobile__heading">
+          <Link className="account-mobile__brand" to="/dashboard" aria-label="NordLingo — Acasă"><NorwegianFlagIcon /></Link>
+          <div><h1>Contul tău</h1><p>Profilul și preferințele tale</p></div>
+        </header>
 
         <section className="account-mobile__profile" aria-labelledby="account-mobile-profile-title">
           <div className="account-mobile__avatar" aria-hidden="true">{user.name.charAt(0).toUpperCase()}</div>
           <div className="account-mobile__identity">
-            <h1 id="account-mobile-profile-title">{user.name}</h1>
+            <h2 id="account-mobile-profile-title">{user.name}</h2>
             <p>{user.email || 'Fără adresă de e-mail asociată'}</p>
             <span>{plan === 'premium' ? 'Premium' : 'Plan gratuit'}</span>
           </div>
         </section>
 
-        <section className="account-mobile__settings" aria-label="Opțiunile contului">
-          <button type="button" className="account-mobile__row" onClick={registeredAccount ? openBilling : connectAccount} disabled={billingLoading || isDevBypass}>
+          <button type="button" className="account-mobile__row account-mobile__subscription" onClick={registeredAccount ? openBilling : connectAccount} disabled={billingLoading || isDevBypass}>
             <span className="account-mobile__row-icon"><SubscriptionIcon /></span>
             <span className="account-mobile__row-copy">
               <strong>Abonamentul meu</strong>
@@ -260,11 +263,14 @@ const AccountSettings = () => {
             <span className="account-mobile__chevron"><ChevronIcon /></span>
           </button>
 
+        <section className="account-mobile__preferences" aria-labelledby="account-mobile-settings-title">
+          <h2 id="account-mobile-settings-title">Setările tale</h2>
+          <div className="account-mobile__settings">
           <div className="account-mobile__row account-mobile__row--privacy">
             <span className="account-mobile__row-icon"><PrivacyIcon /></span>
             <span className="account-mobile__row-copy">
               <strong>Confidențialitate și Nora</strong>
-              <small>Controlează salvarea transcrierilor</small>
+              <small>Salvarea transcrierilor</small>
               {voiceConsentState === 'unavailable' && <em>Preferința nu este disponibilă momentan.</em>}
             </span>
             <label className={`account-mobile__toggle ${voiceConsent ? 'account-mobile__toggle--enabled' : ''}`}>
@@ -283,7 +289,7 @@ const AccountSettings = () => {
             <span className="account-mobile__chevron"><ChevronIcon /></span>
           </button>
 
-          <button type="button" className="account-mobile__row" onClick={signOut}>
+          <button type="button" className="account-mobile__row account-mobile__row--signout" onClick={signOut}>
             <span className="account-mobile__row-icon"><LogoutIcon /></span>
             <span className="account-mobile__row-copy">
               <strong>Deconectare</strong>
@@ -291,6 +297,7 @@ const AccountSettings = () => {
             </span>
             <span className="account-mobile__chevron"><ChevronIcon /></span>
           </button>
+          </div>
         </section>
 
         {billingError && <div className="account-mobile__error" role="alert">{billingError}</div>}
