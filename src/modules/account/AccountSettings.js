@@ -69,6 +69,10 @@ const AccountSettings = () => {
   const [voiceConsentState, setVoiceConsentState] = useState('loading');
   const [managingAccount, setManagingAccount] = useState(false);
   const firstReasonRef = useRef(null);
+  const [failedAvatar, setFailedAvatar] = useState('');
+  const avatar = user?.avatarUrl && failedAvatar !== user.avatarUrl
+    ? <img src={user.avatarUrl} alt="" referrerPolicy="no-referrer" onError={() => setFailedAvatar(user.avatarUrl)} />
+    : (user?.name || 'V').charAt(0).toUpperCase();
   const registeredAccount = user && !user.isGuest;
 
   useEffect(() => {
@@ -178,7 +182,7 @@ const AccountSettings = () => {
 
       <div className="account-page__layout">
         <section className="account-profile" aria-labelledby="account-profile-title">
-          <div className="account-profile__avatar" aria-hidden="true">{user.name.charAt(0).toUpperCase()}</div>
+          <div className="account-profile__avatar" aria-hidden="true">{avatar}</div>
           <div>
             <small id="account-profile-title">{user.isGuest ? 'Sesiune de vizitator' : 'Cont activ'}</small>
             <h2>{user.name}</h2>
@@ -246,7 +250,7 @@ const AccountSettings = () => {
         </header>
 
         <section className="account-mobile__profile" aria-labelledby="account-mobile-profile-title">
-          <div className="account-mobile__avatar" aria-hidden="true">{user.name.charAt(0).toUpperCase()}</div>
+          <div className="account-mobile__avatar" aria-hidden="true">{avatar}</div>
           <div className="account-mobile__identity">
             <h2 id="account-mobile-profile-title">{user.name}</h2>
             <p>{user.email || 'Fără adresă de e-mail asociată'}</p>
@@ -254,6 +258,8 @@ const AccountSettings = () => {
           </div>
         </section>
 
+        <section className="account-mobile__preferences" aria-label="Opțiunile contului">
+          <div className="account-mobile__settings">
           <button type="button" className="account-mobile__row account-mobile__subscription" onClick={registeredAccount ? openBilling : connectAccount} disabled={billingLoading || isDevBypass}>
             <span className="account-mobile__row-icon"><SubscriptionIcon /></span>
             <span className="account-mobile__row-copy">
@@ -262,10 +268,6 @@ const AccountSettings = () => {
             </span>
             <span className="account-mobile__chevron"><ChevronIcon /></span>
           </button>
-
-        <section className="account-mobile__preferences" aria-labelledby="account-mobile-settings-title">
-          <h2 id="account-mobile-settings-title">Setările tale</h2>
-          <div className="account-mobile__settings">
           <div className="account-mobile__row account-mobile__row--privacy">
             <span className="account-mobile__row-icon"><PrivacyIcon /></span>
             <span className="account-mobile__row-copy">
