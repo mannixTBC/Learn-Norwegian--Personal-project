@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import './App.css';
 
@@ -7,6 +7,7 @@ import Footer from './modules/layout/Footer/Footer';
 import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './modules/auth/AuthContext';
 import SeoManager from './seo/SeoManager';
+import PageLoading from './modules/layout/PageLoading';
 
 /**
  * Componenta rădăcină a aplicației „NordLingo”.
@@ -17,13 +18,15 @@ import SeoManager from './seo/SeoManager';
  *   3. Footer  — subsolul paginii (mereu vizibil)
  */
 export function AppContent() {
+  const mainRef = useRef(null);
   return (
     <AuthProvider>
       <SeoManager />
       <div className="App">
         <Navbar />
-        <main className="App__main">
+        <main className="App__main" ref={mainRef}>
           <AppRoutes />
+          <PageLoading contentRef={mainRef} />
         </main>
         <Footer />
       </div>
