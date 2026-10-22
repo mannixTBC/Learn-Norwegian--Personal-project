@@ -155,7 +155,6 @@ const AuthPage = () => {
 
           {!isRecovery && <section className={`auth-mobile-quick ${mobileEmailOpen ? 'is-hidden' : ''}`} aria-label="Alege cum vrei să continui">
             <h1>Bine ai revenit!</h1>
-            <p>Continuă călătoria ta în norvegiană.</p>
             <button className="auth-google" type="button" disabled={submitting} onClick={continueWithGoogle}>
               <span className="auth-google__icon"><GoogleIcon /></span>
               <span className="auth-google__copy"><strong>Continuă cu Google</strong><small>Cea mai rapidă opțiune</small></span>
