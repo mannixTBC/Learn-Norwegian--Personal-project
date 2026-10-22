@@ -12,6 +12,7 @@ import { buildAdaptiveListeningQuestions, buildMissionQuestions, savePracticePro
 import { workMissionData } from './workMissionData';
 import { ExerciseLayout } from './ExerciseUI';
 import './ActivityGame.css';
+import ActivityPlayView from './ActivityPlayView';
 
 export const ActivityIcon = ({ game, ...props }) => (
   <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
@@ -129,28 +130,7 @@ const ActivitySession = ({ game }) => {
 
   if (!question) return <ExerciseLayout className="activity-game" title={details.title} icon={game} level={level} backTo={'/jocuri?nivel=' + requestedLevel}><p role="alert">Nu sunt întrebări disponibile pentru această sesiune.</p><Link to={'/jocuri?nivel=' + requestedLevel}>Înapoi la jocuri</Link></ExerciseLayout>;
 
-  return (
-    <div className={`exercise-screen activity-game activity-game--${game} activity-game--playing`}>
-      <header className="activity-session-bar"><button type="button" className="activity-close" aria-label="Închide sesiunea" onClick={() => { stopAudio(); history.push('/jocuri?nivel=' + requestedLevel); }}>×</button><div><span>{details.title} · {level}</span><div className="activity-progress" role="progressbar" aria-label="Progresul sesiunii" aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={results.length}><i style={{ width: `${results.length / questions.length * 100}%` }} /></div></div><strong>{current + 1}<small> / {questions.length}</small></strong></header>
-      <section className="activity-question" aria-labelledby="activity-question-title">
-        {limitedMissions && <p className="activity-pool-note">Recapitulare B2 pentru nivelul {requestedLevel}.</p>}
-        <div className="activity-question__meta"><span>{retry ? 'Repetă greșelile' : game === 'listen' ? `Lecția ${question.lessonId} · ${question.topic}` : `Misiunea ${question.mission} · ${question.title}`}</span><span>{game === 'listen' ? { word: 'Cuvânt', expression: 'Expresie', dialogue: 'Replică din dialog' }[question.contentType] : question.kind === 'intent' ? 'Înțelege' : 'Răspunde'}</span></div>
-        <h1 id="activity-question-title" ref={headingRef} tabIndex={-1}>{question.prompt}</h1>
-        {game === 'missions' && <div className="activity-scene"><ActivityIcon game="missions" /><div><small>Situația ta</small><p>{question.context}</p></div></div>}
-        {question.kind === 'intent' && <blockquote className="activity-quote"><small>Ți se spune</small><p lang="nb">„{question.quote}”</p><button type="button" className="activity-text-button" onClick={() => play()} disabled={audioBusy}>▷ Ascultă cererea</button></blockquote>}
-        {question.kind === 'reply' && <p className="activity-task">{question.task}</p>}
-        {needsAudio && <div className={`activity-listen ${audioBusy ? 'is-playing' : ''}`}><div className="activity-soundwave" aria-hidden="true">{Array.from({ length: 19 }, (_, index) => <i style={{ '--bar': `${12 + ((index * 17) % 37)}px`, '--delay': `${index * 45}ms` }} key={index} />)}</div><button type="button" className="activity-listen__play" onClick={() => audioBusy ? stopAudio() : play()} aria-label={audioBusy ? 'Oprește redarea' : 'Ascultă înregistrarea'}><span aria-hidden="true">{audioBusy ? 'Ⅱ' : '▶'}</span>{audioStatus === 'loading' ? 'Se încarcă…' : audioStatus === 'playing' ? 'Se redă…' : heard ? 'Ascultă din nou' : 'Ascultă înregistrarea'}</button><button type="button" className="activity-text-button" onClick={() => play(true)} disabled={audioBusy}>Ascultă mai lent</button><p>{heard ? 'Alege sensul care se potrivește.' : 'Ascultă până la capăt, apoi alege răspunsul.'}</p></div>}
-        {audioStatus === 'error' && <div className="activity-error" role="alert">Sunetul nu a putut fi redat. Verifică internetul și încearcă din nou.{!needsAudio && ' Poți continua și citind textul.'}<button type="button" onClick={() => play()}>Reîncearcă redarea</button></div>}
-        <div className="activity-choices" role="group" aria-label="Alege răspunsul">{question.options.map((option, index) => {
-          const optionState = checked ? option === question.answer ? 'correct' : option === selected ? 'wrong' : '' : selected === option ? 'selected' : '';
-          return <button type="button" aria-pressed={selected === option} className={optionState} disabled={checked || (needsAudio && !heard)} onClick={() => setSelected(option)} key={option}><span className="activity-choice-letter" aria-hidden="true">{String.fromCharCode(65 + index)}</span><span lang={question.kind === 'reply' ? 'nb' : 'ro'}>{option}</span><b aria-hidden="true">{optionState === 'correct' ? '✓' : optionState === 'wrong' ? '×' : selected === option ? '●' : ''}</b></button>;
-        })}</div>
-        {checked && <div role="status" className={`activity-feedback ${selected === question.answer ? 'correct' : 'wrong'}`}><span aria-hidden="true">{selected === question.answer ? '✓' : '↻'}</span><div><h2>{selected === question.answer ? 'Exact, ai înțeles!' : 'Reține pentru data viitoare'}</h2><p>{question.explanation}</p>{question.kind === 'reply' && <button className="activity-text-button" type="button" onClick={() => play(false, question.answer)} disabled={audioBusy}>▷ Ascultă replica potrivită</button>}</div></div>}
-      </section>
-      <footer className="activity-session-actions"><span>{checked ? selected === question.answer ? 'Încă un pas înainte.' : 'O vei putea repeta la final.' : needsAudio && !heard ? 'Începe prin a asculta.' : 'Alege un răspuns, apoi verifică.'}</span><button className="activity-primary" type="button" disabled={!checked && (selected === null || (needsAudio && !heard))} onClick={checked ? next : verify}>{checked ? current === questions.length - 1 ? 'Vezi rezultatul' : 'Continuă' : 'Verifică răspunsul'}<span aria-hidden="true">→</span></button></footer>
-
-    </div>
-  );
+  return <ActivityPlayView game={game} details={details} level={level} requestedLevel={requestedLevel} limitedMissions={limitedMissions} pathId={pathId} question={question} current={current} total={questions.length} retry={retry} headingRef={headingRef} needsAudio={needsAudio} audioBusy={audioBusy} audioStatus={audioStatus} heard={heard} selected={selected} setSelected={setSelected} checked={checked} play={play} stopAudio={stopAudio} onExit={() => { stopAudio(); history.push('/jocuri?nivel=' + requestedLevel); }} verify={verify} next={next}/>;
 };
 
 const ActivityGame = ({ game }) => {

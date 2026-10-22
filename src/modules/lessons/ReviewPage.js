@@ -12,6 +12,7 @@ import { recordStudyActivity } from '../../services/learningActivity';
 import { getLearningLevel } from './learningLevel';
 import { ExerciseLayout } from '../exercises/ExerciseUI';
 import './ReviewPage.css';
+import { ExerciseArtwork } from '../exercises/NordicExerciseUI';
 
 const ratings = [
   { id: 'again', label: 'Mai repet', help: 'Nu mi-am amintit', tone: 'again' },
@@ -54,11 +55,11 @@ const ReviewSession = ({ level }) => {
 
   return (
     <ExerciseLayout className="review-page" title="Recapitulare" description="Reia cuvintele și expresiile învățate, la momentul potrivit." icon="review" level={level} allowLevelChange>
-      <section className="review-overview" aria-label="Progresul recapitulării">
+      <details className="ng-review-stats"><summary>Progresul recapitulării · {stats.due} de repetat</summary><section className="review-overview" aria-label="Progresul recapitulării">
         <div><span>Astăzi</span><strong>{stats.due}</strong><small>elemente pregătite</small></div>
         <div><span>În învățare</span><strong>{stats.learning}</strong><small>interval sub 21 zile</small></div>
         <div><span>Fixate</span><strong>{stats.mastered}</strong><small>interval de minimum 21 zile</small></div>
-      </section>
+      </section></details>
 
       {sessionFinished ? (
         <section className="review-finished">
@@ -95,6 +96,7 @@ const ReviewSession = ({ level }) => {
             <div className="review-progress__track" role="progressbar" aria-label="Elemente repetate" aria-valuemin={0} aria-valuemax={sessionTotal} aria-valuenow={reviewed}><span style={{ width: `${(reviewed / sessionTotal) * 100}%` }} /></div>
           </div>
           <article className="review-card">
+            <ExerciseArtwork kind="review"/>
             <div className="review-card__top">
               <span>{level}{current.source === 'work-missions' ? ' · Situație de la serviciu' : current.lessonId ? ' · Lecția ' + current.lessonId : ''}</span>
               <span>{current.source === 'final-test' ? 'Test final' : ['practice', 'listening-game', 'work-missions'].includes(current.source) ? 'Exercițiu' : 'Lecție'}</span>
@@ -104,19 +106,20 @@ const ReviewSession = ({ level }) => {
             {revealed ? (
               <>
                 <div className="review-answer" role="status"><small>Răspunsul corect</small><strong>{current.answer}</strong></div>
-                <div className="review-rating-intro"><strong>Cât de ușor ți-ai amintit?</strong><span>Alegerea stabilește următoarea repetare.</span></div>
-                <div className="review-rating-actions">
-                  {ratings.map((rating) => (
-                    <button className={`review-rating review-rating--${rating.tone}`} type="button" onClick={() => rateCurrent(rating.id)} key={rating.id}>
-                      <span>{rating.label}</span><small>{rating.help} · {ratingPreview(current, rating.id)}</small>
-                    </button>
-                  ))}
-                </div>
+
               </>
             ) : (
               <button className="review-reveal" type="button" onClick={() => setRevealed(true)}>Arată răspunsul</button>
             )}
           </article>
+          {revealed && <div className="ng-review-ratings"><div className="review-rating-intro"><strong>Cât de ușor ți-ai amintit?</strong><span>Alegerea stabilește următoarea repetare.</span></div>
+                <div className="review-rating-actions">
+                  {ratings.map((rating) => (
+                    <button className={`review-rating review-rating--${rating.tone}`} type="button" onClick={() => rateCurrent(rating.id)} key={rating.id}>
+                      <span aria-hidden="true" className="ng-rating-icon">{rating.id === 'again' ? '↻' : rating.id === 'hard' ? '≈' : '✓'}</span><span>{rating.label}</span><small>{rating.help} · {ratingPreview(current, rating.id)}</small>
+                    </button>
+                  ))}
+                </div></div>}
         </section>
       )}
     </ExerciseLayout>

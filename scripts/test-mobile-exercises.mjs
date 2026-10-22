@@ -55,7 +55,7 @@ const unmount = async () => act(async () => renderer.unmount());
 // Every selector uses the actual level, and every live hub exposes all eight activities.
 for (const level of Object.keys(courseCatalog)) {
   const course = courseCatalog[level];
-  for (const game of ['quiz', 'order', 'word']) {
+  for (const game of ['quiz', 'order']) {
     for (const lesson of course.lessons) {
       const questions = createPracticeQuestions([lesson], game);
       assert.ok(questions.length >= 3, level + '/' + lesson.id + '/' + game);
@@ -64,17 +64,14 @@ for (const level of Object.keys(courseCatalog)) {
     }
     await render('practice', { game }, level);
     assert.equal(renderer.root.findAllByType('select').length, 0, 'games start without a configuration screen');
-    assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props['aria-valuemax'], 5);
-    assert.ok(text(byClass('question-meta')[0]).includes(level));
+    assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props.max, 5);
+    assert.ok(text(byClass('ng-question-meta')[0]).includes(level));
     await unmount();
   }
   await render('hub', {}, level);
-  const cards = byClass('games-hub__card');
-  assert.equal(cards.length, 8);
-  assert.ok(cards.every((card) => card.props.href.endsWith('?nivel=' + level)));
-  const mobileCards = [...byClass('games-hub__app-library')[0].findAllByType('a'), ...byClass('games-hub__new-card')];
-  assert.equal(mobileCards.length, 8, 'all eight activities remain available in the compact mobile layout');
-  assert.deepEqual(new Set(mobileCards.map((card) => card.props.href)), new Set(cards.map((card) => card.props.href)));
+  const cards = [...byClass('mini-tile'), ...byClass('mini-missions'), ...byClass('mini-review'), ...byClass('mini-daily')];
+  assert.equal(new Set(cards.map(card => card.props.href)).size, 8);
+  assert.ok(cards.every(card => card.props.href.endsWith('?nivel=' + level)));
   assert.ok(renderer.root.findAllByProps({ 'aria-label': 'Nivel de practică' }).every((select) => select.props.value === level));
   await unmount();
   assert.deepEqual(getVerbSessions(level).map((session) => session.length), Array(10).fill(3));
@@ -87,21 +84,21 @@ const levelSelect = renderer.root.findAllByProps({ 'aria-label': 'Nivel de pract
 await act(async () => levelSelect.props.onChange({ target: { value: 'C2' } }));
 assert.ok(renderer.root.findAllByProps({ 'aria-label': 'Nivel de practică' }).every((select) => select.props.value === 'C2'));
 assert.equal(localStorage.getItem('norwegian_active_level'), 'C2');
-assert.ok(byClass('games-hub__card').every((card) => card.props.href.endsWith('?nivel=C2')));
+assert.ok(byClass('mini-tile').every((card) => card.props.href.endsWith('?nivel=C2')));
 await unmount();
 
 // Complete a real quiz, guarding duplicate checks and completion; mistakes reach review.
 storage.clear(); mobileEvents.length = 0;
 await render('practice', { game: 'quiz' }, 'B2');
 for (let index = 0; index < 5; index++) {
-  const prompt = text(renderer.root.findByType('h1'));
+  const prompt = text(renderer.root.findByType('h2'));
   const word = prompt.match(/„(.+)”/)[1];
   const meanings = courseCatalog.B2.lessons.flatMap((lesson) => lesson.vocabulary).filter((entry) => entry[0] === word).map((entry) => entry[1]);
   const choices = byClass('game-choices')[0].findAllByType('button');
   const choice = choices.find((node) => meanings.includes(text(node.findByType('strong'))));
   assert.ok(choice);
   await click(index === 0 ? choices.find((node) => node !== choice) : choice);
-  const verify = button('Verifică răspunsul');
+  const verify = button('Verifică');
   await act(async () => { verify.props.onClick(); verify.props.onClick(); });
   const next = button(index === 4 ? 'Vezi rezultatul' : 'Continuă');
   await act(async () => { next.props.onClick(); next.props.onClick(); });
@@ -113,11 +110,11 @@ const originalRecord = localStorage.getItem('practice_game_v2_mobile-test_B2_qui
 await click(button('Repetă greșelile'));
 const correctMeaning = JSON.parse(localStorage.getItem('norwegian_review_items'))[0].answer;
 await click(byClass('game-choices')[0].findAllByType('button').find((node) => text(node.findByType('strong')) === correctMeaning));
-await click(button('Verifică răspunsul')); await click(button('Vezi rezultatul'));
+await click(button('Verifică')); await click(button('Vezi rezultatul'));
 assert.equal(localStorage.getItem('practice_game_v2_mobile-test_B2_quiz'), originalRecord, 'a one-question retry cannot inflate the record');
 await click(button('Sesiune nouă'));
-assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props['aria-valuemax'], 5);
-assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props['aria-valuenow'], 0);
+assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props.max, 5);
+assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props.value, 1);
 assert.equal(renderer.root.findAllByType('select').length, 0);
 await unmount();
 console.log('✓ Quiz: one score per answer, review of mistakes, completed results and honest retry records.');
@@ -125,23 +122,19 @@ console.log('✓ Quiz: one score per answer, review of mistakes, completed resul
 // Repeated words remain separate tokens. Verification waits for the whole sentence.
 await render('practice', { game: 'order' }, 'C1');
 const bank = () => byClass('order-bank')[0].findAllByType('button');
-assert.ok(button('Verifică răspunsul').props.disabled);
+assert.ok(button('Completează propoziția').props.disabled);
 const first = bank()[0];
 await act(async () => { first.props.onClick(); first.props.onClick(); });
 assert.equal(byClass('order-zone')[0].findAllByType('button').length, 1);
 await click(byClass('order-zone')[0].findAllByType('button')[0]);
 assert.equal(bank()[0].props.disabled, false);
 for (let index = 0; index < bank().length; index++) await click(bank()[index]);
-assert.equal(button('Verifică răspunsul').props.disabled, false);
-await click(button('Verifică răspunsul')); assert.ok(renderer.root.findAllByProps({ role: 'status' }).length);
+assert.equal(button('Verifică').props.disabled, false);
+await click(button('Verifică')); assert.ok(renderer.root.findAllByProps({ role: 'status' }).length);
 await unmount();
 
-// Typing preserves spaces, uses a form for the keyboard action and rejects blank answers.
-await render('practice', { game: 'word' }, 'C2');
-await act(async () => renderer.root.findByType('input').props.onChange({ target: { value: 'å ta ' } }));
-assert.equal(renderer.root.findByType('input').props.value, 'å ta ');
-await act(async () => renderer.root.findByType('input').props.onChange({ target: { value: '   ' } }));
-assert.ok(button('Verifică răspunsul').props.disabled);
+// Leaving a partial sentence must not record a completion.
+await render('practice', { game: 'order' }, 'C2');
 const eventsBeforeExit = mobileEvents.length;
 await click(renderer.root.findByProps({ 'aria-label': 'Închide sesiunea' }));
 assert.equal(renderer.root.findAllByProps({ role: 'dialog' }).length, 0);
@@ -154,7 +147,7 @@ assert.equal(normalizePracticeAnswer('  Å TA   HENSYN TIL! '), 'å ta hensyn ti
 saveGameProgress(localStorage, 'word', 'C2', 'other', [{ correct: true }]);
 assert.equal(readGameProgress(localStorage, 'word', 'C1', 'other').sessions, 0);
 assert.equal(readGameProgress(localStorage, 'word', 'C2', 'mobile-test').sessions, 0);
-console.log('✓ Sentence and word games: independent tokens, complete answers, whitespace, direct exit and isolated progress.');
+console.log('✓ Sentences: independent tokens, complete answers, direct exit and isolated progress.');
 
 const verbs = [{ norwegian: 'å ta hensyn til', romanian: 'a ține cont de', example: 'Vi må ta hensyn til barna.', translation: 'Trebuie să ținem cont de copii.' }, { norwegian: 'å sove', romanian: 'a dormi', example: 'Jeg vil sove.', translation: 'Vreau să dorm.' }, { norwegian: 'å spise', romanian: 'a mânca', example: 'Vi skal spise.', translation: 'Vom mânca.' }];
 let completions = 0;

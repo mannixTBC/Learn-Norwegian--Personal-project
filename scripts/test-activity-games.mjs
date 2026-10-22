@@ -86,7 +86,7 @@ const choices = () => buttons().filter((button) => button.props.className?.inclu
 localStorage.setItem('norwegian_career_profile_game-test', JSON.stringify({ pathId: 'office' }));
 await renderGame('missions', 'B2');
 assert.equal(renderer.root.findAllByType('select').length, 0);
-assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props['aria-valuemax'], 5);
+assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props.max, 5);
 let missedAnswer;
 for (let index = 0; index < 5; index++) {
   const context = buttonText(renderer.root.findByProps({ className: 'activity-scene' }).findByType('p'));
@@ -95,7 +95,7 @@ for (let index = 0; index < 5; index++) {
   const answer = renderer.root.findAllByType('blockquote').length ? scene[3] : scene[7];
   if (index === 0) missedAnswer = answer;
   await click(choices().find((button) => index === 0 ? !buttonText(button).includes(answer) : buttonText(button).includes(answer)));
-  const verify = findButton('Verifică răspunsul');
+  const verify = findButton('Verifică');
   await act(async () => { verify.props.onClick(); verify.props.onClick(); });
   if (index === 0) assert.equal(JSON.parse(localStorage.getItem('norwegian_review_items')).length, 1);
   const next = findButton(index === 4 ? 'Vezi rezultatul' : 'Continuă');
@@ -108,7 +108,7 @@ const progressKey = 'norwegian_activity_game_game-test_missions_B2_office';
 assert.equal(JSON.parse(localStorage.getItem(progressKey)).best, 80);
 await click(findButton('Repetă greșelile'));
 await click(choices().find((button) => buttonText(button).includes(missedAnswer)));
-await click(findButton('Verifică răspunsul'));
+await click(findButton('Verifică'));
 await click(findButton('Vezi rezultatul'));
 assert.equal(activityTestEvents.length, 2);
 assert.equal(activityTestEvents[1].retry, true);
@@ -119,9 +119,9 @@ console.log('✓ Missions: saved career, B2 responses, duplicate clicks, review,
 
 await renderGame('listen');
 assert.equal(renderer.root.findAllByType('select').length, 0);
-assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props['aria-valuemax'], 10);
+assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props.max, 10);
 assert.ok(choices().every((button) => button.props.disabled), 'must listen before answering');
-assert.ok(findButton('Verifică răspunsul').props.disabled);
+assert.ok(findButton('Verifică').props.disabled);
 await click(findButton('Ascultă înregistrarea'));
 let audio = audios.at(-1);
 assert.ok(!JSON.stringify(renderer.toJSON()).includes(decodeURIComponent(new URL(audio.src, 'http://localhost').searchParams.get('text'))), 'recording text stays hidden before answering');
@@ -130,7 +130,7 @@ assert.ok(choices().every((button) => button.props.disabled), 'playback must com
 await act(async () => audio.onended());
 assert.ok(choices().every((button) => !button.props.disabled));
 await click(choices()[0]);
-await click(findButton('Verifică răspunsul'));
+await click(findButton('Verifică'));
 assert.ok(renderer.root.findAllByProps({ role: 'status' }).length);
 await click(findButton('Continuă'));
 assert.ok(choices().every((button) => button.props.disabled), 'next recording needs a new listen');
@@ -183,7 +183,7 @@ for (let index = 0; index < 10; index++) {
   assert.ok(meanings.length, 'audio comes from the eligible lesson content');
   await act(async () => { recording.onplay(); recording.onended(); });
   await click(choices().find((option) => meanings.includes(buttonText(option.findAllByType('span')[1]))));
-  await click(findButton('Verifică răspunsul'));
+  await click(findButton('Verifică'));
   await click(findButton(index === 9 ? 'Vezi rezultatul' : 'Continuă'));
 }
 assert.ok(observedTypes.has('Replică din dialog') && observedTypes.size >= 2);
@@ -194,8 +194,8 @@ assert.equal(activityTestEvents.at(-1).words, vocabularyAnswers, 'dialogue answe
 assert.equal(localStorage.getItem(learningProgressKey), savedLearningProgress, 'listening practice does not mark curriculum lessons complete');
 await click(findButton('Sesiune nouă'));
 assert.equal(renderer.root.findAllByType('select').length, 0);
-assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props['aria-valuemax'], 10);
-assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props['aria-valuenow'], 0);
+assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props.max, 10);
+assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props.value, 1);
 await unmount();
 console.log('✓ Listening screen: account-scoped progress, mixed content, all ten answers, scoring and immediate restart.');
 

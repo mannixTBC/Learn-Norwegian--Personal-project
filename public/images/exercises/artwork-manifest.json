@@ -1,0 +1,105 @@
+{
+  "style": "Nordic watercolor/gouache on warm ivory with muted petrol shadows and warm golden light",
+  "reusedAssetsAreReadOnly": true,
+  "games": {
+    "vocabulary": {
+      "lookup": "Use the exact word match in wordDiscoveryCatalog.js; use a topic illustration only when no exact image is available",
+      "fallback": {
+        "src": "/images/word-discovery/objects.webp",
+        "columns": 3,
+        "rows": 4,
+        "tile": 0
+      }
+    },
+    "order": {
+      "src": "/images/word-discovery/travel.webp",
+      "columns": 3,
+      "rows": 4,
+      "tile": 2
+    },
+    "verbs": {
+      "src": "/images/word-discovery/objects.webp",
+      "columns": 3,
+      "rows": 4,
+      "tile": 0
+    },
+    "pronunciation": {
+      "src": "/images/word-discovery/places.webp",
+      "columns": 3,
+      "rows": 4,
+      "tile": 8
+    },
+    "review": {
+      "src": "/images/word-discovery/places.webp",
+      "columns": 3,
+      "rows": 4,
+      "tile": 4
+    },
+    "listen": {
+      "illustration": null,
+      "note": "Draw the audio waveform and player in code; do not reveal the correct answer through artwork."
+    }
+  },
+  "missionScenes": {
+    "transport": {
+      "src": "/images/exercises/mission-scenes.webp",
+      "columns": 2,
+      "rows": 5,
+      "tile": 0
+    },
+    "hospitality": {
+      "src": "/images/exercises/mission-scenes.webp",
+      "columns": 2,
+      "rows": 5,
+      "tile": 1
+    },
+    "construction": {
+      "src": "/images/exercises/mission-scenes.webp",
+      "columns": 2,
+      "rows": 5,
+      "tile": 2
+    },
+    "healthcare": {
+      "src": "/images/exercises/mission-scenes.webp",
+      "columns": 2,
+      "rows": 5,
+      "tile": 3
+    },
+    "cleaning": {
+      "src": "/images/exercises/mission-scenes.webp",
+      "columns": 2,
+      "rows": 5,
+      "tile": 4
+    },
+    "retail": {
+      "src": "/images/exercises/mission-scenes.webp",
+      "columns": 2,
+      "rows": 5,
+      "tile": 5
+    },
+    "office": {
+      "src": "/images/exercises/mission-scenes.webp",
+      "columns": 2,
+      "rows": 5,
+      "tile": 6
+    },
+    "studies": {
+      "src": "/images/exercises/mission-scenes.webp",
+      "columns": 2,
+      "rows": 5,
+      "tile": 7
+    },
+    "family": {
+      "src": "/images/exercises/mission-scenes.webp",
+      "columns": 2,
+      "rows": 5,
+      "tile": 8
+    },
+    "general": {
+      "src": "/images/exercises/mission-scenes.webp",
+      "columns": 2,
+      "rows": 5,
+      "tile": 9
+    }
+  }
+}

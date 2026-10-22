@@ -5,6 +5,7 @@ import { recordStudyActivity } from '../../services/learningActivity';
 import PremiumGate from '../premium/PremiumGate';
 import { apiUrl, isNativeApp } from '../../services/api';
 import './PronunciationLab.css';
+import { ExerciseArtwork } from '../exercises/NordicExerciseUI';
 
 const MAX_SECONDS = 30;
 
@@ -357,6 +358,7 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
 
       <div className="pronunciation-lab__workspace">
         <div className="pronunciation-lab__prompt">
+          <ExerciseArtwork kind="pronunciation" text={phrase.word}/>
           <div className="pronunciation-lab__prompt-label"><span>{String(phraseIndex + 1).padStart(2, '0')}</span><div><small>Fraza selectată · Lecția {lessonId}</small><strong>{phrase.word}</strong></div></div>
           <blockquote lang="no">{phrase.example}</blockquote>
           <p><span>RO</span>{phrase.translation}</p>
@@ -410,7 +412,7 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
                       disabled={isBusy}
                       aria-label={label}
                     >
-                      <span aria-hidden="true">{status === 'recording' ? '■' : '●'}</span>
+                      <span aria-hidden="true">{status === 'recording' ? '■' : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg>}</span>
                       <strong>{label}</strong>
                       <small>{hint}</small>
                     </button>

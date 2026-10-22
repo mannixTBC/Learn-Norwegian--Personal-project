@@ -1,0 +1,89 @@
+/* Only replace application chrome while session initialization is visible. */
+html body .App:has(.session-loading) {
+  background: #fffefa;
+}
+html body .App:has(.session-loading) > .navbar,
+html body .App:has(.session-loading) > .footer {
+  display: none !important;
+}
+html body .App > .App__main:has(.session-loading) {
+  padding: 0 !important;
+  background: #fffefa;
+}
+.session-loading {
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  place-items: center;
+  overflow: hidden;
+  color: #143b4b;
+  background: #fffefa;
+  font-family: Arial, sans-serif;
+}
+.session-loading__content {
+  display: flex;
+  box-sizing: border-box;
+  width: min(100%, 480px);
+  flex-direction: column;
+  align-items: center;
+  padding: max(38px, env(safe-area-inset-top)) 0 max(44px, env(safe-area-inset-bottom));
+}
+.session-loading__logo {
+  display: block;
+  width: min(62%, 240px);
+  height: auto;
+  margin: 0 auto 20px;
+  object-fit: contain;
+}
+.session-loading__scene {
+  display: block;
+  width: 100%;
+  height: clamp(250px, 52svh, 440px);
+  margin: 0;
+  object-fit: cover;
+  object-position: center 62%;
+  mask-image: linear-gradient(transparent, #000 13%, #000 78%, transparent);
+}
+.session-loading__status {
+  width: min(76%, 320px);
+  margin: 16px auto 0;
+  text-align: center;
+}
+.session-loading__track {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 100px;
+  background: #deeeec;
+}
+.session-loading__track > span {
+  display: block;
+  width: 46%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #37b4b7, #219b9e);
+  animation: session-loading-travel 1.8s ease-in-out infinite alternate;
+}
+.session-loading__status p {
+  margin: 22px 0 0;
+  color: #143b4b;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+@keyframes session-loading-travel {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(170%); }
+}
+@media (max-height: 600px) {
+  .session-loading__content { padding-top: 20px; padding-bottom: 24px; }
+  .session-loading__logo { width: 175px; margin-bottom: 5px; }
+  .session-loading__scene { height: clamp(150px, 43svh, 250px); }
+  .session-loading__status { margin-top: 5px; }
+  .session-loading__status p { margin-top: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .session-loading__track > span {
+    animation: none;
+    transform: translateX(58%);
+  }
+}

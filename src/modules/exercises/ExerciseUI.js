@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { learningLevels } from '../lessons/learningLevel';
 import './ExerciseUI.css';
+import { NordicHeader } from './NordicExerciseUI';
 
 const paths = {
   quiz: <><rect x="5" y="3" width="14" height="18" rx="3" /><path d="m8 8 1 1 2-2m-3 6 1 1 2-2m3-4h2m-2 6h2M8 18h8" /></>,
@@ -30,13 +31,20 @@ export const ExerciseLevelSelect = ({ level, levels = learningLevels, onChange }
   return <label className="exercise-level-select"><span>Nivel</span><select aria-label="Nivel de practică" value={level} onChange={(event) => change(event.target.value)}>{levels.map((code) => <option value={code} key={code}>{code}</option>)}</select></label>;
 };
 
-export const ExerciseLayout = ({ title, description, icon, level, className = '', compact = false, allowLevelChange = false, onExit, backTo, backLabel, children }) => (
+const CourseExerciseLayout = ({ title, description, icon, level, className = '', compact = false, allowLevelChange = false, onExit, backTo, backLabel, children }) => (
   <div className={'exercise-screen ' + className}>
     <header className="exercise-topbar">
       {onExit ? <button type="button" className="exercise-back" onClick={onExit} aria-label="Închide sesiunea"><span aria-hidden="true">×</span><strong>{title}</strong></button> : <Link className="exercise-back" to={backTo || '/jocuri?nivel=' + level}><span aria-hidden="true">←</span><strong>{backLabel || (compact ? title : 'Jocuri și exerciții')}</strong></Link>}
       {allowLevelChange ? <ExerciseLevelSelect level={level} /> : <span className="exercise-level-badge">{level}</span>}
     </header>
     {!compact && <div className="exercise-intro"><span className="exercise-intro__icon"><ExerciseIcon name={icon} /></span><div><h1>{title}</h1>{description && <p>{description}</p>}</div></div>}
+    {children}
+  </div>
+);
+
+export const ExerciseLayout = ({ title, description, icon, level, className = '', compact = false, allowLevelChange = false, onExit, backTo, backLabel, children }) => className.split(' ').includes('final-test') ? <CourseExerciseLayout {...{title, description, icon, level, className, compact, allowLevelChange, onExit, backTo, backLabel, children}} /> : (
+  <div className={'exercise-screen nordic-exercise nordic-exercise--' + (icon || 'games') + ' ' + className}>
+    <NordicHeader title={title} subtitle={description} level={level} onExit={onExit} backTo={backTo} heading={!compact} levelControl={allowLevelChange ? <ExerciseLevelSelect level={level} /> : undefined} />
     {children}
   </div>
 );

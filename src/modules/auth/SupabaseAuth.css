@@ -39,13 +39,7 @@
 	.auth-submit:disabled, .auth-forgot:disabled { opacity: 0.58; cursor: wait; }
 .auth-panel input:focus { border-color: #1f6f78; box-shadow: 0 0 0 3px rgba(31, 111, 120, 0.1); }
 
-.auth-route-loading {
-  display: grid;
-  min-height: 55vh;
-  place-items: center;
-  color: #617085;
-  font-weight: 750;
-}
+
 
 .auth-google {
   display: grid;

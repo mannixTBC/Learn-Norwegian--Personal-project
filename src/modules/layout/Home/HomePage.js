@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
+import SessionLoading from '../../auth/SessionLoading';
 import PWAInstallButton from '../../pwa/PWAInstallButton';
 import { isNativeApp } from '../../../services/api';
 import './HomePage.css';
@@ -29,7 +30,7 @@ export const isInstalledApp = () => {
 const HomePage = () => {
   const { initializing, isAuthenticated } = useAuth();
 
-  if (initializing) return <div className="auth-route-loading" role="status">Se verifică sesiunea...</div>;
+  if (initializing) return <SessionLoading />;
   if (isAuthenticated) return <Redirect to="/dashboard" />;
   if (isInstalledApp()) return <Redirect to="/dashboard" />;
 
