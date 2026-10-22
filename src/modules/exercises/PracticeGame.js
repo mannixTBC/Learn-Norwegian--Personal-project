@@ -9,6 +9,7 @@ import { recordStudyActivity } from '../../services/learningActivity';
 import { ExerciseLayout } from './ExerciseUI';
 import { createPracticeQuestions, normalizePracticeAnswer, saveGameProgress, shufflePractice } from './practiceGameData';
 import './PracticeGame.css';
+import WordDiscovery from './WordDiscovery';
 
 const gameInfo = {
   quiz: { title: 'Chestionar', subtitle: 'Recunoaște și folosește expresiile din lecțiile tale.' },
@@ -92,6 +93,14 @@ const PracticeSession = ({ game, level, user }) => {
   </ExerciseLayout>;
 
   if (!question) return <ExerciseLayout className="practice-game" level={level} title={info.title} icon={game}><p role="alert">Nu sunt întrebări disponibile pentru această sesiune.</p><Link to={'/jocuri?nivel=' + level}>Înapoi la jocuri</Link></ExerciseLayout>;
+
+  if (game === 'word') return <WordDiscovery key={current + '-' + question.id} question={question} current={current} total={questions.length} level={level} checked={checked} onSpeak={playAnswer} onNext={next} onResolve={(correct, given) => {
+    if (answered.current) return;
+    answered.current = true;
+    setChecked(true);
+    setResults(all => [...all, { question, correct, given }]);
+    if (!correct) saveReviewItem({ id: 'practice-' + level + '-' + question.id, level, lessonId: question.lessonId, source: 'practice', prompt: question.prompt, answer: question.answer });
+  }} />;
 
   const correct = checked && isCorrect();
   return <ExerciseLayout className="practice-game practice-game--session" level={level} icon={game} title={info.title} compact onExit={() => history.push('/jocuri?nivel=' + level)}>
