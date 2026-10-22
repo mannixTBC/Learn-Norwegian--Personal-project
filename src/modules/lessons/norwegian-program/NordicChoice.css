@@ -1,0 +1,48 @@
+/* Nordic blue is limited to multiple-choice questions. */
+.lapp:has(.nordic-choice) {
+  --a-bg:#f2f7fa; --a-exercise-bg:#f2f7fa; --a-card:#fff;
+  --a-ink:#173f49; --a-sub:#526b7b; --a-teal:#173f49;
+  --a-teal-deep:#173f49; --a-border:#d8e4eb; --a-track:#dfe8ee;
+}
+.lapp:has(.nordic-choice) .lapp-practice__intro { margin:8px 0 16px; }
+.lapp:has(.nordic-choice) .lapp-practice__progress { flex-direction:column-reverse; align-items:stretch; gap:9px; margin-bottom:18px; }
+.lapp:has(.nordic-choice) .lapp-practice__progress>div { flex:auto; gap:6px; }
+.lapp:has(.nordic-choice) .lapp-practice__progress i { height:6px; }
+.lapp:has(.nordic-choice) .lapp-practice__progress i.is-current { background:#e9ba46; }
+.lapp:has(.nordic-choice) button:focus-visible,
+.nordic-choice summary:focus-visible { outline:3px solid #5389aa; outline-offset:3px; }
+.nordic-choice__prompt { display:flex; align-items:center; gap:16px; padding:22px; margin-bottom:16px; border:1px solid #e3ecf1; border-radius:20px; background:#fff; box-shadow:0 6px 24px #173f4905; }
+.nordic-choice__prompt>svg { width:38px; height:38px; flex:0 0 38px; fill:none; stroke:#173f49; stroke-width:1.7; stroke-linejoin:round; }
+.nordic-choice__prompt>div { min-width:0; }
+.nordic-choice__prompt span { display:block; margin-bottom:7px; color:#526b7b; font-size:.75rem; font-weight:650; }
+.nordic-choice .nordic-choice__prompt h2 { margin:0; font-size:clamp(1.2rem,5vw,1.55rem); line-height:1.35; letter-spacing:-.02em; }
+.nordic-choice .lapp-exercise__instruction { margin:0 0 14px; }
+.nordic-choice .lapp-options { gap:12px; }
+.nordic-choice .lapp-options button { min-height:66px; padding:14px 16px; border:1px solid #d8e4eb; border-radius:15px; background:#fff; color:#173f49; font-size:1.05rem; font-weight:600; box-shadow:0 3px 12px #173f4904; }
+.nordic-choice .lapp-option__letter { width:32px; height:34px; flex-basis:32px; border-radius:8px; background:#edf1f5; color:#526b7b; font-size:.9rem; }
+.nordic-choice .lapp-options button.is-selected { border-color:#23576a; background:#e7f2f8; box-shadow:inset 0 0 0 1px #23576a; }
+.nordic-choice .is-selected .lapp-option__letter { background:#cce2ee; color:#173f49; }
+.nordic-choice__selected { color:#23576a; font-size:1rem; }
+.nordic-choice .lapp-options button.is-correct { border-color:#7bab91; background:#edf6ef; color:#245c43; }
+.nordic-choice .lapp-options button.is-wrong { border-color:#cc9487; background:#fff0eb; color:#854637; }
+.nordic-choice .lapp-exercise__hint { text-align:center; font-size:.8rem; margin-top:16px; }
+.nordic-choice__hint { margin:12px 0; color:#23576a; font-size:.9rem; }
+.nordic-choice__hint summary { cursor:pointer; padding:12px; text-align:center; }
+.nordic-choice__hint p { padding:12px; background:#fff; border-radius:12px; }
+.nordic-choice .lapp-exercise__review-note { justify-content:center; color:#526b7b; }
+.nordic-choice .lapp-exercise__footer { border-color:#d8e4eb; background:#f2f7fa; }
+.nordic-choice .lapp-exercise__footer .lapp-exercise__primary { background:#173f49; border-radius:14px; font-size:1rem; }
+.nordic-choice .lapp-exercise__footer .lapp-exercise__primary:disabled { background:#c5d5df; color:#496272; cursor:not-allowed; }
+.nordic-choice .lapp-exercise__footer .lapp-exercise__back { border-color:#d8e4eb; background:#fff; }
+@media (max-height:740px) {
+  .lapp:has(.nordic-choice) .lapp-practice__intro { margin:4px 0 10px; }
+  .lapp:has(.nordic-choice) .lapp-practice__progress { margin-bottom:12px; }
+  .nordic-choice__prompt { padding:16px; margin-bottom:12px; }
+  .nordic-choice .lapp-options { gap:8px; }
+  .nordic-choice .lapp-options button { min-height:52px; padding:10px 12px; }
+  .nordic-choice.is-checked .lapp-options button { min-height:44px; padding:7px 12px; }
+}
+@media (max-width:360px) {
+  .nordic-choice__prompt { gap:10px; padding:14px; }
+  .nordic-choice__prompt>svg { width:28px; height:28px; flex-basis:28px; }
+}
