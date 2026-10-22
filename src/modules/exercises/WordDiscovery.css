@@ -68,3 +68,49 @@ html body .App>.App__main:has(.word-discovery){padding:0!important;margin:0!impo
 html body .App>.App__main:has(.word-discovery){background-image:linear-gradient(180deg,rgba(3,35,51,.5),rgba(3,35,51,.25) 48%,rgba(3,35,51,.1)),url('/images/word-discovery/fjord-background.webp')!important}
 @media(max-height:690px){.word-discovery{min-height:620px;padding-top:8px;padding-bottom:16px;gap:6px;grid-template-rows:32px 24px 51px 28px minmax(175px,1fr) 38px 120px}.word-discovery--checked{grid-template-rows:32px 24px 51px 28px minmax(165px,1fr) 54px 120px}.wd-brand,.word-discovery .wd-brand{height:32px}.wd-brand>a{height:32px}.wd-logo{height:32px}.wd-art{min-height:55px}.word-discovery .wd-card{padding-top:3px;padding-bottom:12px}.wd-slot{height:38px}.word-discovery .wd-card h2{margin-bottom:8px;font-size:17px}}
 .word-discovery--result{grid-template-rows:44px 80px minmax(0,1fr);height:auto;min-height:100svh;gap:25px;padding-bottom:40px}.word-discovery--result .wd-brand>a:first-child{justify-content:flex-start}.word-discovery--result .wd-brand>a:first-child svg{width:28px;height:28px}.word-discovery--result .wd-heading h1{white-space:normal}.wd-result-card{align-self:start;display:flex;flex-direction:column;align-items:center;padding:28px 22px;border-radius:23px;color:#082d3d;background:#fff8e9;text-align:center}.wd-result-star{color:#d2a23f;font-size:52px;line-height:1.1}.wd-result-card h2{margin:10px 0 5px;color:#082d3d;font:700 38px Georgia,serif}.wd-result-card>p{margin:0 0 20px;color:#48616a}.wd-result-words{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.wd-result-words>span{padding:8px 12px;border-radius:10px;background:#e4eedc;color:#244a3b}.wd-result-words>span.wrong{background:#f8e5bd;color:#856027}.wd-result-actions{display:grid;gap:12px;width:100%;margin-top:26px}.wd-result-actions button{min-height:46px;padding:9px;border:1px solid #d7ad53;border-radius:14px;color:#102f3e;background:#ffd176;font-weight:700}.wd-result-actions a{padding:9px;color:#1b5a65}
+
+/* Fit the challenge to the visible screen. Content may grow for zoom/landscape;
+   the page itself remains scrollable rather than clipping the word or controls. */
+.word-discovery:not(.word-discovery--result){
+  height:100dvh;min-height:min-content;max-height:none;
+  grid-template-rows:40px 28px auto 30px minmax(min-content,1fr) auto clamp(120px,17dvh,144px);
+  gap:clamp(6px,1.2dvh,12px);
+  padding:calc(10px + env(safe-area-inset-top)) 16px calc(12px + env(safe-area-inset-bottom));
+}
+.word-discovery .wd-brand--game{height:40px}
+.wd-brand--game>a{grid-column:2}
+.wd-brand--game>.wd-streak{grid-column:3}
+.word-discovery:not(.word-discovery--result) .wd-logo{height:36px}
+.word-discovery:not(.word-discovery--result) .wd-heading h1{white-space:normal;font-size:clamp(25px,6.8vw,32px);margin-bottom:5px}
+.word-discovery:not(.word-discovery--result) .wd-heading p{font-size:17px}
+.word-discovery:not(.word-discovery--result) .wd-card{overflow:visible;padding:6px 16px 12px}
+.word-discovery:not(.word-discovery--result) .wd-art{min-height:clamp(48px,10dvh,100px)}
+.word-discovery:not(.word-discovery--result) .wd-card h2{font-size:clamp(18px,5vw,23px);margin-bottom:9px}
+.word-discovery:not(.word-discovery--result) .wd-category{font-size:11px;margin-bottom:7px}
+.word-discovery:not(.word-discovery--result) .wd-slot{height:clamp(38px,6.8dvh,58px)}
+.word-discovery:not(.word-discovery--result) .wd-controls button{min-height:44px;height:auto}
+.word-discovery:not(.word-discovery--result) .wd-keyboard{min-height:120px}
+.word-discovery:not(.word-discovery--result) .wd-key-row button{min-height:36px}
+.word-discovery--checked:not(.word-discovery--result){
+  grid-template-rows:40px 28px auto 30px minmax(min-content,1fr) auto;
+}
+.word-discovery--checked .wd-keyboard{display:none}
+.word-discovery .wd-controls>strong{overflow-wrap:anywhere}
+.word-discovery .wd-controls>div{flex-wrap:wrap}
+@media(max-height:700px){
+  .word-discovery:not(.word-discovery--result){
+    grid-template-rows:36px 28px auto 28px minmax(min-content,1fr) auto 120px;
+    gap:6px;padding-top:calc(6px + env(safe-area-inset-top));padding-bottom:calc(8px + env(safe-area-inset-bottom));
+  }
+  .word-discovery--checked:not(.word-discovery--result){grid-template-rows:36px 28px auto 28px minmax(min-content,1fr) auto}
+  .word-discovery .wd-brand--game{height:36px}
+  .word-discovery:not(.word-discovery--result) .wd-heading h1{font-size:25px;margin-bottom:3px}
+  .word-discovery:not(.word-discovery--result) .wd-heading p{font-size:16px}
+  .word-discovery:not(.word-discovery--result) .wd-art{min-height:38px}
+  .word-discovery:not(.word-discovery--result) .wd-slot{height:38px}
+}
+@media(max-height:600px){
+  .word-discovery:not(.word-discovery--result) .wd-heading p{display:none}
+  .word-discovery:not(.word-discovery--result) .wd-art{min-height:24px}
+  .word-discovery:not(.word-discovery--result) .wd-card{padding-top:3px;padding-bottom:8px}
+}
