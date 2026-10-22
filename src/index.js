@@ -3,10 +3,12 @@ import { createRoot, hydrateRoot } from 'react-dom/client';
 import App from './App';
 import { registerServiceWorker } from './serviceWorker';
 import { isNativeApp } from './services/api';
+import { resolveAppPreview } from './services/appExperience';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
-const isInstalledAppPreview = import.meta.env.DEV
-  && new URLSearchParams(window.location.search).get('appPreview') === '1';
+let previewStorage;
+try { previewStorage = window.sessionStorage; } catch { /* Preview can use the URL alone. */ }
+const isInstalledAppPreview = resolveAppPreview(window.location.search, previewStorage);
 const isInstalledApp = isNativeApp()
   || isInstalledAppPreview
   || window.matchMedia('(display-mode: standalone)').matches
