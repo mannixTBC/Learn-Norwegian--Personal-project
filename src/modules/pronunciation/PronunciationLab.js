@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useAuth } from '../auth/AuthContext';
 import { speakPronunciationModel } from '../../services/azurePronunciationSpeech';
 import { assessPronunciation } from '../../services/pronunciationAssessment';
 import { recordStudyActivity } from '../../services/learningActivity';
@@ -115,7 +116,8 @@ const sendForEvaluation = async (blob, referenceText) => {
 
 const formatTime = (seconds) => `0:${String(seconds).padStart(2, '0')}`;
 
-const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
+const PronunciationLab = ({ phrase, phraseIndex, level, lessonId, rewardAttemptsRef }) => {
+  const { user } = useAuth();
   const [status, setStatus] = useState('ready');
   const [elapsed, setElapsed] = useState(0);
   const [audioUrl, setAudioUrl] = useState('');
@@ -139,6 +141,8 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
   const startingRef = useRef(false);
   const requestIdRef = useRef(0);
   const aliveRef = useRef(true);
+  const localRewardAttemptsRef = useRef(new Set());
+  const recordedPhrasesRef = rewardAttemptsRef || localRewardAttemptsRef;
 
   const bestScore = attempts.reduce((best, attempt) => Math.max(best, attempt.score || 0), 0);
 
@@ -162,7 +166,9 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId }) => {
       date: new Date().toISOString(),
     }, ...readAttempts(level)].slice(0, 12);
     localStorage.setItem(`pronunciation_attempts_${level.toLowerCase()}`, JSON.stringify(next));
-    recordStudyActivity({ type: 'pronunciation', level, lessonId, minutes: Math.max(1, Math.ceil(duration / 60)), score: assessment.score });
+    const rewardKey = `${user?.id || 'guest'}:${level}:${lessonId}:${phrase.example}`;
+    recordStudyActivity({ type: 'pronunciation', level, lessonId, userId: user?.id || 'guest', minutes: Math.max(1, Math.ceil(duration / 60)), score: assessment.score, retry: recordedPhrasesRef.current.has(rewardKey) });
+    recordedPhrasesRef.current.add(rewardKey);
     setAttempts(next);
   };
 

@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
 import { courseCatalog } from '../lessons/norwegian-program/lessonContent';
 import { getLearningLevel } from '../lessons/learningLevel';
 import { speakPronunciationModel } from '../../services/azurePronunciationSpeech';
@@ -8,6 +9,7 @@ import PronunciationLab from './PronunciationLab';
 import './Pronunciation.css';
 
 const PronunciationSession = ({ level }) => {
+  const rewardAttemptsRef = useRef(new Set());
   const course = courseCatalog[level];
   const [activeLesson, setActiveLesson] = useState('1');
   const [activePhrase, setActivePhrase] = useState(0);
@@ -20,13 +22,14 @@ const PronunciationSession = ({ level }) => {
   };
   return <ExerciseLayout className="pronuntie" level={level} title="Pronunție" description="Ascultă o frază, repet-o și exersează în ritmul tău." icon="pronunciation" allowLevelChange>
     <section className="pronuntie__selection"><ExerciseLessonSelect course={course} value={activeLesson} onChange={chooseLesson} label="Alege lecția" all={false} /><div className="pronuntie__phrase-bar" aria-label="Navigare între expresii"><button type="button" onClick={() => setActivePhrase((index) => Math.max(0, index - 1))} disabled={activePhrase === 0} aria-label="Expresia anterioară">←</button><span aria-live="polite"><strong>Expresia {activePhrase + 1}</strong><small>din {phrases.length} · Lecția {lesson.id}</small></span><button type="button" onClick={() => setActivePhrase((index) => Math.min(phrases.length - 1, index + 1))} disabled={activePhrase === phrases.length - 1} aria-label="Expresia următoare">→</button></div></section>
-    <PronunciationLab key={level + '-' + lesson.uid + '-' + activePhrase} phrase={phrases[activePhrase]} phraseIndex={activePhrase} level={level} lessonId={lesson.id} />
+    <PronunciationLab key={level + '-' + lesson.uid + '-' + activePhrase} phrase={phrases[activePhrase]} phraseIndex={activePhrase} level={level} lessonId={lesson.id} rewardAttemptsRef={rewardAttemptsRef} />
     <details className="pronuntie__library"><summary>Toate cele {phrases.length} expresii ale lecției</summary><div className="pronuntie__grid">{phrases.map((item, index) => <article className={'pronuntie__phrase ' + (activePhrase === index ? 'is-active' : '')} key={index}><div><span>Expresia {index + 1}</span><strong lang="nb">{item.word}</strong><small>{item.meaning}</small></div><p lang="nb">{item.example}</p><div className="pronuntie__actions"><button type="button" onClick={() => speakPronunciationModel(item.example)} aria-label={'Ascultă ' + item.example}>Ascultă</button><button type="button" onClick={() => openPhrase(index)} aria-pressed={activePhrase === index}>Exersează</button></div></article>)}</div></details>
   </ExerciseLayout>;
 };
 const Pronunciation = () => {
+  const { user } = useAuth();
   const location = useLocation();
   const level = getLearningLevel(location.search);
-  return <PronunciationSession key={level} level={level} />;
+  return <PronunciationSession key={(user?.id || 'guest') + '-' + level} level={level} />;
 };
 export default Pronunciation;

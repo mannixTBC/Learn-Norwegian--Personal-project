@@ -1,25 +1,219 @@
-.mini-games{max-width:780px;margin:auto;padding:24px 20px 105px;color:#0d2546;font-family:'Source Sans 3','Segoe UI',sans-serif;background:linear-gradient(150deg,#fff,#f1faff);min-height:100vh;box-sizing:border-box}.mini-games *{box-sizing:border-box}.mini-games a{text-decoration:none;color:inherit}.mini-top{display:flex;align-items:center;gap:16px}.mini-brand{font-size:24px;font-weight:900;letter-spacing:-.7px;margin-right:auto}.mini-top .exercise-level-select>span{display:none}.mini-top select{border:1px solid #d0e6f1;border-radius:14px;background:#f8fcff;color:#0d2546;min-height:44px;padding:7px;font:inherit;font-weight:800}.mini-coins{display:flex;align-items:center;gap:5px;font-weight:800}.mini-coins img{width:30px;height:30px}.mini-heading{display:flex;align-items:center;justify-content:space-between;margin:20px 0 12px}.mini-heading h1{font-size:32px;letter-spacing:-1px;margin:0;font-weight:850}.mini-streak{border:1px solid #bce5ec;background:#fff;border-radius:14px;padding:7px 10px;font-size:14px;font-weight:750}.mini-daily{display:block;position:relative;overflow:hidden;border-radius:20px;padding:20px;color:#fff!important;background:linear-gradient(90deg,rgba(3,49,67,.9),rgba(3,49,67,.4) 60%,transparent),url('/images/games-fjord-hero.png') center 60%/cover;box-shadow:0 5px 12px #12485e16;min-height:165px}.mini-daily h2{font-size:26px;font-weight:850;letter-spacing:-.6px;margin:0 0 3px}.mini-daily p{margin:0;font-size:15px}.mini-start{display:inline-flex;align-items:center;justify-content:center;gap:20px;min-height:46px;min-width:160px;margin-top:16px;background:linear-gradient(#ffdf6b,#ffc62f);color:#102b47;border:1px solid #ffe991;border-radius:24px;font-size:20px;font-weight:850;box-shadow:0 3px 0 #d99d22}.mini-section-title{font-size:23px;font-weight:850;margin:18px 0 12px;letter-spacing:-.5px}.mini-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}.mini-tile{min-width:0;position:relative;overflow:hidden;border-radius:20px;border:1px solid #abdcee;padding:14px;box-shadow:0 3px 0 #c6e2ee,0 7px 14px #12485e0b;display:flex;flex-direction:column;background:linear-gradient(135deg,#eaf8ff,#a9daff)}.mini-tile--listen{grid-column:1/4;grid-row:1/3;background:radial-gradient(ellipse at 30% 0%,#22c1c5,#07818e 65%,#006573);color:#fff!important;border-color:#169ba6;box-shadow:0 3px 0 #075c6a}.mini-tile--pronunciation,.mini-tile--verbs{grid-column:4/7;min-height:145px;padding-right:43%}.mini-tile--quiz,.mini-tile--order,.mini-tile--word{grid-column:span 2}.mini-tile--verbs,.mini-tile--quiz{background:linear-gradient(130deg,#fff9e2,#ffe6a5);border-color:#f2d58f;box-shadow:0 3px 0 #ead298}.mini-art{display:block;overflow:visible;width:100%;height:130px;filter:drop-shadow(0 4px 3px #123f5b24)}.mini-tile--listen>.mini-art{height:205px;margin:0 0 5px}.mini-tile--pronunciation>.mini-art,.mini-tile--verbs>.mini-art{position:absolute;right:0;top:12px;width:48%;height:105px}.mini-tile--pronunciation,.mini-tile--verbs{padding-right:14px}.mini-tile--pronunciation .mini-tile-copy,.mini-tile--verbs .mini-tile-copy{width:58%}.mini-tile h3{font-size:20px;font-weight:850;letter-spacing:-.4px;line-height:1.15;margin:0 0 5px;overflow-wrap:normal}.mini-tile p{font-size:14px;line-height:1.3;margin:0}.mini-tile--listen h3{font-size:25px}.mini-progress{margin-top:auto;padding-top:10px;display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}.mini-progress small{font-size:12px;opacity:.85}.mini-stars{display:flex;gap:5px;font-size:26px;line-height:1;color:#ffffff80;-webkit-text-stroke:1px #78acc5}.mini-stars .earned{color:#ffc63c;-webkit-text-stroke:1px #d99619;text-shadow:0 2px 0 #c78c24}.mini-missions,.mini-review{display:flex;align-items:center;gap:12px;border-radius:18px;margin-top:14px;padding:10px 14px;min-height:90px}.mini-missions{color:white!important;background:linear-gradient(90deg,#03465a,rgba(3,54,77,.9) 55%,rgba(3,54,77,.35)),url('/images/games-fjord-hero.png') center/cover;box-shadow:0 3px 0 #143e50}.mini-missions .mini-art,.mini-review .mini-art{width:75px;height:70px;flex-shrink:0}.mini-missions h2,.mini-review h2{font-size:22px;font-weight:850;margin:0 0 3px;line-height:1.15}.mini-missions p,.mini-review p{font-size:14px;margin:0}.mini-missions small{font-size:11px;opacity:.85}.mini-missions b,.mini-review b{margin-left:auto;font-size:35px;font-weight:400}.mini-review{background:linear-gradient(110deg,#fff,#eaf9fb);border:1px solid #c3e5ef}.mini-review>span{margin-left:auto;flex-shrink:0;background:#fff4d4;border:1px solid #f4e2af;border-radius:12px;padding:8px;font-size:12px;font-weight:750}.mini-review b{margin-left:0}.mini-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.mini-games a:focus-visible{outline:3px solid #087e93;outline-offset:4px}.mini-tile:active,.mini-start:active{transform:translateY(2px);box-shadow:none}
-@media(max-width:680px){html.is-installed-app .App:has(.mini-games)>.navbar,html.is-installed-app .App:has(.mini-games)>.footer{display:none}.mini-games{padding:calc(14px + env(safe-area-inset-top)) 14px calc(95px + env(safe-area-inset-bottom))}.mini-brand{font-size:22px}.mini-top{gap:10px}.mini-grid{gap:10px}.mini-tile{padding:11px;border-radius:17px}.mini-tile--listen>.mini-art{height:150px}.mini-tile--listen h3{font-size:21px}.mini-tile h3{font-size:17px}.mini-tile p{font-size:12px}.mini-tile--pronunciation,.mini-tile--verbs{min-height:145px}.mini-tile--pronunciation>.mini-art,.mini-tile--verbs>.mini-art{height:85px;top:25px}.mini-art{height:100px}.mini-stars{font-size:23px;gap:3px}.mini-progress small{font-size:11px}.mini-daily h2{font-size:25px}.mini-daily{min-height:160px;padding:16px}.mini-missions h2,.mini-review h2{font-size:19px}.mini-missions p,.mini-review p{font-size:12px}.mini-missions .mini-art,.mini-review .mini-art{width:53px;height:58px}.mini-missions,.mini-review{gap:8px;padding:10px}.mini-review>span{font-size:11px;padding:7px}.mini-review b{display:none}}
-@media(max-width:360px){.mini-games{padding-left:10px;padding-right:10px}.mini-grid{gap:7px}.mini-tile{padding:9px}.mini-tile h3{font-size:15px}.mini-tile--listen h3{font-size:20px}.mini-tile--pronunciation .mini-tile-copy,.mini-tile--verbs .mini-tile-copy{width:65%}.mini-tile--pronunciation>.mini-art,.mini-tile--verbs>.mini-art{width:40%}.mini-review{flex-wrap:wrap}.mini-review>span{margin-left:auto}.mini-coins{font-size:13px}.mini-brand{font-size:20px}}
-.mini-games--compact .mini-heading{margin:12px 0}
-.mini-games--compact .mini-daily{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;align-content:center;min-height:96px;padding:14px 16px;border-radius:18px}
-.mini-games--compact .mini-daily h2{font-size:20px;align-self:end}
-.mini-games--compact .mini-daily p{font-size:12px;max-width:210px}
-.mini-games--compact .mini-start{grid-column:2;grid-row:1/3;align-self:center;min-width:86px;min-height:40px;margin:0;padding:8px 12px;font-size:15px;gap:8px}
-.mini-games--compact .mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
-.mini-games--compact .mini-tile{display:grid;grid-template-columns:52px minmax(0,1fr) 8px;grid-template-rows:1fr auto;column-gap:6px;row-gap:5px;grid-column:auto;grid-row:auto;min-height:108px;padding:12px 9px;border-radius:17px;align-content:center}
-.mini-games--compact .mini-tile>.mini-art{position:static;grid-column:1;grid-row:1/3;align-self:center;width:52px;height:66px;margin:0}
-.mini-games--compact .mini-tile-copy{width:auto;min-width:0;align-self:end}
-.mini-games--compact .mini-tile h3{font-size:15px;line-height:1.2;margin:0;letter-spacing:-.3px;overflow-wrap:anywhere}
-.mini-games--compact .mini-progress{grid-column:2;padding:0;margin:0;justify-content:flex-start;align-self:start;gap:4px;flex-wrap:nowrap}
-.mini-games--compact .mini-progress small{font-size:11px;line-height:1.3}
-.mini-rating{color:#ffc63c;font-size:17px;text-shadow:0 1px 0 #b68220}
-.mini-chevron{grid-column:3;grid-row:1/3;align-self:center;font-size:23px;font-weight:400}
-.mini-games--compact .mini-missions,.mini-games--compact .mini-review{min-height:66px;margin-top:10px;padding:8px 12px;gap:10px;flex-wrap:nowrap}
-.mini-games--compact .mini-missions .mini-art,.mini-games--compact .mini-review .mini-art{width:46px;height:46px}
-.mini-games--compact .mini-missions h2,.mini-games--compact .mini-review h2{font-size:16px;line-height:1.2;margin:0}
-.mini-games--compact .mini-missions small{display:block;margin-top:4px}
-.mini-games--compact .mini-review>span{font-size:10px;padding:6px;white-space:nowrap}
-.mini-games--compact .mini-missions b,.mini-games--compact .mini-review b{font-size:25px}
-@media(min-width:681px){.mini-games--compact .mini-tile{min-height:122px;grid-template-columns:76px minmax(0,1fr) 12px;padding:16px}.mini-games--compact .mini-tile>.mini-art{width:72px;height:80px}.mini-games--compact .mini-tile h3{font-size:19px}.mini-games--compact .mini-progress small{font-size:13px}}
-@media(max-width:360px){.mini-games--compact .mini-tile{grid-template-columns:40px minmax(0,1fr) 6px;gap:4px;padding:10px 7px;min-height:104px}.mini-games--compact .mini-tile>.mini-art{width:40px;height:54px}.mini-games--compact .mini-tile h3{font-size:14px}.mini-games--compact .mini-daily{padding:12px;column-gap:8px}.mini-games--compact .mini-daily h2{font-size:18px}.mini-games--compact .mini-start{min-width:74px;font-size:14px}.mini-games--compact .mini-review .mini-art{width:36px}.mini-games--compact .mini-review{gap:6px}}
+/* Navigation occupies its own row, including in the installed Android app. */
+.App:has(.northern-games) > .navbar,
+.App:has(.northern-games) > .footer { display: none; }
+html:has(.northern-games), body:has(.northern-games), #root:has(.northern-games),
+.App:has(.northern-games), .App__main:has(.northern-games) { height: 100%; min-height: 0; }
+body:has(.northern-games) { overflow: hidden; }
+.App__main:has(.northern-games) { padding: 0; }
+.mini-games.northern-games {
+  --pass-ink: #12354b;
+  width: 100%; max-width: 1200px; height: 100vh; height: 100dvh;
+  min-height: 0; margin: 0 auto;
+  padding: max(8px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  display: grid; gap: clamp(6px, 1.1vh, 10px);
+  grid-template-rows: 48px minmax(90px, 1fr) 54px clamp(146px, 23vh, 196px) 58px 62px;
+  box-sizing: border-box; color: var(--pass-ink);
+  background: linear-gradient(155deg, #fffdf7, #eef9fd 55%, #e7f3f7);
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+}
+.northern-games *, .northern-dialog * { box-sizing: border-box; }
+.northern-games a, .northern-dialog a { text-decoration: none; color: inherit; }
+.northern-games button, .northern-dialog button { font-family: inherit; cursor: pointer; }
+.mini-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.mini-top { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.mini-brand { margin-right: auto; flex: 0 1 148px; min-width: 100px; display: flex; align-items: center; height: 44px; }
+.northern-logo { display: block; width: 100%; }
+.northern-logo img { display: block; width: 100%; height: 44px; object-fit: contain; }
+.mini-top .exercise-level-select { margin: 0; min-width: 0; }
+.mini-top .exercise-level-select > span { display: none; }
+.mini-top .exercise-level-select select { width: 61px; min-height: 44px; padding: 7px; border: 1px solid #c7dfe8; border-radius: 13px; color: var(--pass-ink); background: #fff; font: inherit; font-size: 14px; font-weight: 800; }
+.mini-coins { display: flex; align-items: center; justify-content: flex-end; gap: 4px; flex-shrink: 0; min-width: 48px; color: #17384c; font-size: 15px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mini-coins img { width: 27px; height: 27px; }
+.northern-overview { min-width: 0; min-height: 0; display: grid; grid-template-rows: 29px minmax(0, 1fr) 51px; overflow: hidden; border: 1px solid #b7d4dd; border-radius: 20px; background: #d0edf6; box-shadow: 0 3px 9px #17384c10; }
+.northern-overview__heading { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 3px 12px; color: #fff; background: #164e63; }
+.northern-overview__heading h2 { margin: 0; color: inherit; font-size: 15px; line-height: 1.1; font-weight: 800; letter-spacing: -.25px; }
+.northern-overview__heading > span { font-size: 10px; white-space: nowrap; color: #d9edf3; }
+.northern-overview > .npass-map { border-radius: 0; }
+.northern-overview__footer { display: flex; align-items: center; gap: 8px; padding: 3px 8px 3px 12px; color: #fff; background: linear-gradient(100deg, #153d53, #07586a); }
+.northern-overview__footer > div { min-width: 0; flex: 1; }
+.northern-overview__footer small { display: block; color: #c6e2e9; font-size: 10px; line-height: 1.2; }
+.northern-overview__footer strong { display: block; font-size: 14px; line-height: 1.2; font-weight: 800; }
+.northern-gold { display: inline-flex; align-items: center; justify-content: center; gap: 12px; flex-shrink: 0; min-height: 44px; padding: 6px 14px; border: 1px solid #f6d078; border-radius: 13px; color: #273c43 !important; background: linear-gradient(#ffe8a0, #f5bc3a); box-shadow: 0 2px 0 #c98d26; font-size: 14px; line-height: 1.2; font-weight: 850; }
+.northern-gold > span { font-size: 21px; line-height: 1; }
+.mini-daily { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; padding: 5px 10px 5px 13px; border: 1px solid #2a7f89; border-radius: 15px; color: #fff !important; background: linear-gradient(105deg, #095363, #11818b); box-shadow: 0 2px 0 #c4dfe5; }
+.mini-daily h2 { margin: 0; font-size: 16px; line-height: 1.15; font-weight: 850; color: inherit; }
+.mini-daily p { margin: 2px 0 0; color: #d7edf0; font-size: 11px; line-height: 1.2; }
+.mini-start { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 5px 12px; color: #213e49; background: linear-gradient(#ffebb2, #f5c253); border: 1px solid #ffdf8c; border-radius: 12px; font-weight: 850; font-size: 14px; }
+.mini-grid { min-width: 0; min-height: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.mini-tile { min-width: 0; min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 4px; border: 1px solid #a7cedc; border-radius: 15px; text-align: center; color: #163d57; background: linear-gradient(145deg, #e9f7ff, #b8dcec); box-shadow: 0 2px 0 #a4c9d9; }
+.mini-tile--listen { background: linear-gradient(145deg, #16a9b3, #076679); border-color: #1c8a99; color: #fff !important; box-shadow: 0 2px 0 #065b70; }
+.mini-tile--verbs, .mini-tile--quiz { background: linear-gradient(145deg, #fff8df, #f8dc99); border-color: #e5ca8b; box-shadow: 0 2px 0 #d5b974; }
+.mini-art { display: block; overflow: visible; flex-shrink: 0; width: 48px; height: 42px; filter: drop-shadow(0 2px 2px #123f5b20); }
+.mini-tile-copy { min-width: 0; }
+.mini-tile h3 { margin: 0; color: inherit; font-size: 14px; line-height: 1.12; font-weight: 850; letter-spacing: -.2px; }
+.mini-progress { display: flex; align-items: center; justify-content: center; gap: 3px; color: #3e6378; line-height: 1; }
+.mini-tile--listen .mini-progress { color: #e1f6f8; }
+.mini-progress small { font-size: 10px; line-height: 1.1; }
+.mini-rating { color: #ffcd4d; font-size: 13px; text-shadow: 0 1px 0 #ad7b19; }
+.northern-utilities { min-width: 0; min-height: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.mini-missions, .mini-review { display: flex; align-items: center; gap: 6px; min-width: 0; min-height: 44px; padding: 5px 8px; border: 1px solid #bed7df; border-radius: 14px; background: #f7fcff; box-shadow: 0 2px 0 #c8dde5; }
+.mini-missions { color: #fff !important; border-color: #296578; background: linear-gradient(105deg, #183f55, #176478); box-shadow: 0 2px 0 #16495c; }
+.mini-missions .mini-art, .mini-review .mini-art { width: 32px; height: 32px; }
+.mini-missions > div, .mini-review > div { min-width: 0; }
+.mini-missions h2, .mini-review h2 { margin: 0; font-size: 13px; line-height: 1.12; font-weight: 850; color: inherit; }
+.mini-missions small, .mini-review span { display: block; margin-top: 2px; font-size: 9px; line-height: 1.15; }
+.mini-missions small { color: #cde5ec; }
+.mini-review span { color: #517281; }
+.mini-missions b, .mini-review b { margin-left: auto; font-size: 23px; line-height: 1; font-weight: 500; }
+.northern-games .mobile-app-nav, html.is-installed-app .northern-games .mobile-app-nav { position: static; inset: auto; z-index: auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; width: 100%; min-width: 0; margin: 0; padding: 4px; border: 1px solid #c6dce4; border-radius: 16px; background: #ffffffeb; box-shadow: 0 3px 12px #18455f0d; backdrop-filter: none; }
+.northern-games .mobile-app-nav > a, html.is-installed-app .northern-games .mobile-app-nav > a { min-height: 44px; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 12px; color: #607a89; font-size: 10px; line-height: 1.1; font-weight: 800; }
+.northern-games .mobile-app-nav > a.active, html.is-installed-app .northern-games .mobile-app-nav > a.active { color: #fff; background: linear-gradient(145deg, #195468, #087783); box-shadow: 0 2px 6px #164c6220; }
+.northern-games .mobile-app-nav__icon, html.is-installed-app .northern-games .mobile-app-nav__icon { width: 22px; height: 22px; display: grid; place-items: center; }
+.northern-games .mobile-app-nav svg, html.is-installed-app .northern-games .mobile-app-nav svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.northern-games :is(a, button, select):focus-visible { outline: 3px solid #0b728b; outline-offset: 2px; }
+.northern-dialog { width: 100vw; max-width: 1200px; height: 100vh; height: 100dvh; max-height: none; min-width: 0; margin: auto; padding: max(8px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left)); border: 0; color: #12354b; background: linear-gradient(155deg, #fffdf7, #edf8fc); font-family: inherit; }
+.northern-dialog[open] { display: grid; grid-template-rows: 48px minmax(0, 1fr) 62px; gap: 8px; }
+.northern-dialog::backdrop { background: #12394be6; }
+.northern-dialog__header { display: flex; align-items: center; min-width: 0; gap: 8px; }
+.northern-dialog__header h2 { flex: 1; margin: 0; font-size: 19px; line-height: 1.1; font-weight: 850; }
+.northern-dialog__header h2 small { display: block; margin-top: 3px; font-size: 10px; line-height: 1.1; font-weight: 700; color: #607c88; }
+.northern-back { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; border: 1px solid #c4dce5; border-radius: 13px; color: #164d62; background: #fff; font-size: 24px !important; }
+.northern-dialog__body { min-width: 0; min-height: 0; display: grid; grid-template-rows: minmax(150px, 1fr) auto; gap: 8px; }
+.northern-dialog__map { min-width: 0; min-height: 0; border: 1px solid #a8ccd8; border-radius: 20px; overflow: hidden; }
+.northern-obstacle { display: grid; grid-template-columns: minmax(0, 1fr) 78px; align-content: start; column-gap: 10px; row-gap: 6px; min-width: 0; padding: 12px; border: 1px solid #dfd7bb; border-radius: 18px; background: linear-gradient(145deg, #fffef9, #fff8e4); box-shadow: 0 2px 6px #56492109; }
+.northern-obstacle__eyebrow { margin: 0 0 2px; color: #687d80; font-size: 10px; line-height: 1.1; font-weight: 750; }
+.northern-obstacle h3 { margin: 0; font-size: 22px; font-weight: 850; line-height: 1.05; color: #183e50; letter-spacing: -.35px; }
+.northern-obstacle__description { margin: 4px 0 0; font-size: 12px; line-height: 1.25; color: #526d77; }
+.northern-requirements { display: grid; gap: 5px; margin-top: 7px; }
+.northern-requirements label { display: block; margin: 0; font-size: 12px; line-height: 1.1; font-weight: 750; }
+.northern-requirements label > span { display: flex; align-items: center; gap: 5px; }
+.northern-requirements img, .northern-requirements svg { width: 19px; height: 19px; flex-shrink: 0; }
+.northern-requirements svg { fill: none; stroke: #487583; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.northern-requirements progress { display: block; width: 100%; height: 5px; margin-top: 3px; appearance: none; border: 0; border-radius: 9px; overflow: hidden; background: #e2e9e6; color: #1d8a91; }
+.northern-requirements progress::-webkit-progress-bar { background: #e2e9e6; border-radius: 9px; }
+.northern-requirements progress::-webkit-progress-value { border-radius: 9px; background: linear-gradient(90deg, #278891, #6eb4af); }
+.northern-requirements progress::-moz-progress-bar { border-radius: 9px; background: #278891; }
+.northern-obstacle__reward { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-align: center; }
+.northern-obstacle__reward small { font-size: 10px; line-height: 1.1; color: #687b7e; }
+.northern-obstacle__reward strong { font-size: 11px; line-height: 1.1; color: #3e5d64; }
+.northern-badge { display: block; width: 58px; height: 65px; filter: drop-shadow(0 2px 1px #92732220); }
+.northern-badge > svg { display: block; width: 100%; height: 100%; }
+.northern-badge__shield { fill: #fff0b3; stroke: #c3973d; stroke-width: 1.3; }
+.northern-badge g { fill: none; stroke: #276573; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.northern-obstacle__note { grid-column: 1 / -1; min-height: 14px; margin: 0; font-size: 11px; line-height: 1.2; color: #56717b; }
+.northern-obstacle__action { grid-column: 1 / -1; width: 100%; }
+@media (max-height: 690px) and (max-width: 759px) and (orientation: portrait) {
+  .mini-games.northern-games { grid-template-rows: 44px minmax(90px, 1fr) 44px 138px 44px 56px; gap: 6px; }
+  .mini-tile h3 { font-size: 13px; }
+  .mini-tile > .mini-art { width: 36px; height: 31px; }
+  .mini-tile { padding: 3px; }
+  .mini-progress small { font-size: 9px; }
+  .mini-grid, .northern-utilities { gap: 6px; }
+  .mini-daily { padding: 0 7px 0 11px; }
+  .mini-daily p { display: none; }
+  .mini-start { min-height: 38px; }
+  .mini-missions .mini-art, .mini-review .mini-art { width: 25px; height: 27px; }
+  .mini-missions h2, .mini-review h2 { font-size: 12px; }
+  .mini-missions small, .mini-missions b, .mini-review b { display: none; }
+  .northern-dialog[open] { grid-template-rows: 44px minmax(0, 1fr) 56px; gap: 6px; }
+  .northern-obstacle { padding: 9px 10px; gap: 5px 8px; grid-template-columns: minmax(0, 1fr) 64px; }
+  .northern-obstacle h3 { font-size: 19px; }
+  .northern-obstacle__description { font-size: 11px; }
+  .northern-obstacle__note { font-size: 10px; }
+  .northern-badge { width: 48px; height: 54px; }
+  .northern-dialog__header h2 { font-size: 17px; }
+}
+@media (max-width: 350px) {
+  .mini-top { gap: 6px; }
+  .mini-brand { flex-basis: 136px; }
+  .mini-coins { font-size: 13px; }
+  .mini-coins img { width: 24px; height: 24px; }
+  .mini-top .exercise-level-select select { width: 55px; }
+  .northern-overview__heading { padding-inline: 9px; }
+  .northern-overview__heading h2 { font-size: 14px; }
+  .northern-overview__heading > span { font-size: 9px; }
+  .northern-overview__footer strong { font-size: 13px; }
+  .northern-overview__footer .northern-gold { padding-inline: 10px; gap: 7px; font-size: 13px; }
+  .mini-tile h3 { font-size: 12px; }
+}
+@media (max-height: 540px) and (max-width: 759px) and (orientation: portrait) {
+  .mini-games.northern-games { grid-template-rows: 44px minmax(90px, 1fr) 128px 44px 52px; }
+  .mini-daily { display: none; }
+  .mini-tile > .mini-art { height: 27px; }
+  .mini-progress { display: none; }
+  .northern-dialog[open] { grid-template-rows: 44px minmax(0, 1fr) 52px; }
+  .northern-obstacle__description { display: none; }
+  .northern-obstacle { padding: 8px; grid-template-columns: minmax(0, 1fr) 58px; }
+  .northern-obstacle h3 { font-size: 18px; }
+}
+@media (min-width: 760px), (orientation: landscape) and (max-height: 500px) {
+  .mini-games.northern-games { grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); grid-template-rows: 52px 64px minmax(0, 1fr) 72px 64px; grid-template-areas: 'header header' 'map daily' 'map games' 'map utilities' 'nav nav'; gap: 12px; padding: max(12px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left)); }
+  .mini-top { grid-area: header; }
+  .northern-overview { grid-area: map; grid-template-rows: 38px minmax(0, 1fr) 64px; }
+  .mini-daily { grid-area: daily; }
+  .mini-grid { grid-area: games; }
+  .northern-utilities { grid-area: utilities; }
+  .northern-games > .mobile-app-nav { grid-area: nav; }
+  .mini-brand { flex-basis: 170px; }
+  .northern-overview__heading h2 { font-size: 18px; }
+  .northern-overview__heading > span { font-size: 12px; }
+  .northern-overview__footer strong { font-size: 17px; }
+  .mini-tile > .mini-art { width: clamp(48px, 7vw, 110px); height: clamp(42px, 9vh, 105px); }
+  .mini-tile h3 { font-size: clamp(14px, 1.5vw, 19px); }
+  .mini-progress small { font-size: 12px; }
+  .mini-missions h2, .mini-review h2 { font-size: 14px; }
+  .mini-missions small, .mini-review span { font-size: 10px; }
+  .northern-dialog__body { grid-template-columns: minmax(220px, 1.5fr) minmax(240px, 1fr); grid-template-rows: minmax(0, 1fr); }
+  .northern-obstacle { align-self: center; padding: 20px; grid-template-columns: minmax(0, 1fr) 86px; gap: 14px; }
+  .northern-obstacle h3 { font-size: 27px; }
+  .northern-obstacle__description { font-size: 15px; line-height: 1.4; }
+  .northern-requirements { margin-top: 18px; gap: 12px; }
+  .northern-requirements label { font-size: 14px; }
+  .northern-obstacle__reward strong { font-size: 13px; }
+  .northern-obstacle__note { font-size: 13px; }
+  .northern-badge { width: 70px; height: 79px; }
+  .northern-obstacle__action { font-size: 16px; min-height: 48px; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .mini-games.northern-games { grid-template-rows: 44px 44px minmax(88px, 1fr) 44px 52px; gap: 5px 8px; padding: max(5px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(5px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); }
+  .mini-brand { flex-basis: 145px; }
+  .northern-overview { grid-template-rows: 28px minmax(0, 1fr) 48px; border-radius: 16px; }
+  .northern-overview__heading h2 { font-size: 13px; }
+  .northern-overview__heading > span { font-size: 9px; }
+  .northern-overview__footer { padding-left: 8px; gap: 4px; }
+  .northern-overview__footer strong { font-size: 12px; }
+  .northern-overview__footer .northern-gold { font-size: 12px; padding-inline: 8px; gap: 4px; }
+  .mini-daily { padding: 0 6px 0 9px; }
+  .mini-daily h2 { font-size: 14px; }
+  .mini-daily p { display: none; }
+  .mini-start { min-height: 38px; padding-inline: 9px; font-size: 12px; }
+  .mini-grid, .northern-utilities { gap: 4px; }
+  .mini-tile { flex-direction: row; gap: 2px; padding: 2px; border-radius: 10px; }
+  .mini-tile > .mini-art { width: 18px; height: 25px; }
+  .mini-tile h3 { font-size: 11px; line-height: 1.05; }
+  .mini-progress { display: none; }
+  .mini-missions, .mini-review { gap: 4px; padding: 4px 6px; border-radius: 10px; }
+  .mini-missions .mini-art, .mini-review .mini-art { width: 21px; height: 24px; }
+  .mini-missions h2, .mini-review h2 { font-size: 11px; }
+  .mini-missions small, .mini-missions b, .mini-review b { display: none; }
+  .mini-review span { font-size: 9px; }
+  .northern-games .mobile-app-nav, html.is-installed-app .northern-games .mobile-app-nav { padding: 3px; }
+  .northern-games .mobile-app-nav > a, html.is-installed-app .northern-games .mobile-app-nav > a { gap: 1px; font-size: 9px; }
+  .northern-dialog { padding: max(5px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(5px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); }
+  .northern-dialog[open] { grid-template-rows: 44px minmax(0, 1fr) 52px; gap: 5px; }
+  .northern-dialog__body { grid-template-columns: minmax(220px, 1.1fr) minmax(235px, 1fr); gap: 8px; }
+  .northern-obstacle { padding: 8px; gap: 6px; grid-template-columns: minmax(0, 1fr) 54px; }
+  .northern-obstacle h3 { font-size: 18px; }
+  .northern-obstacle__description { display: none; }
+  .northern-obstacle__note { font-size: 10px; line-height: 1.1; }
+  .northern-obstacle__eyebrow { font-size: 9px; }
+  .northern-requirements { margin-top: 7px; gap: 5px; }
+  .northern-requirements label { font-size: 11px; }
+  .northern-obstacle__reward small { font-size: 9px; }
+  .northern-obstacle__reward strong { font-size: 10px; }
+  .northern-badge { width: 42px; height: 47px; }
+  .northern-obstacle__action { min-height: 44px; font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .northern-games *, .northern-dialog * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}

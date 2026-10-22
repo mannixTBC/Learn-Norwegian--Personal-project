@@ -43,6 +43,8 @@
     "build:ssr": "vite build --ssr src/entry-server.jsx --outDir dist-ssr",
     "test:games": "node --test src/modules/exercises/practiceActivities.test.mjs && node scripts/test-activity-games.mjs",
     "test:mobile-exercises": "node scripts/test-mobile-exercises.mjs",
+    "test:northern-pass": "node --test scripts/test-northern-pass-progress.mjs && node scripts/test-northern-pass-earning.mjs",
+    "test:northern-pass-ui": "node scripts/test-northern-pass-ui.mjs",
     "test:curriculum": "node scripts/test-curriculum.mjs && node scripts/test-curriculum-assessment.mjs",
     "test:learning-sync": "node --test scripts/test-learning-sync.mjs && node scripts/test-learning-restore.mjs",
     "test:lesson-exercises": "node scripts/test-lesson-app-exercises.mjs",

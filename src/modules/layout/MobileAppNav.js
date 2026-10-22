@@ -10,7 +10,7 @@ const icons = {
   account: <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.25" /><path d="M5.5 20c.5-4.1 2.7-6.2 6.5-6.2s6 2.1 6.5 6.2" /></svg>,
 };
 
-const MobileAppNav = ({ activeLevel }) => {
+const MobileAppNav = ({ activeLevel, onNavigate }) => {
   const location = useLocation();
   const storedLevel = typeof window !== 'undefined' ? window.localStorage.getItem('norwegian_active_level') : '';
   const level = activeLevel || (learningLevels.includes(storedLevel) ? storedLevel : 'A1');
@@ -24,7 +24,7 @@ const MobileAppNav = ({ activeLevel }) => {
   return (
     <nav className="mobile-app-nav" aria-label="Navigația aplicației">
       {items.map((item) => (
-        <Link className={item.active ? 'active' : ''} to={item.to} aria-current={item.active ? 'page' : undefined} key={item.id}>
+        <Link className={item.active ? 'active' : ''} to={item.to} onClick={onNavigate} aria-current={item.active ? 'page' : undefined} key={item.id}>
           <span className="mobile-app-nav__icon">{icons[item.id]}</span>
           <span>{item.label}</span>
         </Link>

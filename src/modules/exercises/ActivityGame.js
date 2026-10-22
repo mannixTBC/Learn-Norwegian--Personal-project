@@ -109,7 +109,7 @@ const ActivitySession = ({ game }) => {
     if (completed.current) return;
     completed.current = true; stopAudio();
     if (!retry) savePracticeProgress(localStorage, settings, results);
-    recordStudyActivity({ type: game === 'listen' ? 'listening-game' : 'work-missions', level,
+    recordStudyActivity({ type: game === 'listen' ? 'listening-game' : 'work-missions', level, userId: user?.id || 'guest',
       minutes: Math.max(1, Math.round((Date.now() - startedAt.current) / 60000)),
       score: Math.round(correctCount / questions.length * 100), words: game === 'listen' ? results.filter((item) => item.correct && item.question.contentType !== 'dialogue').length : 0,
       ...(game === 'missions' ? { pathId } : {}), retry });

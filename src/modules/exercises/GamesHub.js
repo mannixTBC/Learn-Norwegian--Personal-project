@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getLearningLevel } from '../lessons/learningLevel';
 import { getReviewStats } from '../../services/spacedReview';
-import { getStudySummary } from '../../services/learningActivity';
 import { useAuth } from '../auth/AuthContext';
 import { getCareerPath, getCareerProfile } from '../../services/careerProfile';
 import { readPracticeProgress } from './practiceActivities';
 import GamesMosaic from './GamesMosaic';
 import { readGameProgress } from './practiceGameData';
 import { getVerbSessions, readVerbProgress } from './challenge30/verbsForLevel';
+import { claimNorthernPassStop, NORTHERN_PASS_UPDATE_EVENT, readNorthernPassProgress } from '../../services/northernPassProgress';
+
+const getStorage = () => {
+  try { return typeof window !== 'undefined' ? window.localStorage : undefined; }
+  catch (_) { return undefined; }
+};
 
 const readJson = (key, fallback) => {
   try { return JSON.parse(localStorage.getItem(key)) || fallback; }
@@ -17,12 +22,28 @@ const readJson = (key, fallback) => {
 
 const GamesHub = () => {
   const { user } = useAuth();
+  const owner = user?.id || 'guest';
+  const [expedition, setExpedition] = useState(() => readNorthernPassProgress(getStorage(), owner));
+  useEffect(() => {
+    const refresh = () => setExpedition(readNorthernPassProgress(getStorage(), owner));
+    refresh();
+    window.addEventListener(NORTHERN_PASS_UPDATE_EVENT, refresh);
+    window.addEventListener('storage', refresh);
+    window.addEventListener('focus', refresh);
+    return () => {
+      window.removeEventListener(NORTHERN_PASS_UPDATE_EVENT, refresh);
+      window.removeEventListener('storage', refresh);
+      window.removeEventListener('focus', refresh);
+    };
+  }, [owner]);
+  const claimStop = (id) => {
+    const result = claimNorthernPassStop(getStorage(), owner, id);
+    setExpedition(result.state);
+    return result;
+  };
   const location = useLocation();
   const level = getLearningLevel(location.search);
   const reviewStats = getReviewStats(level);
-  const studySummary = getStudySummary();
-  const storedBalance = Number(localStorage.getItem('norwegian_reward_balance'));
-  const rewardBalance = Number.isFinite(storedBalance) ? Math.max(0, Math.floor(storedBalance)) : 0;
   const verbSessionCount = getVerbSessions(level).length;
   const verbProgress = readVerbProgress(localStorage, level, verbSessionCount);
   const pronunciationAttempts = readJson(`pronunciation_attempts_${level.toLowerCase()}`, []);
@@ -51,14 +72,13 @@ const GamesHub = () => {
     { id: 'word', to: `/hangman?nivel=${level}`, title: 'Cuvinte', progress: gameCards[2].progress },
     { id: 'review', to: `/recapitulare?nivel=${level}`, title: 'Recapitulare', progress: { completed: reviewStats.total - reviewStats.due, target: Math.max(1, reviewStats.total) }, badge: reviewStats.due ? `${reviewStats.due} de repetat` : reviewStats.total ? 'La zi' : 'Nou' },
   ];
-  const streak = Math.max(0, Number(studySummary.streak) || 0);
   const careerPath = getCareerPath(getCareerProfile(user)?.pathId);
   const newGames = [
     { id: 'listen', to: '/asculta-si-alege', title: 'Ascultă și alege', text: 'Auzi norvegiana. Descoperă sensul.', meta: `${level} · 10 întrebări` },
     { id: 'missions', to: '/misiuni-la-serviciu', title: 'Misiuni la serviciu', text: 'Situații reale. Replica potrivită.', meta: `${['C1', 'C2'].includes(level) ? 'Recapitulare B2' : level} · ${careerPath.shortTitle}` },
   ].map((game) => ({ ...game, progress: readPracticeProgress(localStorage, { game: game.id, level: game.id === 'missions' && ['C1', 'C2'].includes(level) ? 'B2' : level, pathId: careerPath.id, userId: user?.id || 'guest' }) }));
 
-  return <GamesMosaic level={level} balance={rewardBalance} streak={streak} cards={appGameCards} activities={newGames} reviewStats={reviewStats} />;
+  return <GamesMosaic level={level} cards={appGameCards} activities={newGames} reviewStats={reviewStats} expedition={expedition} onClaimStop={claimStop} />;
 };
 
 export default GamesHub;

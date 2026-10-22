@@ -1,0 +1,295 @@
+.npass-map {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #74b9cf;
+  container: northern-pass-map / size;
+  border-radius: inherit;
+}
+
+.npass-map__art,
+.npass-map__wash,
+.npass-map__route {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.npass-map__art {
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+}
+
+.npass-map__wash {
+  background: linear-gradient(180deg, rgb(221 244 255 / 9%) 0%, transparent 40%, rgb(0 47 71 / 15%) 100%);
+}
+
+.npass-map__canvas {
+  position: absolute;
+  inset: 20px 15px;
+}
+
+.npass-map__route {
+  overflow: visible;
+}
+
+.npass-map__route path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.npass-map__route-shadow {
+  stroke: rgb(8 56 77 / 35%);
+  stroke-width: 6;
+  stroke-dasharray: 1 13;
+}
+
+.npass-map__route-ahead {
+  stroke: #f4fbff;
+  stroke-width: 4;
+  stroke-dasharray: 1 13;
+}
+
+.npass-map__route-reached {
+  stroke: #ffd448;
+  stroke-width: 4.5;
+  stroke-dasharray: 1 13;
+  filter: drop-shadow(0 0 3px rgb(255 210 60 / 80%));
+}
+
+.npass-map__route--wide {
+  display: none;
+}
+
+.npass-map__stop {
+  position: absolute;
+  z-index: 1;
+  left: var(--stop-x);
+  top: var(--stop-y);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #092b49;
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.npass-map__label {
+  position: absolute;
+  bottom: calc(100% - 5px);
+  left: 50%;
+  width: max-content;
+  max-width: 94px;
+  padding: 3px 7px;
+  transform: translateX(-50%);
+  border: 1px solid rgb(255 255 255 / 85%);
+  border-radius: 7px;
+  background: rgb(246 252 255 / 95%);
+  box-shadow: 0 2px 5px rgb(9 43 73 / 19%);
+  color: #092b49;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.18;
+  text-align: center;
+  text-wrap: balance;
+  pointer-events: none;
+}
+
+.npass-map__marker {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #f4fbff;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #aabdc5, #687e89);
+  box-shadow: 0 0 0 3px rgb(255 255 255 / 27%), 0 3px 6px rgb(8 39 64 / 35%), inset 0 2px 3px rgb(255 255 255 / 48%);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.npass-map__marker svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.npass-map__stop--completed .npass-map__marker {
+  border-color: #fff5b4;
+  background: linear-gradient(140deg, #ffdb51, #e9a20c 75%);
+  box-shadow: 0 0 0 3px rgb(255 211 69 / 26%), 0 3px 6px rgb(91 64 11 / 34%), inset 0 2px 3px rgb(255 255 255 / 60%);
+}
+
+.npass-map__stop--current {
+  z-index: 2;
+}
+
+.npass-map__stop--current .npass-map__marker {
+  width: 36px;
+  height: 36px;
+  border-color: #fff6c0;
+  background: radial-gradient(circle at 40% 32%, #ffe678, #ffc11a 62%, #d98c03);
+  box-shadow: 0 0 0 5px rgb(255 212 70 / 25%), 0 0 18px 6px rgb(255 207 36 / 55%), inset 0 0 0 2px rgb(255 255 255 / 35%);
+  color: #68450a;
+}
+
+.npass-map__stop--current .npass-map__label {
+  border-color: #ffd75b;
+  background: #fff6d2;
+}
+
+.npass-map__stop--selected .npass-map__label {
+  outline: 2px solid #0a718d;
+  outline-offset: 2px;
+}
+
+.npass-map__stop:focus-visible {
+  outline: 3px solid #062943;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 7px #fff;
+}
+
+@media (hover: hover) {
+  .npass-map__stop:is(button):hover .npass-map__marker {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+}
+
+.npass-map--compact .npass-map__canvas {
+  inset: 16px 15px;
+}
+
+.npass-map--compact .npass-map__stop {
+  width: 20px;
+  height: 20px;
+  cursor: inherit;
+}
+
+.npass-map--compact .npass-map__marker {
+  width: 16px;
+  height: 16px;
+  border-width: 1.5px;
+  box-shadow: 0 0 0 2px rgb(255 255 255 / 24%), 0 2px 4px rgb(8 39 64 / 32%);
+}
+
+.npass-map--compact .npass-map__marker svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.5;
+}
+
+.npass-map--compact .npass-map__stop--current .npass-map__marker {
+  width: 23px;
+  height: 23px;
+  font-size: 11px;
+  box-shadow: 0 0 0 4px rgb(255 212 70 / 27%), 0 0 14px 4px rgb(255 207 36 / 70%);
+}
+
+.npass-map--compact .npass-map__label {
+  bottom: calc(100% + 2px);
+  max-width: 78px;
+  padding: 2px 5px;
+  border-radius: 5px;
+  font-size: 9px;
+}
+
+.npass-map--compact .npass-map__stop--upper .npass-map__label {
+  top: calc(100% + 2px);
+  bottom: auto;
+}
+
+.npass-map--compact .npass-map__stop--edge .npass-map__label {
+  right: 0;
+  left: auto;
+  transform: none;
+}
+
+@container northern-pass-map (max-height: 230px) {
+  .npass-map--compact .npass-map__stop--future .npass-map__label {
+    display: none;
+  }
+}
+
+@container northern-pass-map (max-height: 145px) {
+  .npass-map--compact .npass-map__stop--completed .npass-map__label {
+    display: none;
+  }
+
+  .npass-map--compact .npass-map__label {
+    bottom: calc(100% + 3px);
+  }
+}
+
+@container northern-pass-map (max-height: 340px) {
+  .npass-map:not(.npass-map--compact) .npass-map__canvas {
+    inset: 28px 0 15px;
+  }
+
+  .npass-map:not(.npass-map--compact) .npass-map__route--portrait {
+    display: none;
+  }
+
+  .npass-map:not(.npass-map--compact) .npass-map__route--wide {
+    display: block;
+  }
+
+  .npass-map:not(.npass-map--compact) .npass-map__stop {
+    left: var(--stop-wide-x);
+    top: var(--stop-wide-y);
+  }
+
+  .npass-map:not(.npass-map--compact) .npass-map__label {
+    max-width: 64px;
+    padding: 2px 4px;
+    font-size: 9px;
+  }
+}
+
+@container northern-pass-map (min-aspect-ratio: 1.3) {
+  .npass-map:not(.npass-map--compact) .npass-map__canvas {
+    inset: 28px 0 15px;
+  }
+
+  .npass-map:not(.npass-map--compact) .npass-map__route--portrait {
+    display: none;
+  }
+
+  .npass-map:not(.npass-map--compact) .npass-map__route--wide {
+    display: block;
+  }
+
+  .npass-map:not(.npass-map--compact) .npass-map__stop {
+    left: var(--stop-wide-x);
+    top: var(--stop-wide-y);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .npass-map *, .npass-map *::before, .npass-map *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

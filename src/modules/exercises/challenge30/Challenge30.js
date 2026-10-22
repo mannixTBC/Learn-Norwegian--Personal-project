@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../../auth/AuthContext';
 import { getLearningLevel } from '../../lessons/learningLevel';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
 import { recordStudyActivity } from '../../../services/learningActivity';
@@ -12,7 +13,7 @@ import './Challenge30.css';
 import { ExerciseArtwork } from '../NordicExerciseUI';
 
 const steps = [['vocab', 'Învață'], ['drag', 'Asociază'], ['fill', 'Completează']];
-const VerbSession = ({ level }) => {
+const VerbSession = ({ level, userId }) => {
   const sessions = useMemo(() => getVerbSessions(level), [level]);
   const storageKey = 'challenge_verbs_progress_' + level.toLowerCase();
   const [progress, setProgress] = useState(() => readVerbProgress(localStorage, level, sessions.length));
@@ -30,9 +31,9 @@ const VerbSession = ({ level }) => {
   const chooseDay = (value) => { setCurrentDay(Number(value)); setActiveTab('vocab'); setMatchesDone(false); };
   useEffect(() => { localStorage.setItem(storageKey, JSON.stringify(progress)); }, [progress, storageKey]);
   const complete = () => {
-    if (!recorded.current.has(currentDay) && !progress.completed.includes(currentDay)) {
+    if (!recorded.current.has(currentDay)) {
       recorded.current.add(currentDay);
-      recordStudyActivity({ type: 'verbs', level, minutes: 3, session: currentDay, words: dayVerbs.length });
+      recordStudyActivity({ type: 'verbs', level, userId, minutes: 3, session: currentDay, words: dayVerbs.length });
     }
     setProgress((value) => ({ day: Math.max(value.day, Math.min(currentDay + 1, sessions.length)), completed: [...new Set([...value.completed, currentDay])] }));
   };
@@ -60,8 +61,10 @@ const VerbSession = ({ level }) => {
   </ExerciseLayout>;
 };
 const Challenge30 = () => {
+  const { user } = useAuth();
   const location = useLocation();
   const level = getLearningLevel(location.search);
-  return <VerbSession key={level} level={level} />;
+  const userId = user?.id || 'guest';
+  return <VerbSession key={userId + '-' + level} level={level} userId={userId} />;
 };
 export default Challenge30;

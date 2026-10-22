@@ -80,7 +80,7 @@ const PracticeSession = ({ game, level, user }) => {
     if (finished.current) return;
     finished.current = true;
     if (!retry) saveGameProgress(localStorage, game, level, user?.id, results);
-    recordStudyActivity({ type: 'practice-' + game, level, minutes: Math.max(1, Math.round((Date.now() - startedAt.current) / 60000)), score: Math.round(score / questions.length * 100), retry });
+    recordStudyActivity({ type: 'practice-' + game, level, userId: user?.id || 'guest', minutes: Math.max(1, Math.round((Date.now() - startedAt.current) / 60000)), score: Math.round(score / questions.length * 100), retry });
     setScreen('result');
   };
 
