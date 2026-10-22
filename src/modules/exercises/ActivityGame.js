@@ -50,6 +50,7 @@ const ActivitySession = ({ game }) => {
   const [heard, setHeard] = useState(false);
   const audioController = useRef(null);
   const answered = useRef(false);
+  const recorded = useRef(false);
   const completed = useRef(false);
   const startedAt = useRef(Date.now());
   const headingRef = useRef(null);
@@ -69,7 +70,7 @@ const ActivitySession = ({ game }) => {
   }, [screen, current]);
 
   const stopAudio = () => { audioController.current?.abort(); audioController.current = null; setAudioStatus('idle'); };
-  const resetQuestion = () => { stopAudio(); answered.current = false; setSelected(null); setChecked(false); setHeard(false); };
+  const resetQuestion = (preserveResult = false) => { if (!preserveResult) recorded.current = false; stopAudio(); answered.current = false; setSelected(null); setChecked(false); setHeard(false); };
   const begin = (nextQuestions, isRetry = false) => {
     if (!nextQuestions.length) return;
     resetQuestion(); setQuestions(nextQuestions); setCurrent(0); setResults([]); setRetry(isRetry); completed.current = false;
@@ -96,7 +97,10 @@ const ActivitySession = ({ game }) => {
     answered.current = true; stopAudio();
     const correct = selected === question.answer;
     setChecked(true);
-    setResults((previous) => [...previous, { question, given: selected, correct }]);
+    if (!recorded.current) {
+      setResults((previous) => [...previous, { question, given: selected, correct }]);
+      recorded.current = true;
+    }
     if (!correct) saveReviewItem({ id: question.id, level, lessonId: question.lessonId, source: game === 'listen' ? 'listening-game' : 'work-missions',
       prompt: question.kind === 'listen' ? `Ce înseamnă „${question.audioText}”?`
         : `${question.context} ${question.kind === 'intent' ? `Ce ți se cere: „${question.quote}”?` : question.task}`,
@@ -133,7 +137,7 @@ const ActivitySession = ({ game }) => {
   if (!question) return <ExerciseLayout className="activity-game" title={details.title} icon={game} level={level} backTo={'/jocuri?nivel=' + requestedLevel}><p role="alert">Nu sunt întrebări disponibile pentru această sesiune.</p><Link to={'/jocuri?nivel=' + requestedLevel}>Înapoi la jocuri</Link></ExerciseLayout>;
 
   const PlayView = game === 'listen' ? ListeningExpedition : ActivityPlayView;
-  return <PlayView game={game} details={details} level={level} requestedLevel={requestedLevel} limitedMissions={limitedMissions} pathId={pathId} question={question} current={current} total={questions.length} retry={retry} headingRef={headingRef} needsAudio={needsAudio} audioBusy={audioBusy} audioStatus={audioStatus} heard={heard} selected={selected} setSelected={setSelected} checked={checked} play={play} stopAudio={stopAudio} onExit={() => { stopAudio(); history.push('/jocuri?nivel=' + requestedLevel); }} verify={verify} next={next}/>;
+  return <PlayView game={game} details={details} level={level} requestedLevel={requestedLevel} limitedMissions={limitedMissions} pathId={pathId} question={question} current={current} total={questions.length} retry={retry} headingRef={headingRef} needsAudio={needsAudio} audioBusy={audioBusy} audioStatus={audioStatus} heard={heard} selected={selected} setSelected={setSelected} checked={checked} play={play} stopAudio={stopAudio} onExit={() => { stopAudio(); history.push('/jocuri?nivel=' + requestedLevel); }} verify={verify} next={next} repeatQuestion={() => { resetQuestion(true); headingRef.current?.focus(); }}/>;
 };
 
 const ActivityGame = ({ game }) => {
