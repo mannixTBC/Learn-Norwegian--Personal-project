@@ -9,9 +9,17 @@ const root=resolve(import.meta.dirname,'..');
 await build({configFile:resolve(root,'vite.config.js'),logLevel:'error',build:{ssr:true,outDir:'node_modules/.cache/word-discovery-tests',emptyOutDir:false,rollupOptions:{input:resolve(root,'src/modules/exercises/WordDiscovery.js'),output:{entryFileNames:'word.mjs'}}}});
 const {default:WordDiscovery}=await import(pathToFileURL(resolve(root,'node_modules/.cache/word-discovery-tests/word.mjs')));
 globalThis.window=new EventTarget();
+globalThis.localStorage={getItem:()=>null};
 const mount=answer=>{const results=[];let tree;act(()=>{tree=TestRenderer.create(React.createElement(MemoryRouter,null,React.createElement(WordDiscovery,{question:{answer,prompt:'Sensul cuvântului'},current:0,total:5,level:'A1',checked:false,onResolve:(...args)=>results.push(args),onNext(){},onSpeak(){}})))});return {tree,results,press:letter=>act(()=>tree.root.findAllByType('button').find(b=>b.props['aria-label']===letter).props.onClick())};};
 let t=mount('hus');t.press('H');t.press('H');assert.equal(t.results.length,0);t.press('U');t.press('S');assert.equal(t.results.length,1);assert.equal(t.results[0][0],true);act(()=>t.tree.unmount());
 t=mount('blå øy');for(const ch of ['B','L','Å','Ø','Y'])t.press(ch);assert.equal(t.results[0][0],true);act(()=>t.tree.unmount());
 t=mount('hus');for(const ch of ['Q','W','E'])t.press(ch);assert.equal(t.results.length,1);assert.equal(t.results[0][0],false);act(()=>t.tree.unmount());
-t=mount('hus');for(let i=0;i<3;i++)act(()=>t.tree.root.findAllByType('button').find(b=>String(b.props.children).includes('Indiciu')).props.onClick());assert.equal(t.results[0][0],true);act(()=>t.tree.unmount());
+t=mount('hus');for(let i=0;i<3;i++)act(()=>t.tree.root.findAllByType('button').find(b=>b.props.className === 'wd-hint').props.onClick());assert.equal(t.results[0][0],true);act(()=>t.tree.unmount());
 console.log('✓ Word discovery: wins, repeated letters, three misses, hints, Norwegian letters and multiword answers.');
+const { wordDiscoveryCatalog } = await import('../src/modules/exercises/wordDiscoveryCatalog.js');
+const { existsSync } = await import('node:fs');
+assert.equal(wordDiscoveryCatalog.length,120);
+assert.equal(new Set(wordDiscoveryCatalog.map(item=>item.answer)).size,120);
+assert.equal(new Set(wordDiscoveryCatalog.map(item=>item.image+'#'+item.tile)).size,120);
+for(const item of wordDiscoveryCatalog){assert.ok(existsSync(resolve(root,'public'+item.image)),item.answer+' needs its artwork');assert.ok(item.tile>=0&&item.tile<12);assert.match(item.answer,/^[a-zæøåé]+$/u);assert.ok(item.prompt.length>8)}
+console.log('✓ Illustrated bank: 120 unique words, 120 mapped illustrations, complete assets and Norwegian spelling.');

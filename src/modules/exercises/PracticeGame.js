@@ -9,7 +9,8 @@ import { recordStudyActivity } from '../../services/learningActivity';
 import { ExerciseLayout } from './ExerciseUI';
 import { createPracticeQuestions, normalizePracticeAnswer, saveGameProgress, shufflePractice } from './practiceGameData';
 import './PracticeGame.css';
-import WordDiscovery from './WordDiscovery';
+import WordDiscovery, { WordDiscoveryResult } from './WordDiscovery';
+import { createIllustratedWordQuestions } from './wordDiscoveryCatalog';
 
 const gameInfo = {
   quiz: { title: 'Chestionar', subtitle: 'Recunoaște și folosește expresiile din lecțiile tale.' },
@@ -25,7 +26,7 @@ const PracticeSession = ({ game, level, user }) => {
   const course = courseCatalog[level];
   const info = gameInfo[game];
   const history = useHistory();
-  const createSession = () => shufflePractice(createPracticeQuestions(course.lessons, game, 'normal')).slice(0, 5);
+  const createSession = () => shufflePractice(game === 'word' ? createIllustratedWordQuestions(course.lessons) : createPracticeQuestions(course.lessons, game, 'normal')).slice(0, 5);
   const [screen, setScreen] = useState('game');
   const [questions, setQuestions] = useState(createSession);
   const [current, setCurrent] = useState(0);
@@ -86,6 +87,8 @@ const PracticeSession = ({ game, level, user }) => {
     recordStudyActivity({ type: 'practice-' + game, level, minutes: Math.max(1, Math.round((Date.now() - startedAt.current) / 60000)), score: Math.round(score / questions.length * 100), retry });
     setScreen('result');
   };
+
+  if (screen === 'result' && game === 'word') return <WordDiscoveryResult level={level} score={score} results={results} onRestart={start} onRetry={() => begin(mistakes.map(item => item.question), true)} />;
 
   if (screen === 'result') return <ExerciseLayout className="practice-game" level={level} icon={game} title={info.title} compact>
     <section className="game-result"><span className="game-result__icon" aria-hidden="true">{mistakes.length ? '↗' : '✓'}</span><p>Sesiune finalizată · {level}</p><h1 ref={questionTitle} tabIndex={-1}>{mistakes.length ? 'Încă un pas înainte' : 'Le-ai rezolvat pe toate!'}</h1><div className="game-result__score">{Math.round(score / results.length * 100)}<small>%</small></div><p>{score} din {results.length} răspunsuri corecte</p><div className="game-result__actions">{mistakes.length > 0 && <button type="button" className="exercise-primary" onClick={() => begin(mistakes.map((item) => item.question), true)}>Repetă greșelile ({mistakes.length})</button>}<button type="button" className={mistakes.length ? 'exercise-secondary' : 'exercise-primary'} onClick={start}>Sesiune nouă</button><Link to={'/jocuri?nivel=' + level}>Înapoi la jocuri</Link></div></section>
