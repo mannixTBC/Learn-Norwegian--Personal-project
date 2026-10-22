@@ -10,11 +10,9 @@ const Icon = ({ name }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentC
 
 export default function WordDiscovery({ question, current, total, level, checked, onResolve, onNext, onSpeak }) {
   const [guessed, setGuessed] = useState([]);
-  const [menu, setMenu] = useState(false);
   const [last, setLast] = useState('');
   const resolved = useRef(false);
   const guessedRef = useRef([]);
-  const menuRef = useRef(null);
   const letters = lettersOf(question.answer);
   const wrong = guessed.filter(letter => !letters.includes(letter)).length;
   const remaining = Math.max(0, 3 - wrong);
@@ -33,8 +31,6 @@ export default function WordDiscovery({ question, current, total, level, checked
   };
   useEffect(() => {
     const keydown = event => {
-      if (event.key === 'Escape') { setMenu(false); menuRef.current?.focus(); return; }
-      if (menu) return;
       if (event.ctrlKey || event.metaKey || event.altKey || event.target?.closest?.('input,textarea,select')) return;
       const letter = event.key.toLocaleUpperCase('nb-NO').normalize('NFC');
       if (letter.length === 1 && /\p{L}/u.test(letter)) { event.preventDefault(); choose(letter); }
@@ -44,12 +40,10 @@ export default function WordDiscovery({ question, current, total, level, checked
   });
   const tile = Number.isInteger(question.tile) ? question.tile : 0;
   return <section className={'word-discovery' + (checked ? ' word-discovery--checked' : '')} aria-label="Descoperă cuvântul">
-    <header className="wd-brand">
-      <button ref={menuRef} type="button" aria-label="Meniu" aria-expanded={menu} aria-controls="wd-menu" onClick={() => setMenu(!menu)}><Icon name="menu"/></button>
+    <header className="wd-brand wd-brand--game">
       <Link to="/dashboard" aria-label="NordLingo — Acasă"><NorwegianFlagIcon className="wd-logo"/></Link>
       <span className="wd-streak" aria-label={streak + ' zile consecutive'}><Icon name="flame"/>{streak}</span>
     </header>
-    {menu && <nav id="wd-menu" className="wd-menu" aria-label="Meniul jocului"><Link to="/dashboard">Acasă</Link><Link to={'/jocuri?nivel=' + level}>Toate jocurile</Link></nav>}
     <Link className="wd-back" to={'/jocuri?nivel=' + level}><Icon name="back"/><span>Provocarea zilei</span></Link>
     <div className="wd-heading"><h1>Descoperă cuvântul</h1><p>Găsește cuvântul norvegian</p></div>
     <div className="wd-progress"><span className="wd-hearts" aria-label={remaining + ' încercări rămase'}>{[0,1,2].map(i => <span aria-hidden="true" key={i} className={i >= remaining ? 'empty' : ''}>♥</span>)}</span><progress aria-label={'Cuvântul ' + (current + 1) + ' din ' + total} value={current + 1} max={total}/><span>{remaining} {remaining === 1 ? 'încercare' : 'încercări'}</span></div>
