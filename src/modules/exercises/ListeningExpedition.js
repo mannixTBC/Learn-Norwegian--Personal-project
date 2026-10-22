@@ -14,8 +14,8 @@ function Icon({ name, ...props }) {
   </svg>;
 }
 
-export function ListeningExpeditionLayout({ level, requestedLevel = level, onExit, children }) {
-  return <div className="listening-expedition">
+export function ListeningExpeditionLayout({ level, requestedLevel = level, onExit, checked = false, children }) {
+  return <div className={'listening-expedition' + (onExit ? ' listening-expedition--playing' : '') + (checked ? ' listening-expedition--checked' : '')}>
     <header className="expedition-header">
       {onExit ? <button type="button" className="expedition-back" aria-label="Închide sesiunea" onClick={onExit}><Icon name="back" /></button>
         : <Link className="expedition-back" aria-label="Înapoi la jocuri" to={'/jocuri?nivel=' + requestedLevel}><Icon name="back" /></Link>}
@@ -50,7 +50,7 @@ export default function ListeningExpedition({ level, requestedLevel, question, c
   const correct = selected === question.answer;
   const playbackLabel = audioStatus === 'loading' ? 'Se încarcă…' : audioStatus === 'playing' ? 'Se redă…' : heard ? 'Ascultă din nou' : 'Ascultă înregistrarea';
   const type = { word: 'Cuvânt', expression: 'Expresie', dialogue: 'Replică din dialog' }[question.contentType];
-  return <ListeningExpeditionLayout {...{ level, requestedLevel, onExit }}>
+  return <ListeningExpeditionLayout {...{ level, requestedLevel, onExit, checked }}>
     <div className="expedition-stage">{retry ? 'RECAPITULARE' : 'ETAPA'} {current + 1} / {total}</div>
     <progress className="expedition-progress" aria-label="Progresul sesiunii" value={current + 1} max={Math.max(1, total)} />
     <h1 className="expedition-title">Ascultă și alege</h1>
