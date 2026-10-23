@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { ExerciseIcon, ExerciseLayout } from './ExerciseUI';
 import './DesktopActivityView.css';
+import ListeningExpedition from './ListeningExpedition';
 
 export default function DesktopActivityView({ game, details, level, requestedLevel, limitedMissions, question, current, total, retry, headingRef, audioBusy, audioStatus, heard, selected, setSelected, checked, play, stopAudio, onExit, verify, next, repeatQuestion }) {
   const listening = question.kind === 'listen';
@@ -13,6 +14,8 @@ export default function DesktopActivityView({ game, details, level, requestedLev
   const type = { word: 'Cuvânt', expression: 'Expresie', dialogue: 'Replică din dialog' }[question.contentType];
 
   useEffect(() => { if (checked) feedbackRef.current?.focus({ preventScroll: true }); }, [checked]);
+
+  if (listening) return <ListeningExpedition {...{ level, requestedLevel, question, current, total, retry, headingRef, audioBusy, audioStatus, heard, selected, setSelected, checked, play, stopAudio, onExit, verify, next, repeatQuestion }} />;
 
   const audioControls = <div className="desktop-activity__audio">
     <button type="button" className="exercise-primary" onClick={() => audioBusy ? stopAudio() : play()} aria-busy={audioStatus === 'loading'}>

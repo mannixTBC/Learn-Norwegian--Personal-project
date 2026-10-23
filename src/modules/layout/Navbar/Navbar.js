@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import NorwegianFlagIcon from './NorwegianFlagIcon';
 import { useAuth } from '../../auth/AuthContext';
 import './Navbar.css';
+import { isInstalledAppView } from '../../../services/appExperience';
 
 const navigation = [
   { to: '/invata', label: 'Învață' },
@@ -102,7 +103,7 @@ export default function Navbar() {
           aria-label="Navigație principală"
         >
           <span className="navbar__app-menu-title">Explorează Norvegia</span>
-          {navigation.map((item) => (
+          {navigation.flatMap((item, index) => index === 0 && !isInstalledAppView() ? [item, { to: '/jocuri', label: 'Jocuri' }] : [item]).map((item) => (
             <NavLink
               key={item.to}
               to={item.to}

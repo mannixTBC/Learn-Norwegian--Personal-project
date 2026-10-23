@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import './App.css';
+import './modules/exercises/DesktopPractice.css';
 
 import Navbar from './modules/layout/Navbar/Navbar';
 import Footer from './modules/layout/Footer/Footer';

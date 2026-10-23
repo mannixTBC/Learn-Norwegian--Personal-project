@@ -1,87 +1,41 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ExerciseIcon, ExerciseLevelSelect } from './ExerciseUI';
+import { recommendDesktopPractice } from './desktopPracticeRecommendation';
 import './DesktopGamesHub.css';
 
-const descriptions = {
-  quiz: 'Alege sensul potrivit și verifică vocabularul învățat.',
-  order: 'Pune cuvintele în ordine și construiește propoziții corecte.',
-  verbs: 'Fixează verbele prin asociere, propoziții și completare.',
-  pronunciation: 'Ascultă, înregistrează-te și exersează claritatea pronunției.',
-  word: 'Folosește indiciile pentru a descoperi cuvintele și expresiile.',
-  review: 'Revino la expresiile care au nevoie de puțină practică.',
+const copy = {
+  listen: ['Ascultă și alege', 'Ascultă norvegiana și recunoaște sensul potrivit.'],
+  quiz: ['Vocabular', 'Fixează cuvintele prin sens, context și reamintire.'],
+  order: ['Propoziții', 'Ordonează cuvintele și construiește propoziții corecte.'],
+  verbs: ['Verbe', 'Înțelege formele verbelor și folosește-le în context.'],
+  pronunciation: ['Pronunție', 'Ascultă, înregistrează-te și urmărește claritatea vorbirii.'],
+  word: ['Descoperă cuvântul', 'Pornește de la imagine și indicii pentru a găsi cuvântul.'],
 };
+const withLevel = (to, level) => `${to}${to.includes('?') ? '&' : '?'}nivel=${encodeURIComponent(level)}`;
+const count = value => Math.max(0, Number(value) || 0);
 
-const positiveNumber = (value) => Math.max(0, Number(value) || 0);
-const percentage = (value) => Math.min(100, Math.round(positiveNumber(value)));
-
-const progressFor = (card, reviewStats) => {
-  const completed = positiveNumber(card.progress?.completed);
-  const target = Math.max(1, positiveNumber(card.progress?.target));
-  const percent = percentage(completed / target * 100);
-  if (card.id === 'pronunciation') {
-    return { percent, text: completed ? `Cel mai bun rezultat: ${percentage(completed)}%` : 'Prima încercare te așteaptă' };
-  }
-  if (card.id === 'review') {
-    return {
-      percent,
-      text: reviewStats.due
-        ? `${reviewStats.due} ${reviewStats.due === 1 ? 'expresie de repetat' : 'expresii de repetat'}`
-        : reviewStats.total ? 'Recapitularea este la zi' : 'Expresiile din lecții vor apărea aici',
-    };
-  }
-  return { percent, text: `${completed} din ${target} ${card.id === 'verbs' ? 'sesiuni' : 'exerciții'}` };
-};
-
-const activityLink = (to, level) => `${to}${to.includes('?') ? '&' : '?'}nivel=${encodeURIComponent(level)}`;
+function PracticeStatus({ card }) {
+  const progress = card.progress || {};
+  if (card.id === 'listen') return <span>{count(progress.sessions) ? `${count(progress.sessions)} sesiuni · Cel mai bun rezultat: ${count(progress.best)}%` : 'Începe prima sesiune'}</span>;
+  if (card.id === 'pronunciation') return <span>{count(progress.completed) ? `Cel mai bun rezultat: ${count(progress.completed)}%` : 'Exersează în ritmul tău'}</span>;
+  return <span>{count(progress.completed) ? `${count(progress.completed)} ${card.id === 'verbs' ? 'sesiuni parcurse' : 'exerciții parcurse'}` : 'Începe prima sesiune'}</span>;
+}
 
 export default function DesktopGamesHub({ level, cards = [], activities = [], reviewStats = {} }) {
-  return (
-    <div className="desktop-games-hub">
-      <Link className="desktop-games-hub__back" to={`/invata?nivel=${level}`}><span aria-hidden="true">←</span> Înapoi la lecții</Link>
-
-      <header className="desktop-games-hub__heading">
-        <div>
-          <span className="desktop-games-hub__eyebrow">Practică în ritmul tău</span>
-          <h1>Exerciții de norvegiană</h1>
-          <p>Alege o abilitate, repetă ce ai învățat și urmărește-ți progresul.</p>
-        </div>
-        <div className="desktop-games-hub__level"><ExerciseLevelSelect level={level} /></div>
-      </header>
-
-      <section className="desktop-games-hub__section" aria-labelledby="desktop-exercises-title">
-        <div className="desktop-games-hub__section-heading"><h2 id="desktop-exercises-title">Exersează o abilitate</h2><span>Nivel {level}</span></div>
-        <div className="desktop-games-hub__grid">
-          {cards.map((card) => {
-            const progress = progressFor(card, reviewStats);
-            return (
-              <Link className={`desktop-games-hub__card desktop-games-hub__card--${card.id}`} key={card.id} to={card.to}>
-                <span className="desktop-games-hub__icon"><ExerciseIcon name={card.id} /></span>
-                <h3>{card.title}</h3>
-                <p>{descriptions[card.id]}</p>
-                <div className="desktop-games-hub__progress">
-                  <span>{progress.text}</span>
-                  <progress max="100" value={progress.percent} aria-label={`Progres ${card.title}: ${progress.text}`} />
-                </div>
-                <span className="desktop-games-hub__action">Deschide exercițiul <span aria-hidden="true">→</span></span>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="desktop-games-hub__section" aria-labelledby="desktop-practical-title">
-        <div className="desktop-games-hub__section-heading"><div><h2 id="desktop-practical-title">Pune norvegiana în practică</h2><p>Ascultare și conversații în situații de zi cu zi.</p></div></div>
-        <div className="desktop-games-hub__activities">
-          {activities.map((activity) => (
-            <Link className="desktop-games-hub__activity" key={activity.id} to={activityLink(activity.to, level)}>
-              <span className="desktop-games-hub__icon"><ExerciseIcon name={activity.id} /></span>
-              <div className="desktop-games-hub__activity-copy"><small>{activity.meta}</small><h3>{activity.title}</h3><p>{activity.text}</p><span>{activity.progress?.sessions ? `${activity.progress.sessions} ${activity.progress.sessions === 1 ? 'sesiune' : 'sesiuni'} · Cel mai bun rezultat: ${percentage(activity.progress.best)}%` : 'Începe prima sesiune'}</span></div>
-              <span className="desktop-games-hub__activity-arrow" aria-hidden="true">→</span>
-            </Link>
-          ))}
-        </div>
-      </section>
+  const listen = activities.find(item => item.id === 'listen');
+  const games = [listen && { ...listen, to: withLevel(listen.to, level) }, ...['quiz', 'order', 'verbs', 'pronunciation', 'word'].map(id => cards.find(item => item.id === id))].filter(Boolean);
+  const review = cards.find(item => item.id === 'review');
+  const mission = activities.find(item => item.id === 'missions');
+  const recommendation = recommendDesktopPractice({ games, review, reviewStats });
+  const due = count(reviewStats.due);
+  return <div className="desktop-games-hub">
+    <header className="desktop-games-hub__heading"><div><span className="desktop-games-hub__eyebrow">PRACTICĂ PERSONALĂ</span><h1>Jocuri</h1><p>Exersează norvegiana în ritmul tău.</p></div><ExerciseLevelSelect level={level} /></header>
+    <div className="desktop-games-hub__overview">
+      {recommendation && <section className="desktop-games-hub__recommendation" aria-labelledby="practice-recommendation-title"><div><span className="desktop-games-hub__eyebrow">RECOMANDAT PENTRU TINE</span><h2 id="practice-recommendation-title">{recommendation.id === 'review' ? 'Revino la ce ai de consolidat' : copy[recommendation.id]?.[0]}</h2><p>{recommendation.reason}</p><Link className="desktop-games-hub__primary" to={recommendation.to}>{recommendation.id === 'review' ? 'Începe recapitularea' : 'Începe sesiunea'} <span aria-hidden="true">→</span></Link></div><span className="desktop-games-hub__feature-icon" aria-hidden="true"><ExerciseIcon name={recommendation.id} /></span></section>}
+      <aside className="desktop-games-hub__consolidate" aria-labelledby="consolidate-title"><span className="desktop-games-hub__icon"><ExerciseIcon name="review" /></span><h2 id="consolidate-title">De consolidat</h2><strong>{due ? `${due} ${due === 1 ? 'expresie de repetat' : 'expresii de repetat'}` : reviewStats.total ? 'Recapitularea este la zi' : 'Construiește-ți vocabularul'}</strong><p>{due ? 'Revino la expresiile salvate și fixează-le prin practică.' : reviewStats.total ? 'Poți revedea expresiile salvate sau continua cu un exercițiu.' : 'Expresiile salvate din lecții și exerciții vor apărea în recapitulare.'}</p>{review && <Link to={review.to}>Deschide recapitularea <span aria-hidden="true">→</span></Link>}</aside>
     </div>
-  );
+    <section className="desktop-games-hub__section" aria-labelledby="desktop-games-title"><div className="desktop-games-hub__section-heading"><h2 id="desktop-games-title">Toate jocurile</h2><span>Nivel {level}</span></div><div className="desktop-games-hub__grid">{games.map(card => <Link className={`desktop-games-hub__card desktop-games-hub__card--${card.id}`} key={card.id} to={card.to}><span className="desktop-games-hub__icon"><ExerciseIcon name={card.id} /></span><div className="desktop-games-hub__card-copy"><h3>{copy[card.id][0]}</h3><p>{copy[card.id][1]}</p><div className="desktop-games-hub__status"><PracticeStatus card={card} /></div></div><span className="desktop-games-hub__card-arrow" aria-hidden="true">→</span><span className="desktop-games-hub__card-action">Începe</span></Link>)}</div></section>
+    {mission && <section className="desktop-games-hub__mission" aria-labelledby="desktop-mission-title"><span className="desktop-games-hub__icon"><ExerciseIcon name="missions" /></span><div><h2 id="desktop-mission-title">Misiuni la serviciu</h2><p>Exersează norvegiana în situații reale de la locul de muncă.</p></div><Link to={withLevel(mission.to, level)}>Descoperă misiunile <span aria-hidden="true">→</span></Link></section>}
+  </div>;
 }

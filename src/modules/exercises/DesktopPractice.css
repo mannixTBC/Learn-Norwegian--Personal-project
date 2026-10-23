@@ -1,0 +1,48 @@
+/* All overrides explicitly exclude Capacitor, installed PWA and app preview. */
+html:not(.is-installed-app) body .App:has(:is(.vocabulary-notebook,.sentence-workshop,.listening-expedition)){background:#f7f9fb}
+html:not(.is-installed-app) body .App>.App__main:has(:is(.vocabulary-notebook,.sentence-workshop,.listening-expedition)){min-height:0;background:#f7f9fb!important;padding:0!important}
+html:not(.is-installed-app) body .App:has(:is(.vocabulary-notebook,.sentence-workshop,.listening-expedition))>.navbar{display:block!important}
+html:not(.is-installed-app) body .App:has(:is(.vocabulary-notebook,.sentence-workshop,.listening-expedition))>.footer{display:none!important}
+html:not(.is-installed-app) .word-discovery--web .wd-hearts{display:none}
+html:not(.is-installed-app) .word-discovery.word-discovery--web{background:#fffaf0;border-color:#e5d6b7}
+
+@media(min-width:861px){
+  html:not(.is-installed-app) .vocabulary-notebook,
+  html:not(.is-installed-app) .sentence-workshop,
+  html:not(.is-installed-app) .listening-expedition{
+    width:calc(100% - 48px);max-width:1100px;min-height:0;height:auto;margin:28px auto 40px;padding:24px 32px 32px;border:1px solid #e2d6bd;border-radius:20px;background-color:#f5ead6;
+  }
+  html:not(.is-installed-app) .vocabulary-notebook .vn-header{margin-bottom:20px}
+  html:not(.is-installed-app) .vocabulary-notebook .vn-sheet{width:100%;max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:32px;align-items:start;padding:24px}
+  html:not(.is-installed-app) .vocabulary-notebook :is(.vn-flow-top,.vn-progress,.vn-steps,.vn-outcome,.vn-audio-error){grid-column:1 / -1}
+  html:not(.is-installed-app) .vocabulary-notebook .vn-word{grid-column:1;grid-row:4 / 8;min-height:250px;justify-content:center;margin:12px 0;border-radius:16px;padding:28px}
+  html:not(.is-installed-app) .vocabulary-notebook .vn-word h2{font-size:36px;overflow-wrap:anywhere}
+  html:not(.is-installed-app) .vocabulary-notebook :is(.vn-question,.vn-hint,.vn-choices,.vn-answer){grid-column:2}
+  html:not(.is-installed-app) .vocabulary-notebook .vn-question{grid-row:4}
+  html:not(.is-installed-app) .vocabulary-notebook .vn-hint{grid-row:5}
+  html:not(.is-installed-app) .vocabulary-notebook :is(.vn-choices,.vn-answer){grid-row:6 / 8}
+  html:not(.is-installed-app) .vocabulary-notebook .vn-audio-error{grid-row:8}
+  html:not(.is-installed-app) .vocabulary-notebook .vn-choices{width:100%;margin-bottom:12px}
+  html:not(.is-installed-app) .vocabulary-notebook .vn-outcome{margin-top:20px}
+  html:not(.is-installed-app) .vocabulary-notebook .vn-continue{max-width:420px;margin-left:auto;display:block}
+  html:not(.is-installed-app) .sentence-workshop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:22px 30px;align-items:start}
+  html:not(.is-installed-app) .sentence-workshop :is(.sw-header,.sw-title,.sw-progress){grid-column:1 / -1}
+  html:not(.is-installed-app) .sentence-workshop .sw-title h1{font-size:34px}
+  html:not(.is-installed-app) .sentence-workshop .sw-prompt{grid-column:1;grid-row:4 / 7;min-height:260px;align-self:stretch;align-items:center}
+  html:not(.is-installed-app) .sentence-workshop :is(.sw-compose,.sw-bank,.sw-feedback,.sw-footer){grid-column:2}
+  html:not(.is-installed-app) .sentence-workshop .sw-footer{margin-top:0}
+  html:not(.is-installed-app) .sentence-workshop .sw-answer{min-height:100px}
+  html:not(.is-installed-app) .listening-expedition::before{opacity:.4}
+  html:not(.is-installed-app) .listening-expedition .expedition-header{min-height:44px;margin-bottom:20px}
+  html:not(.is-installed-app) .listening-expedition .expedition-sheet{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;gap:18px 36px;width:100%;max-width:none;margin:0;padding:28px}
+  html:not(.is-installed-app) .listening-expedition :is(.expedition-stage,.expedition-progress,.expedition-title){grid-column:1 / -1;margin:0}
+  html:not(.is-installed-app) .listening-expedition .expedition-title{font-size:32px;margin-bottom:8px}
+  html:not(.is-installed-app) .listening-expedition .expedition-player-area{grid-column:1;grid-row:4 / 6;align-self:center;gap:18px}
+  html:not(.is-installed-app) .listening-expedition .expedition-meta{grid-column:1;grid-row:6;margin:0;flex-wrap:wrap}
+  html:not(.is-installed-app) .listening-expedition .expedition-question{grid-column:2;grid-row:4;margin:0}
+  html:not(.is-installed-app) .listening-expedition .expedition-choices{grid-column:2;grid-row:5 / 8;margin:0}
+  html:not(.is-installed-app) .listening-expedition .expedition-submit{grid-column:2;grid-row:8;margin:0}
+  html:not(.is-installed-app) .listening-expedition .expedition-error{grid-column:1;grid-row:7 / 9}
+  html:not(.is-installed-app) .listening-expedition .expedition-option{min-height:58px;font-size:16px}
+}
+
