@@ -1,0 +1,44 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import catalog from './conversationScenarios.json';
+import { resolvePublicScenario } from './scenarioDifficulty.mjs';
+import useConversationSession from './useConversationSession';
+import { getLearningLevel } from '../lessons/learningLevel';
+import { getCareerPath, getCareerProfile } from '../../services/careerProfile';
+import { useAuth } from '../auth/AuthContext';
+import { isInstalledAppView } from '../../services/appExperience';
+import './ConversationStudio.css';
+import DesktopConversationStudio from './DesktopConversationStudio';
+import MobileConversationStudio from './MobileConversationStudio';
+
+export default function ConversationStudio() {
+  const { user } = useAuth();
+  const location = useLocation();
+  const level = getLearningLevel(location.search);
+  const path = getCareerPath(getCareerProfile(user)?.pathId);
+  const scenarios = useMemo(() => catalog.scenarios.map(source => {
+    const resolved = resolvePublicScenario(source, catalog.levels, level);
+    return { ...resolved.scenario, difficulty: resolved.difficulty };
+  }).sort((a, b) => Number(b.path === path.id) - Number(a.path === path.id)), [level, path.id]);
+  const flow = useConversationSession({ userId: user?.id, level, pathId: path.id, scenarios });
+  const { session, messages, busy, error } = flow;
+  const selected = scenarios.find(s => s.id === flow.scenarioId);
+  const [hint, setHint] = useState(false);
+  const bottom = useRef(null), input = useRef(null), result = useRef(null), errorBox = useRef(null);
+  const restoring = !session && Boolean(flow.savedToken);
+  const blocked = error && (flow.operation === 'start' || ['restart', 'auth', 'limit'].includes(error.kind));
+  const remaining = session ? session.maxTurns - session.turn : (selected?.difficulty || catalog.levels[level]).turns;
+  const loginUrl = '/autentificare?redirect=' + encodeURIComponent('/scenarii?nivel=' + level);
+  useEffect(() => { if (!isInstalledAppView()) bottom.current?.scrollIntoView({ block: 'nearest' }); }, [messages, busy]);
+  useEffect(() => { setHint(false); }, [selected?.id, level, session?.turn]);
+  useEffect(() => {
+    if (busy) return;
+    if (error) errorBox.current?.focus();
+    else if (session?.done) result.current?.focus();
+    else if (session && !isInstalledAppView()) input.current?.focus();
+  }, [busy, session, error]);
+
+  const View = isInstalledAppView() ? MobileConversationStudio : DesktopConversationStudio;
+  return <View {...{ level, path, scenarios, selected, flow, hint, setHint, loginUrl, blocked, restoring, remaining }}
+    bottomRef={bottom} inputRef={input} resultRef={result} errorRef={errorBox}/>;
+}

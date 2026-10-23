@@ -1,8 +1,10 @@
 const object = (value) => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
-const ownerOf = (key) => /^curriculum_\d+\.\d+_([0-9a-f-]{36})_/.exec(key)?.[1];
-const ownedKey = (key, id) => ownerOf(key) === id &&
-  /^curriculum_\d+\.\d+_[0-9a-f-]{36}_(?:[abc][12]_(?:progress|final_(?:best|passed)|\d+_resume.*)|current_lesson)$/.test(key);
+const scenarioKey = /^scenario_result_v1_([0-9a-f-]{36})_[ABC][12]_[a-z0-9-]{1,80}_[a-f0-9]{64}$/;
+const ownerOf = (key) => scenarioKey.exec(key)?.[1] || /^curriculum_\d+\.\d+_([0-9a-f-]{36})_/.exec(key)?.[1];
+const ownedKey = (key, id) => ownerOf(key) === id && (scenarioKey.test(key) ||
+  /^curriculum_\d+\.\d+_[0-9a-f-]{36}_(?:[abc][12]_(?:progress|final_(?:best|passed)|\d+_resume.*)|current_lesson)$/.test(key));
 const mergeValue = (key, remote, local) => {
+  if (scenarioKey.test(key)) return remote ?? local;
   if (/_progress$/.test(key)) return {
     completed: [...new Set([...(Array.isArray(remote?.completed) ? remote.completed : []), ...(Array.isArray(local?.completed) ? local.completed : [])])]
       .filter((id) => Number.isInteger(id) && id >= 1 && id <= 24).sort((a, b) => a - b),
@@ -43,11 +45,20 @@ export const createLearningSync = ({ client, storage, delay = 300 }) => {
       if (error || data?.session?.user?.id !== id) return { synced: false };
       const snapshot = queue(id);
       const patch = Object.fromEntries(Object.entries(object(snapshot.progress)).filter(([key]) => ownedKey(key, id)));
-      if (Object.keys(patch).length) {
-        const result = await request(client.rpc('patch_learning_progress', { p_patch: patch }));
-        if (result.error) throw result.error;
+      let scenarioError;
+      for (const [rpc, group] of [
+        ['patch_learning_progress', Object.fromEntries(Object.entries(patch).filter(([key]) => !scenarioKey.test(key)))],
+        ['patch_scenario_results', Object.fromEntries(Object.entries(patch).filter(([key]) => scenarioKey.test(key)))],
+      ]) {
+        if (!Object.keys(group).length) continue;
+        const result = await request(client.rpc(rpc, { p_patch: group }));
+        if (result.error) {
+          if (rpc !== 'patch_scenario_results') throw result.error;
+          scenarioError = result.error;
+          continue; // A pending scenario deployment must not block existing activity sync.
+        }
         const latest = queue(id);
-        for (const [key, value] of Object.entries(patch)) {
+        for (const [key, value] of Object.entries(group)) {
           if (JSON.stringify(latest.progress[key]) === JSON.stringify(value)) delete latest.progress[key];
         }
         write(id, latest);
@@ -62,6 +73,7 @@ export const createLearningSync = ({ client, storage, delay = 300 }) => {
         delete latest.activities[eventId];
         write(id, latest);
       }
+      if (scenarioError) throw scenarioError;
       return { synced: true };
     })();
     running.set(id, task);
@@ -108,7 +120,7 @@ export const createLearningSync = ({ client, storage, delay = 300 }) => {
     // Import pre-sync local progress once; never import another account's keys.
     for (let index = 0; index < storage().length; index += 1) {
       const key = storage().key(index);
-      if (ownedKey(key, id) && (firstRestore || /(_progress|_final_best|_final_passed|_voice_complete)$/.test(key))) {
+      if (ownedKey(key, id) && (firstRestore || scenarioKey.test(key) || /(_progress|_final_best|_final_passed|_voice_complete)$/.test(key))) {
         const local = read(key);
         if (local !== null) pending.progress[key] = mergeValue(key, remote[key], local);
       }

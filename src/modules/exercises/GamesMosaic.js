@@ -107,6 +107,7 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
       <span className="expedition-chevron" aria-hidden="true">›</span>
     </Link>)}</section>
     <div className="northern-utilities">
+      <Link className="mini-missions" to={"/scenarii?nivel=" + level}><GameArt type="missions" /><div><h2>Studio de conversație</h2><span>Intră în rol cu Nora</span></div><b aria-hidden="true">→</b></Link>
       <Link className="mini-missions" to={`${missions.to}?nivel=${level}`}><GameArt type="missions" /><div><h2>Misiuni la serviciu</h2></div><b aria-hidden="true">›</b></Link>
       <Link className="mini-review" to={byId.review.to}><GameArt type="review" /><div><h2>Recapitulare</h2></div>{reviewStats.due > 0 && <span className="expedition-due" aria-label={`${reviewStats.due} de repetat`}>{reviewStats.due}</span>}<b aria-hidden="true">›</b></Link>
     </div>

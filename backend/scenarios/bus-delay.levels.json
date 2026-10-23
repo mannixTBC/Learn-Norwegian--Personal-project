@@ -1,0 +1,358 @@
+{
+  "A1": {
+    "language": {
+      "vocabulary": "Very common words about a bus, traffic, minutes and help.",
+      "syntax": "Short present-tense sentences. One short concrete question at a time.",
+      "register": "Friendly, direct and calm.",
+      "tolerance": "Accept understandable fragments such as 'Ti minutter' after a duration question, and contextual 'Ja' after an explicit plan. Do not require connected sentences, explanations beyond traffic, or advanced grammar.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Ask for one missing piece at a time without giving the learner-only facts. If the learner struggles after reporting the delay and cause, offer a concrete safe plan and ask for confirmation. Allow requests to repeat or explain. No additional complication or extra goal.",
+      "challenge": null
+    },
+    "facts": [],
+    "extraObjectives": []
+  },
+  "A2": {
+    "language": {
+      "vocabulary": "Common everyday and transport vocabulary.",
+      "syntax": "Short complete clauses; simple questions. Keep one question per reply.",
+      "register": "Polite everyday workplace conversation.",
+      "tolerance": "Accept equivalent meanings, self-correction and minor errors when communication remains clear. Do not require a word count, rare words, a particular accent, or verbatim example wording. Language complexity guides feedback; objective criteria determine completion.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Leave space for the learner to ask who will inform passengers. If they omit it, invite a question about responsibilities instead of supplying the answer first. Answer direct questions simply, then invite confirmation of the agreed plan.",
+      "challenge": null
+    },
+    "facts": [],
+    "extraObjectives": [
+      {
+        "id": "clarify-passenger-information",
+        "label": "Clarifică cine informează pasagerii",
+        "criteria": [
+          "The learner asks a genuine question or clarification about who will inform passengers. An explicit request such as 'Kan dere informere passasjerene?' also qualifies.",
+          "A statement, repetition of Nora's answer or a bare 'Ja' alone does not meet this clarification objective."
+        ],
+        "factIds": [
+          "dispatch-help"
+        ],
+        "accept": [
+          "Hvem informerer passasjerene?",
+          "Kan dere gi beskjed til passasjerene?"
+        ],
+        "reject": [
+          "Ja. (No clarification question or request.)",
+          "Jeg fortsetter ruten. (Does not clarify passenger information.)"
+        ]
+      }
+    ]
+  },
+  "B1": {
+    "language": {
+      "vocabulary": "Familiar transport terms and words for choice, timing and reasons.",
+      "syntax": "Connected clauses with a simple reason or contrast. Short clear answers are enough.",
+      "register": "Neutral, cooperative workplace language.",
+      "tolerance": "Accept equivalent meanings, self-correction and minor errors when communication remains clear. Do not require a word count, rare words, a particular accent, or verbatim example wording. Language complexity guides feedback; objective criteria determine completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Invite the learner to weigh both supplied information options. Ask for a reason if missing. Do not choose for them. Offer wording help only if requested or communication breaks down.",
+      "challenge": {
+        "trigger": "After the learner explains the delay, if they have not yet compared the two options.",
+        "prompt": "Bør vi informere nå eller vente til du har sjekket ved neste stopp?",
+        "factIds": [
+          "information-options",
+          "safe-update"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "information-options",
+        "value": "Dispatch may announce the approximate current delay now and revise it after the driver's next safe stop, or wait for that check before announcing a duration. Neither choice requires a route change.",
+        "knownTo": "shared",
+        "disclosure": "Known from the learner brief. Discuss when relevant; do not invent extra details."
+      },
+      {
+        "id": "safe-update",
+        "value": "The learner can give the next update only while safely stopped at the next scheduled stop. Its time is unknown; no guaranteed update interval or arrival time is available.",
+        "knownTo": "shared",
+        "disclosure": "Known from the learner brief. Discuss when relevant; do not invent extra details."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "compare-information-options",
+        "label": "Compară opțiunile de informare și justifică alegerea",
+        "criteria": [
+          "The learner addresses both supplied options: announce an approximate delay now, or wait for a check at the next safe stop.",
+          "The learner chooses an option and gives a practical reason related to timely or accurate passenger information. Either choice is acceptable; choosing a supposedly preferred answer is not required."
+        ],
+        "factIds": [
+          "information-options",
+          "safe-update",
+          "delay"
+        ],
+        "accept": [
+          "Vi kan vente til neste stopp, men jeg foreslår å informere nå fordi passasjerene trenger beskjed.",
+          "Jeg vil vente på en ny sjekk, fordi tallet blir sikrere. Alternativet er å oppgi et foreløpig anslag nå."
+        ],
+        "reject": [
+          "Informer nå. (No comparison or reason.)",
+          "Vi tar en annen vei. (Invents a route alternative.)"
+        ]
+      }
+    ],
+    "allowedResolutions": [
+      "The driver continues safely. Dispatch either publishes the approximate delay now and revises it after the next safe check, or waits for that check before publishing a duration. Both are valid when justified and confirmed."
+    ],
+    "factOverrides": [
+      {
+        "id": "dispatch-help",
+        "value": "Dispatch can notify waiting passengers about the reported delay.",
+        "knownTo": "shared",
+        "disclosure": "The B1 learner brief already says dispatch can inform passengers. Treat this capability as shared; do not require the learner to discover it again."
+      }
+    ]
+  },
+  "B2": {
+    "language": {
+      "vocabulary": "Vocabulary for estimates, uncertainty and practical alternatives.",
+      "syntax": "Clear argument with acknowledgment, a limitation and an alternative; no minimum length.",
+      "register": "Polite, assertive professional communication.",
+      "tolerance": "Accept equivalent meanings, self-correction and minor errors when communication remains clear. Do not require a word count, rare words, a particular accent, or verbatim example wording. Language complexity guides feedback; objective criteria determine completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Raise the supplied exact-time request once after the delay is reported, unless the learner has already addressed it. If clarification is needed, ask one focused follow-up; do not keep inventing objections.",
+      "challenge": {
+        "trigger": "After the delay is reported and before the exact-time request has been addressed.",
+        "prompt": "Passasjerene ber om et nøyaktig tidspunkt. Hva kan vi si til dem?",
+        "factIds": [
+          "exact-time-request",
+          "uncertain-arrival"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "uncertain-arrival",
+        "value": "Ten minutes is the approximate current delay, not a prediction of arrival or recovery. No exact arrival time or recovery time is known.",
+        "knownTo": "shared",
+        "disclosure": "Known from the learner brief. Discuss when relevant; do not invent extra details."
+      },
+      {
+        "id": "safe-update",
+        "value": "The learner can give the next update only while safely stopped at the next scheduled stop. Its time is unknown; no guaranteed update interval or arrival time is available.",
+        "knownTo": "shared",
+        "disclosure": "Known from the learner brief. Discuss when relevant; do not invent extra details."
+      },
+      {
+        "id": "exact-time-request",
+        "value": "Waiting passengers are asking dispatch for an exact arrival time. Nora wants a clear answer but has no exact arrival estimate.",
+        "knownTo": "shared",
+        "disclosure": "Known from the learner brief. Discuss when relevant; do not invent extra details."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "handle-exact-time-request",
+        "label": "Răspunde cererii unei ore exacte fără promisiuni nefondate",
+        "criteria": [
+          "The learner acknowledges the need for clear passenger information and responds to the exact-time request.",
+          "The learner distinguishes the approximate current delay from an unknown arrival time, without promising an exact time.",
+          "The learner offers useful information now and a realistic update after the next safe stop. These points can be made across multiple turns."
+        ],
+        "factIds": [
+          "delay",
+          "uncertain-arrival",
+          "exact-time-request",
+          "safe-update"
+        ],
+        "accept": [
+          "Jeg forstår at de vil vite når bussen kommer. Vi vet bare at den er omtrent ti minutter forsinket. Oppgi det som et anslag, så sjekker jeg igjen ved neste trygge stopp."
+        ],
+        "reject": [
+          "Bussen kommer om ti minutter. (Treats current delay as a guaranteed arrival.)",
+          "Jeg vet ikke. (No useful alternative.)"
+        ]
+      }
+    ]
+  },
+  "C1": {
+    "language": {
+      "vocabulary": "Precise familiar professional language for priorities, constraints and responsibilities.",
+      "syntax": "Connected reasoning, conditional plans and a tactful compromise.",
+      "register": "Cooperative negotiation. No need for jargon or ornate language.",
+      "tolerance": "Accept equivalent meanings, self-correction and minor errors when communication remains clear. Do not require a word count, rare words, a particular accent, or verbatim example wording. Language complexity guides feedback; objective criteria determine completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask the learner to balance update frequency and safe communication, then clarify responsibilities and the update trigger. Accept a coherent proposed compromise. Do not impose fixed-minute updates.",
+      "challenge": {
+        "trigger": "After the delay and safe communication constraint are discussed, if the learner has not yet proposed a workable update plan.",
+        "prompt": "Hvordan kan vi holde passasjerene informert når vi ikke vet tidspunktet for neste oppdatering?",
+        "factIds": [
+          "update-pressure",
+          "safe-update",
+          "dispatch-updates"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "uncertain-arrival",
+        "value": "Ten minutes is the approximate current delay, not a prediction of arrival or recovery. No exact arrival time or recovery time is known.",
+        "knownTo": "shared",
+        "disclosure": "Known from the learner brief. Discuss when relevant; do not invent extra details."
+      },
+      {
+        "id": "safe-update",
+        "value": "The learner can give the next update only while safely stopped at the next scheduled stop. Its time is unknown; no guaranteed update interval or arrival time is available.",
+        "knownTo": "shared",
+        "disclosure": "Known from the learner brief. Discuss when relevant; do not invent extra details."
+      },
+      {
+        "id": "update-pressure",
+        "value": "Dispatch wants to keep waiting passengers informed while the driver cannot promise updates at fixed time intervals.",
+        "knownTo": "shared",
+        "disclosure": "Known from the learner brief. Discuss when relevant; do not invent extra details."
+      },
+      {
+        "id": "dispatch-updates",
+        "value": "Nora can publish a provisional notice now and revise it after the driver reports while safely stopped. The notice can explicitly say the time is an estimate.",
+        "knownTo": "partner",
+        "disclosure": "Explain the available communication support when planning updates, or after the learner requests it."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "negotiate-update-plan",
+        "label": "Negociază responsabilitățile și momentul următoarei actualizări",
+        "criteria": [
+          "The learner explains the tradeoff between keeping passengers informed and communicating only when safely stopped.",
+          "The learner proposes and confirms clear responsibilities: dispatch communicates the provisional information; the driver checks and reports at the next safe stop; dispatch then revises the notice.",
+          "The learner uses a feasible condition for the next update and explicitly avoids a guaranteed time interval. A vague promise to update 'soon' is insufficient."
+        ],
+        "factIds": [
+          "update-pressure",
+          "safe-update",
+          "dispatch-updates",
+          "uncertain-arrival"
+        ],
+        "accept": [
+          "Jeg skjønner behovet for jevnlige beskjeder, men jeg kan bare oppdatere når jeg står trygt. Dere kan oppgi forsinkelsen som foreløpig nå. Ved neste stopp sjekker jeg og melder tilbake, så kan dere endre beskjeden. Jeg kan ikke love et fast intervall."
+        ],
+        "reject": [
+          "Jeg ringer hvert andre minutt. (Unfounded interval and ignores the safe-stop constraint.)",
+          "Vi holder dem informert. (Responsibilities and update trigger are missing.)"
+        ],
+        "priorPartnerCriteria": [
+          1
+        ]
+      }
+    ]
+  },
+  "C2": {
+    "language": {
+      "vocabulary": "Precise and natural language distinguishing a current fact, an estimate and an unsupported inference.",
+      "syntax": "Reformulation, clarification of implication, and a concise conditional agreement.",
+      "register": "Tactful correction and accurate passenger-facing wording. Clarity matters more than length.",
+      "tolerance": "Accept equivalent meanings, self-correction and minor errors when communication remains clear. Do not require a word count, rare words, a particular accent, or verbatim example wording. Language complexity guides feedback; objective criteria determine completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Introduce the supplied ambiguity only if the learner has not already resolved it. Accept a proactive distinction. Ask for a passenger message and a contingent update plan, then accept the agreement without extra twists.",
+      "challenge": {
+        "trigger": "After the learner reports the delay, unless they already explicitly distinguished current delay from recovery.",
+        "prompt": "Mener du at vi er tilbake i rute om ti minutter?",
+        "factIds": [
+          "timing-ambiguity",
+          "delay",
+          "uncertain-arrival"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "uncertain-arrival",
+        "value": "Ten minutes is the approximate current delay, not a prediction of arrival or recovery. No exact arrival time or recovery time is known.",
+        "knownTo": "shared",
+        "disclosure": "Known from the learner brief. Discuss when relevant; do not invent extra details."
+      },
+      {
+        "id": "safe-update",
+        "value": "The learner can give the next update only while safely stopped at the next scheduled stop. Its time is unknown; no guaranteed update interval or arrival time is available.",
+        "knownTo": "shared",
+        "disclosure": "Known from the learner brief. Discuss when relevant; do not invent extra details."
+      },
+      {
+        "id": "update-pressure",
+        "value": "Dispatch wants to keep waiting passengers informed while the driver cannot promise updates at fixed time intervals.",
+        "knownTo": "shared",
+        "disclosure": "Known from the learner brief. Discuss when relevant; do not invent extra details."
+      },
+      {
+        "id": "dispatch-updates",
+        "value": "Nora can publish a provisional notice now and revise it after the driver reports while safely stopped. The notice can explicitly say the time is an estimate.",
+        "knownTo": "partner",
+        "disclosure": "Explain the available communication support when planning updates, or after the learner requests it."
+      },
+      {
+        "id": "timing-ambiguity",
+        "value": "After hearing the current delay, Nora may ask whether 'back on schedule in ten minutes' is what the driver means. This is an interpretation to clarify, not a true recovery estimate.",
+        "knownTo": "partner",
+        "disclosure": "Raise only after the learner has reported the delay, and only if the learner has not already explicitly distinguished current delay from recovery. Accept a clear correction."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "resolve-timing-ambiguity",
+        "label": "Clarifică diferența dintre întârziere și recuperarea ei",
+        "criteria": [
+          "The learner explicitly resolves the ambiguity between being ten minutes late now and returning to schedule in ten minutes. Proactive clarification also qualifies.",
+          "The learner preserves the known approximate delay while correcting the unsupported inference about recovery, tactfully and without inventing a recovery estimate."
+        ],
+        "factIds": [
+          "delay",
+          "uncertain-arrival",
+          "timing-ambiguity"
+        ],
+        "accept": [
+          "Nei, jeg mener at forsinkelsen nå er omtrent ti minutter, ikke at vi er tilbake i rute om ti minutter. Når vi kan hente den inn, vet vi ikke."
+        ],
+        "reject": [
+          "Ti minutter. (Repeats the ambiguous number.)",
+          "Ja, vi er i rute om ti minutter. (Unfounded recovery promise.)"
+        ]
+      },
+      {
+        "id": "agree-precise-message",
+        "label": "Stabilește un mesaj precis și o actualizare condiționată",
+        "criteria": [
+          "The learner proposes precise passenger-facing information that describes the approximate current delay and explicitly avoids an arrival or recovery guarantee.",
+          "The learner negotiates and confirms a conditional update plan with responsibilities: dispatch publishes and revises the notice, while the driver checks at the next safe stop whose time is not known.",
+          "The proposed message and the update plan remain mutually consistent; no ungrounded guarantee is introduced in the final wording."
+        ],
+        "factIds": [
+          "delay",
+          "uncertain-arrival",
+          "safe-update",
+          "dispatch-updates"
+        ],
+        "accept": [
+          "Vi kan skrive: Rute 42 er for øyeblikket omtrent ti minutter forsinket; ankomsttiden er usikker. Dere oppdaterer meldingen når jeg har gitt beskjed ved neste trygge stopp. Tidspunktet for den sjekken kan vi ikke love."
+        ],
+        "reject": [
+          "Bussen kommer straks. (Vague arrival promise.)",
+          "Jeg oppdaterer dere snart. (No precise message or agreed responsibilities.)"
+        ],
+        "priorPartnerCriteria": [
+          1
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,334 @@
+{
+  "levels": {
+    "A1": {
+      "turns": 5,
+      "label": "Replici scurte, cu sprijin",
+      "instruction": "Very common words, present tense, one short question. Accept understandable fragments.",
+      "goal": null
+    },
+    "A2": {
+      "turns": 6,
+      "label": "Schimburi simple de informații",
+      "instruction": "Everyday vocabulary, short sentences. Ask for one detail at a time.",
+      "goal": "Clarifică sau confirmă un detaliu concret"
+    },
+    "B1": {
+      "turns": 7,
+      "label": "Explicații și alternative",
+      "instruction": "Require a reason and a practical alternative; introduce one complication consistent with the facts.",
+      "goal": "Justifică soluția și discută o alternativă"
+    },
+    "B2": {
+      "turns": 8,
+      "label": "Negociere și argumentare",
+      "instruction": "Require justified alternatives and agreement. Politely challenge one proposal.",
+      "goal": "Argumentează soluția și răspunde unei obiecții"
+    },
+    "C1": {
+      "turns": 9,
+      "label": "Nuanță și compromis",
+      "instruction": "Require tactful negotiation, tradeoffs and responsibilities. Use idiomatic Norwegian.",
+      "goal": "Explică un compromis și clarifică responsabilitățile"
+    },
+    "C2": {
+      "turns": 10,
+      "label": "Precizie în situații complexe",
+      "instruction": "Require nuanced reformulation, resolving ambiguity and defensible compromise. Evaluate precision and register, not rare words.",
+      "goal": "Reformulează o ambiguitate și negociază un compromis precis"
+    }
+  },
+  "scenarios": [
+    {
+      "id": "bus-delay",
+      "path": "transport",
+      "title": "O întârziere pe traseu",
+      "place": "Dispecerat · Tromsø",
+      "role": "Tu ești șoferul autobuzului 42. Nora este dispecerul.",
+      "brief": "Ai aproximativ zece minute întârziere din cauza traficului, fără să fi avut un accident. Anunță dispeceratul, află ce ajutor este disponibil și confirmă următorul pas.",
+      "opening": "Hei! Hvordan går det med rute 42?",
+      "goals": [
+        "Anunță întârzierea și durata",
+        "Explică motivul întârzierii",
+        "Stabilește și confirmă următorul pas"
+      ],
+      "hint": "Jeg er omtrent ti minutter forsinket.",
+      "tile": 0,
+      "revision": 2,
+      "variants": {
+        "A1": {
+          "label": "Raportează cu sprijin",
+          "turns": 7,
+          "expectation": "Spune cât întârzii, explică motivul și confirmă un pas simplu. Sunt suficiente replici scurte.",
+          "brief": "Ești șoferul autobuzului 42. Ai aproximativ zece minute întârziere din cauza traficului. Nu a fost un accident. Anunță dispeceratul și stabiliți ce faceți mai departe.",
+          "opening": "Hei! Hvordan går det med bussen?",
+          "hint": "Jeg er ... minutter forsinket. Det er mye trafikk.",
+          "goals": [
+            "Anunță întârzierea și durata",
+            "Explică motivul întârzierii",
+            "Stabilește și confirmă următorul pas"
+          ],
+          "objectiveIds": [
+            "report-delay",
+            "explain-cause",
+            "agree-next-step"
+          ]
+        },
+        "A2": {
+          "label": "Cere o clarificare",
+          "turns": 8,
+          "expectation": "Folosește propoziții simple și întreabă cine va informa pasagerii înainte de a confirma planul.",
+          "brief": "Autobuzul 42 are aproximativ zece minute întârziere din cauza traficului, fără accident. Anunță situația, clarifică cine se ocupă de informarea pasagerilor și confirmă următorul pas.",
+          "opening": "Hei! Hvordan går det med rute 42?",
+          "hint": "Hvem skal ...? Kan dere ...?",
+          "goals": [
+            "Anunță întârzierea și durata",
+            "Explică motivul întârzierii",
+            "Stabilește și confirmă următorul pas",
+            "Clarifică cine informează pasagerii"
+          ],
+          "objectiveIds": [
+            "report-delay",
+            "explain-cause",
+            "agree-next-step",
+            "clarify-passenger-information"
+          ]
+        },
+        "B1": {
+          "label": "Compară și justifică",
+          "turns": 9,
+          "expectation": "Compară două opțiuni de informare și explică de ce o alegi pe una.",
+          "brief": "Autobuzul 42 întârzie aproximativ zece minute din cauza traficului, fără accident. Dispeceratul poate anunța estimarea acum sau poate aștepta verificarea ta la următoarea oprire în siguranță. Compară opțiunile și conveniți un plan.",
+          "opening": "Hei! Hvordan ligger rute 42 an?",
+          "hint": "Vi kan enten ... eller ... Jeg foreslår ... fordi ...",
+          "goals": [
+            "Anunță întârzierea și durata",
+            "Explică motivul întârzierii",
+            "Stabilește și confirmă următorul pas",
+            "Compară opțiunile de informare și justifică alegerea"
+          ],
+          "objectiveIds": [
+            "report-delay",
+            "explain-cause",
+            "agree-next-step",
+            "compare-information-options"
+          ]
+        },
+        "B2": {
+          "label": "Gestionează o obiecție",
+          "turns": 10,
+          "expectation": "Răspunde cererii unei ore exacte, separă estimarea de certitudine și oferă o variantă utilă.",
+          "brief": "Autobuzul 42 are aproximativ zece minute întârziere din cauza traficului, fără accident. Nu știi când se va recupera întârzierea sau ora exactă de sosire. Pasagerii cer o oră precisă. Poți verifica din nou la următoarea oprire în siguranță.",
+          "opening": "Hei! Kan du gi meg en oppdatering om rute 42?",
+          "hint": "Jeg forstår at ... Samtidig kan vi ikke love ... Vi kan heller ...",
+          "goals": [
+            "Anunță întârzierea și durata",
+            "Explică motivul întârzierii",
+            "Stabilește și confirmă următorul pas",
+            "Răspunde cererii unei ore exacte fără promisiuni nefondate"
+          ],
+          "objectiveIds": [
+            "report-delay",
+            "explain-cause",
+            "agree-next-step",
+            "handle-exact-time-request"
+          ]
+        },
+        "C1": {
+          "label": "Negociază un plan de informare",
+          "turns": 10,
+          "expectation": "Echilibrează nevoia de actualizări cu limitele tale și stabilește cine comunică, ce și când.",
+          "brief": "Autobuzul 42 întârzie aproximativ zece minute din cauza traficului, fără accident. Dispeceratul are nevoie de actualizări pentru pasageri, dar tu poți comunica doar când ești oprit în siguranță. Momentul următoarei opriri nu este cunoscut. Negociază un plan realist. Nu ai o oră exactă de sosire.",
+          "opening": "Hei! Vi trenger en oppdatering om rute 42. Hvordan er situasjonen?",
+          "hint": "Vi må veie ... opp mot ... Jeg kan ... når ... Kan dere ta ansvar for ...?",
+          "goals": [
+            "Anunță întârzierea și durata",
+            "Explică motivul întârzierii",
+            "Stabilește și confirmă următorul pas",
+            "Negociază responsabilitățile și momentul următoarei actualizări"
+          ],
+          "objectiveIds": [
+            "report-delay",
+            "explain-cause",
+            "agree-next-step",
+            "negotiate-update-plan"
+          ]
+        },
+        "C2": {
+          "label": "Clarifică sensul și reformulează",
+          "turns": 10,
+          "expectation": "Rezolvă o formulare ambiguă, distinge întârzierea actuală de recuperarea ei și conveniți un mesaj precis pentru pasageri.",
+          "brief": "Autobuzul 42 are aproximativ zece minute întârziere din cauza traficului, fără accident. Nu există o estimare a recuperării întârzierii sau o oră exactă de sosire. Verifică interpretarea dispecerului, reformulează informația pentru pasageri și negociază actualizarea când poți opri în siguranță; ora opririi nu este cunoscută.",
+          "opening": "Hei! Hva bør vi formidle om situasjonen på rute 42?",
+          "hint": "Med «...», mener du ...? Det vi vet, er ... Det innebærer ikke at ...",
+          "goals": [
+            "Anunță întârzierea și durata",
+            "Explică motivul întârzierii",
+            "Stabilește și confirmă următorul pas",
+            "Clarifică diferența dintre întârziere și recuperarea ei",
+            "Stabilește un mesaj precis și o actualizare condiționată"
+          ],
+          "objectiveIds": [
+            "report-delay",
+            "explain-cause",
+            "agree-next-step",
+            "resolve-timing-ambiguity",
+            "agree-precise-message"
+          ]
+        }
+      }
+    },
+    {
+      "id": "hotel-booking",
+      "path": "hospitality",
+      "title": "Rezervarea nu apare",
+      "place": "Recepție · Bergen",
+      "role": "Tu ești recepționerul. Nora este oaspetele.",
+      "brief": "Nora are confirmare pentru două nopți, dar rezervarea nu apare. Există o cameră liberă. Clarifică și propune o soluție.",
+      "facts": "Fictional guest Nora Hansen, two nights, confirmation exists but reservation missing. Equivalent room available at same price. Never request real personal data or payment.",
+      "opening": "Hei, jeg finner ikke reservasjonen min.",
+      "goals": [
+        "Clarifică numele fictiv și durata",
+        "Explică verificarea rezervării",
+        "Propune camera disponibilă și confirmă acordul"
+      ],
+      "hint": "Kan jeg få navnet på reservasjonen?",
+      "tile": 1
+    },
+    {
+      "id": "team-plan",
+      "path": "office",
+      "title": "Un plan care funcționează",
+      "place": "La birou · Oslo",
+      "role": "Tu ești colegul Norei. Planificați o sarcină împreună.",
+      "brief": "Raportul trebuie terminat vineri. Poți pregăti datele joi, iar Nora poate verifica vineri dimineață.",
+      "facts": "Report due Friday. Learner prepares data Thursday, Nora can review Friday morning. No overtime needed.",
+      "opening": "Hei! Når kan vi gjøre rapporten ferdig?",
+      "goals": [
+        "Precizează ce poți face și când",
+        "Clarifică responsabilitatea Norei",
+        "Confirmă planul și termenul"
+      ],
+      "hint": "Jeg kan forberede tallene på torsdag.",
+      "tile": 2
+    },
+    {
+      "id": "cafe-order",
+      "path": "general",
+      "title": "O pauză la cafenea",
+      "place": "Cafenea · Trondheim",
+      "role": "Tu ești clientul. Nora este barista.",
+      "brief": "Comandă o cafea cu lapte de ovăz, întreabă prețul și precizează că o iei la pachet. Costă 45 de coroane.",
+      "facts": "Oat milk coffee available, 45 NOK, takeaway available. No real transaction. Advanced learners can clarify reusable cup preference, without inventing prices.",
+      "opening": "Hei! Hva vil du ha?",
+      "goals": [
+        "Comandă cafeaua cu lapte de ovăz",
+        "Întreabă sau confirmă prețul",
+        "Precizează la pachet și încheie politicos"
+      ],
+      "hint": "Jeg vil gjerne ha en kaffe med havremelk.",
+      "tile": 3
+    },
+    {
+      "id": "site-materials",
+      "path": "construction",
+      "title": "Materialele sosesc mâine",
+      "place": "Șantier · Bergen",
+      "role": "Tu ești lucrătorul. Nora coordonează echipa.",
+      "brief": "Lipsesc panourile pentru camera 2. Sosesc mâine la 9. Astăzi poți pregăti camera 3.",
+      "facts": "Panels for room 2 arrive tomorrow 09:00. Room 3 can be prepared today. Never bypass safety rules.",
+      "opening": "Hei! Hva mangler vi til rom to?",
+      "goals": [
+        "Spune ce materiale lipsesc",
+        "Precizează când sosesc",
+        "Propune pregătirea camerei 3 și confirmă planul"
+      ],
+      "hint": "Vi mangler panelene til rom to.",
+      "tile": 4
+    },
+    {
+      "id": "care-comfort",
+      "path": "healthcare",
+      "title": "O dimineață mai confortabilă",
+      "place": "Centru de îngrijire · Tromsø",
+      "role": "Tu lucrezi în îngrijire. Nora este rezidenta.",
+      "brief": "Norei îi este frig. Sunt disponibile o pătură și un loc fără curent de aer. Întreabă ce preferă.",
+      "facts": "Resident feels cold. Blanket and draught-free seat available. Comfort conversation only; no diagnosis, medicines or symptoms.",
+      "opening": "Hei, jeg fryser litt.",
+      "goals": [
+        "Întreabă ce ar ajuta-o",
+        "Oferă pătura sau locul disponibil",
+        "Confirmă preferința și verifică dacă este confortabil"
+      ],
+      "hint": "Vil du ha et teppe?",
+      "tile": 5
+    },
+    {
+      "id": "cleaning-plan",
+      "path": "cleaning",
+      "title": "Un hol gata la timp",
+      "place": "Clădire de birouri · Oslo",
+      "role": "Tu faci curățenie. Nora coordonează programul.",
+      "brief": "Holul trebuie să fie gata la 10. Podeaua este încă umedă. Poți curăța biroul 3 între timp. Semnul de avertizare rămâne până se usucă.",
+      "facts": "Hall due 10:00, floor wet. Office 3 can be cleaned meanwhile. Warning sign stays until dry. Never mix chemicals.",
+      "opening": "Hei! Er gangen klar?",
+      "goals": [
+        "Explică starea podelei",
+        "Propune ce poți face între timp",
+        "Confirmă termenul și păstrarea semnului de avertizare"
+      ],
+      "hint": "Gulvet er fortsatt vått.",
+      "tile": 6
+    },
+    {
+      "id": "shop-exchange",
+      "path": "retail",
+      "title": "Mărimea potrivită",
+      "place": "Magazin · Stavanger",
+      "role": "Tu ești vânzătorul. Nora este clienta.",
+      "brief": "Nora schimbă un pulover albastru M cu unul L. Are bonul, articolul este nepurtat și L este disponibil la același preț.",
+      "facts": "Blue sweater M exchanged for L. Receipt present, unworn, L in stock at same price. No real payment.",
+      "opening": "Hei! Kan jeg bytte denne genseren?",
+      "goals": [
+        "Clarifică mărimea dorită",
+        "Verifică bonul și disponibilitatea",
+        "Propune schimbul și confirmă acordul"
+      ],
+      "hint": "Hvilken størrelse ønsker du?",
+      "tile": 7
+    },
+    {
+      "id": "study-meeting",
+      "path": "studies",
+      "title": "Întâlnirea de studiu",
+      "place": "Bibliotecă · Trondheim",
+      "role": "Tu ești studentul. Nora este colega ta.",
+      "brief": "Prezentarea este vineri. Vă puteți întâlni miercuri la 14 sau joi la 10 în bibliotecă. Tu pregătești introducerea, Nora exemplele.",
+      "facts": "Presentation Friday. Meet Wednesday 14:00 or Thursday 10:00 at library. Learner prepares introduction, Nora examples.",
+      "opening": "Hei! Når skal vi øve på presentasjonen?",
+      "goals": [
+        "Propune un interval și locul",
+        "Clarifică ce pregătește fiecare",
+        "Confirmă întâlnirea și termenul"
+      ],
+      "hint": "Kan vi møtes på onsdag?",
+      "tile": 8
+    },
+    {
+      "id": "kindergarten-plan",
+      "path": "family",
+      "title": "Prima zi la grădiniță",
+      "place": "Grădiniță · Bergen",
+      "role": "Tu ești părintele. Nora este educatoarea.",
+      "brief": "Copilul fictiv Alex începe luni la 9. Prima zi durează două ore, părintele rămâne acolo. Sunt necesare haine de schimb.",
+      "facts": "Fictional Alex starts Monday 09:00, first day two hours, parent stays. Bring spare clothes. Never request real child data.",
+      "opening": "Hei! Har du spørsmål om den første dagen?",
+      "goals": [
+        "Clarifică ora și durata",
+        "Întreabă ce trebuie adus",
+        "Confirmă prezența ta și planul"
+      ],
+      "hint": "Når skal vi komme på mandag?",
+      "tile": 9
+    }
+  ]
+}

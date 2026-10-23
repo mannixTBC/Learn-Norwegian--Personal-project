@@ -1,3 +1,4 @@
+import ConversationStudio from '../modules/exercises/ConversationStudio';
 import SectionFinalTest from '../modules/lessons/SectionFinalTest';
 /**
  * Configurația rutelor aplicației „NordLingo”.
@@ -56,6 +57,7 @@ const WorkMissions = () => <ActivityGame key="missions" game="missions" />;
 
 /** Rutele aplicației, ordonate după secțiune */
 const routes = [
+  { path: '/scenarii', exact: true, component: ConversationStudio, protected: true },
   { path: '/test-sectiune/:level/:sectionId', exact: true, component: SectionFinalTest },
   // ── Pagina principală ──────────────────────────────────────────────
   {

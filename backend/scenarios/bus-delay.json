@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "bus-delay",
+  "roles": {
+    "learner": "Bus driver on route 42, reporting to dispatch.",
+    "partner": "Nora, dispatcher. Stay in the dispatcher role; do not act as the driver or a passenger."
+  },
+  "outcome": "The driver communicates the delay and its cause, discovers what dispatch can do, and agrees on a safe next step with clear responsibilities.",
+  "facts": [
+    {
+      "id": "route",
+      "value": "The learner is driving route 42 in a fictional training situation in Tromsø.",
+      "knownTo": "shared",
+      "disclosure": "May be mentioned in the opening."
+    },
+    {
+      "id": "delay",
+      "value": "The bus is approximately ten minutes late.",
+      "knownTo": "learner",
+      "disclosure": "The learner knows this from the brief. Nora does not know it until the learner reports it; ask neutrally if missing."
+    },
+    {
+      "id": "cause",
+      "value": "The delay is caused by heavy traffic. There has been no accident.",
+      "knownTo": "learner",
+      "disclosure": "Do not tell the learner the cause or guess it. Ask why when the learner has not explained it. The learner need not mention the absence of an accident."
+    },
+    {
+      "id": "dispatch-help",
+      "value": "Dispatch can notify waiting passengers about the reported delay.",
+      "knownTo": "partner",
+      "disclosure": "Reveal when the learner asks for help, proposes notifying passengers, or asks what happens next. If needed, ask whether the learner wants help without supplying a complete answer."
+    },
+    {
+      "id": "safe-plan",
+      "value": "The driver can continue the scheduled route safely; dispatch can inform waiting passengers. There is no supplied alternative route, replacement bus or recovery time.",
+      "knownTo": "partner",
+      "disclosure": "Explain the available plan when asked or in response to a proposal; ask the learner to confirm their own next step. Never promise arrival times or recovery of the delay."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "report-delay",
+      "label": "Anunță întârzierea și durata",
+      "criteria": [
+        "The learner communicates that their bus is late.",
+        "The learner communicates an approximate delay of ten minutes. Equivalent wording is accepted; saying ten without an understandable duration/context is insufficient."
+      ],
+      "factIds": [
+        "route",
+        "delay"
+      ],
+      "accept": [
+        "Jeg er omtrent ti minutter forsinket.",
+        "Bussen er sen. Cirka ti minutter."
+      ],
+      "reject": [
+        "Jeg er forsinket. (Duration is missing.)",
+        "Jeg er tjue minutter forsinket. (Contradicts the supplied delay.)"
+      ]
+    },
+    {
+      "id": "explain-cause",
+      "label": "Explică motivul întârzierii",
+      "criteria": [
+        "The learner links the delay to traffic or congestion.",
+        "An understandable explanation is sufficient; no requirement to recite the brief or use one exact expression."
+      ],
+      "factIds": [
+        "cause"
+      ],
+      "accept": [
+        "Det er mye trafikk.",
+        "Jeg står i kø, derfor er jeg forsinket."
+      ],
+      "reject": [
+        "Jeg vet ikke. (No explanation.)",
+        "Det har vært en ulykke. (Invented accident.)"
+      ]
+    },
+    {
+      "id": "agree-next-step",
+      "label": "Stabilește și confirmă următorul pas",
+      "criteria": [
+        "The learner participates in choosing a next step grounded in available facts: by requesting help, proposing an action, or accepting a concrete plan offered by the partner. Initiating the proposal is not mandatory for this base objective.",
+        "A concrete feasible plan has been offered, accepted or clarified by the partner in a preceding dialogue turn, before the learner confirmation being evaluated. The reply currently being generated cannot supply this missing context.",
+        "The learner confirms their action or the agreed responsibilities after that plan. A contextual confirmation is sufficient; no fixed phrase or repetition of the whole plan is required. A bare initial request or proposal is insufficient."
+      ],
+      "factIds": [
+        "dispatch-help",
+        "safe-plan"
+      ],
+      "accept": [
+        "Learner: Kan dere informere passasjerene? Partner: Ja. Fortsett ruten som vanlig. Learner: Greit, jeg fortsetter ruten.",
+        "Partner: Jeg informerer passasjerene. Kan du fortsette ruten? Learner: Ja, det gjør jeg.",
+        "Partner: Jeg informerer passasjerene. Fortsett ruten som vanlig. Learner: Ja. (Acceptable because the immediately preceding plan is explicit.)"
+      ],
+      "reject": [
+        "Kan dere informere passasjerene? (Proposal only; no confirmed agreement yet.)",
+        "Jeg kjører fortere. (Unsafe solution.)",
+        "Ja. (Without an identifiable plan in the dialogue.)",
+        "Learner: Kan dere informere passasjerene? Partner: Ja, fortsett ruten som vanlig. (Still waiting for the learner to confirm; the partner reply cannot complete this objective.)"
+      ],
+      "priorPartnerCriteria": [
+        1,
+        2
+      ]
+    }
+  ],
+  "allowedResolutions": [
+    "The learner continues the scheduled route safely; Nora informs waiting passengers after the delay has been reported and the learner confirms the plan.",
+    "Equivalent requests and confirmations are allowed. Fixed phrases, a rigid objective order, and an explicit bus number in every reply are not required."
+  ],
+  "boundaries": [
+    "Do not reward unsafe driving, speeding, invented diversions, replacement buses or fabricated timing commitments.",
+    "Do not read learner-only facts aloud before the learner communicates them.",
+    "Use these examples as calibration, never as keyword lists or ready-made learner responses.",
+    "Objectives may be addressed in any order or combined in one learner turn. Confirmation still requires a real preceding plan in the dialogue.",
+    "If asked for information not supplied, say it is not known in this exercise and return to the available plan.",
+    "Scenario facts describe a fictional language exercise, not real dispatch procedures.",
+    "All criteria of each objective must be satisfied together. Prior partner turns may establish the context of an agreement, but only learner words count as evidence of learner achievement; the newly generated partner reply is never prior context."
+  ],
+  "completion": {
+    "success": "All base objectives must have learner evidence and the safe plan must be confirmed. A resolved level variant adds its own explicit objectives.",
+    "incomplete": "A turn limit or a polite goodbye alone does not mean success. Report the achieved objectives without inventing missing evidence."
+  }
+}
