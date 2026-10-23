@@ -100,6 +100,27 @@ try {
     assert.deepEqual(report.browserErrors, []);
     await writeFile(resolve(output, 'loading-report.json'), JSON.stringify(report, null, 2));
     console.log(JSON.stringify(report, null, 2));
+  } else if (process.argv.includes('--verbs-only')) {
+    for (const app of [false, true]) {
+      for (const width of app ? [320, 390, 768] : [1024, 1440]) {
+        await page.setViewportSize({ width, height: app ? 844 : 900 });
+        await mount('/challenge30?nivel=A1', app);
+        assert.equal(await visible(app ? '.verb-practice--app' : '.challenge30 .verb-practice--web'), 1, 'Real route uses the appropriate verb layout');
+        assert.equal(await visible('.App > .navbar'), app ? 0 : 1, 'Web navigation stays separate');
+        assert.equal(await visible('.App > .footer'), app ? 0 : 1, 'Web footer stays separate');
+        assert.equal(await visible('.verb-practice__top'), app ? 1 : 0, 'Illustrated app header stays installed-app only');
+        const size = await page.evaluate(() => ({ width: innerWidth, scroll: document.documentElement.scrollWidth }));
+        assert.ok(size.scroll <= size.width + 1, 'Verbs have no horizontal overflow in the application shell');
+        for (let index = 0; index < 3; index++) await page.locator('[data-action="primary"]').click();
+        await page.locator('[data-choice]').first().click();
+        await page.locator('[data-action="primary"]').click();
+        assert.equal(await page.locator('[data-choice]:enabled').count(), 0, 'The real route locks a checked verb answer');
+        report[app ? 'app' : 'desktop'].push({ width, path: '/challenge30?nivel=A1' });
+      }
+    }
+    assert.deepEqual(report.browserErrors, []);
+    await writeFile(resolve(output, 'verbs-report.json'), JSON.stringify(report, null, 2));
+    console.log(JSON.stringify(report, null, 2));
   } else {
   const mobileOnly = '.mobile-app-nav,.dashboard-app-home,.learn-app,.account-mobile,.northern-games,.listening-expedition,.pronunciation-cathedral,.nordic-exercise,.ng-header,.lapp,.auth-fjord,.session-loading__logo,.session-loading__scene';
   const desktopCases = [
@@ -139,7 +160,7 @@ try {
     ['/jocuri?nivel=A1', '.northern-games'], ['/pronuntie?nivel=A1', '.pronunciation-cathedral'],
     ['/chestionar?nivel=A1', '.nordic-exercise'], ['/drag?nivel=A1', '.nordic-exercise'], ['/hangman?nivel=A1', '.word-discovery:not(.word-discovery--web)'],
     ['/asculta-si-alege?nivel=A1', '.listening-expedition'], ['/misiuni-la-serviciu?nivel=A1', '.nordic-exercise'],
-    ['/challenge30?nivel=A1', '.nordic-exercise'], ['/recapitulare?nivel=A1', '.nordic-exercise'], ['/curs/A1/1', '.lapp'], ['/autentificare', '.auth-fjord'],
+    ['/challenge30?nivel=A1', '.verb-practice--app'], ['/recapitulare?nivel=A1', '.nordic-exercise'], ['/curs/A1/1', '.lapp'], ['/autentificare', '.auth-fjord'],
   ];
   for (const [path, selector] of appCases) {
     await mount(path, true);

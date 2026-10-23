@@ -15,6 +15,7 @@ const entries = {
   pronunciation: 'src/modules/pronunciation/Pronunciation.js', recorder: 'src/modules/pronunciation/PronunciationLab.js',
   review: 'src/modules/lessons/ReviewPage.js', content: 'src/modules/lessons/norwegian-program/lessonContent.js',
   verbData: 'src/modules/exercises/challenge30/verbsForLevel.js', practiceData: 'src/modules/exercises/practiceGameData.js',
+  verbSessionData: 'src/modules/exercises/challenge30/verbPracticeData.js',
   vocabularyFlow: 'src/modules/exercises/vocabularyFlow.js',
 };
 await build({ configFile: resolve(root, 'vite.config.js'), logLevel: 'error', plugins: [{
@@ -33,9 +34,10 @@ await build({ configFile: resolve(root, 'vite.config.js'), logLevel: 'error', pl
   input: Object.fromEntries(Object.entries(entries).map(([name, path]) => [name, resolve(root, path)])), output: { entryFileNames: '[name].mjs' },
 } } });
 const load = (name) => import(pathToFileURL(resolve(outDir, name + '.mjs')));
-const components = Object.fromEntries(await Promise.all(Object.keys(entries).filter((name) => !['content', 'verbData', 'practiceData', 'vocabularyFlow'].includes(name)).map(async (name) => [name, (await load(name)).default])));
+const components = Object.fromEntries(await Promise.all(Object.keys(entries).filter((name) => !['content', 'verbData', 'practiceData', 'vocabularyFlow', 'verbSessionData'].includes(name)).map(async (name) => [name, (await load(name)).default])));
 const { courseCatalog } = await load('content');
 const { getVerbSessions } = await load('verbData');
+const { createVerbSession, getKnownReviewVerbs } = await load('verbSessionData');
 const { createPracticeQuestions, normalizePracticeAnswer, saveGameProgress, readGameProgress } = await load('practiceData');
 const { createVocabularySession, vocabularyContext } = await load('vocabularyFlow');
 assert.equal(vocabularyContext({ word: 'en bil', example: 'Jeg ser et bilde.' }), null, 'never remove a substring from another word');
@@ -238,19 +240,26 @@ await render('sentences', { verbs });
 assert.ok(renderer.root.findAllByType('blockquote').some((node) => text(node) === verbs[0].example));
 assert.ok(button('Verifică propozițiile').props.disabled); await unmount();
 
-// The final verb session reaches 100%, and tab navigation works by keyboard.
+// The final sequential verb session reaches 100% without skipping learning steps.
 localStorage.setItem('challenge_verbs_progress_c2', JSON.stringify({ day: 10, completed: [1, 2, 3, 4, 5, 6, 7, 8, 9] }));
 await render('verbs', {}, 'C2');
-const tabs = renderer.root.findAllByProps({ role: 'tab' });
-await act(async () => tabs[0].props.onKeyDown({ key: 'End', preventDefault() {} }));
-assert.equal(renderer.root.findAllByProps({ role: 'tab' })[2].props['aria-selected'], true);
-const lastVerbs = [...getVerbSessions('C2')[9], ...getVerbSessions('C2')[8]];
-for (const verb of lastVerbs) await act(async () => renderer.root.findByProps({ 'aria-label': 'Scrie în norvegiană: ' + verb.romanian }).props.onChange({ target: { value: verb.norwegian } }));
-await click(button('Verifică'));
+const finalProgress = { day: 10, completed: [1, 2, 3, 4, 5, 6, 7, 8, 9] };
+const finalReviews = getKnownReviewVerbs({ level: 'C2', day: 10, progress: finalProgress }).reverse().slice(0, 2);
+const finalSession = createVerbSession({ level: 'C2', day: 10, progress: finalProgress, reviewVerbs: finalReviews });
+const verbPrimary = () => renderer.root.findByProps({ 'data-action': 'primary' });
+for (let index = 0; index < 3; index++) await click(verbPrimary());
+for (const question of finalSession.questions) {
+  assert.equal(byClass('verb-practice__card')[0].props['data-question-id'], question.id);
+  if (question.options) await click(renderer.root.findByProps({ 'data-choice': question.answer }));
+  else await act(async () => renderer.root.findByProps({ 'aria-label': 'Verbul lipsă' }).props.onChange({ target: { value: question.answer } }));
+  await click(verbPrimary());
+  await click(verbPrimary());
+}
+await click(renderer.root.findByProps({ 'data-action': 'sessions' }));
 assert.equal(renderer.root.findByProps({ 'aria-label': 'Sesiuni parcurse' }).props['aria-valuenow'], 100);
 assert.equal(JSON.parse(localStorage.getItem('challenge_verbs_progress_c2')).completed.length, 10);
 await unmount();
-console.log('✓ Verbs: touch matching, multiword expressions, exact sentence examples, keyboard tabs and 100% completion.');
+console.log('✓ Verbs: touch matching, multiword expressions, contextual recall and sequential 100% completion.');
 
 // Pronunciation keeps lesson selection and phrase navigation available on every level.
 for (const level of Object.keys(courseCatalog)) {
