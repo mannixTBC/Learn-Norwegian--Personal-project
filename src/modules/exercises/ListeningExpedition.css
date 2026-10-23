@@ -185,24 +185,3 @@ html body .App > .App__main:has(.listening-expedition) { min-height: 100svh; pad
  .listening-expedition--playing:has(.expedition-error) .expedition-title { margin-bottom:8px; }
  .listening-expedition--playing:has(.expedition-error) .expedition-question { margin-top:6px; }
 }
-/* Compact spacing at every height, including desktop browser windows. */
-html body:has(.listening-expedition--playing), html body .App:has(.listening-expedition--playing),
-html body .App > .App__main:has(.listening-expedition--playing) { min-height:100dvh; }
-.listening-expedition--playing { gap:8px; padding-block:max(8px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-bottom)); }
-.listening-expedition--playing .expedition-sheet { padding:16px 18px; }
-.listening-expedition--playing .expedition-progress { margin:7px 0 10px; }
-.listening-expedition--playing .expedition-title { margin-bottom:14px; font-size:28px; }
-.listening-expedition--playing .expedition-player { min-height:64px; padding:7px 10px; }
-.listening-expedition--playing .expedition-wave { height:25px; }
-.listening-expedition--playing .expedition-wave i { max-height:25px; }
-.listening-expedition--playing .expedition-meta { margin:12px 0 6px; }
-.listening-expedition--playing .expedition-question { margin-bottom:8px; font-size:18px; }
-.listening-expedition--playing .expedition-choices { gap:8px; }
-.listening-expedition--playing .expedition-option { min-height:48px; padding:6px 10px; }
-.listening-expedition--playing .expedition-submit { min-height:46px; margin-top:12px; padding:8px 12px; }
-@media(max-height:700px) {
- .listening-expedition--playing .expedition-sheet { padding:12px; }
- .listening-expedition--playing .expedition-title { font-size:25px; margin-bottom:10px; }
- .listening-expedition--playing .expedition-option { min-height:44px; }
- .listening-expedition--playing .expedition-meta { margin-top:10px; }
-}
