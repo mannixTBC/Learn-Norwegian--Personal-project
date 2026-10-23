@@ -1,3 +1,4 @@
+import { selectLearningImageId } from './learningImageCatalog';
 export const gameProgressTargets = { quiz: 5, order: 5, word: 5 };
 export const normalizePracticeAnswer = (value) => String(value || '').normalize('NFC').toLocaleLowerCase('nb-NO').replace(/[.!?,;:“”„«»"]/g, '').replace(/\s+/g, ' ').trim();
 export const shufflePractice = (items, random = Math.random) => {
@@ -23,7 +24,7 @@ export const createPracticeQuestions = (lessons, game, difficulty = 'normal', ra
   return lessons.flatMap((lesson) => [
     ...lesson.exercises.filter((exercise) => exercise.type === 'order').map((exercise, index) => ({ id: 'o-' + lesson.uid + '-' + index, lessonId: lesson.id, type: 'order', prompt: exercise.prompt, answer: exercise.answer.join(' '), words: shufflePractice(exercise.answer, random), explanation: exercise.explanation })),
     ...lesson.dialogue.map((line, index) => { const words = line[1].replace(/[.!?]/g, '').split(/\s+/).filter(Boolean); return { id: 'd-' + lesson.uid + '-' + index, lessonId: lesson.id, type: 'order', prompt: 'Construiește: „' + line[2] + '”', answer: words.join(' '), words: shufflePractice(words, random), explanation: line[1] }; }),
-  ]);
+  ]).map(question => ({ ...question, imageId: selectLearningImageId(question.answer) }));
 };
 
 const progressKey = (game, level, userId) => 'practice_game_v2_' + (userId || 'guest') + '_' + level + '_' + game;

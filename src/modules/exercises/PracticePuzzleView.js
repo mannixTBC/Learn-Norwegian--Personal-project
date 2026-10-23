@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { ExerciseIcon, ExerciseLayout } from './ExerciseUI';
 import { NordicProgress } from './NordicExerciseUI';
 import VocabularyNotebook from './VocabularyNotebook';
+import SentenceWorkshop from './SentenceWorkshop';
 
 export default function PracticePuzzleView({ game, level, info, question, current, total, score, headingRef, answer, setAnswer, selected, setSelected, checked, correct, completeAnswer, onVerify, onNext, onExit, onSpeak }) {
   const isOrder = game === 'order';
@@ -14,6 +15,7 @@ export default function PracticePuzzleView({ game, level, info, question, curren
     outcome.current?.scrollIntoView?.({ block: 'nearest' });
   }, [checked]);
   if (game === 'quiz') return <VocabularyNotebook {...{ level, question, current, total, headingRef, answer, setAnswer, checked, correct, completeAnswer, onVerify, onNext, onExit, onSpeak }} />;
+  if (isOrder) return <SentenceWorkshop {...{ level, question, current, total, headingRef, selected, setSelected, checked, correct, completeAnswer, onVerify, onNext, onExit, onSpeak }} />;
   return <ExerciseLayout className={'practice-game practice-game--session ng-puzzle ng-puzzle--' + game} level={level} icon={game} title={info.title} description={info.subtitle} onExit={onExit}>
     <NordicProgress current={current + 1} total={total} detail={`${current + 1} / ${total} · ${score} ${score === 1 ? 'corect' : 'corecte'}`} />
     <section className="game-question ng-puzzle-card">
