@@ -43,6 +43,7 @@
     "build:ssr": "vite build --ssr src/entry-server.jsx --outDir dist-ssr",
     "test:games": "node --test src/modules/exercises/practiceActivities.test.mjs && node scripts/test-activity-games.mjs",
     "test:mobile-exercises": "node scripts/test-mobile-exercises.mjs",
+    "test:word-discovery": "node scripts/test-word-discovery.mjs",
     "test:verbs": "node scripts/test-verb-practice-data.mjs && node scripts/test-verb-practice-state.mjs && node scripts/test-verb-practice-ui.mjs",
     "test:pronunciation-cathedral": "node scripts/test-pronunciation-cathedral.mjs",
     "test:northern-pass": "node --test scripts/test-northern-pass-progress.mjs && node scripts/test-northern-pass-earning.mjs",
