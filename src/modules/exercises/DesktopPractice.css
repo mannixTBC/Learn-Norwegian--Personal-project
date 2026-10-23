@@ -46,3 +46,143 @@ html:not(.is-installed-app) .word-discovery.word-discovery--web{background:#fffa
   html:not(.is-installed-app) .listening-expedition .expedition-option{min-height:58px;font-size:16px}
 }
 
+/* Website practice uses the desktop visual system. Installed mobile themes stay intact. */
+html:not(.is-installed-app) body .App{
+  --desktop-practice-ink:#14213d;--desktop-practice-muted:#657386;
+  --desktop-practice-line:#dfe6ed;--desktop-practice-teal:#1f6f78;
+  --desktop-practice-soft:#edf6f7;--desktop-practice-canvas:#f7f9fb;
+}
+html:not(.is-installed-app) body .App:has(:is(.desktop-games-hub,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery--web,.practice-game,.activity-game,.desktop-activity,.challenge30,.pronuntie,.review-page)){
+  background:var(--desktop-practice-canvas);color:var(--desktop-practice-ink);
+}
+html:not(.is-installed-app) body .App>.App__main:has(:is(.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery--web,.practice-game,.activity-game,.desktop-activity,.challenge30,.pronuntie,.review-page)){
+  background:var(--desktop-practice-canvas)!important;
+}
+html:not(.is-installed-app) body .App :is(.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery--web,.practice-game,.activity-game,.desktop-activity,.challenge30,.pronuntie,.review-page){
+  --ex-ink:#14213d;--ex-muted:#657386;--ex-line:#dfe6ed;--ex-teal:#1f6f78;--ex-soft:#edf6f7;
+  --exp-ink:#14213d;--exp-teal:#1f6f78;--exp-gold:#1f6f78;
+  --wd-ink:#14213d;--wd-ivory:#14213d;--wd-gold:#1f6f78;
+  color:#14213d;font-family:'Source Sans 3','Segoe UI',sans-serif;
+}
+html:not(.is-installed-app) body .App :is(.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery--web){
+  background:#fff;background-image:none;border-color:#dfe6ed;border-radius:16px;box-shadow:0 4px 20px #14213d04;
+}
+html:not(.is-installed-app) body .App .listening-expedition::before{display:none}
+html:not(.is-installed-app) body .App :is(.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery--web,.verb-practice) :is(h1,h2,h3){
+  font-family:'Source Sans 3','Segoe UI',sans-serif;font-weight:750;letter-spacing:-.025em;line-height:1.25;
+}
+html:not(.is-installed-app) body .App :is(.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery--web) :is(button,a,input):focus-visible{
+  outline:3px solid #73b9bf;outline-offset:3px;
+}
+html:not(.is-installed-app) body .App :is(.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery--web) :is(h1,h2,h3)[tabindex='-1']:focus{outline:none}
+html:not(.is-installed-app) body .App :is(.vn-header button,.vn-header>span,.sw-header>button,.sw-level,.expedition-back,.expedition-level){
+  color:#1f6f78;border:1px solid #dfe6ed;border-radius:9px;background:#f6f9fb;box-shadow:none;
+}
+html:not(.is-installed-app) body .App .sw-header .sw-logo{display:none}
+html:not(.is-installed-app) body .App :is(.vn-header h1,.sw-title h1,.expedition-title,.wd-heading h1){color:#14213d;font-size:30px}
+html:not(.is-installed-app) body .App :is(.sw-title p,.wd-heading p,.vn-hint,.vn-note,.expedition-meta,.sw-bank p,.sw-footer small){color:#657386;font-size:14px;font-family:inherit}
+
+/* Vocabulary: readable study card and quiet answer choices. */
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-word{
+  color:#14213d;background:#edf6f7;border:1px solid #d4e6e8;border-radius:12px;box-shadow:none;
+}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-word h2{color:#14213d;font-size:34px}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-word>small{color:#527b84}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-word>svg{color:#1f6f78}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-word button{
+  background:#fff;color:#1f6f78;border-color:#bdd6db;border-radius:8px;font-size:14px;font-weight:650;
+}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-question{font-size:22px;color:#14213d}
+html:not(.is-installed-app) body .App .vocabulary-notebook :is(.vn-sound-toggle,.vn-answer input,.vn-letters button){background:#fff;border-color:#dfe6ed;color:#14213d;border-radius:8px}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-choices>button{
+  border:1px solid #dfe6ed;border-radius:10px;background:#fff;color:#14213d;box-shadow:none;min-height:56px;padding:12px 14px;
+}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-choices>button:not(:disabled):hover{border-color:#89b8be;background:#f3f9fa}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-letter{border:0;border-radius:7px;background:#eef3f6;color:#657386;font:650 13px 'Segoe UI',sans-serif}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-option-text{font-size:16px}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-choices>.correct{border-color:#82b299;background:#eff8f2;color:#265c40}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-choices>.wrong{border-color:#d7a6a1;background:#fcf1ef;color:#8a4841}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-feedback{border-color:#cddfe3;background:#f2f8f9;border-radius:10px;color:#14213d}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-feedback>svg{color:#1f6f78}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-feedback small{border-color:#dfe6ed;color:#657386}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-progress{background:#e7edf1;color:#1f6f78}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-progress::-webkit-progress-bar{background:#e7edf1}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-steps li{border-color:#e7edf1;color:#657386}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-steps li[aria-current]{border-color:#1f6f78;color:#1f6f78}
+
+/* Sentence building retains its illustrations and word interactions. */
+html:not(.is-installed-app) body .App .sentence-workshop :is(.sw-prompt,.sw-answer){background:#f8fafc;border-color:#dfe6ed;border-radius:12px;box-shadow:none}
+html:not(.is-installed-app) body .App .sentence-workshop .sw-prompt{align-self:start;min-height:260px}
+html:not(.is-installed-app) body .App .sentence-workshop .sw-prompt h2{font-size:27px;color:#14213d}
+html:not(.is-installed-app) body .App .sentence-workshop :is(.sw-prompt small,.sw-label,.sw-bank h3){color:#657386;font-size:11px}
+html:not(.is-installed-app) body .App .sentence-workshop .sw-progress i{background:#e7edf1}
+html:not(.is-installed-app) body .App .sentence-workshop .sw-progress :is(i.done,i.active){background:#1f6f78}
+html:not(.is-installed-app) body .App .sentence-workshop :is(.sw-answer button,.sw-bank button){font:650 16px/1.4 'Source Sans 3','Segoe UI',sans-serif;border-radius:8px;box-shadow:none}
+html:not(.is-installed-app) body .App .sentence-workshop .sw-bank button{background:#fff;border-color:#cfdae3;color:#14213d}
+html:not(.is-installed-app) body .App .sentence-workshop .sw-bank button:not(:disabled):hover{background:#edf6f7;border-color:#89b8be}
+html:not(.is-installed-app) body .App .sentence-workshop .sw-answer button{background:#1f6f78;border-color:#1f6f78;color:#fff}
+html:not(.is-installed-app) body .App .sentence-workshop .sw-feedback{background:#eff8f2;border-color:#b5d3c2;border-radius:12px}
+html:not(.is-installed-app) body .App .sentence-workshop .sw-feedback.is-wrong{background:#fcf1ef;border-color:#d7a6a1}
+html:not(.is-installed-app) body .App .sentence-workshop .sw-feedback p{font:650 18px/1.5 'Source Sans 3','Segoe UI',sans-serif}
+html:not(.is-installed-app) body .App .sentence-workshop .sw-feedback button{background:#fff;border-color:#cddde3;border-radius:8px;color:#1f6f78}
+
+/* Listening: flat player, restrained selection states and feedback dialog. */
+html:not(.is-installed-app) body .App .listening-expedition .expedition-sheet{border-color:#e0e7ed;background:#fff;border-radius:12px;box-shadow:none}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-stage{width:fit-content;padding:6px 10px;background:#edf6f7;color:#1f6f78;border:0;border-radius:6px;box-shadow:none}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-player{background:#edf6f7;color:#1f6f78;border:1px solid #c4dfe3;border-radius:12px;box-shadow:none;min-height:90px}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-play{background:#1f6f78;border-color:#1f6f78;color:#fff;box-shadow:none;width:48px;height:48px;flex-basis:48px}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-wave i{background:#6babb3}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-slow{background:#fff;color:#1f6f78;border-color:#dfe6ed;border-radius:9px;box-shadow:none}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-option{background:#fff;border:1px solid #dfe6ed;border-radius:10px;color:#14213d;box-shadow:none;font-weight:600}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-option.selected{border-color:#1f6f78;background:#edf6f7;box-shadow:inset 0 0 0 1px #1f6f78}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-option.correct{border-color:#82b299;background:#eff8f2}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-option.wrong{border-color:#d7a6a1;background:#fcf1ef}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-letter{background:#eef3f6;color:#657386;border-radius:7px;font-size:13px}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-option.selected .expedition-letter{background:#1f6f78;color:#fff}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-popup{background:#fff;border-color:#dfe6ed;border-radius:16px;box-shadow:0 16px 70px #14213d20;color:#14213d}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-popup h3{font-size:24px}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-popup::backdrop{background:#14213d55;backdrop-filter:blur(2px)}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-progress{background:#e7edf1}
+html:not(.is-installed-app) body .App .listening-expedition .expedition-progress::-webkit-progress-bar{background:#e7edf1}
+
+/* Consistent primary actions, including disabled state. */
+html:not(.is-installed-app) body .App :is(.vn-continue,.sw-footer>button,.expedition-submit,.word-discovery--web .wd-next){
+  background:#1f6f78;border:1px solid #1f6f78;border-radius:8px;color:#fff;box-shadow:none;font:700 15px/1.4 'Source Sans 3','Segoe UI',sans-serif;min-height:48px;
+}
+html:not(.is-installed-app) body .App :is(.vn-continue,.sw-footer>button,.expedition-submit):not(:disabled):hover{background:#185861;border-color:#185861}
+html:not(.is-installed-app) body .App :is(.vn-continue,.sw-footer>button,.expedition-submit):disabled{background:#e7edf1;border-color:#dfe6ed;color:#788795;box-shadow:none}
+
+/* Word discovery uses the same illustrations, with a desktop frame and keyboard. */
+html:not(.is-installed-app) body .App .word-discovery--web :is(.wd-card,.wd-result-card){background:#f8fafc;border-color:#dfe6ed;border-radius:12px;box-shadow:none}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-category{background:#edf6f7;color:#1f6f78;border-radius:6px;font-family:inherit}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-heading p{color:#657386}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-key-row button{background:#fff;border-color:#cfdbe3;border-radius:7px;box-shadow:none;color:#14213d;font:650 16px 'Source Sans 3','Segoe UI',sans-serif}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-key-row button.found{background:#edf6f7;border-color:#76a9b0;color:#185861}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-key-row button.missed{background:#eef1f4;border-color:#dfe6ed;color:#87939f}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-slot{background:#fff;border-color:#cbd9e1;color:#14213d;border-radius:6px;box-shadow:none}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-controls button{background:#fff;border-color:#cddde3;border-radius:8px;color:#1f6f78;box-shadow:none}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-controls button.wd-next{background:#1f6f78;border-color:#1f6f78;color:#fff}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-progress progress{background:#e7edf1}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-progress progress::-webkit-progress-bar{background:#e7edf1}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-progress progress::-webkit-progress-value{background:#1f6f78}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-progress progress::-moz-progress-bar{background:#1f6f78}
+
+/* Verbs, pronunciation, missions, recap and session results share the same tokens. */
+html:not(.is-installed-app) body .App :is(.verb-practice,.verb-practice__sessions){--verb-ink:#14213d;--verb-muted:#657386;--verb-line:#dfe6ed;--verb-paper:#fff;--verb-bg:#f7f9fb;--verb-teal:#1f6f78;--verb-soft:#edf6f7;font-family:'Source Sans 3','Segoe UI',sans-serif}
+html:not(.is-installed-app) body .App .verb-practice__sessions{background:#fff;border-color:#dfe6ed;border-radius:14px}
+html:not(.is-installed-app) body .App .verb-practice__card{border-radius:12px;box-shadow:none}
+html:not(.is-installed-app) body .App .verb-practice :is(.verb-practice__example p:first-child,.verb-practice__sentence,.verb-practice__question-title){font-family:inherit;font-size:25px;font-weight:650}
+html:not(.is-installed-app) body .App .verb-practice mark{border-color:#90b9bf}
+html:not(.is-installed-app) body .App .verb-practice :is(.verb-practice__choices button,.verb-practice__footer button){border-radius:8px;box-shadow:none}
+html:not(.is-installed-app) body .App :is(.pronunciation-lab__prompt,.pronunciation-recorder,.desktop-activity__context,.desktop-activity__question,.review-card,.game-result,.activity-result){border-color:#dfe6ed;border-radius:12px;box-shadow:none}
+html:not(.is-installed-app) body .App :is(.pronunciation-lab,.desktop-activity,.review-page){--exercise-ink:#14213d;--ex-ink:#14213d;--ex-teal:#1f6f78;--ex-muted:#657386;--ex-soft:#edf6f7}
+html:not(.is-installed-app) body .App :is(.game-result__icon,.activity-result__icon){display:none}
+html:not(.is-installed-app) body .App :is(.exercise-primary,.exercise-secondary,.activity-primary,.activity-secondary){border-radius:8px;box-shadow:none}
+@media(max-width:860px){
+  html:not(.is-installed-app) body .App :is(.vocabulary-notebook,.sentence-workshop,.listening-expedition){width:calc(100% - 32px);min-height:0;margin:20px auto;padding:20px;border:1px solid #dfe6ed}
+  html:not(.is-installed-app) body .App .vocabulary-notebook .vn-sheet{padding:0}
+}
+html:not(.is-installed-app) body .App .vocabulary-notebook .vn-audio-error button{background:#fff;border-color:#dfe6ed;color:#1f6f78;border-radius:8px}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-result-star{display:none}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-result-actions button{background:#1f6f78;border-color:#1f6f78;border-radius:8px;color:#fff}
+html:not(.is-installed-app) body .App .word-discovery--web .wd-result-words>span.wrong{background:#fcf1ef;color:#8a4841}
