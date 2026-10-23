@@ -12,6 +12,17 @@ html body .App > .App__main:has(.vocabulary-notebook) { padding:0 !important; mi
 .vn-header button { font-size:26px; }
 .vn-header>span { background:#dcebea; font-size:15px; border-color:#b4d0ce; }
 .vn-sheet { max-width:520px; margin:auto; }
+.vn-flow-top { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.vn-sound-toggle { min-height:44px; padding:6px 10px; color:#315a60; background:#fff8e9; border:1px solid #d5bd85; border-radius:12px; font-size:11px !important; }
+.vn-steps { display:flex; gap:6px; padding:0; margin:0 0 12px; list-style:none; }
+.vn-steps li { flex:1; text-align:center; padding:7px 3px; color:#62716d; border-bottom:2px solid #ded2b8; font-size:11px; }
+.vn-steps li[aria-current] { color:#17636b; border-color:#167d88; font-weight:750; }
+.vn-word.vn-word--sentence h2 { font-size:clamp(20px,5.6vw,28px); line-height:1.35; }
+.vn-replay,.vn-reveal { display:block; min-height:44px; margin:5px auto 0; padding:6px 12px; border:0; border-radius:10px; color:#17636b; background:transparent; font-size:13px !important; text-decoration:underline; text-underline-offset:3px; }
+.vn-letters { display:flex; gap:8px; margin-top:8px; }
+.vn-letters button { min-width:44px; min-height:44px; background:#fffaf0; color:#173e49; border:1px solid #d5bd85; border-radius:10px; }
+.vn-audio-error { display:flex; align-items:center; gap:6px; margin:8px 0; color:#78513a; font-size:11px; }
+.vn-audio-error button { flex-shrink:0; min-height:44px; padding:4px 7px; border:1px solid #d5bd85; border-radius:8px; background:#fffaf0; color:inherit; font-size:11px; }
 .vn-stage { text-align:center; text-transform:uppercase; font-size:12px; font-weight:750; letter-spacing:.12em; }
 .vn-progress { appearance:none; display:block; height:7px; width:100%; margin:10px 0 16px; border:0; border-radius:10px; overflow:hidden; background:#e2d8c0; color:#167d88; }
 .vn-progress::-webkit-progress-bar { background:#e2d8c0; }
@@ -50,4 +61,5 @@ html body .App > .App__main:has(.vocabulary-notebook) { padding:0 !important; mi
 @media(max-height:740px) { .vocabulary-notebook { padding:8px 14px 12px; } .vn-header { margin-bottom:10px; } .vn-header h1 { font-size:25px; } .vn-progress { margin:7px 0 10px; } .vn-word { padding:11px 14px; gap:5px; } .vn-word>svg { width:22px; height:20px; } .vn-word h2 { font-size:29px; } .vn-word>small { font-size:10px; } .vn-question { margin-top:12px; font-size:20px; } .vn-hint { font-size:12px; margin-bottom:10px; } .vn-choices { gap:7px; } .vn-choices>button { min-height:46px; padding:6px 9px; } .vn-option-text { font-size:15px; } .vn-letter { flex-basis:27px; height:27px; font-size:15px; } .vn-outcome { margin-top:9px; } .vn-feedback { padding:9px; } .vn-feedback h3 { font-size:14px; } .vn-feedback p { font-size:12px; } .vn-feedback small { margin-top:4px; padding-top:4px; font-size:11px; } .vn-continue { min-height:44px; margin-top:8px; } }
 @media(max-width:350px) { .vn-choices>button { gap:7px; } .vn-choices small { font-size:10px; } .vn-question { font-size:18px; } }
 @media(max-height:660px) { .vn-header { margin-bottom:6px; } .vn-word { padding:8px 12px; gap:4px; } .vn-word>small { display:none; } .vn-word>svg { height:18px; } .vn-word h2 { font-size:26px; } .vn-progress { margin-block:6px 8px; } .vn-question { margin-top:9px; } .vn-hint { margin-bottom:8px; } .vn-choices>button { min-height:44px; } }
+@media(max-height:740px) { .vn-steps { margin-bottom:8px; } .vn-steps li { padding-block:4px; font-size:10px; } .vn-flow-top .vn-stage { font-size:11px; } .vn-progress { margin-top:3px; } .vn-word>svg { display:none; } .vn-note { margin-top:10px; } }
 @media(hover:hover) { .vn-choices>button:not(:disabled):hover { border-color:#167d88; background:#edf1e5; } }

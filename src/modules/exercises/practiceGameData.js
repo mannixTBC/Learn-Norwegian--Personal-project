@@ -37,7 +37,8 @@ export const saveGameProgress = (storage, game, level, userId, results) => {
   const previous = readGameProgress(storage, game, level, userId);
   const correct = results.filter((item) => item.correct).length;
   const score = results.length ? Math.round(correct / results.length * 100) : 0;
-  const value = { ...previous, completed: Math.min(previous.target, Math.max(previous.completed, correct)), best: Math.max(previous.best, score), sessions: previous.sessions + 1 };
+  const completed = game === 'quiz' ? Math.floor(previous.target * score / 100) : correct;
+  const value = { ...previous, completed: Math.min(previous.target, Math.max(previous.completed, completed)), best: Math.max(previous.best, score), sessions: previous.sessions + 1 };
   storage.setItem(progressKey(game, level, userId), JSON.stringify(value));
   return value;
 };

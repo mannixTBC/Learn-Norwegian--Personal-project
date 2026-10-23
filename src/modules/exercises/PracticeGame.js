@@ -12,6 +12,7 @@ import './PracticeGame.css';
 import PracticePuzzleView from './PracticePuzzleView';
 import WordDiscovery, { WordDiscoveryResult } from './WordDiscovery';
 import { createIllustratedWordQuestions } from './wordDiscoveryCatalog';
+import { createVocabularySession } from './vocabularyFlow';
 
 const gameInfo = {
   quiz: { title: 'Vocabular', subtitle: 'Alege sensul potrivit.' },
@@ -23,7 +24,7 @@ const PracticeSession = ({ game, level, user }) => {
   const course = courseCatalog[level];
   const info = gameInfo[game];
   const history = useHistory();
-  const createSession = () => shufflePractice(game === 'word' ? createIllustratedWordQuestions(course.lessons) : createPracticeQuestions(course.lessons, game, 'normal')).slice(0, 5);
+  const createSession = () => game === 'quiz' ? createVocabularySession(course.lessons) : shufflePractice(game === 'word' ? createIllustratedWordQuestions(course.lessons) : createPracticeQuestions(course.lessons, game, 'normal')).slice(0, 5);
   const [screen, setScreen] = useState('game');
   const [questions, setQuestions] = useState(createSession);
   const [current, setCurrent] = useState(0);
@@ -67,12 +68,13 @@ const PracticeSession = ({ game, level, user }) => {
   };
   const start = () => begin(createSession());
   const verify = (choice) => {
+    const revealed = game === 'quiz' && question.type === 'text' && choice === null;
     const immediateChoice = game === 'quiz' && question.type === 'choice' && typeof choice === 'string';
-    if (answered.current || (immediateChoice ? !question.options.includes(choice) : !completeAnswer)) return;
+    if (answered.current || (!revealed && (immediateChoice ? !question.options.includes(choice) : !completeAnswer))) return;
     answered.current = true;
-    const response = immediateChoice ? choice : given;
-    if (immediateChoice) setAnswer(choice);
-    const correct = isCorrect(response);
+    const response = revealed ? '' : immediateChoice ? choice : given;
+    if (immediateChoice || revealed) setAnswer(response);
+    const correct = !revealed && isCorrect(response);
     setChecked(true); setResults((all) => [...all, { question, correct, given: response }]);
     if (!correct) saveReviewItem({ id: 'practice-' + level + '-' + question.id, level, lessonId: question.lessonId, source: 'practice', prompt: question.prompt, answer: question.answer });
   };
