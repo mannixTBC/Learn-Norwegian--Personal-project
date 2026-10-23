@@ -64,8 +64,8 @@ for (const level of Object.keys(courseCatalog)) {
     }
     await render('practice', { game }, level);
     assert.equal(renderer.root.findAllByType('select').length, 0, 'games start without a configuration screen');
-    assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props.max, 5);
-    assert.ok(text(byClass('ng-question-meta')[0]).includes(level));
+    assert.equal(renderer.root.findByProps({ 'aria-label': game === 'quiz' ? 'Cuvinte parcurse' : 'Progresul sesiunii' }).props.max, 5);
+    assert.ok(game === 'quiz' ? renderer.root.findByProps({ 'aria-label': 'Nivel ' + level }) : text(byClass('ng-question-meta')[0]).includes(level));
     await unmount();
   }
   await render('hub', {}, level);
@@ -92,15 +92,15 @@ storage.clear(); mobileEvents.length = 0;
 await render('practice', { game: 'quiz' }, 'B2');
 for (let index = 0; index < 5; index++) {
   const prompt = text(renderer.root.findByType('h2'));
-  const word = prompt.match(/„(.+)”/)[1];
+  const word = prompt;
   const meanings = courseCatalog.B2.lessons.flatMap((lesson) => lesson.vocabulary).filter((entry) => entry[0] === word).map((entry) => entry[1]);
-  const choices = byClass('game-choices')[0].findAllByType('button');
-  const choice = choices.find((node) => meanings.includes(text(node.findByType('strong'))));
+  const choices = byClass('vn-choices')[0].findAllByType('button');
+  const choice = choices.find((node) => meanings.includes(text(node.findByProps({ className: 'vn-option-text' }))));
   assert.ok(choice);
   const selected = index === 0 ? choices.find((node) => node !== choice) : choice;
   assert.equal(button('Verifică'), undefined, 'a single choice is checked immediately');
   await act(async () => { selected.props.onClick(); selected.props.onClick(); });
-  assert.ok(byClass('game-choices')[0].findAllByType('button').every(node => node.props.disabled));
+  assert.ok(byClass('vn-choices')[0].findAllByType('button').every(node => node.props.disabled));
   const next = button(index === 4 ? 'Vezi rezultatul' : 'Continuă');
   await act(async () => { next.props.onClick(); next.props.onClick(); });
 }
@@ -110,12 +110,12 @@ assert.equal(JSON.parse(localStorage.getItem('norwegian_review_items')).length, 
 const originalRecord = localStorage.getItem('practice_game_v2_mobile-test_B2_quiz');
 await click(button('Repetă greșelile'));
 const correctMeaning = JSON.parse(localStorage.getItem('norwegian_review_items'))[0].answer;
-await click(byClass('game-choices')[0].findAllByType('button').find((node) => text(node.findByType('strong')) === correctMeaning));
+await click(byClass('vn-choices')[0].findAllByType('button').find((node) => text(node.findByProps({ className: 'vn-option-text' })) === correctMeaning));
 await click(button('Vezi rezultatul'));
 assert.equal(localStorage.getItem('practice_game_v2_mobile-test_B2_quiz'), originalRecord, 'a one-question retry cannot inflate the record');
 await click(button('Sesiune nouă'));
-assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props.max, 5);
-assert.equal(renderer.root.findByProps({ 'aria-label': 'Progresul sesiunii' }).props.value, 1);
+assert.equal(renderer.root.findByProps({ 'aria-label': 'Cuvinte parcurse' }).props.max, 5);
+assert.equal(renderer.root.findByProps({ 'aria-label': 'Cuvinte parcurse' }).props.value, 0);
 assert.equal(renderer.root.findAllByType('select').length, 0);
 await unmount();
 console.log('✓ Quiz: one score per answer, review of mistakes, completed results and honest retry records.');
