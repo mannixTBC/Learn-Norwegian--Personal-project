@@ -42,7 +42,7 @@ export default function VocabularyNotebook({ level, question, current, total, he
     feedback.current?.focus({ preventScroll: true });
     outcome.current?.scrollIntoView?.({ block: 'nearest' });
   }, [checked]);
-  return <div className="vocabulary-notebook">
+  return <div className={'vocabulary-notebook' + (checked ? ' vocabulary-notebook--checked' : '')}>
     <header className="vn-header"><button type="button" onClick={onExit} aria-label="Înapoi la jocuri">←</button><h1>Vocabular</h1><span aria-label={'Nivel ' + level}>{level}</span></header>
     <section className="vn-sheet" aria-label="Carnetul de cuvinte">
       <div className="vn-flow-top"><div className="vn-stage">Pasul {current + 1} din {total}</div><button type="button" className="vn-sound-toggle" aria-pressed={!muted} onClick={() => setMuted(value => !value)}>{muted ? 'Sunet oprit' : 'Sunet pornit'}</button></div>

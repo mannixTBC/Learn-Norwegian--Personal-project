@@ -65,3 +65,39 @@ html body .App > .App__main:has(.vocabulary-notebook) { padding:0 !important; mi
 @media(min-height:741px) { .vn-header { margin-bottom:10px; } .vn-word { padding:12px 14px; gap:6px; } .vn-word>svg { width:24px; height:21px; } .vn-word h2 { font-size:clamp(26px,7.5vw,36px); } .vn-choices>button { min-height:54px; } .vn-question { margin-top:12px; } }
 @media(max-height:660px) { .vn-flow-top { margin-top:-3px; } .vn-steps { margin-bottom:6px; } .vn-word { position:relative; } .vn-word:has(button) { padding-right:58px; min-height:48px; justify-content:center; } .vn-word>button { position:absolute; right:5px; top:50%; transform:translateY(-50%); width:44px; padding:0; gap:0; overflow:hidden; font-size:0; } .vn-word>button svg { flex:0 0 20px; } }
 @media(hover:hover) { .vn-choices>button:not(:disabled):hover { border-color:#167d88; background:#edf1e5; } }
+/* Fit the session to the available screen; let unusually long text and zoom grow naturally. */
+html body:has(.vocabulary-notebook), html body .App:has(.vocabulary-notebook),
+html body .App > .App__main:has(.vocabulary-notebook) { min-height:100dvh; }
+.vocabulary-notebook { padding-block:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-bottom)); }
+.vocabulary-notebook .vn-sheet { width:100%; }
+.vocabulary-notebook .vn-header { margin-bottom:6px; }
+.vocabulary-notebook .vn-progress { margin:5px 0 8px; }
+.vocabulary-notebook .vn-steps { margin-bottom:8px; }
+.vocabulary-notebook .vn-steps li { padding-block:4px; }
+.vocabulary-notebook .vn-word { position:relative; padding:12px; gap:5px; }
+.vocabulary-notebook .vn-word>svg { display:none; }
+.vocabulary-notebook .vn-word:has(button) { padding-right:62px; min-height:84px; }
+.vocabulary-notebook .vn-word>button { position:absolute; right:8px; top:50%; transform:translateY(-50%); width:44px; padding:0; gap:0; font-size:0; }
+.vocabulary-notebook .vn-word>button svg { flex:0 0 20px; }
+.vocabulary-notebook .vn-question { margin:10px 0 5px; }
+.vocabulary-notebook .vn-hint { margin-bottom:8px; }
+.vocabulary-notebook .vn-choices { gap:7px; }
+.vocabulary-notebook .vn-choices>button { min-height:46px; padding:6px 10px; }
+.vocabulary-notebook .vn-note { margin-top:8px; }
+.vocabulary-notebook .vn-outcome { margin-top:8px; }
+.vocabulary-notebook--checked .vn-choices>button:not(.correct):not(.wrong) { display:none; }
+.vocabulary-notebook--checked .vn-hint { display:none; }
+.vocabulary-notebook--checked .vn-feedback { padding:9px 12px; }
+.vocabulary-notebook--checked .vn-replay { margin-top:0; }
+.vocabulary-notebook--checked .vn-continue { margin-top:5px; }
+@media(max-height:700px) {
+ .vocabulary-notebook .vn-word { padding-block:8px; }
+ .vocabulary-notebook .vn-word:has(button) { min-height:66px; }
+ .vocabulary-notebook .vn-word h2 { font-size:26px; }
+ .vocabulary-notebook .vn-question { font-size:19px; margin-top:8px; }
+ .vocabulary-notebook .vn-option-text { font-size:15px; }
+ .vocabulary-notebook .vn-feedback p { font-size:13px; }
+}
+@media(min-width:600px) {
+ .vocabulary-notebook .vn-choices { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
