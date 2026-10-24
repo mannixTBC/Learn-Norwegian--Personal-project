@@ -15,6 +15,8 @@ import {createRoot} from 'react-dom/client';
 import {MemoryRouter} from 'react-router-dom';
 import ${abs('node_modules/bootstrap/dist/css/bootstrap.min.css')};
 import ${abs('src/App.css')};
+import ${abs('src/modules/exercises/GameBrand.css')};
+import ${abs('src/modules/exercises/ExerciseCanvas.css')};
 import Pronunciation from ${abs('src/modules/pronunciation/Pronunciation.js')};
 import {courseCatalog} from ${abs('src/modules/lessons/norwegian-program/lessonContent.js')};
 let run=0;

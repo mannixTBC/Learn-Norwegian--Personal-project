@@ -3,6 +3,7 @@ import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import './App.css';
 import './modules/exercises/GameBrand.css';
 import './modules/exercises/DesktopPractice.css';
+import './modules/exercises/ExerciseCanvas.css';
 
 import Navbar from './modules/layout/Navbar/Navbar';
 import Footer from './modules/layout/Footer/Footer';
