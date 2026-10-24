@@ -8,8 +8,8 @@ const root = resolve(import.meta.dirname, '..');
 const outDir = resolve(root, 'node_modules/.cache/scenario-voice-tests');
 await build({ configFile: resolve(root, 'vite.config.js'), logLevel: 'error', plugins: [{
   name: 'scenario-voice-test-speech', enforce: 'pre',
-  resolveId: id => id.endsWith('/norwegianSpeech') ? 'virtual:scenario-speech' : null,
-  load: id => id === 'virtual:scenario-speech' ? 'export const speakNorwegian = (...args) => globalThis.voiceSpeech(...args);' : null,
+  resolveId: id => id.endsWith('/scenarioSpeech') ? 'virtual:scenario-speech' : null,
+  load: id => id === 'virtual:scenario-speech' ? 'export const speakScenario = (...args) => globalThis.voiceSpeech(...args);' : null,
 }], build: { ssr: resolve(root, 'src/modules/exercises/ScenarioVoiceControls.js'), outDir, emptyOutDir: true, rollupOptions: { output: { entryFileNames: 'voice.mjs' } } } });
 const { default: Voice } = await import(pathToFileURL(resolve(outDir, 'voice.mjs')));
 let recorder, draft = '', sends = 0, playback;
@@ -24,7 +24,7 @@ globalThis.voiceSpeech = (text, options) => {
   playback = { text, ...options }; options.onPlaybackStart();
   return new Promise(resolve => options.signal.addEventListener('abort', () => resolve({ cancelled: true })));
 };
-const flow = { session: { turn: 0 }, busy: false, draft: '', setDraft: text => { draft = text; }, send: () => { sends++; } };
+const flow = { session: { turn: 0, sessionToken: 'signed-opening' }, busy: false, draft: '', setDraft: text => { draft = text; }, send: () => { sends++; } };
 let renderer;
 const text = node => typeof node === 'string' ? node : node.children?.map(text).join('') || '';
 const button = name => renderer.root.findAllByType('button').find(n => n.props['aria-label'] === name || text(n) === name);
@@ -44,8 +44,8 @@ flow.draft = draft; await render();
 await act(async () => button('Trimite răspunsul vocal').props.onClick());
 assert.equal(sends, 1);
 await act(async () => { button('Ascultă Nora').props.onClick(); });
-assert.equal(playback.voice, 'female');
-assert.equal(playback.text, 'Hei!');
+
+assert.equal(playback.text, 'signed-opening');
 const oldPlayback = playback;
 await act(async () => button('Înregistrează răspunsul').props.onClick());
 assert.ok(oldPlayback.signal.aborted, 'microphone never records Nora playback');
@@ -56,8 +56,8 @@ assert.ok(oldRecorder.aborted, 'submitting cancels recognition');
 lateResult({ results: [Object.assign([{ transcript: 'stale' }], { isFinal: true })] });
 assert.equal(draft, 'Jeg er forsinket.', 'late microphone callbacks cannot replace a submitted draft');
 assert.equal(button('Înregistrează răspunsul').props.disabled, true);
-flow.busy = false; flow.session = { turn: 1 }; await render({ reply: 'Hvor lenge?' });
-assert.equal(playback.text, 'Hvor lenge?', 'after opting into voice, the new server reply is spoken');
+flow.busy = false; flow.session = { turn: 1, sessionToken: 'signed-turn-one' }; await render({ reply: 'Hvor lenge?' });
+assert.equal(playback.text, 'signed-turn-one', 'after opting into voice, the new server reply is spoken');
 await act(async () => button('Înregistrează răspunsul').props.onClick());
 await act(async () => recorder.onerror({ error: 'not-allowed' }));
 assert.match(text(renderer.root), /Permite accesul la microfon/);

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { speakNorwegian } from '../../services/norwegianSpeech';
+import { speakScenario } from '../../services/scenarioSpeech';
 
 export default function ScenarioVoiceControls({ flow, blocked, reply, onFinish }) {
   const [status, setStatus] = useState('idle');
@@ -34,7 +34,7 @@ export default function ScenarioVoiceControls({ flow, blocked, reply, onFinish }
     const controller = new AbortController();
     playback.current = controller;
     try {
-      const result = await speakNorwegian(reply, { voice: 'female', slow, waitForEnd: true,
+      const result = await speakScenario(flow.session.sessionToken, { slow,
         signal: controller.signal, onPlaybackStart: () => { if (!controller.signal.aborted) setStatus('speaking'); } });
       if (controller.signal.aborted) return;
       setStatus('idle');

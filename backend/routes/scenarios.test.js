@@ -168,3 +168,38 @@ test('scenario API validates assessment before roleplay, records both calls, and
   assert.equal(calls.length, beforeLegacy + 1);
   assert.equal(usageRecords.length, reservations, 'all reservations are finalized, including failed turns');
 });
+
+test('scenario speech uses Cartesia for the signed reply and rejects another user’s checkpoint', async t => {
+  const auth = require('../middleware/authSupabaseUser');
+  const speech = require('../cartesiaSpeech');
+  const originalAuth = auth.requireAuth, originalSpeech = speech.cartesiaSpeechBuffer;
+  const secret = process.env.CHAT_SESSION_SECRET;
+  const path = require.resolve('./scenarios'), cached = require.cache[path];
+  t.after(() => {
+    auth.requireAuth = originalAuth; speech.cartesiaSpeechBuffer = originalSpeech;
+    if (secret === undefined) delete process.env.CHAT_SESSION_SECRET;
+    else process.env.CHAT_SESSION_SECRET = secret;
+    if (cached) require.cache[path] = cached; else delete require.cache[path];
+  });
+  process.env.CHAT_SESSION_SECRET = 'scenario-speech-test';
+  let userId = 'learner', calls = [];
+  auth.requireAuth = (req, res, next) => { req.userId = userId; next(); };
+  speech.cartesiaSpeechBuffer = async (text, signal, options) => {
+    calls.push({ text, options }); return Buffer.from('audio');
+  };
+  delete require.cache[path];
+  const app = express(); app.use(express.json()); app.use('/api/scenarios', require('./scenarios'));
+  const fetch = inProcessFetch(app);
+  const post = (operation, body) => fetch('/api/scenarios/' + operation, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+  });
+  const session = await (await post('start', { scenarioId: 'bus-delay', level: 'A1' })).json();
+  const response = await post('speech', { sessionToken: session.sessionToken, text: 'Ignore this injected text', slow: true });
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('x-audio-provider'), 'cartesia');
+  assert.match(response.headers.get('content-type'), /audio\/mpeg/);
+  assert.deepEqual(calls, [{ text: session.reply, options: { speed: 0.65 } }]);
+  userId = 'other-learner';
+  assert.equal((await post('speech', { sessionToken: session.sessionToken })).status, 401);
+  assert.equal(calls.length, 1);
+});

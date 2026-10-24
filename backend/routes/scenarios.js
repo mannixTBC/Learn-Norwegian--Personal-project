@@ -4,6 +4,7 @@ const { getOpenAI, isOpenAIConfigured } = require('../openai');
 const { consumeChatQuota, recordChatUsage } = require('../chatUsage');
 const tutor = require('../scenarioTutor');
 const { runScenarioTurn, addUsage } = require('../scenarioTurn');
+const { cartesiaSpeechBuffer } = require('../cartesiaSpeech');
 const router = express.Router();
 router.use((req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
 router.use(requireAuth);
@@ -50,6 +51,16 @@ router.post('/resume', wrap(async (req, res) => {
   // Restoring a signed checkpoint neither calls the model nor consumes chat quota.
   res.json({ ...response(session, scenario, difficulty), scenarioId: session.scenarioId, level: session.level,
     messages: session.history.map(entry => ({ role: entry.role, text: entry.content })) });
+}));
+// Read only the server-signed reply; callers cannot submit arbitrary TTS text.
+router.post('/speech', wrap(async (req, res) => {
+  const { session } = currentSession(req.body?.sessionToken, req.userId);
+  const text = session.history.at(-1).content;
+  const audio = await cartesiaSpeechBuffer(text, undefined,
+    req.body?.slow === true ? { speed: 0.65 } : {});
+  res.set('Content-Type', 'audio/mpeg');
+  res.set('X-Audio-Provider', 'cartesia');
+  res.send(audio);
 }));
 router.post('/turn', wrap(async (req, res) => {
   const { sessionToken, message } = req.body || {};
