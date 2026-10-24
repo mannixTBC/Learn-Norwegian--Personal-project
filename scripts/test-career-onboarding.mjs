@@ -46,14 +46,15 @@ try {
   assert.equal(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(250, 249, 244)');
   await page.getByRole('button',{name:'Transport',exact:true}).click();
   await page.waitForSelector('.is-selected');
-  await page.getByRole('heading',{name:'De unde pornim?'}).waitFor();
+  await page.locator('.career-onboarding--levels').waitFor();
   assert.equal(await page.evaluate(()=>window.profile()),null);
   assert.equal(await page.locator('.career-onboarding__row').count(),4);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight),true,'Levels fit viewport');
-  assert.equal(await page.locator('.career-onboarding__route').innerText(),'TRASEUL TĂU\nTransport');
+  assert.equal(await page.locator('.career-onboarding__route').count(),0);
   await page.getByRole('button',{name:'Înapoi la trasee'}).click();
   await page.getByRole('button',{name:'Transport',exact:true}).click();
-  await page.getByRole('heading',{name:'De unde pornim?'}).waitFor();
+  await page.locator('.career-onboarding--levels').waitFor();
+  if(width===390)await page.waitForTimeout(250);
   if(width===390)await page.screenshot({path:resolve(output,'levels.png'),fullPage:true});
   await page.getByRole('button',{name:/Intermediar/}).click();
   await page.locator('#home').waitFor();

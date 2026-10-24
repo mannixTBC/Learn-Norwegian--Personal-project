@@ -58,10 +58,9 @@ const CareerOnboarding = () => {
       <header className="career-onboarding__brand">
         {path && <button className="career-onboarding__back" type="button" aria-label="Înapoi la trasee" disabled={Boolean(pressed)} onClick={() => { setPath(null); setError(''); }}>←</button>}
         <img src="/branding/nordlingo-selected-color.png" alt="NordLingo" width="150" />
-        {path && <div className="career-onboarding__route"><CareerPathVisual pathId={path.id} /><span><small>Traseul tău</small><strong>{pathLabel(path)}</strong></span></div>}
       </header>
       <section className="career-onboarding__content" key={path ? 'levels' : 'paths'} aria-labelledby="onboarding-title">
-        <h1 id="onboarding-title" ref={heading} tabIndex={-1}>{path ? 'De unde pornim?' : 'Alege traseul tău'}</h1>
+        <h1 id="onboarding-title" ref={heading} tabIndex={-1}>{path ? 'Nivelul de norvegiană' : 'Alege traseul tău'}</h1>
         <div className="career-onboarding__list" aria-label={path ? 'Nivelul de norvegiană' : 'Traseul de norvegiană'} aria-busy={Boolean(pressed)}>
           {path ? levels.map((level, index) => (
             <button type="button" key={level.code} className={`career-onboarding__row career-onboarding__level${pressed === level.code ? ' is-selected' : ''}`} disabled={Boolean(pressed)} onClick={() => chooseLevel(level)}>
