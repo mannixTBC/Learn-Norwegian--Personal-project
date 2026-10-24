@@ -167,3 +167,20 @@ html.is-installed-app body .App>.App__main:has(.word-discovery){background-image
   .word-discovery--web.word-discovery--checked{grid-template-rows:auto auto auto auto auto;grid-template-areas:"back" "heading" "progress" "question" "controls"}
   .word-discovery--web.word-discovery--result{grid-template-rows:auto auto auto;grid-template-areas:"back" "heading" "result"}
 }
+
+/* End the game canvas after its content instead of reserving an empty viewport. */
+html body .App:has(.word-discovery) { min-height:0; }
+html body .App > .App__main:has(.word-discovery) {
+  flex:0 0 auto;
+  min-height:0;
+  height:auto;
+  margin:0;
+  padding:0 !important;
+}
+html body .App > .App__main > .word-discovery.word-discovery {
+  height:auto;
+  min-height:0;
+  max-height:none;
+  margin-bottom:0;
+  padding-bottom:max(10px, env(safe-area-inset-bottom));
+}
