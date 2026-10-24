@@ -65,3 +65,20 @@ html body .App > .App__main:has(.vocabulary-notebook) { padding:0 !important; mi
 @media(min-height:741px) { .vn-header { margin-bottom:10px; } .vn-word { padding:12px 14px; gap:6px; } .vn-word>svg { width:24px; height:21px; } .vn-word h2 { font-size:clamp(26px,7.5vw,36px); } .vn-choices>button { min-height:54px; } .vn-question { margin-top:12px; } }
 @media(max-height:660px) { .vn-flow-top { margin-top:-3px; } .vn-steps { margin-bottom:6px; } .vn-word { position:relative; } .vn-word:has(button) { padding-right:58px; min-height:48px; justify-content:center; } .vn-word>button { position:absolute; right:5px; top:50%; transform:translateY(-50%); width:44px; padding:0; gap:0; overflow:hidden; font-size:0; } .vn-word>button svg { flex:0 0 20px; } }
 @media(hover:hover) { .vn-choices>button:not(:disabled):hover { border-color:#167d88; background:#edf1e5; } }
+
+/* End the game canvas after its content instead of reserving an empty viewport. */
+html body .App:has(.vocabulary-notebook) { min-height:0; }
+html body .App > .App__main:has(.vocabulary-notebook) {
+  flex:0 0 auto;
+  min-height:0;
+  height:auto;
+  margin:0;
+  padding:0 !important;
+}
+html body .App > .App__main > .vocabulary-notebook.vocabulary-notebook {
+  height:auto;
+  min-height:0;
+  max-height:none;
+  margin-bottom:0;
+  padding-bottom:max(10px, env(safe-area-inset-bottom));
+}
