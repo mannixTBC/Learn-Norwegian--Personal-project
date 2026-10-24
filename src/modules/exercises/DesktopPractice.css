@@ -188,3 +188,31 @@ html:not(.is-installed-app) body .App .vocabulary-notebook .vn-audio-error butto
 html:not(.is-installed-app) body .App .word-discovery--web .wd-result-star{display:none}
 html:not(.is-installed-app) body .App .word-discovery--web .wd-result-actions button{background:#1f6f78;border-color:#1f6f78;border-radius:8px;color:#fff}
 html:not(.is-installed-app) body .App .word-discovery--web .wd-result-words>span.wrong{background:#fcf1ef;color:#8a4841}
+
+/* Fit the standalone sentence workspace without the old page margins. */
+@media (min-width: 861px) {
+  html:not(.is-installed-app) body .App .sentence-workshop {
+    margin: 12px auto;
+    padding: 16px 24px;
+    gap: 12px 24px;
+  }
+  html:not(.is-installed-app) body .App .sentence-workshop .sw-prompt {
+    grid-row: 4 / 7;
+    min-height: 0;
+    align-self: stretch;
+  }
+  html:not(.is-installed-app) body .App .sentence-workshop .sw-compose { grid-row: 4; }
+  html:not(.is-installed-app) body .App .sentence-workshop :is(.sw-bank, .sw-feedback) { grid-row: 5; }
+  html:not(.is-installed-app) body .App .sentence-workshop .sw-footer { grid-row: 6; }
+}
+@media (max-width: 860px) {
+  html:not(.is-installed-app) body .App .sentence-workshop {
+    width: 100%;
+    margin: 0 auto;
+    min-height: 100dvh;
+    padding: max(10px, env(safe-area-inset-top)) 16px max(10px, env(safe-area-inset-bottom));
+    gap: 10px;
+    border: 0;
+    border-radius: 0;
+  }
+}

@@ -3,3 +3,32 @@
 @media(min-width:760px){.sentence-workshop{min-height:calc(100dvh - 32px);margin:16px auto;border:1px solid #dfc58c;border-radius:24px;padding:24px 36px;gap:20px}.sw-prompt--illustrated{grid-template-columns:minmax(0,1fr) 150px}.sw-answer{min-height:88px}}
 @media(max-height:760px) and (max-width:759px){.sentence-workshop{gap:12px;padding:12px 16px}.sw-title h1{font-size:30px}.sw-title p{margin-top:4px;font-size:14px}.sw-prompt{padding:16px}.sw-prompt--illustrated{padding-right:0;grid-template-columns:minmax(0,1fr) 30%}.sw-prompt h2{font-size:23px;margin-top:10px}.sw-answer{min-height:80px;padding:9px}.sw-answer button,.sw-bank button{padding:10px 13px;font-size:17px}.sw-bank p{margin-top:10px}.sw-feedback{padding:13px}.sw-feedback h3{font-size:22px}.sw-feedback p{font-size:18px}}
 .sw-logo{display:flex;align-items:center;justify-content:center}.sw-logo img{display:block;max-width:100%;max-height:100%;object-fit:contain}
+/* Standalone sentence game: remove the space reserved for the site navigation. */
+body .App > .App__main:has(.sentence-workshop) {
+  min-height: 0;
+  margin: 0;
+  padding: 0 !important;
+}
+
+@media (max-height: 820px) {
+  .sentence-workshop {
+    gap: 10px;
+    padding: max(10px, env(safe-area-inset-top)) 16px max(10px, env(safe-area-inset-bottom));
+  }
+  .sentence-workshop .sw-header { gap: 12px; }
+  .sentence-workshop .sw-logo { width: 130px; height: 34px; }
+  .sentence-workshop .sw-title h1 { font-size: 28px; }
+  .sentence-workshop .sw-title p { margin-top: 4px; font-size: 14px; }
+  .sentence-workshop .sw-prompt { padding: 12px; }
+  .sentence-workshop .sw-prompt--illustrated { padding-right: 0; grid-template-columns: minmax(0, 1fr) 90px; }
+  .sentence-workshop .sw-prompt h2 { margin-top: 8px; font-size: 22px; }
+  .sentence-workshop .sw-answer { min-height: 68px; padding: 8px; }
+  .sentence-workshop .sw-answer button,
+  .sentence-workshop .sw-bank button { padding: 8px 12px; min-height: 44px; font-size: 16px; }
+  .sentence-workshop .sw-bank h3 { margin-bottom: 8px; }
+  .sentence-workshop .sw-bank p { margin-top: 8px; }
+  .sentence-workshop .sw-feedback { padding: 12px; }
+  .sentence-workshop .sw-feedback h3 { margin-bottom: 8px; font-size: 22px; }
+  .sentence-workshop .sw-feedback p { margin: 8px 0; font-size: 17px; }
+  .sentence-workshop .sw-footer > button { min-height: 46px; padding: 10px; font-size: 20px; }
+}
