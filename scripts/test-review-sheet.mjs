@@ -1,0 +1,28 @@
+import { build } from 'vite';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import assert from 'node:assert/strict';
+import React from 'react';
+import TestRenderer, { act } from 'react-test-renderer';
+import { MemoryRouter } from 'react-router-dom';
+const out = resolve('node_modules/.cache/recall-test');
+await build({ logLevel:'error', plugins:[{name:'recall-mocks', enforce:'pre',resolveId(id){if(id.endsWith('/learningActivity'))return 'virtual:activity';if(id.endsWith('/norwegianSpeech'))return 'virtual:speech';},load(id){if(id==='virtual:activity')return 'export const recordStudyActivity = () => {}';if(id==='virtual:speech')return 'export const speakNorwegian = async () => ({ok:false})';}}],build:{ssr:true,outDir:out,emptyOutDir:true,rollupOptions:{input:resolve('src/modules/lessons/ReviewPage.js'),output:{entryFileNames:'review.mjs'}}}});
+const {default:Review}=await import(pathToFileURL(resolve(out,'review.mjs')));
+const store=new Map(); globalThis.localStorage={getItem:key=>store.get(key)||null,setItem:(key,value)=>store.set(key,value)};
+const key='norwegian_review_items';
+const item={id:'mistake',level:'A1',prompt:'Eu beau cafea.',answer:'Jeg drikker kaffe.',source:'lesson',dueAt:new Date(0).toISOString(),repetitions:2,intervalDays:7,lapses:1};
+store.set(key,JSON.stringify([item,{...item,id:'automatic-vocab',source:'curriculum',lapses:0}]));
+let view;await act(async()=>{view=TestRenderer.create(React.createElement(MemoryRouter,{initialEntries:['/recapitulare?nivel=A1']},React.createElement(Review)));});
+assert.ok(JSON.stringify(view.toJSON()).includes('/branding/nordlingo-selected-color.png'));
+assert.equal(view.root.findAllByType('progress')[0].props.max,1);
+const text=node=>node.children.map(child=>typeof child==='string'?child:text(child)).join('');
+const button=label=>view.root.findAllByType('button').find(node=>text(node).includes(label));
+await act(async()=>button('Continuă').props.onClick());
+const saved=JSON.parse(store.get(key))[0];assert.equal(saved.repetitions,2);assert.equal(saved.intervalDays,7);assert.equal(saved.lapses,1);assert.equal(saved.reviewViews,1);assert.ok(Date.parse(saved.dueAt)>Date.now()+2*86400000);
+assert.ok(JSON.stringify(view.toJSON()).includes('Ai revăzut 1 expresii.'));
+await act(async()=>button('Mai reiau câteva').props.onClick());
+await act(async()=>button('Mai repet').props.onClick());
+assert.ok(Date.parse(JSON.parse(store.get(key))[0].dueAt)<Date.now()+2*86400000);
+await act(async()=>view.unmount());
+console.log('PASS: original logo, mistake-only queue, both actions, no mastery inflation, completion and restart.');
+
