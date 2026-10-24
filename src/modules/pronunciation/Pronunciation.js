@@ -10,6 +10,7 @@ import PronunciationLab from './PronunciationLab';
 import { CathedralDialog, CathedralIcon, CathedralPager, useShortVoiceScreen } from './PronunciationCathedral';
 import './Pronunciation.css';
 import './PronunciationCathedral.css';
+import './PronunciationNordic.css';
 
 function PhraseLibrary({ phrases, activePhrase, onChoose, onClose }) {
   const short = useShortVoiceScreen();
@@ -48,15 +49,16 @@ const PronunciationSession = ({ level }) => {
     <PronunciationLab key={level + '-' + lesson.uid + '-' + activePhrase} phrase={phrases[activePhrase]} phraseIndex={activePhrase} level={level} lessonId={lesson.id} rewardAttemptsRef={rewardAttemptsRef} />
     <details className="pronuntie__library"><summary>Toate cele {phrases.length} expresii ale lecției</summary><div className="pronuntie__grid">{phrases.map((item,index) => <article className={'pronuntie__phrase ' + (activePhrase === index ? 'is-active' : '')} key={index}><div><span>Expresia {index + 1}</span><strong lang="nb">{item.word}</strong><small>{item.meaning}</small></div><p lang="nb">{item.example}</p><div className="pronuntie__actions"><button type="button" onClick={() => speakPronunciationModel(item.example)} aria-label={'Ascultă ' + item.example}>Ascultă</button><button type="button" onClick={() => openPhrase(index)} aria-pressed={activePhrase === index}>Exersează</button></div></article>)}</div></details>
   </ExerciseLayout>;
-  return <section className="pronunciation-cathedral" aria-label="Exercițiu de pronunție">
-    <header className="cathedral-top"><Link to={'/jocuri?nivel=' + level}><span aria-hidden="true">←</span> Jocuri</Link><ExerciseLevelSelect level={level} /></header>
-    <div className="cathedral-heading"><h1>Pronunție</h1><p>Ascultă modelul. Apoi e rândul tău.</p></div>
+  return <section className="pronunciation-cathedral pronunciation-nordic" aria-label="Exercițiu de pronunție">
+    <header className="cathedral-top"><Link to={'/jocuri?nivel=' + level}><span aria-hidden="true">&#8592;</span> Jocuri</Link><ExerciseLevelSelect level={level} /></header>
+    <div className="cathedral-heading"><h1>Pronunție</h1><p>Ascultă. Repetă. Prinde încredere.</p></div>
     <div className="cathedral-lesson"><CathedralIcon name="book" /><ExerciseLessonSelect course={course} value={activeLesson} onChange={chooseLesson} label="Alege lecția" all={false} /></div>
     <PronunciationLab key={level + '-' + lesson.uid + '-' + activePhrase} phrase={phrases[activePhrase]} phraseIndex={activePhrase} level={level} lessonId={lesson.id} rewardAttemptsRef={rewardAttemptsRef} appearance="cathedral" />
     <footer className="cathedral-navigation" aria-label="Navigare între expresii">
       <button type="button" onClick={() => setActivePhrase(index => Math.max(0,index - 1))} disabled={activePhrase === 0} aria-label="Expresia anterioară">‹</button>
-      <button className="cathedral-navigation__library" type="button" aria-haspopup="dialog" onClick={() => setLibraryOpen(true)}><strong aria-live="polite">Expresia {activePhrase + 1} din {phrases.length}</strong><small>Toate expresiile ↓</small></button>
-      {activePhrase < phrases.length - 1 && <button type="button" onClick={() => setActivePhrase(index => Math.min(phrases.length - 1,index + 1))} aria-label="Expresia următoare">›</button>}
+      <button className="cathedral-navigation__library" type="button" aria-haspopup="dialog" onClick={() => setLibraryOpen(true)}><span className="nordic-phrase-dots" aria-hidden="true">{phrases.map((_, index) => <i key={index} className={index <= activePhrase ? 'is-active' : ''} />)}</span><strong aria-live="polite">{activePhrase + 1} din {phrases.length}</strong><small>Toate expresiile ↓</small></button>
+      {activePhrase < phrases.length - 1 && <button type="button" onClick={() => setActivePhrase(index => Math.min(phrases.length - 1,index + 1))} aria-label="Expresia următoare">Următoarea expresie <span aria-hidden="true">&#8594;</span></button>}
+    {activePhrase === phrases.length - 1 && <Link className="nordic-finish" to={'/jocuri?nivel=' + level}>Înapoi la Jocuri →</Link>}
     </footer>
     {libraryOpen && <PhraseLibrary {...{phrases,activePhrase}} onChoose={openPhrase} onClose={() => setLibraryOpen(false)} />}
   </section>;

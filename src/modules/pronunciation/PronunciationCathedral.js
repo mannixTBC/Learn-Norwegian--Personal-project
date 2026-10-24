@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { getLessonVisual } from '../lessons/lessonVisuals';
 import { speakPronunciationModel } from '../../services/azurePronunciationSpeech';
 
 export function CathedralIcon({ name }) {
@@ -54,7 +55,8 @@ function WordFeedback({ words }) {
   </span>)}</div>;
 }
 
-export default function PronunciationCathedral({ phrase, level, status, elapsed, result, error, audioUrl, bestScore, attempts, onRecord, onStop, onRetry }) {
+export default function PronunciationCathedral({ phrase, level, lessonId, status, elapsed, result, error, audioUrl, bestScore, attempts, onRecord, onStop, onRetry }) {
+  const artwork = getLessonVisual(level, lessonId);
   const [panel, setPanel] = useState(null);
   const [tab, setTab] = useState('score');
   const [page, setPage] = useState(0);
@@ -86,6 +88,7 @@ export default function PronunciationCathedral({ phrase, level, status, elapsed,
   useEffect(() => { setPage(0); }, [short]);
 
   return <section className={`cathedral-lab cathedral-lab--${status}${phrase.example.length > 120 ? ' cathedral-lab--long' : ''}`} aria-labelledby="cathedral-phrase">
+    <img className="nordic-pronunciation-art" src={artwork.theme === 'cafe' ? '/images/lessons/nordic-cafe.png' : artwork.src} alt={artwork.alt} />
     <article className="cathedral-quote">
       <div className="cathedral-quote__label"><span>1 · Ascultă modelul</span><button type="button" onClick={() => open('about')} aria-label="Despre exercițiu și cel mai bun scor">i</button></div>
       <div className="cathedral-quote__text"><blockquote id="cathedral-phrase" lang="nb">{phrase.example}</blockquote><p lang="ro">{phrase.translation}</p></div>
@@ -102,9 +105,10 @@ export default function PronunciationCathedral({ phrase, level, status, elapsed,
         <div className="cathedral-focus-words" aria-label="Cuvinte de repetat">{result.focusWords.length ? result.focusWords.slice(0, 3).map((item, index) => <span key={index} lang="nb">{item.expected}</span>) : <span className="is-clear">Fraza este clară</span>}</div>
         <div className="cathedral-result__actions"><button type="button" onClick={() => { stopPlayback(); onRetry(); }}><CathedralIcon name="retry" />Repetă</button>{audioUrl && <button type="button" onClick={playback} aria-pressed={playing}><CathedralIcon name="headphones" />{playing ? 'Pauză' : 'Vocea mea'}</button>}</div>
       </div> : <div className="cathedral-recorder">
+        <p className="nordic-recorder-instruction">Repetă propoziția după model.</p>
         <div className="cathedral-wave" aria-hidden="true">{[8,14,23,12,19,27,12,20,9].map((height,index) => <span key={index} style={{ '--bar': index, '--height': `${height}px` }} />)}</div>
         <button type="button" className={`cathedral-record${recording ? ' is-recording' : ''}${busy ? ' is-busy' : ''}`} onClick={() => { if (recording) onStop(); else { stopPlayback(); onRecord(); } }} disabled={busy} aria-label={label} aria-pressed={recording}>{recording ? <span className="cathedral-stop" /> : <CathedralIcon name="mic" />}</button>
-        <div className="cathedral-recorder__copy" aria-live="polite"><strong>{recording ? `Înregistrare · 0:${String(elapsed).padStart(2,'0')}` : busy ? label : error ? 'Înregistrarea nu a putut fi finalizată' : 'Apasă și vorbește'}</strong><span>{recording ? 'Apasă pentru a opri · max. 0:30' : status === 'requesting' ? 'Permite accesul la microfon.' : busy ? 'Îți pregătim feedbackul.' : error ? <button type="button" onClick={() => open('error')} className="cathedral-text-button">Detalii și ajutor →</button> : 'Spune fraza, apoi oprește înregistrarea.'}</span></div>
+        <div className="cathedral-recorder__copy" aria-live="polite"><strong>{recording ? `Înregistrare · 0:${String(elapsed).padStart(2,'0')}` : busy ? label : error ? 'Înregistrarea nu a putut fi finalizată' : 'Înregistrează'}</strong><span>{recording ? 'Apasă pentru a opri · max. 0:30' : status === 'requesting' ? 'Permite accesul la microfon.' : busy ? 'Îți pregătim feedbackul.' : error ? <button type="button" onClick={() => open('error')} className="cathedral-text-button">Detalii și ajutor →</button> : 'Spune fraza, apoi oprește înregistrarea.'}</span></div>
         {audioUrl && status === 'error' && <button type="button" className="cathedral-voice-replay" onClick={playback}><CathedralIcon name="headphones" />{playing ? 'Pauză' : 'Vocea mea'}</button>}
       </div>}
     </div>

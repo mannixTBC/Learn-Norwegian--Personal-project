@@ -1,0 +1,79 @@
+/* Installed-app Card nordic. The desktop pronunciation layout is independent. */
+html:has(.pronunciation-nordic), body:has(.pronunciation-nordic), #root:has(.pronunciation-nordic),
+.App:has(.pronunciation-nordic), .App__main:has(.pronunciation-nordic) { background:#eff8fb; }
+body:has(.pronunciation-nordic) { overflow:auto; }
+.pronunciation-nordic, .pronunciation-nordic .cathedral-dialog {
+  --voice-bg:#eff8fb; --voice-paper:#fffaf0; --voice-ink:#12354b; --voice-sub:#496d7c;
+  --voice-line:#b7d4dd; --voice-gold:#f6c453; --voice-soft:#e6f4fa;
+}
+.pronunciation-nordic {
+  display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:40px auto 44px minmax(min-content,1fr) auto;
+  width:min(100%,600px); height:auto; min-height:100dvh; gap:8px;
+  padding:max(6px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));
+  background:linear-gradient(#e4f4fa,#f3fafc); isolation:isolate;
+}
+.pronunciation-nordic:before { height:128px; background:linear-gradient(115deg,#164e63,#07586a); filter:none; border-radius:0 0 20px 20px; }
+.pronunciation-nordic .cathedral-top { display:flex; grid-area:auto; }
+.pronunciation-nordic .cathedral-top>a { color:#fff; font-weight:700; }
+.pronunciation-nordic .exercise-level-select select { color:white; background:#ffffff12; border-color:#ffffff55; border-radius:12px; }
+.pronunciation-nordic option,.pronunciation-nordic optgroup { color:#12354b; background:white; }
+.pronunciation-nordic .cathedral-heading { position:static; width:auto; height:auto; overflow:visible; clip-path:none; text-align:center; padding:0 0 10px; }
+.pronunciation-nordic .cathedral-heading h1 { color:#fff; font:700 clamp(26px,4dvh,34px)/1.1 Georgia,serif; margin:0 0 4px; }
+.pronunciation-nordic .cathedral-heading p { display:block; color:#e1f2f6; font-size:13px; }
+.pronunciation-nordic .cathedral-lesson { grid-area:auto; justify-self:center; max-width:100%; padding:0 14px; border:1px solid #9bc8db; border-radius:24px; background:linear-gradient(#fff,#e2f3fa); box-shadow:0 2px 3px #164e6312; }
+.pronunciation-nordic .cathedral-lesson>svg { display:none; }
+.pronunciation-nordic .cathedral-lesson select { font-weight:700; }
+.pronunciation-nordic .cathedral-lab { grid-area:auto; grid-template-columns:minmax(0,1fr); grid-template-rows:clamp(70px,20dvh,190px) auto minmax(150px,1fr); gap:9px; }
+.nordic-pronunciation-art { display:block; width:100%; height:100%; min-height:0; object-fit:cover; border:1px solid #bad6dd; border-radius:17px; }
+.pronunciation-nordic .cathedral-quote { display:grid; grid-template-rows:auto 44px; gap:9px; padding:0; background:none; border:0; border-radius:0; box-shadow:none; }
+.pronunciation-nordic .cathedral-quote:before,.pronunciation-nordic .cathedral-quote:after { display:none; }
+.pronunciation-nordic .cathedral-quote__label { position:absolute; right:5px; top:0; z-index:1; }
+.pronunciation-nordic .cathedral-quote__label>span { display:none; }
+.pronunciation-nordic .cathedral-quote__label>button { margin:0; width:32px; color:#4d7887; }
+.pronunciation-nordic .cathedral-quote__text { min-height:84px; gap:6px; padding:14px 26px; text-align:center; border:1px solid #b7d4dd; border-radius:18px; background:linear-gradient(120deg,#fffdf7,#fff7e6); box-shadow:0 3px 6px #164e630a; }
+.pronunciation-nordic .cathedral-quote blockquote { font:700 clamp(19px,2.8dvh,25px)/1.25 Georgia,serif; }
+.pronunciation-nordic .cathedral-quote__text>p { display:block; font-size:15px; }
+.pronunciation-nordic .cathedral-model-actions { gap:8px; }
+.pronunciation-nordic .cathedral-model-actions button { padding:7px 10px; border:1px solid #8fbed2; border-radius:17px; background:linear-gradient(#fff,#e3f3fa); color:#123f55; font-size:13px; font-weight:700; box-shadow:0 2px 3px #164e6312; }
+.pronunciation-nordic .cathedral-model-actions button:nth-child(2) svg { display:block; }
+.pronunciation-nordic .cathedral-model-actions .cathedral-translation { display:none; }
+.pronunciation-nordic .cathedral-workspace { min-height:150px; border:1px solid #3e95a6; border-radius:20px; background:linear-gradient(120deg,#107b8d,#07556b); box-shadow:0 3px 0 #bedce5; padding:12px; }
+.pronunciation-nordic .cathedral-recorder { display:flex; height:100%; flex-direction:column; gap:9px; padding:0; text-align:center; }
+.nordic-recorder-instruction { margin:0; color:#fff; font-size:14px; }
+.pronunciation-nordic .cathedral-wave { display:none; }
+.pronunciation-nordic .cathedral-lab--recording .cathedral-wave { display:flex; height:18px; color:#ffe297; }
+.pronunciation-nordic .cathedral-record { width:clamp(66px,11dvh,100px); height:clamp(66px,11dvh,100px); background:linear-gradient(145deg,#ffeaa3,#f7bc32); border:2px solid #ffdf7a; color:#07566c; box-shadow:0 0 0 5px #ffffff13,0 4px 0 #c79632; }
+.pronunciation-nordic .cathedral-record svg { width:39px; height:39px; }
+.pronunciation-nordic .cathedral-recorder__copy strong { font-size:17px; font-weight:700; color:#fff; }
+.pronunciation-nordic .cathedral-recorder__copy>span { color:#d8eef3; font-size:12px; }
+.pronunciation-nordic .cathedral-lab--ready .cathedral-recorder__copy>span { display:none; }
+.pronunciation-nordic .cathedral-result { padding:8px; background:#f4fbf6; border:1px solid #a5cfbd; border-radius:14px; }
+.pronunciation-nordic .cathedral-result__heading strong { font-family:inherit; font-weight:750; }
+.pronunciation-nordic .cathedral-result__heading small { color:#286c70; }
+.pronunciation-nordic .cathedral-score { color:#146a68; border-color:#7eb7aa; background:#dff3e7; }
+.pronunciation-nordic .cathedral-result__actions button { border-radius:12px; }
+.pronunciation-nordic .cathedral-navigation { grid-area:auto; grid-template-columns:44px minmax(0,1fr); gap:6px; border:0; padding:0; }
+.pronunciation-nordic .cathedral-navigation>button:first-child { border-radius:13px; font-size:20px; background:#e7f4fa; }
+.pronunciation-nordic .cathedral-navigation__library { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:5px 12px; }
+.pronunciation-nordic .cathedral-navigation__library strong { font-weight:700; font-size:13px; }
+.pronunciation-nordic .cathedral-navigation__library small { flex-basis:100%; font-size:10px; }
+.nordic-phrase-dots { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; max-width:180px; }
+.nordic-phrase-dots i { width:10px; height:10px; border-radius:50%; background:#c2dae5; }
+.nordic-phrase-dots i.is-active { background:linear-gradient(#ffdf78,#f2b62c); }
+.pronunciation-nordic .cathedral-navigation>button:last-child:not(.cathedral-navigation__library),.pronunciation-nordic .nordic-finish { grid-column:1/-1; display:flex; align-items:center; justify-content:center; gap:16px; min-height:48px; padding:9px 16px; border:1px solid #e7ac32; border-radius:16px; color:#12354b; background:linear-gradient(#ffe69a,#ffc347); font:700 15px/1.3 'Source Sans 3','Segoe UI',sans-serif; text-decoration:none; box-shadow:inset 0 0 0 2px #fff4,0 3px 0 #d8ab4e; }
+.pronunciation-nordic .cathedral-dialog { background:#f5fbfd; border-color:#9ebfcb; border-radius:18px; }
+.pronunciation-nordic .cathedral-dialog button { border-radius:10px; }
+.pronunciation-nordic .cathedral-library>div { background:#e8f4f8; border-color:#c2dbe4; border-radius:12px; }
+.pronunciation-nordic .cathedral-dialog__body { overflow:auto; }
+@media(min-height:700px) { .pronunciation-nordic { height:100dvh; } }
+@media(max-height:699px) { .pronunciation-nordic:before { height:116px; } .pronunciation-nordic .cathedral-heading h1 { font-size:26px; } .pronunciation-nordic .cathedral-lab { grid-template-rows:65px auto minmax(144px,1fr); } }
+@media(max-height:540px), (orientation:landscape) { .pronunciation-nordic { height:auto; } .pronunciation-nordic .cathedral-lab { grid-template-rows:75px auto minmax(150px,1fr); } }
+@media(prefers-reduced-motion:reduce) { .pronunciation-nordic * { scroll-behavior:auto; } }
+/* Errors keep the retry control and help visible without enlarging the recorder. */
+.pronunciation-nordic .cathedral-lab--error .cathedral-recorder { display:grid; grid-template-columns:66px minmax(0,1fr); gap:8px 12px; text-align:left; }
+.pronunciation-nordic .cathedral-lab--error .nordic-recorder-instruction { display:none; }
+.pronunciation-nordic .cathedral-lab--error .cathedral-record { width:60px; height:60px; grid-row:1; grid-column:1; }
+.pronunciation-nordic .cathedral-lab--error .cathedral-recorder__copy { grid-row:1; grid-column:2; }
+.pronunciation-nordic .cathedral-lab--error .cathedral-recorder__copy strong { font-size:14px; }
+.pronunciation-nordic .cathedral-lab--error .cathedral-voice-replay { grid-column:2; }
+.pronunciation-nordic .nordic-pronunciation-art { object-position:center 76%; }
