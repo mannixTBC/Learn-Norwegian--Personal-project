@@ -545,3 +545,16 @@
   html.is-installed-app .dashboard-app-home__studio > b { align-self: center; width: 36px; height: 36px; background: #256c73; }
   .dashboard-app-home__studio > b svg { width: 21px; height: 21px; }
 }
+/* Lower the Home logo and greeting within the existing hero space. */
+@media(max-width:680px) {
+  html.is-installed-app .dashboard-app-home__hero {
+    padding-top: calc(24px + env(safe-area-inset-top));
+    padding-bottom: 4px;
+  }
+}
+@media(max-width:680px) and (max-height:740px) {
+  html.is-installed-app .dashboard-app-home__hero {
+    padding-top: calc(20px + env(safe-area-inset-top));
+    padding-bottom: 6px;
+  }
+}
