@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import './App.css';
+import './modules/exercises/GameBrand.css';
 import './modules/exercises/DesktopPractice.css';
 
 import Navbar from './modules/layout/Navbar/Navbar';

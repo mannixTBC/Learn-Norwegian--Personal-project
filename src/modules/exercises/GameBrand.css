@@ -1,0 +1,18 @@
+/* Shared original-logo geometry, using Verbe as the size reference. */
+html body #root .App :is(.ng-brand,.verb-practice__top,.wd-brand,.sw-header,.expedition-header,.vn-header,.recall-brand,.mc-topbar,.pronunciation-nordic .cathedral-top){
+ display:grid;grid-template-columns:minmax(0,1fr) 145px minmax(0,1fr);align-items:center;gap:8px;position:relative;min-height:44px;
+}
+html body #root .App :is(.ng-brand,.verb-practice__top,.wd-brand,.sw-header,.expedition-header,.vn-header,.recall-brand,.mc-topbar,.pronunciation-nordic .cathedral-top)>:first-child{justify-self:start;min-width:0}
+html body #root .App :is(.ng-brand,.verb-practice__top,.wd-brand,.sw-header,.expedition-header,.vn-header,.recall-brand,.mc-topbar,.pronunciation-nordic .cathedral-top)>:nth-child(2){justify-self:center;min-width:0;margin:0}
+html body #root .App :is(.ng-brand,.verb-practice__top,.wd-brand,.sw-header,.expedition-header,.vn-header,.recall-brand,.mc-topbar,.pronunciation-nordic .cathedral-top)>:nth-child(3){justify-self:end;min-width:0}
+html body #root .App :is(.ng-logo,.wd-logo,.sw-logo,.recall-logo,.game-brand-logo,.expedition-brand,.mc-brand){display:flex;align-items:center;justify-content:center;width:145px;height:44px;min-width:145px;max-width:none;flex:none}
+html body #root .App :is(.ng-logo,.wd-logo,.sw-logo,.recall-logo,.game-brand-logo,.expedition-brand,.mc-brand) img,
+html body #root .App .verb-practice__top>img{display:block;width:145px;height:44px;min-width:145px;max-width:none;max-height:none;object-fit:contain}
+html body #root .App .game-brand-link{display:block;width:145px;height:44px}
+html body #root .App .vn-game-title{margin:0 0 12px;text-align:center;font:700 28px/1.2 Georgia,serif;color:#173e49}
+html body #root .App .listening-expedition--playing .expedition-header{grid-template-columns:minmax(0,1fr) 145px minmax(0,1fr)}
+@media(max-width:350px){html body #root .App :is(.verb-practice__top,.wd-brand)>:first-child{font-size:12px;gap:3px}}
+@media(max-height:500px) and (orientation:landscape){
+ html body #root .App .pronunciation-nordic .cathedral-top{grid-column:1/-1;grid-row:1}
+ html body #root .App .pronunciation-nordic .cathedral-top>*{grid-row:auto;grid-column:auto}
+}

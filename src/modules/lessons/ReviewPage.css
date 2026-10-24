@@ -8,3 +8,6 @@ html body .App .review-page.recall-sheet{box-sizing:border-box;width:min(100%,52
 @media(min-width:700px){html body .App .review-page.recall-sheet{min-height:850px;margin:24px auto;border:1px solid #e1d8c6;border-radius:28px}.recall-card{min-height:470px}}
 @media(max-width:699px) and (min-height:650px){html body .App .review-page.recall-sheet{height:100dvh}.recall-card{min-height:0}}
 @media(max-height:740px) and (max-width:699px){html body .App .review-page.recall-sheet{gap:9px;padding:8px 16px}.recall-brand{height:43px}.recall-logo{width:116px;height:43px}.recall-heading h1{font-size:30px}.recall-heading p{font-size:13px}.recall-progress{margin-top:9px}.recall-card{padding:18px;gap:13px}.recall-card h2,.recall-expression{font-size:27px}.recall-note{padding:11px;font-size:14px}.recall-actions button{min-height:50px;font-size:16px}}
+
+/* Keep the original logo centered after removing the menu. */
+.recall-brand{display:grid;grid-template-columns:42px minmax(0,1fr) 42px}.recall-brand>a:nth-child(2){justify-self:center}

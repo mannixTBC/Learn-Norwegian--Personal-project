@@ -9,6 +9,7 @@ import { isInstalledAppView } from '../../services/appExperience';
 import PronunciationLab from './PronunciationLab';
 import { CathedralDialog, CathedralIcon, CathedralPager, useShortVoiceScreen } from './PronunciationCathedral';
 import './Pronunciation.css';
+import NorwegianFlagIcon from '../layout/Navbar/NorwegianFlagIcon';
 import './PronunciationCathedral.css';
 import './PronunciationNordic.css';
 
@@ -50,7 +51,7 @@ const PronunciationSession = ({ level }) => {
     <details className="pronuntie__library"><summary>Toate cele {phrases.length} expresii ale lecției</summary><div className="pronuntie__grid">{phrases.map((item,index) => <article className={'pronuntie__phrase ' + (activePhrase === index ? 'is-active' : '')} key={index}><div><span>Expresia {index + 1}</span><strong lang="nb">{item.word}</strong><small>{item.meaning}</small></div><p lang="nb">{item.example}</p><div className="pronuntie__actions"><button type="button" onClick={() => speakPronunciationModel(item.example)} aria-label={'Ascultă ' + item.example}>Ascultă</button><button type="button" onClick={() => openPhrase(index)} aria-pressed={activePhrase === index}>Exersează</button></div></article>)}</div></details>
   </ExerciseLayout>;
   return <section className="pronunciation-cathedral pronunciation-nordic" aria-label="Exercițiu de pronunție">
-    <header className="cathedral-top"><Link to={'/jocuri?nivel=' + level}><span aria-hidden="true">&#8592;</span> Jocuri</Link><ExerciseLevelSelect level={level} /></header>
+    <header className="cathedral-top"><Link to={'/jocuri?nivel=' + level}><span aria-hidden="true">&#8592;</span> Jocuri</Link><Link className="game-brand-link" to="/dashboard" aria-label="NordLingo - Acasa"><NorwegianFlagIcon className="game-brand-logo" /></Link><ExerciseLevelSelect level={level} /></header>
     <div className="cathedral-heading"><h1>Pronunție <span className="warm-voice-icon" aria-hidden="true"><i /><i /><i /><i /><i /></span></h1><p>Ascultă și exersează<br />în ritmul tău.</p></div>
     <div className="cathedral-lesson"><CathedralIcon name="book" /><ExerciseLessonSelect course={course} value={activeLesson} onChange={chooseLesson} label="Alege lecția" all={false} /></div>
     <PronunciationLab key={level + '-' + lesson.uid + '-' + activePhrase} phrase={phrases[activePhrase]} phraseIndex={activePhrase} level={level} lessonId={lesson.id} rewardAttemptsRef={rewardAttemptsRef} appearance="cathedral" />

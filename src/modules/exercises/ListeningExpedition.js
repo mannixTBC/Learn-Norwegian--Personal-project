@@ -19,7 +19,7 @@ export function ListeningExpeditionLayout({ level, requestedLevel = level, onExi
     <header className="expedition-header">
       {onExit ? <button type="button" className="expedition-back" aria-label="Închide sesiunea" onClick={onExit}><Icon name="back" /></button>
         : <Link className="expedition-back" aria-label="Înapoi la jocuri" to={'/jocuri?nivel=' + requestedLevel}><Icon name="back" /></Link>}
-      {!onExit && <Link to="/dashboard" className="expedition-brand" aria-label="NordLingo — Acasă"><img src="/branding/nordlingo-selected-color.png" alt="NordLingo" /></Link>}
+      {<Link to="/dashboard" className="expedition-brand" aria-label="NordLingo — Acasă"><img src="/branding/nordlingo-selected-color.png" alt="NordLingo" /></Link>}
       <span className="expedition-level" aria-label={'Nivel ' + level}>{level}</span>
     </header>
     <section className="expedition-sheet" aria-label="Ascultă și alege">{children}</section>

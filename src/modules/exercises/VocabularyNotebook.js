@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { speakNorwegian } from '../../services/norwegianSpeech';
 import './VocabularyNotebook.css';
+import NorwegianFlagIcon from '../layout/Navbar/NorwegianFlagIcon';
 
 function Book() {
   return <svg viewBox="0 0 32 28" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M16 6Q9 1 2 4v21q7-3 14 1 7-4 14-1V4q-7-3-14 2Zm0 0v20" /></svg>;
@@ -43,8 +44,8 @@ export default function VocabularyNotebook({ level, question, current, total, he
     outcome.current?.scrollIntoView?.({ block: 'nearest' });
   }, [checked]);
   return <div className="vocabulary-notebook">
-    <header className="vn-header"><button type="button" onClick={onExit} aria-label="Înapoi la jocuri">←</button><h1>Vocabular</h1><span aria-label={'Nivel ' + level}>{level}</span></header>
-    <section className="vn-sheet" aria-label="Carnetul de cuvinte">
+    <header className="vn-header"><button type="button" onClick={onExit} aria-label="Înapoi la jocuri">←</button><NorwegianFlagIcon className="game-brand-logo" /><span aria-label={'Nivel ' + level}>{level}</span></header>
+    <h1 className="vn-game-title">Vocabular</h1><section className="vn-sheet" aria-label="Carnetul de cuvinte">
       <div className="vn-flow-top"><div className="vn-stage">Pasul {current + 1} din {total}</div><button type="button" className="vn-sound-toggle" aria-pressed={!muted} onClick={() => setMuted(value => !value)}>{muted ? 'Sunet oprit' : 'Sunet pornit'}</button></div>
       <progress className="vn-progress" value={current + (checked ? 1 : 0)} max={total} aria-label="Cuvinte parcurse" />
       <ol className="vn-steps" aria-label="Etapele exercițiului">{[['recognize', 'Alege sensul'], ['context', 'Completează'], ['recall', 'Scrie cuvântul']].map(([id, label]) => <li key={id} aria-current={stage === id ? 'step' : undefined}>{label}</li>)}</ol>
