@@ -232,3 +232,19 @@
 .navbar__login { background: var(--fjord); }
 .navbar__login:hover { background: var(--fjord-hover); }
 .nav-link--active { color: var(--fjord); background: var(--fjord-soft); }
+
+/* Browser installation entry in the website navigation. */
+.navbar__nav .navbar__install {
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  min-height:44px;border:1px solid #c4dfdf;border-radius:10px;
+  color:#175f68;background:#edf7f5;font-family:inherit;cursor:pointer;
+  white-space:nowrap;
+}
+.navbar__nav .navbar__install:hover { color:#fff;background:#1f6f78;border-color:#1f6f78; }
+.navbar__install:focus-visible { outline:3px solid #73b9bf;outline-offset:3px; }
+.navbar__install .pwa-install-icon { width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round; }
+@media(min-width:861px) and (max-width:1100px) {
+  .navbar__inner { padding-inline:16px;grid-template-columns:auto minmax(0,1fr) auto;gap:10px; }
+  .navbar__nav>.nav-link { padding-inline:8px;font-size:.78rem; }
+  .navbar__logo-icon img { width:130px; }
+}

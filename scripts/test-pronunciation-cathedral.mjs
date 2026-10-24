@@ -96,7 +96,7 @@ try{
    const workspace=document.querySelector('.cathedral-workspace');
    return {errors,overlap,pageHeight:document.documentElement.scrollHeight,viewport:innerHeight,dialogScroll:dialog&&dialog.scrollHeight>dialog.clientHeight+1,quoteScroll:quote&&quote.scrollHeight>quote.clientHeight+1,workspaceScroll:!dialog&&workspace.scrollHeight>workspace.clientHeight+1};
   });
-  assert.deepEqual(measurement.errors,[],label+': elements fit');assert.equal(measurement.overlap,false,label+': phrase does not overlap audio');if (measurement.viewport >= 700) assert.ok(measurement.pageHeight<=measurement.viewport+1,label+': no page scrolling on tall screens');assert.ok(!measurement.dialogScroll,label+': no dialog scrolling');assert.ok(!measurement.quoteScroll,label+': no quote scrolling');assert.ok(!measurement.workspaceScroll,label+': recording/result fits its space');report.states++;
+  assert.deepEqual(measurement.errors,[],label+': elements fit');assert.equal(measurement.overlap,false,label+': phrase does not overlap audio');assert.ok(measurement.pageHeight<=measurement.viewport+1,label+': no page scrolling');assert.ok(!measurement.dialogScroll,label+': no dialog scrolling');assert.ok(!measurement.quoteScroll,label+': no quote scrolling');assert.ok(!measurement.workspaceScroll,label+': recording/result fits its space');report.states++;
  };
  const close=async()=>{await page.getByRole('button',{name:'Închide',exact:true}).click();};
  const openDetails=async()=>{await page.locator('.cathedral-result__heading').click();};

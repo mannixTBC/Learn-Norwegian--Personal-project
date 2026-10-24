@@ -202,3 +202,16 @@ html body .App > .App__main > .listening-expedition.listening-expedition {
   margin-bottom:0;
   padding-bottom:max(10px, env(safe-area-inset-bottom));
 }
+
+/* Keep the viewport behind the game on the same surface as its content. */
+html:has(.listening-expedition),
+html body:has(.listening-expedition),
+#root:has(.listening-expedition) { background:#f3e8d4; }
+html body .App:has(.listening-expedition) { min-height:100dvh; }
+html:not(.is-installed-app):has(.listening-expedition),
+html:not(.is-installed-app) body:has(.listening-expedition),
+html:not(.is-installed-app) #root:has(.listening-expedition) { background:#f7f9fb; }
+@media(max-width:680px) and (max-height:700px) {
+  .listening-expedition--playing .expedition-sheet { padding-block:10px; }
+  .listening-expedition--playing .expedition-title { margin-bottom:10px; }
+}

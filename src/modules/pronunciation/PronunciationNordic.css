@@ -131,3 +131,55 @@ html:has(.pronunciation-nordic), body:has(.pronunciation-nordic), #root:has(.pro
 }
 
 .pronunciation-nordic .nordic-pronunciation-art[data-theme='cafe'] { object-position:center 58%; }
+
+/* Fit the exercise to the phone viewport; shrink decoration before controls. */
+body:has(.pronunciation-nordic) { overflow:hidden; }
+.pronunciation-nordic { height:100dvh; min-height:0; grid-template-rows:40px auto 44px minmax(0,1fr) auto; }
+.pronunciation-nordic .cathedral-lab { min-height:0; grid-template-rows:minmax(0,.8fr) auto minmax(145px,1fr); }
+.pronunciation-nordic .nordic-pronunciation-art { min-height:0; }
+@media(max-height:740px) {
+  .pronunciation-nordic { gap:6px; }
+  .pronunciation-nordic .cathedral-heading { padding-block:0; }
+  .pronunciation-nordic .cathedral-heading p { display:none; }
+  .pronunciation-nordic .cathedral-heading h1 { font-size:26px; margin:0; }
+  .pronunciation-nordic .cathedral-lab { gap:7px; grid-template-rows:minmax(0,.6fr) auto minmax(120px,1fr); }
+  .pronunciation-nordic .cathedral-workspace { min-height:120px; padding:8px 12px; }
+  .pronunciation-nordic .cathedral-recorder { gap:8px; }
+  .pronunciation-nordic .cathedral-record { width:62px; height:62px; box-shadow:0 0 0 6px #edf8f6,0 0 0 12px #f5faf8; }
+  .pronunciation-nordic .cathedral-quote__text { min-height:64px; padding:9px 24px; gap:4px; }
+  .pronunciation-nordic .cathedral-quote blockquote { font-size:18px; }
+  .pronunciation-nordic .cathedral-quote__text>p { font-size:14px; }
+  .pronunciation-nordic .nordic-recorder-instruction { font-size:12px; }
+}
+@media(max-height:600px) {
+  .pronunciation-nordic { grid-template-rows:44px 44px minmax(0,1fr) auto; padding-top:max(6px,env(safe-area-inset-top)); }
+  .pronunciation-nordic .cathedral-heading { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+  .pronunciation-nordic .cathedral-lab { grid-template-rows:auto minmax(100px,1fr); }
+  .pronunciation-nordic .nordic-pronunciation-art { display:none; }
+  .pronunciation-nordic .cathedral-workspace { min-height:100px; }
+  .pronunciation-nordic .cathedral-recorder { display:grid; grid-template-columns:62px minmax(0,1fr); align-content:center; gap:8px 18px; padding:0 8px; text-align:left; }
+  .pronunciation-nordic .nordic-recorder-instruction,.pronunciation-nordic .cathedral-lab--recording .cathedral-wave { display:none; }
+  .pronunciation-nordic .cathedral-recorder__copy { grid-column:2; }
+  .pronunciation-nordic .cathedral-recorder__copy strong { font-size:15px; }
+  .pronunciation-nordic .cathedral-quote__text>p { display:none; }
+  .pronunciation-nordic .cathedral-model-actions .cathedral-translation { display:block; }
+  .pronunciation-nordic .cathedral-quote blockquote { font-size:16px; line-height:1.2; }
+  .pronunciation-nordic .cathedral-quote__text { min-height:55px; padding:10px 24px; }
+  .pronunciation-nordic .cathedral-focus-words { display:none; }
+}
+@media(max-height:440px) {
+  .pronunciation-nordic { grid-template-columns:90px minmax(0,1fr) 72px; grid-template-rows:44px minmax(0,1fr) 44px; gap:6px; padding:6px max(12px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left)); }
+  .pronunciation-nordic .cathedral-top { display:contents; }
+  .pronunciation-nordic .cathedral-top>a { grid-row:1; grid-column:1; }
+  .pronunciation-nordic .cathedral-top>.exercise-level-select { grid-row:1; grid-column:3; }
+  .pronunciation-nordic .cathedral-lesson { grid-row:1; grid-column:2; margin:0; justify-self:stretch; }
+  .pronunciation-nordic .cathedral-lab { grid-column:1/-1; grid-row:2; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); grid-template-rows:minmax(0,1fr); }
+  .pronunciation-nordic .cathedral-quote { grid-template-rows:minmax(0,1fr) 44px; }
+  .pronunciation-nordic .cathedral-navigation { grid-column:1/-1; grid-row:3; grid-template-columns:44px minmax(0,1fr) minmax(130px,.8fr); }
+  .pronunciation-nordic .cathedral-navigation>button:last-child:not(.cathedral-navigation__library),.pronunciation-nordic .nordic-finish { grid-column:3; grid-row:1; min-height:44px; padding:5px 8px; font-size:12px; }
+  .pronunciation-nordic .cathedral-recorder { display:flex; gap:8px; padding:0; text-align:center; }
+  .pronunciation-nordic .cathedral-model-actions button { padding:4px 6px; font-size:12px; gap:4px; }
+  .pronunciation-nordic .cathedral-model-actions button:nth-child(2) { min-width:50px; }
+  .pronunciation-nordic .cathedral-model-actions button:nth-child(2) svg { display:none; }
+  .pronunciation-nordic .cathedral-navigation__library small { display:none; }
+}

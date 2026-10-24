@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import NorwegianFlagIcon from './NorwegianFlagIcon';
 import { useAuth } from '../../auth/AuthContext';
 import './Navbar.css';
+import PWAInstallButton from '../../pwa/PWAInstallButton';
 import { isInstalledAppView } from '../../../services/appExperience';
 
 const navigation = [
@@ -114,6 +115,7 @@ export default function Navbar() {
               {item.label}
             </NavLink>
           ))}
+          {!isInstalledAppView() && <PWAInstallButton className="nav-link navbar__install" />}
           <div className="navbar__mobile-account">
             {user ? (
               <>
