@@ -185,3 +185,20 @@ html body .App > .App__main:has(.listening-expedition) { min-height: 100svh; pad
  .listening-expedition--playing:has(.expedition-error) .expedition-title { margin-bottom:8px; }
  .listening-expedition--playing:has(.expedition-error) .expedition-question { margin-top:6px; }
 }
+
+/* End the game canvas after its content instead of reserving an empty viewport. */
+html body .App:has(.listening-expedition) { min-height:0; }
+html body .App > .App__main:has(.listening-expedition) {
+  flex:0 0 auto;
+  min-height:0;
+  height:auto;
+  margin:0;
+  padding:0 !important;
+}
+html body .App > .App__main > .listening-expedition.listening-expedition {
+  height:auto;
+  min-height:0;
+  max-height:none;
+  margin-bottom:0;
+  padding-bottom:max(10px, env(safe-area-inset-bottom));
+}
