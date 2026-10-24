@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import './App.css';
 import './modules/exercises/DesktopPractice.css';
 
@@ -11,25 +11,27 @@ import SeoManager from './seo/SeoManager';
 import PageLoading from './modules/layout/PageLoading';
 
 /**
- * Componenta rădăcină a aplicației „NordLingo”.
+ * Componenta radacina a aplica?iei ,NordLingo".
  *
  * Structura paginii:
- *   1. Navbar  — bara de navigare (mereu vizibilă)
- *   2. Main    — conținutul dinamic, schimbat de React Router
- *   3. Footer  — subsolul paginii (mereu vizibil)
+ *   1. Navbar  - bara de navigare (ascunsa �n jocul Propozi?ii)
+ *   2. Main    - con?inutul dinamic, schimbat de React Router
+ *   3. Footer  - subsolul paginii (ascuns �n jocul Propozi?ii)
  */
 export function AppContent() {
   const mainRef = useRef(null);
+  const { pathname } = useLocation();
+  const isSentenceGame = /^\/drag(?:\/|$)/.test(pathname);
   return (
     <AuthProvider>
       <SeoManager />
       <div className="App">
-        <Navbar />
+        {!isSentenceGame && <Navbar />}
         <main className="App__main" ref={mainRef}>
           <AppRoutes />
           <PageLoading contentRef={mainRef} />
         </main>
-        <Footer />
+        {!isSentenceGame && <Footer />}
       </div>
     </AuthProvider>
   );
@@ -40,3 +42,4 @@ function App() {
 }
 
 export default App;
+
