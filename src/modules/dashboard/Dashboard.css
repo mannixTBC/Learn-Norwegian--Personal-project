@@ -502,3 +502,25 @@
 @media(max-width:680px) and (max-height:540px){
   html.is-installed-app .dashboard-app-home{height:auto;grid-template-rows:repeat(5,auto)}
 }
+
+/* Match the Games logo and anchor Home branding near the upper-left edge. */
+@media(max-width:680px) {
+  html.is-installed-app .dashboard-app-home__hero {
+    padding-top: calc(4px + env(safe-area-inset-top));
+    padding-left: 14px;
+    justify-content: flex-start;
+  }
+  html.is-installed-app .dashboard-app-home__brand {
+    width: 145px;
+    height: 44px;
+    padding: 0;
+    flex: 0 0 auto;
+    align-self: flex-start;
+  }
+  html.is-installed-app .dashboard-app-home__brand img {
+    width: 145px;
+    height: 44px;
+    object-fit: contain;
+    object-position: left center;
+  }
+}

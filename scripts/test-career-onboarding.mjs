@@ -43,7 +43,7 @@ try {
   assert.equal(await page.locator('.navbar').isVisible(),false);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight),true,'Route list fits viewport');
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
-  assert.equal(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(250, 249, 244)');
+  assert.equal(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(255, 254, 250)');
   await page.getByRole('button',{name:'Transport',exact:true}).click();
   await page.waitForSelector('.is-selected');
   await page.locator('.career-onboarding--levels').waitFor();

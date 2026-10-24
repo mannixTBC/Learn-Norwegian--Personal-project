@@ -46,3 +46,13 @@ html body .auth-fjord :focus-visible{outline:3px solid #64bfca;outline-offset:3p
 @media(min-width:760px){html body .auth-page.auth-fjord{max-width:560px}.auth-fjord__brand{width:210px}.auth-fjord__hero{padding-top:24px}}
 @media(max-height:680px){.auth-fjord__hero{padding-top:max(10px,env(safe-area-inset-top))}.auth-fjord__brand{width:150px}html body .auth-fjord .auth-panel header{margin-bottom:12px}html body .auth-fjord .auth-panel form{gap:10px}html body .auth-fjord .auth-fjord__back{top:10px}}
 @media(max-height:540px){.auth-fjord__scene{height:30px}.auth-fjord--form .auth-fjord__scene{height:12px}.auth-fjord__foot{display:none}html body .auth-fjord .auth-mobile-quick>p{margin-bottom:12px}}
+
+/* No space reserved for the hidden app navigation on the welcome screen. */
+html:has(.auth-fjord), body:has(.auth-fjord), #root:has(.auth-fjord), .App:has(.auth-fjord) {
+  background: #fffefa;
+  margin: 0;
+  padding: 0 !important;
+  min-height: 100dvh;
+}
+html body .App > .App__main:has(.auth-fjord) { margin: 0; min-height: 0; }
+html body .auth-page.auth-fjord { min-height: 100dvh; }

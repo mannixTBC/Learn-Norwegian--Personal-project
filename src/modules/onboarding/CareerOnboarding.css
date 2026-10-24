@@ -1,6 +1,6 @@
 /* The onboarding canvas follows Home, including below short level lists. */
 html:has(.career-onboarding), body:has(.career-onboarding), #root:has(.career-onboarding), .App:has(.career-onboarding) {
-  background: #faf9f4;
+  background: #fffefa;
 }
 .App:has(.career-onboarding) > .navbar,
 .App:has(.career-onboarding) > .footer { display: none !important; }
@@ -16,16 +16,19 @@ body:has(.career-onboarding), .App:has(.career-onboarding), .App:has(.career-onb
   min-height: 100dvh;
   padding: max(26px, env(safe-area-inset-top)) 22px max(32px, env(safe-area-inset-bottom));
   color: #203b51;
-  background: #faf9f4;
+  background: #fffefa;
 }
 .career-onboarding::before {
   content: '';
   position: absolute;
   z-index: -1;
-  inset: 0 0 auto;
-  height: 460px;
+  inset: 76px 0 auto;
+  height: clamp(70px, calc(100svh - 475px), 300px);
+  width: min(100%, 520px);
+  margin-inline: auto;
   pointer-events: none;
-  background: linear-gradient(to bottom, rgba(250,249,244,.58), rgba(250,249,244,.77) 45%, #faf9f4 100%), url('/images/loading-fjord.webp') center 43% / cover no-repeat;
+  background: url('/images/loading-fjord.webp') center 62% / cover no-repeat;
+  mask-image: linear-gradient(transparent, #000 14%, #000 70%, transparent);
 }
 .career-onboarding__brand, .career-onboarding__content { width: min(100%, 440px); margin: 0 auto; }
 .career-onboarding__brand { position: relative; display: flex; align-items: center; flex-direction: column; gap: 22px; }
@@ -55,7 +58,7 @@ body:has(.career-onboarding), .App:has(.career-onboarding), .App:has(.career-onb
 .career-onboarding button:focus-visible { outline: 3px solid #4d8aaa; outline-offset: 3px; position: relative; z-index: 1; }
 .career-onboarding__error { margin-top: 18px; color: #a2223d; text-align: center; }
 @keyframes onboarding-appear { from { opacity: 0; } to { opacity: 1; } }
-@media(min-width: 768px) { .career-onboarding { padding-top: 38px; } .career-onboarding::before { background-size: auto, 900px auto; } }
+@media(min-width: 768px) { .career-onboarding { padding-top: 38px; } .career-onboarding::before { width: 560px; max-width: 100%; } }
 @media(prefers-reduced-motion: reduce) { .career-onboarding__content { animation: none; } .career-onboarding__row { transition: none; } }
 
 /* Fit the ten direct choices to the available screen without clipping content. */
@@ -71,3 +74,19 @@ body:has(.career-onboarding), .App:has(.career-onboarding), .App:has(.career-onb
   .career-onboarding__level { min-height: 80px; padding: 12px 18px; }
 }
 .career-onboarding--levels .career-onboarding__content { margin-top: clamp(32px, 11dvh, 94px); }
+
+/* Direct choices use a filled highlight, including keyboard focus. */
+.career-onboarding .career-onboarding__row {
+  -webkit-tap-highlight-color: transparent;
+}
+.career-onboarding .career-onboarding__row:focus,
+.career-onboarding .career-onboarding__row:active,
+.career-onboarding .career-onboarding__row.is-selected {
+  outline: none;
+  box-shadow: none;
+}
+.career-onboarding .career-onboarding__row:focus-visible,
+.career-onboarding .career-onboarding__row:active {
+  background: #d5e9ed;
+  color: #245b68;
+}
