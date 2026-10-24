@@ -90,11 +90,11 @@ for (const mode of [false, true]) {
     assert.ok(textOf(brief).includes(expected.brief));
     assert.deepEqual(brief.findAllByType('li').map(node => textOf(node).slice(1)), expected.goals);
     assert.equal(textOf(classNodes(renderer, 'conversation-criteria')[0]), expected.expectation);
-    if (!mode) assert.equal(renderer.root.findByProps({ id: 'dc-context' }).props.hidden, false);
+    if (!mode) assert.equal(renderer.root.findByProps({ id: 'dc-context' }).props.hidden, true);
     if (mode) {
       assert.equal(classNodes(renderer, 'mobile-app-nav').length, 0, 'focused scenario has its own back control');
-      assert.equal(renderer.root.findByProps({ id: 'mc-context' }).props.hidden, false);
-      assert.equal(renderer.root.findByProps({ id: 'mc-objective-list' }).props.hidden, false);
+      assert.equal(renderer.root.findByProps({ id: 'mc-context' }).props.hidden, true);
+      assert.equal(renderer.root.findByProps({ id: 'mc-objective-list' }).props.hidden, true);
     }
     await act(async () => classNodes(renderer, 'conversation-primary')[0].props.onClick());
     assert.deepEqual(calls.at(-1), { scenarioId: 'bus-delay', level });
@@ -102,10 +102,10 @@ for (const mode of [false, true]) {
     if (mode) {
       assert.equal(answerFocusCount, 0, 'the mobile keyboard must not open automatically over Nora’s reply');
       const goals = renderer.root.findByProps({ id: 'mc-objective-list' });
-      assert.equal(goals.props.hidden, false);
+      assert.equal(goals.props.hidden, true);
       const goalButton = renderer.root.findAllByType('button').find(n => n.props['aria-controls'] === 'mc-objective-list');
       await act(async () => goalButton.props.onClick());
-      assert.equal(renderer.root.findByProps({ id: 'mc-objective-list' }).props.hidden, true);
+      assert.equal(renderer.root.findByProps({ id: 'mc-objective-list' }).props.hidden, false);
       const contextButton = renderer.root.findAllByType('button').find(n => n.props['aria-controls'] === 'mc-context');
       assert.equal(renderer.root.findByProps({ id: 'mc-context' }).props.hidden, true);
       await act(async () => contextButton.props.onClick());

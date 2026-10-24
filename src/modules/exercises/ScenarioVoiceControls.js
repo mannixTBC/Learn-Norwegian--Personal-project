@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { speakNorwegian } from '../../services/norwegianSpeech';
 
-export default function ScenarioVoiceControls({ flow, blocked, reply }) {
+export default function ScenarioVoiceControls({ flow, blocked, reply, onFinish }) {
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
   const recognition = useRef(null);
@@ -74,16 +74,18 @@ export default function ScenarioVoiceControls({ flow, blocked, reply }) {
   }
   const active = ['listening', 'speaking'].includes(status);
   return <section className="scenario-voice" aria-label="Răspuns vocal">
-    <p className="scenario-voice__status" role="status">{flow.busy ? 'Nora pregătește răspunsul…' : status === 'listening' ? 'Te ascult…' : status === 'speaking' ? 'Nora vorbește…' : status === 'loading' ? 'Pregătim vocea…' : 'Vorbește în norvegiană'}</p>
+    <p className="scenario-voice__status" role="status">{flow.busy ? 'Nora pregătește răspunsul…' : status === 'listening' ? 'Te ascult…' : status === 'speaking' ? 'Nora vorbește…' : status === 'loading' ? 'Pregătim vocea…' : 'Rândul tău'}</p>
     <div className={'scenario-voice__wave' + (active ? ' is-active' : '')} aria-hidden="true">{Array.from({ length: 23 }, (_, i) => <i key={i} style={{ height: 8 + (i * 17 % 30), animationDelay: `${i * 45}ms` }}/>)}</div>
     <button type="button" className="scenario-voice__mic" onClick={record} disabled={!Recognition || flow.busy || Boolean(blocked)} aria-label={status === 'listening' ? 'Încheie înregistrarea' : 'Înregistrează răspunsul'} aria-pressed={status === 'listening'}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></svg>
     </button>
-    <p className="scenario-voice__caption">{status === 'listening' ? 'Apasă din nou când ai terminat.' : 'Apasă microfonul. Verifică ce am auzit, apoi trimite.'}</p>
+    <p className="scenario-voice__caption">{status === 'listening' ? 'Apasă din nou când ai terminat.' : 'Apasă și vorbește în norvegiană.'}</p>
     {!Recognition && <p className="scenario-voice__notice">Browserul nu oferă recunoaștere vocală. Folosește un browser compatibil sau alternativa text de mai jos.</p>}
     {error && <p className="scenario-voice__notice" role="alert">{error}</p>}
     {flow.draft && <div className="scenario-voice__draft"><small>Am auzit</small><p lang="nb">{flow.draft}</p><button type="button" className="conversation-primary" disabled={flow.busy || Boolean(blocked) || status === 'listening'} onClick={() => { stop(); setStatus('idle'); flow.send(); }}>Trimite răspunsul vocal</button></div>}
-    <div className="scenario-voice__tools"><button type="button" onClick={() => listen()} disabled={!reply || flow.busy}>Ascultă Nora</button><button type="button" onClick={() => listen(true)} disabled={!reply || flow.busy}>Mai lent</button>{active && <button type="button" onClick={() => { stop(); setStatus('idle'); }}>Oprește sunetul</button>}</div>
-    <small className="scenario-voice__privacy">Recunoașterea vocală este oferită de browser și poate folosi serviciul său online.</small>
+    <div className="scenario-voice__tools"><button type="button" onClick={() => listen()} disabled={!reply || flow.busy} aria-label="Ascultă Nora">↻ Repetă</button><button type="button" onClick={() => listen(true)} disabled={!reply || flow.busy}>Mai lent</button>{active && <button type="button" onClick={() => { stop(); setStatus('idle'); }}>Oprește sunetul</button>}</div>
+    {onFinish && <button type="button" className="guided-finish" onClick={() => { stop(); onFinish(); }}><span aria-hidden="true">⚑</span> Încheie</button>}
+    <details className="scenario-voice__extras"><summary>Despre microfon</summary>
+    <small className="scenario-voice__privacy">Recunoașterea vocală este oferită de browser și poate folosi serviciul său online.</small></details>
   </section>;
 }

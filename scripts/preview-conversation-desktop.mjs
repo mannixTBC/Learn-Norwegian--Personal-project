@@ -23,7 +23,7 @@ const state = query.get('state') || 'catalog';
 const app = query.get('app') === '1';
 document.documentElement.classList.toggle('is-installed-app', app);
 localStorage.setItem('norwegian_career_profile_conversation-visual-preview', JSON.stringify({ pathId: 'transport' }));
-const { scenario, difficulty } = resolvePublicScenario(catalog.scenarios[0], catalog.levels, level);
+const { scenario, difficulty } = resolvePublicScenario(catalog.scenarios.find(item => item.id === query.get('scenario')) || catalog.scenarios[0], catalog.levels, level);
 const user = { id: 'conversation-visual-preview', name: 'Previzualizare', isGuest: true };
 const key = conversationStorageKey(user.id, level, 'transport');
 const sessions = new Map();
@@ -81,9 +81,9 @@ const server = await createServer({ root, configFile: resolve(root, 'vite.config
       if (id === '\0conversation-preview-token') return 'export const supabase = null;';
     },
     configureServer(server) {
-      server.middlewares.use('/__conversation-preview', (req, res) => {
+      server.middlewares.use('/__conversation-preview', async (req, res) => {
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
-        res.end('<!doctype html><html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nordlingo — previzualizare desktop</title></head><body><div id="root"></div><script type="module" src="/node_modules/.cache/conversation-desktop-preview/entry.jsx"></script></body></html>');
+        res.end(await server.transformIndexHtml('/__conversation-preview', '<!doctype html><html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nordlingo — previzualizare desktop</title></head><body><div id="root"></div><script type="module" src="/node_modules/.cache/conversation-desktop-preview/entry.jsx"></script></body></html>'));
       });
     },
   }],

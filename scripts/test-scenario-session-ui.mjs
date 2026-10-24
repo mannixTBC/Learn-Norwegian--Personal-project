@@ -70,7 +70,7 @@ globalThis.fetch = async (url, options) => {
 function Harness() { history = useHistory(); return React.createElement(Studio); }
 const nodes = (renderer, name) => renderer.root.findAll(node => typeof node.type === 'string' && node.props.className?.split(' ').includes(name));
 const textOf = node => typeof node === 'string' ? node : node.children.map(textOf).join('');
-const button = (renderer, text) => renderer.root.findAllByType('button').find(node => textOf(node) === text);
+const button = (renderer, text) => renderer.root.findAllByType('button').find(node => (node.props['aria-label'] || textOf(node)) === text);
 const click = async (renderer, text) => {
   const node = button(renderer, text); assert.ok(node, 'Missing button: ' + text);
   await act(async () => { await node.props.onClick(); });
@@ -237,7 +237,7 @@ for (const mode of [false, true]) {
   assert.equal(temporary.size, 0);
   assert.equal(nodes(r, 'conversation-result').length, 0);
   assert.ok(button(r, 'Începe conversația'));
-  assert.equal(r.root.findByProps({ id: mode ? 'mc-context' : 'dc-context' }).props.hidden, false, 'a new practice starts with its context visible');
+  assert.equal(r.root.findByProps({ id: mode ? 'mc-context' : 'dc-context' }).props.hidden, true, 'advanced context starts collapsed; the role and brief remain visible in the scenario card');
   await click(r, 'Începe conversația');
   const last = server.get([...server.keys()].at(-1));
   last.turn = 6;
