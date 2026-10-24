@@ -1,3 +1,5 @@
+import { ExerciseArtwork } from './NordicExerciseUI';
+import ScenarioVoiceControls from './ScenarioVoiceControls';
 import ScenarioProgress from './ScenarioProgressSummary';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -18,7 +20,7 @@ function Icon({ name = 'message' }) {
 }
 function Panorama({ scenario, small = false }) {
   return <div className={'dc-panorama' + (small ? ' dc-panorama--small' : '')} aria-hidden="true">
-    <img src="/images/voice/voice-fjord.webp" alt="" loading={small ? 'lazy' : 'eager'} width="1200" height="800"/>
+    {scenario.id === 'cafe-order' ? <img className="scenario-cafe-photo" src="/images/voice/nora-cafe.png" alt="" loading={small ? 'lazy' : 'eager'}/> : <><ExerciseArtwork kind="missions" pathId={scenario.path}/><img className="scenario-scene-nora" src="/images/voice/nora-avatar.webp" alt=""/></>}
     <span className="dc-scene-label">{scenario.place}</span>
   </div>;
 }
@@ -85,13 +87,15 @@ export default function DesktopConversationStudio({ level, path, scenarios, sele
             <p>{session.feedback}</p>{session.endReason !== 'success' && <div className="dc-next-practice"><h3>De exersat</h3><ul>{selected.goals.filter((_, i) => !session.achieved.includes(i)).map(goal => <li key={goal}>{goal}</li>)}</ul></div>}
             <p className="scenario-progress-notice" role="status">{flow.progressNotice}</p><div className="dc-result-actions"><button className="conversation-primary" onClick={flow.again}>Exersează din nou</button><button className="conversation-link" onClick={flow.reset}>Alte situații</button></div>
           </div> : <>
-            <form onSubmit={e => { e.preventDefault(); if (!blocked) flow.send(); }} className="conversation-compose dc-compose">
+            <ScenarioVoiceControls key={selected.id} flow={flow} blocked={blocked} reply={currentMessage?.text}/>
+              <details className="scenario-text-alternative"><summary>Alternativă: răspunde în scris</summary>
+              <form onSubmit={e => { e.preventDefault(); if (!blocked) flow.send(); }} className="conversation-compose dc-compose">
               <label htmlFor="scenario-answer"><Icon/>{busy ? 'Se pregătește răspunsul…' : 'Rândul tău'}<span>Răspunde în norvegiană</span></label>
               <div><textarea ref={inputRef} lang="nb" id="scenario-answer" value={draft} maxLength={1200} rows={2} disabled={busy} onChange={e => flow.setDraft(e.target.value)} placeholder="Scrie răspunsul tău…" aria-label="Răspunsul tău în norvegiană"/>
                 <button className="conversation-primary" disabled={busy || blocked || !draft.trim()} type="submit">Trimite →</button></div>
               <footer><button type="button" className="conversation-link dc-help" onClick={() => setHint(!hint)} aria-expanded={hint} aria-controls="dc-hint"><Icon name="help"/>Un punct de pornire</button><span className="dc-character-count">{draft.length}/1200</span></footer>
               {hint && <p id="dc-hint" className="conversation-hint" lang="nb">{selected.hint}</p>}
-            </form>
+            </form></details>
             {remaining <= 2 && <p className="conversation-notice dc-remaining" role="status">{remaining === 1 ? 'Mai ai un răspuns disponibil.' : 'Mai ai două răspunsuri disponibile.'}</p>}
           </>}
         </>}

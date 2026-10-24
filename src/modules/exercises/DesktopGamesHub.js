@@ -26,7 +26,6 @@ export default function DesktopGamesHub({ level, cards = [], activities = [], re
   const listen = activities.find(item => item.id === 'listen');
   const games = [listen && { ...listen, to: withLevel(listen.to, level) }, ...['quiz', 'order', 'verbs', 'pronunciation', 'word'].map(id => cards.find(item => item.id === id))].filter(Boolean);
   const review = cards.find(item => item.id === 'review');
-  const mission = activities.find(item => item.id === 'missions');
   const recommendation = recommendDesktopPractice({ games, review, reviewStats });
   const due = count(reviewStats.due);
   return <div className="desktop-games-hub">
@@ -37,6 +36,5 @@ export default function DesktopGamesHub({ level, cards = [], activities = [], re
     </div>
     <section className="desktop-games-hub__section" aria-labelledby="desktop-games-title"><div className="desktop-games-hub__section-heading"><h2 id="desktop-games-title">Toate jocurile</h2><span>Nivel {level}</span></div><div className="desktop-games-hub__grid">{games.map(card => <Link className={`desktop-games-hub__card desktop-games-hub__card--${card.id}`} key={card.id} to={card.to}><span className="desktop-games-hub__icon"><ExerciseIcon name={card.id} /></span><div className="desktop-games-hub__card-copy"><h3>{copy[card.id][0]}</h3><p>{copy[card.id][1]}</p><div className="desktop-games-hub__status"><PracticeStatus card={card} /></div></div><span className="desktop-games-hub__card-arrow" aria-hidden="true">→</span><span className="desktop-games-hub__card-action">Începe</span></Link>)}</div></section>
     <section className="desktop-games-hub__mission"><span className="desktop-games-hub__icon"><ExerciseIcon name="missions" /></span><div><h2>Studio de conversație</h2><p>Intră în rol și rezolvă situații reale, cu Nora.</p></div><Link to={withLevel("/scenarii", level)}>Alege un scenariu →</Link></section>
-    {mission && <section className="desktop-games-hub__mission" aria-labelledby="desktop-mission-title"><span className="desktop-games-hub__icon"><ExerciseIcon name="missions" /></span><div><h2 id="desktop-mission-title">Misiuni la serviciu</h2><p>Exersează norvegiana în situații reale de la locul de muncă.</p></div><Link to={withLevel(mission.to, level)}>Descoperă misiunile <span aria-hidden="true">→</span></Link></section>}
   </div>;
 }

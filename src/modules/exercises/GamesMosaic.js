@@ -50,7 +50,6 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
   const focusObstacle = () => requestAnimationFrame(() => obstacleHeading.current?.focus());
   const byId = Object.fromEntries(cards.map(card => [card.id, card]));
   const listen = activities.find(card => card.id === 'listen');
-  const missions = activities.find(card => card.id === 'missions');
   const tiles = [{ ...listen, to: `${listen.to}?nivel=${level}`, percent: listen.progress.best, label: listen.progress.sessions ? `Record: ${listen.progress.best}%` : 'Nou' }, ...['pronunciation', 'quiz', 'order', 'verbs', 'word'].map(id => {
     const card = byId[id];
     return { ...card, title: id === 'word' ? 'Descoperă cuvântul' : card.title, percent: Math.min(100, Math.round(card.progress.completed / card.progress.target * 100)), label: id === 'pronunciation' ? card.progress.completed ? `Record: ${card.progress.completed}%` : 'Nou' : `${card.progress.completed} / ${card.progress.target}` };
@@ -75,7 +74,7 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
   const selectedIndex = NORTHERN_PASS_STOPS.findIndex(stop => stop.id === selected.id);
   const selectedCompleted = selectedIndex < status.completedCount;
   const selectedCurrent = selected.id === status.currentStop?.id;
-  const practiceByStop = { port: listen.to, far: byId.word.to, fiord: byId.quiz.to, pod: byId.order.to, padure: byId.quiz.to, cascada: listen.to, trecatoare: byId.verbs.to, ghetar: byId.pronunciation.to, varf: missions.to, aurora: listen.to };
+  const practiceByStop = { port: listen.to, far: byId.word.to, fiord: byId.quiz.to, pod: byId.order.to, padure: byId.quiz.to, cascada: listen.to, trecatoare: byId.verbs.to, ghetar: byId.pronunciation.to, varf: '/scenarii', aurora: listen.to };
   const practiceHref = `${practiceByStop[selected.id].split('?')[0]}?nivel=${level}`;
   const claim = () => {
     const result = onClaimStop?.(selected.id);
@@ -108,7 +107,6 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
     </Link>)}</section>
     <div className="northern-utilities">
       <Link className="mini-missions" to={"/scenarii?nivel=" + level}><GameArt type="missions" /><div><h2>Studio de conversație</h2><span>Intră în rol cu Nora</span></div><b aria-hidden="true">→</b></Link>
-      <Link className="mini-missions" to={`${missions.to}?nivel=${level}`}><GameArt type="missions" /><div><h2>Misiuni la serviciu</h2></div><b aria-hidden="true">›</b></Link>
       <Link className="mini-review" to={byId.review.to}><GameArt type="review" /><div><h2>Recapitulare</h2></div>{reviewStats.due > 0 && <span className="expedition-due" aria-label={`${reviewStats.due} de repetat`}>{reviewStats.due}</span>}<b aria-hidden="true">›</b></Link>
     </div>
     <MobileAppNav activeLevel={level}/>

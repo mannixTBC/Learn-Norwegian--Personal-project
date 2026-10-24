@@ -53,7 +53,7 @@ const QuizPractice = () => <PracticeGame game="quiz" />;
 const OrderPractice = () => <PracticeGame game="order" />;
 const WordPractice = () => <PracticeGame game="word" />;
 const ListeningPractice = () => <ActivityGame key="listen" game="listen" />;
-const WorkMissions = () => <ActivityGame key="missions" game="missions" />;
+const WorkMissions = ConversationStudio;
 
 /** Rutele aplicației, ordonate după secțiune */
 const routes = [

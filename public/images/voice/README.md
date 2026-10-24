@@ -9,3 +9,7 @@ Reference: approved desktop card mockup. Prompt: Extract and recreate only the i
 ## nora-avatar.webp
 
 Prompt: Square portrait avatar for Nora, a fictional AI Norwegian language tutor. Friendly adult woman about 30 with shoulder length chestnut brown hair, warm natural smile, cream knit sweater and understated teal headset with microphone. Soft editorial illustration, natural proportions, head and shoulders centered for a circular crop. Soft daylight, pale mint background and deep fjord teal accents. No text, border, logo or watermark.
+
+## nora-cafe.png
+
+Generated with image_gen for the guided cafe scenario. Fictional Nora at a Norwegian cafe counter, compact landscape scene in the game palette. Display only for cafe-order; other scenarios reuse the existing career artwork.

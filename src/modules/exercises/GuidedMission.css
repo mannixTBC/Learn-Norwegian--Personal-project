@@ -1,0 +1,44 @@
+/* Guided mission: the existing scenario/session contract owns all progress. */
+.conversation-studio .scenario-voice{padding:22px 18px;text-align:center;border:1px solid #dbe6e6;border-radius:20px;background:linear-gradient(155deg,#fff,#f5faf9);color:#0d3555}
+.scenario-voice__status{margin:0;font-size:17px;font-weight:750}
+.scenario-voice__wave{display:flex;align-items:center;justify-content:center;gap:4px;height:48px;margin:10px auto;color:#1f6f78}
+.scenario-voice__wave i{display:block;width:4px;border-radius:4px;background:currentColor;opacity:.35}
+.scenario-voice__wave.is-active i{opacity:.8;animation:scenario-voice-wave .85s ease-in-out infinite alternate}
+.conversation-studio .scenario-voice__mic{display:grid;place-items:center;width:70px;height:70px;margin:12px auto 20px;padding:18px;border:0;border-radius:50%;background:#ffd04f;color:#0d3555;box-shadow:0 0 0 9px #fff4cd;cursor:pointer}
+.scenario-voice__mic svg{width:30px;height:30px}
+.scenario-voice__mic:disabled{opacity:.45;cursor:not-allowed}
+.scenario-voice__caption,.scenario-voice__notice{font-size:13px;line-height:1.6;margin:8px 0;color:#61747f}
+.scenario-voice__notice[role=alert]{color:#934839}
+.scenario-voice__tools{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+.scenario-voice__tools button{min-height:44px;padding:8px 16px;border:1px solid #cfe0df;border-radius:12px;background:#e5f4f2;color:#1f6f78;font:inherit;font-size:13px;cursor:pointer}
+.scenario-voice__tools button:disabled{opacity:.5;cursor:not-allowed}
+.scenario-voice__draft{margin-top:16px;padding:14px;border-radius:12px;background:#e5f4f2;text-align:left;overflow-wrap:anywhere}
+.scenario-voice__draft p{margin:6px 0 14px;line-height:1.6}
+.scenario-voice__privacy{display:block;margin-top:14px;color:#61747f;font-size:11px;line-height:1.5}
+.scenario-text-alternative{margin-top:18px;color:#61747f;font-size:13px}
+.scenario-text-alternative>summary{padding:12px;cursor:pointer}
+.conversation-studio .conversation-primary{color:#0d3555;background:#ffd04f;border:1px solid #efc44b;box-shadow:none}
+.conversation-studio .scenario-cafe-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:65% center}
+.conversation-studio .scenario-scene-nora{position:absolute;right:12px;bottom:10px;width:66px;height:66px;object-fit:cover;border:3px solid white;border-radius:50%;box-shadow:0 4px 15px #0d355525}
+.mobile-conversation .mc-brief>.mc-scene{height:145px;min-height:0;border-color:#dbe6e6}
+.mobile-conversation .mc-objectives{padding:14px;margin:16px 0;border:1px solid #dbe6e6;border-radius:18px;background:#fff}
+.mobile-conversation .mc-objectives li{padding:9px;border-radius:10px;background:#e5f4f2;color:#0d3555}
+.mobile-conversation .mc-objectives li.achieved{background:#e0f1e7}
+.mobile-conversation .mc-objectives h2{font-family:inherit;font-size:17px}
+.mobile-conversation .mc-ready{min-height:0;padding:18px 12px}
+.mobile-conversation .mc-partner{margin-bottom:14px}
+.desktop-conversation .dc-workspace{display:grid;grid-template-columns:minmax(260px,.85fr) minmax(0,1.15fr);gap:20px;align-items:start}
+.desktop-conversation .dc-mission{grid-column:1;grid-row:2;text-align:left;padding:20px;border:1px solid #dbe6e6;border-radius:20px;background:#fff}
+.desktop-conversation .dc-workspace>.dc-panorama{grid-column:1;grid-row:1;height:160px;min-height:0;margin:0;border-radius:18px;position:relative;overflow:hidden}
+.desktop-conversation .dc-workspace>.dc-dialogue{grid-column:2;grid-row:1 / span 2;min-width:0;margin:0}
+.desktop-conversation .dc-objectives{flex-direction:column;align-items:stretch;gap:8px}
+.desktop-conversation .dc-objectives li{max-width:none;padding:12px;background:#e5f4f2;border-radius:12px}
+.desktop-conversation .dc-panorama .ng-art{position:absolute;inset:0;width:100%;height:100%;padding:0;margin:0;border:0;border-radius:0;mask:none}
+.desktop-conversation .dc-panorama .ng-art>div{position:absolute;inset:0;background-repeat:no-repeat}
+.desktop-conversation .dc-panorama .scenario-scene-nora{inset:auto 12px 10px auto;width:66px;height:66px}
+.desktop-conversation .dc-panorama .scenario-cafe-photo{inset:0;width:100%;height:100%;object-fit:cover}
+.desktop-conversation .dc-ready{min-height:0}
+.desktop-conversation .dc-compose{padding:12px 0}
+@keyframes scenario-voice-wave{to{transform:scaleY(.4)}}
+@media(max-width:760px){.desktop-conversation .dc-workspace{display:flex;flex-direction:column}.desktop-conversation .dc-workspace>*{width:100%}.desktop-conversation .dc-workspace>.dc-panorama{order:-1;height:145px;flex:none}.conversation-studio .scenario-voice{padding:20px 14px}}
+@media(prefers-reduced-motion:reduce){.scenario-voice__wave.is-active i{animation:none}}

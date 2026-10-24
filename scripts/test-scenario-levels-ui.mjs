@@ -98,14 +98,14 @@ for (const mode of [false, true]) {
     }
     await act(async () => classNodes(renderer, 'conversation-primary')[0].props.onClick());
     assert.deepEqual(calls.at(-1), { scenarioId: 'bus-delay', level });
-    if (!mode) assert.ok(answerFocusCount > 0, 'desktop retains its keyboard-first composer');
+    assert.equal(answerFocusCount, 0, 'voice-first practice does not focus the hidden text composer');
     if (mode) {
       assert.equal(answerFocusCount, 0, 'the mobile keyboard must not open automatically over Nora’s reply');
       const goals = renderer.root.findByProps({ id: 'mc-objective-list' });
-      assert.equal(goals.props.hidden, true);
+      assert.equal(goals.props.hidden, false);
       const goalButton = renderer.root.findAllByType('button').find(n => n.props['aria-controls'] === 'mc-objective-list');
       await act(async () => goalButton.props.onClick());
-      assert.equal(renderer.root.findByProps({ id: 'mc-objective-list' }).props.hidden, false);
+      assert.equal(renderer.root.findByProps({ id: 'mc-objective-list' }).props.hidden, true);
       const contextButton = renderer.root.findAllByType('button').find(n => n.props['aria-controls'] === 'mc-context');
       assert.equal(renderer.root.findByProps({ id: 'mc-context' }).props.hidden, true);
       await act(async () => contextButton.props.onClick());

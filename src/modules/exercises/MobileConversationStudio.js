@@ -1,3 +1,4 @@
+import ScenarioVoiceControls from './ScenarioVoiceControls';
 import ScenarioProgress from './ScenarioProgressSummary';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -22,7 +23,7 @@ function Icon({ name = 'message' }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name] || paths.message}</svg>;
 }
 function Artwork({ scenario, compact = false }) {
-  return <div className={'mc-scene' + (compact ? ' mc-scene--compact' : '')}><ExerciseArtwork kind="missions" pathId={scenario.path}/><span>{scenario.place}</span></div>;
+  return <div className={'mc-scene' + (compact ? ' mc-scene--compact' : '')}>{scenario.id === 'cafe-order' ? <img className="scenario-cafe-photo" src="/images/voice/nora-cafe.png" alt=""/> : <><ExerciseArtwork kind="missions" pathId={scenario.path}/><img className="scenario-scene-nora" src="/images/voice/nora-avatar.webp" alt=""/></>}<span>{scenario.place}</span></div>;
 }
 function Objectives({ selected, session, open, setOpen }) {
   const collapsed = Boolean(session) && !open;
@@ -41,7 +42,7 @@ export default function MobileConversationStudio({ level, path, scenarios, selec
   const [historyOpen, setHistoryOpen] = useState(false);
   const contextRef = useRef(null), historyRef = useRef(null), hintRef = useRef(null), currentLineRef = useRef(null);
   useEffect(() => { setObjectivesOpen(true); setContextOpen(true); setHistoryOpen(false); }, [selected?.id, level]);
-  useEffect(() => { setObjectivesOpen(!session); setContextOpen(!session); }, [Boolean(session)]);
+  useEffect(() => { setObjectivesOpen(true); setContextOpen(!session); }, [Boolean(session)]);
   useEffect(() => { setHistoryOpen(false); }, [session?.turn]);
   useEffect(() => { if (session && contextOpen) contextRef.current?.scrollIntoView({ block: 'nearest' }); }, [contextOpen]);
   useEffect(() => { if (historyOpen) historyRef.current?.scrollIntoView({ block: 'nearest' }); }, [historyOpen]);
@@ -97,7 +98,9 @@ export default function MobileConversationStudio({ level, path, scenarios, selec
               {session.endReason !== 'success' && <div className="mc-next-practice"><h3>De exersat</h3><ul>{selected.goals.filter((_, i) => !session.achieved.includes(i)).map(goal => <li key={goal}>{goal}</li>)}</ul></div>}
               <p className="scenario-progress-notice" role="status">{flow.progressNotice}</p><button className="conversation-primary" onClick={flow.again}>Exersează din nou</button><button className="conversation-link" onClick={flow.reset}>Alte situații</button>
             </div> : <>
-              <form className="conversation-compose mc-compose" onSubmit={e => { e.preventDefault(); if (!blocked) flow.send(); }}><label htmlFor="scenario-answer">{busy ? 'Nora pregătește răspunsul…' : 'Rândul tău'}</label><div><textarea ref={inputRef} id="scenario-answer" lang="nb" value={draft} maxLength={1200} rows={2} disabled={busy} onChange={e => flow.setDraft(e.target.value)} placeholder="Scrie în norvegiană…" aria-label="Răspunsul tău în norvegiană"/><button className="conversation-primary" type="submit" disabled={busy || blocked || !draft.trim()}>Trimite →</button></div><span className="mc-character-count">{draft.length}/1200</span></form>
+              <ScenarioVoiceControls key={selected.id} flow={flow} blocked={blocked} reply={currentMessage?.text}/>
+              <details className="scenario-text-alternative"><summary>Alternativă: răspunde în scris</summary>
+              <form className="conversation-compose mc-compose" onSubmit={e => { e.preventDefault(); if (!blocked) flow.send(); }}><label htmlFor="scenario-answer">{busy ? 'Nora pregătește răspunsul…' : 'Rândul tău'}</label><div><textarea ref={inputRef} id="scenario-answer" lang="nb" value={draft} maxLength={1200} rows={2} disabled={busy} onChange={e => flow.setDraft(e.target.value)} placeholder="Scrie în norvegiană…" aria-label="Răspunsul tău în norvegiană"/><button className="conversation-primary" type="submit" disabled={busy || blocked || !draft.trim()}>Trimite →</button></div><span className="mc-character-count">{draft.length}/1200</span></form></details>
               {remaining <= 2 && <p className="conversation-notice mc-remaining" role="status">{remaining === 1 ? 'Mai ai un răspuns disponibil.' : 'Mai ai două răspunsuri disponibile.'}</p>}
             </>}
             <div className="mc-tools"><button type="button" className="conversation-link" onClick={() => setContextOpen(value => !value)} aria-expanded={contextOpen} aria-controls="mc-context"><Icon name="user"/>Context</button><button type="button" className="conversation-link" onClick={() => setHistoryOpen(value => !value)} disabled={!olderMessages.length} aria-expanded={historyOpen} aria-controls="mc-history"><Icon name="history"/>{historyOpen ? 'Ascunde istoricul' : 'Istoric'}</button>{!session.done && <button type="button" className="conversation-link" onClick={() => setHint(!hint)} aria-expanded={hint} aria-controls="mc-hint"><Icon name="help"/>Un punct de pornire</button>}</div>

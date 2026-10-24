@@ -10,6 +10,7 @@ import { isInstalledAppView } from '../../services/appExperience';
 import './ConversationStudio.css';
 import DesktopConversationStudio from './DesktopConversationStudio';
 import MobileConversationStudio from './MobileConversationStudio';
+import './GuidedMission.css';
 
 export default function ConversationStudio() {
   const { user } = useAuth();
@@ -35,7 +36,7 @@ export default function ConversationStudio() {
     if (busy) return;
     if (error) errorBox.current?.focus();
     else if (session?.done) result.current?.focus();
-    else if (session && !isInstalledAppView()) input.current?.focus();
+    // Voice is the primary action; do not open the keyboard automatically.
   }, [busy, session, error]);
 
   const View = isInstalledAppView() ? MobileConversationStudio : DesktopConversationStudio;
