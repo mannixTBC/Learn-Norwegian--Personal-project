@@ -88,7 +88,7 @@ export default function PronunciationCathedral({ phrase, level, lessonId, status
   useEffect(() => { setPage(0); }, [short]);
 
   return <section className={`cathedral-lab cathedral-lab--${status}${phrase.example.length > 120 ? ' cathedral-lab--long' : ''}`} aria-labelledby="cathedral-phrase">
-    <img className="nordic-pronunciation-art" src={artwork.theme === 'cafe' ? '/images/lessons/nordic-cafe.png' : artwork.src} alt={artwork.alt} />
+    <img className="nordic-pronunciation-art" data-theme={artwork.theme} src={artwork.theme === 'cafe' ? '/images/lessons/pronunciation-warm-cafe.webp' : artwork.src} alt={artwork.alt} />
     <article className="cathedral-quote">
       <div className="cathedral-quote__label"><span>1 · Ascultă modelul</span><button type="button" onClick={() => open('about')} aria-label="Despre exercițiu și cel mai bun scor">i</button></div>
       <div className="cathedral-quote__text"><blockquote id="cathedral-phrase" lang="nb">{phrase.example}</blockquote><p lang="ro">{phrase.translation}</p></div>

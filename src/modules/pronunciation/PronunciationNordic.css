@@ -77,3 +77,57 @@ body:has(.pronunciation-nordic) { overflow:auto; }
 .pronunciation-nordic .cathedral-lab--error .cathedral-recorder__copy strong { font-size:14px; }
 .pronunciation-nordic .cathedral-lab--error .cathedral-voice-replay { grid-column:2; }
 .pronunciation-nordic .nordic-pronunciation-art { object-position:center 76%; }
+
+/* Approved “Cald, ca Lecțiile” mobile theme. */
+html:has(.pronunciation-nordic), body:has(.pronunciation-nordic), #root:has(.pronunciation-nordic),
+.App:has(.pronunciation-nordic), .App__main:has(.pronunciation-nordic) { background:#faf9f4; }
+.pronunciation-nordic, .pronunciation-nordic .cathedral-dialog {
+  --voice-paper:#fff; --voice-bg:#faf9f4; --voice-ink:#0d2546; --voice-sub:#426878;
+  --voice-line:#dce7e3; --voice-soft:#edf6f3; --voice-gold:#1f7b83;
+}
+.pronunciation-nordic { background:#faf9f4; gap:9px; font-family:'Source Sans 3','Segoe UI',sans-serif; }
+.pronunciation-nordic:before { height:220px; border-radius:0; background:linear-gradient(90deg,#faf9f4 0%,#faf9f4f0 38%,#faf9f430 85%),linear-gradient(0deg,#faf9f4,transparent 36%),url('/images/games-fjord-hero.png') 62% center/cover; }
+.pronunciation-nordic .cathedral-top>a { color:#0d2546; }
+.pronunciation-nordic .exercise-level-select select { color:#0d2546; background:#ffffffb3; border-color:#d7e4e0; }
+.pronunciation-nordic .cathedral-heading { text-align:left; padding:8px 8px 5px; }
+.pronunciation-nordic .cathedral-heading h1 { color:#0d2546; font:800 clamp(27px,4dvh,35px)/1.15 'Source Sans 3','Segoe UI',sans-serif; letter-spacing:-.7px; margin-bottom:5px; }
+.pronunciation-nordic .cathedral-heading p { color:#355d70; font-size:16px; line-height:1.3; }
+.warm-voice-icon { display:inline-flex; align-items:center; vertical-align:middle; gap:3px; height:25px; margin-left:7px; }
+.warm-voice-icon i { display:block; width:3px; height:10px; border-radius:4px; background:#1b7b87; }
+.warm-voice-icon i:nth-child(2),.warm-voice-icon i:nth-child(4) { height:18px; }
+.warm-voice-icon i:nth-child(3) { height:25px; }
+.pronunciation-nordic .cathedral-lesson { justify-self:start; margin-left:7px; background:#f7fcfa; border-color:#d4e5e1; box-shadow:0 2px 5px #1d534c0a; }
+.pronunciation-nordic .nordic-pronunciation-art { border:0; border-radius:18px; object-position:center 76%; }
+.pronunciation-nordic .cathedral-lab { grid-template-rows:clamp(70px,22dvh,220px) auto minmax(150px,1fr); }
+.pronunciation-nordic .cathedral-quote__text { background:#fff; border-color:#e0e9e5; box-shadow:0 3px 6px #284f4910; }
+.pronunciation-nordic .cathedral-quote blockquote { font:750 clamp(19px,2.8dvh,25px)/1.25 'Source Sans 3','Segoe UI',sans-serif; letter-spacing:-.3px; }
+.pronunciation-nordic .cathedral-quote__text>p { color:#426878; font-size:16px; }
+.pronunciation-nordic .cathedral-model-actions button { background:linear-gradient(#fff,#f0f8f5); border-color:#c8e2df; box-shadow:0 3px 6px #284f490a; border-radius:20px; }
+.pronunciation-nordic .cathedral-workspace { background:#fff; border-color:#e0e9e5; border-radius:22px; box-shadow:0 3px 8px #284f4910; }
+.pronunciation-nordic .nordic-recorder-instruction { color:#0d2546; font-weight:600; }
+.pronunciation-nordic .cathedral-recorder { gap:14px; }
+.pronunciation-nordic .cathedral-record { color:#fff; background:linear-gradient(140deg,#2996a2,#08657a); border:2px solid #73b4bd; box-shadow:0 0 0 10px #edf8f6,0 0 0 20px #f5faf8,0 5px 10px #19586018; }
+.pronunciation-nordic .cathedral-recorder__copy strong { color:#0d2546; }
+.pronunciation-nordic .cathedral-recorder__copy>span { color:#426878; }
+.pronunciation-nordic .cathedral-lab--recording .cathedral-wave { color:#258b95; }
+.pronunciation-nordic .cathedral-record.is-recording { background:#ad4b52; color:#fff; border-color:#cb7a7f; }
+.pronunciation-nordic .cathedral-record.is-busy:after { border-top-color:#24838f; }
+.pronunciation-nordic .cathedral-navigation>button:first-child { background:#f5faf7; border-color:#d5e5df; }
+.pronunciation-nordic .nordic-phrase-dots i { background:#dedfdd; }
+.pronunciation-nordic .nordic-phrase-dots i.is-active { background:linear-gradient(#3299a4,#087488); }
+.pronunciation-nordic .cathedral-navigation>button:last-child:not(.cathedral-navigation__library),.pronunciation-nordic .nordic-finish { background:linear-gradient(120deg,#218b98,#086479); border-color:#16788b; color:white; box-shadow:inset 0 0 0 2px #ffffff30,0 3px 5px #194c4520; border-radius:18px; }
+.pronunciation-nordic .cathedral-dialog { background:#fafbf7; }
+.pronunciation-nordic .cathedral-library>div { background:#eef6f2; border-color:#d3e3da; }
+.pronunciation-nordic .cathedral-tabs button[aria-pressed='true'] { background:#1f7b83; color:white; }
+.pronunciation-nordic :is(button,a,select):focus-visible { outline-color:#278992; }
+@media(max-height:699px) { .pronunciation-nordic .cathedral-lab { grid-template-rows:80px auto minmax(160px,1fr); } .pronunciation-nordic .cathedral-heading p { font-size:14px; } }
+@media(max-height:540px), (orientation:landscape) { .pronunciation-nordic .cathedral-lab { grid-template-rows:75px auto minmax(160px,1fr); } }
+@media(min-height:700px) { .pronunciation-nordic .cathedral-lab { grid-template-rows:clamp(100px,17dvh,190px) auto minmax(150px,1fr); } }
+.pronunciation-nordic .cathedral-lab--recording .nordic-recorder-instruction { display:none; }
+.pronunciation-nordic .cathedral-lab--recording .cathedral-recorder { gap:9px; }
+@media(orientation:landscape) and (min-height:700px) {
+  .pronunciation-nordic { height:100dvh; gap:6px; }
+  .pronunciation-nordic .cathedral-lab { grid-template-rows:100px auto minmax(150px,1fr); }
+}
+
+.pronunciation-nordic .nordic-pronunciation-art[data-theme='cafe'] { object-position:center 58%; }

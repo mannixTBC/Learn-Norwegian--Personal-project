@@ -51,7 +51,7 @@ const PronunciationSession = ({ level }) => {
   </ExerciseLayout>;
   return <section className="pronunciation-cathedral pronunciation-nordic" aria-label="Exercițiu de pronunție">
     <header className="cathedral-top"><Link to={'/jocuri?nivel=' + level}><span aria-hidden="true">&#8592;</span> Jocuri</Link><ExerciseLevelSelect level={level} /></header>
-    <div className="cathedral-heading"><h1>Pronunție</h1><p>Ascultă. Repetă. Prinde încredere.</p></div>
+    <div className="cathedral-heading"><h1>Pronunție <span className="warm-voice-icon" aria-hidden="true"><i /><i /><i /><i /><i /></span></h1><p>Ascultă și exersează<br />în ritmul tău.</p></div>
     <div className="cathedral-lesson"><CathedralIcon name="book" /><ExerciseLessonSelect course={course} value={activeLesson} onChange={chooseLesson} label="Alege lecția" all={false} /></div>
     <PronunciationLab key={level + '-' + lesson.uid + '-' + activePhrase} phrase={phrases[activePhrase]} phraseIndex={activePhrase} level={level} lessonId={lesson.id} rewardAttemptsRef={rewardAttemptsRef} appearance="cathedral" />
     <footer className="cathedral-navigation" aria-label="Navigare între expresii">
