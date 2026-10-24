@@ -249,19 +249,14 @@ const Dashboard = () => {
           </Link>
         </article>
 
-        <div className="dashboard-app-home__shortcuts" aria-label="Alte activități">
-          <Link to={`/invata?nivel=${activeLevel}`}>
-            <span className="dashboard-app-home__shortcut-icon"><DashboardAppIcon type="book" /></span>
-            <span><strong>Toate lecțiile</strong><small>Explorează întregul curs {activeLevel} pas cu pas.</small></span>
-            <b aria-hidden="true">›</b>
-          </Link>
-          <Link to={`/recapitulare?nivel=${activeLevel}`}>
-            <span className="dashboard-app-home__shortcut-icon"><DashboardAppIcon type="review" /></span>
-            <span><strong>Recapitulare</strong><small>Repetă și consolidează ce ai învățat.</small></span>
-            <b aria-hidden="true">›</b>
-          </Link>
-        </div>
-
+        <Link className="dashboard-app-home__discover dashboard-app-home__studio" to={`/scenarii?nivel=${activeLevel}`}>
+          <span>
+            <small className="dashboard-app-home__premium">Premium</small>
+            <strong>Studio de conversație</strong>
+            <em>Vorbește cu Nora în situații reale.</em>
+          </span>
+          <b aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11v1a6 6 0 0 0 12 0v-1M12 18v3M9 21h6"/></svg></b>
+        </Link>
         <Link className="dashboard-app-home__discover" to="/descopera">
           <span><small>O mică explorare</small><strong>Descoperă Norvegia</strong><em>Cunoaște locul, nu doar limba.</em></span>
           <b aria-hidden="true">→</b>
