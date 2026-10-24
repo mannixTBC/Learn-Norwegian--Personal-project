@@ -8,9 +8,9 @@ html body .App > .App__main:has(.vocabulary-notebook) { padding:0 !important; mi
 .vocabulary-notebook :is(button,input):focus-visible { outline:3px solid #167d88; outline-offset:3px; }
 .vn-header { display:grid; grid-template-columns:44px 1fr 44px; align-items:center; gap:10px; margin-bottom:16px; }
 .vn-header h1 { margin:0; text-align:center; font:700 28px/1.2 Georgia,serif; color:#173e49; }
-.vn-header button,.vn-header>span { display:grid; place-items:center; width:44px; min-height:44px; border:1px solid #d5b970; border-radius:50%; background:#fffaf0; color:#173e49; font-weight:700; }
+.vn-header button,.vn-header>.vn-level { display:grid; place-items:center; width:44px; min-height:44px; border:1px solid #d5b970; border-radius:50%; background:#fffaf0; color:#173e49; font-weight:700; }
 .vn-header button { font-size:26px; }
-.vn-header>span { background:#dcebea; font-size:15px; border-color:#b4d0ce; }
+.vn-header>.vn-level { background:#dcebea; font-size:15px; border-color:#b4d0ce; }
 .vn-sheet { max-width:520px; margin:auto; }
 .vn-flow-top { display:flex; justify-content:space-between; align-items:center; gap:8px; }
 .vn-sound-toggle { min-height:44px; padding:6px 10px; color:#315a60; background:#fff8e9; border:1px solid #d5bd85; border-radius:12px; font-size:11px !important; }
@@ -82,3 +82,20 @@ html body .App > .App__main > .vocabulary-notebook.vocabulary-notebook {
   margin-bottom:0;
   padding-bottom:max(10px, env(safe-area-inset-bottom));
 }
+
+/* Feedback lives above the exercise, never below the answer choices. */
+.vn-feedback-popup {
+  position:fixed;inset:0;margin:auto;width:min(440px,calc(100vw - 28px));
+  max-height:calc(100dvh - 28px);overflow-y:auto;padding:20px;
+  border:1px solid #d9c99e;border-radius:22px;background:#fffaf0;
+  color:#173e49;box-shadow:0 18px 60px #173e4940;font-family:inherit;
+}
+.vn-feedback-popup::backdrop { background:#123d4966;backdrop-filter:blur(3px); }
+.vn-feedback-popup .vn-feedback { padding:0;border:0;background:transparent; }
+.vn-feedback-popup .vn-feedback h3 { font-size:20px;line-height:1.4; }
+.vn-feedback-popup .vn-feedback p { font-size:17px;line-height:1.5;margin-top:12px; }
+.vn-feedback-popup .vn-continue { margin-top:18px; }
+.vn-feedback-popup .vn-replay { width:100%;margin-top:12px; }
+html:not(.is-installed-app) body .App .vn-feedback-popup { background:#fff;border-color:#dfe6ed; }
+@media(max-height:500px) { .vn-feedback-popup { padding:14px; } .vn-feedback-popup .vn-feedback h3 { font-size:17px; } .vn-feedback-popup .vn-feedback p { font-size:15px;margin-top:8px; } }
+html body #root .App .vn-header>.game-brand-logo { padding:0;border:0;border-radius:0;background:transparent;box-shadow:none; }

@@ -7,6 +7,7 @@ import NorthernPassMap from './NorthernPassMap';
 import { NORTHERN_PASS_STOPS, getNorthernPassStatus } from '../../services/northernPassProgress';
 import './GamesMosaic.css';
 import './GamesExpedition.css';
+import './LegendMap.css';
 import GameArt from './ExpeditionGameArt';
 import { getStudySummary } from '../../services/learningActivity';
 
@@ -22,27 +23,13 @@ const legendCopy = {
 const mapStops = NORTHERN_PASS_STOPS.map((stop, index) => ({ ...stop, ...legendCopy[stop.id], name: stopNames[index] }));
 const CoinBalance = ({ balance }) => <span className="mini-coins" aria-label={`${number(balance)} monede`}><img src="/images/games/viking-coin.png" alt="" /><strong>{balance >= 10000 ? new Intl.NumberFormat('ro-RO', { notation: 'compact', maximumFractionDigits: 1 }).format(balance) : number(balance)}</strong></span>;
 
-const badgePaths = {
-  port: <><path d="m4 15 3 5h10l3-5ZM12 3v12M11 4 5 12h6m3-6 5 7h-5" /></>,
-  far: <><path d="m8 21 2-13h4l2 13M8 8h8M9 4h6v4H9ZM12 2v2M2 6h4m12 0h4M9 15h6" /></>,
-  fiord: <><path d="M2 15 7 4l5 8 4-7 6 10M2 20c3-3 5 3 8 0s5 3 8 0 4 0 4 0" /></>,
-  pod: <><path d="M2 11h20M4 7v13M20 7v13M4 16q8-8 16 0M8 10V5m8 5V5M2 21h20" /></>,
-  padure: <><path d="m8 3-5 8h3l-4 6h12l-4-6h3ZM8 17v5m10-18-4 7h2l-3 6h9l-3-6h2ZM18 17v5" /></>,
-  cascada: <><path d="M2 5h7v8m3-10v14m4-12v9m3-9h3M3 20q3-4 6 0m3 0q3-4 6 0m-2-3h6" /></>,
-  trecatoare: <><path d="m2 20 7-14 4 7 3-9 6 16M8 20l4-3 2 3M7 10l2 2 2-2m4-2 2 2 1-2" /></>,
-  ghetar: <><path d="m2 19 4-11 5 3 4-7 7 15ZM11 11l-1 8m5-15 2 15M6 8l1 11M2 22h20" /></>,
-  varf: <><path d="m2 21 10-16 10 16ZM12 5V2l7 2-7 2M8 12l4 3 4-3" /></>,
-  aurora: <><path d="M3 15V4l4 4 4-5 4 5 6-4v11M3 18l5-3 5 3 5-3 3 2M3 22h18" /></>,
-};
-const ExpeditionBadge = ({ stop }) => <span className="northern-badge" aria-hidden="true"><svg viewBox="0 0 32 36"><path className="northern-badge__shield" d="m16 2 13 7v18l-13 7-13-7V9Z" /><g transform="translate(4 6)">{badgePaths[stop?.id] || badgePaths.port}</g></svg></span>;
-
 export default function GamesMosaic({ level, balance = 0, cards, activities, reviewStats, expedition, onClaimStop }) {
   const status = getNorthernPassStatus(expedition || { version: 1, coins: balance });
   const streak = getStudySummary().streak;
-  const rank = mapStops[status.completedCount - 1]?.reward || status.rank;
   const [mapOpen, setMapOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(status.currentStop?.id || 'aurora');
   const [notice, setNotice] = useState('');
+  const [lockOpen,setLockOpen] = useState(false);
   const dialog = useRef(null);
   const mapTrigger = useRef(null);
   const backButton = useRef(null);
@@ -64,24 +51,25 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
     }
   }, [mapOpen]);
 
+  useEffect(() => { if (lockOpen) focusObstacle(); }, [lockOpen,selectedId]);
   const openMap = () => {
     setSelectedId(status.currentStop?.id || 'aurora');
     setNotice('');
-    setMapOpen(true);
+    setLockOpen(false); setMapOpen(true);
   };
-  const closeMap = () => setMapOpen(false);
+  const closeMap = () => { setLockOpen(false); setMapOpen(false); };
+  const upcoming = mapStops[status.currentIndex] || mapStops[9];
   const selected = mapStops.find(stop => stop.id === selectedId) || mapStops[status.currentIndex] || mapStops[9];
   const selectedIndex = NORTHERN_PASS_STOPS.findIndex(stop => stop.id === selected.id);
   const selectedCompleted = selectedIndex < status.completedCount;
   const selectedCurrent = selected.id === status.currentStop?.id;
-  const practiceByStop = { port: listen.to, far: byId.word.to, fiord: byId.quiz.to, pod: byId.order.to, padure: byId.quiz.to, cascada: listen.to, trecatoare: byId.verbs.to, ghetar: byId.pronunciation.to, varf: '/scenarii', aurora: listen.to };
-  const practiceHref = `${practiceByStop[selected.id].split('?')[0]}?nivel=${level}`;
   const claim = () => {
     const result = onClaimStop?.(selected.id);
     if (result?.claimed) {
       const next = getNorthernPassStatus(result.state);
       setNotice(`Ai câștigat insigna „${selected.reward}”.`);
       setSelectedId(next.currentStop?.id || selected.id);
+      setLockOpen(false);
     } else setNotice(result?.reason === 'storage-unavailable' ? 'Nu am putut salva progresul. Încearcă din nou.' : 'Progresul s-a actualizat. Verifică cerințele popasului.');
     focusObstacle();
   };
@@ -110,24 +98,26 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
       <Link className="mini-review" to={byId.review.to}><GameArt type="review" /><div><h2>Recapitulare</h2></div>{reviewStats.due > 0 && <span className="expedition-due" aria-label={`${reviewStats.due} de repetat`}>{reviewStats.due}</span>}<b aria-hidden="true">›</b></Link>
     </div>
     <MobileAppNav activeLevel={level}/>
-    <dialog ref={dialog} className="northern-dialog" aria-labelledby="northern-map-title" onCancel={(event) => { event.preventDefault(); closeMap(); }} onClose={closeMap}>
+    <dialog ref={dialog} className="northern-dialog legend-map-dialog" aria-labelledby="northern-map-title" onCancel={(event) => { event.preventDefault(); closeMap(); }} onClose={closeMap}>
       <header className="northern-dialog__header"><button type="button" ref={backButton} onClick={closeMap} className="northern-back" aria-label="Înapoi la jocuri">←</button><NorwegianFlagIcon className="northern-logo northern-dialog__logo" /><CoinBalance balance={status.state.coins} /></header>
       <div className="northern-dialog__body">
-        <div className="northern-dialog__map"><div className="northern-map-heading"><h2 id="northern-map-title">Tărâmul legendelor</h2><p>Expediția ta nordică · {rank}</p></div><NorthernPassMap stops={mapStops} completedCount={status.completedCount} selectedId={selectedId} onSelect={(id) => { setSelectedId(id); setNotice(''); }} /></div>
-        <section className="northern-obstacle" aria-labelledby="northern-obstacle-title">
-          <div className="northern-obstacle__copy"><p className="northern-obstacle__eyebrow">{status.finished ? 'Expediție încheiată' : selectedCompleted ? 'Popas încheiat' : selectedCurrent ? `Popasul ${selectedIndex + 1} din 10` : 'Mai departe pe traseu'}</p><h3 id="northern-obstacle-title" ref={obstacleHeading} tabIndex={-1}>{selected.title}</h3><p className="northern-obstacle__description">{selectedCompleted ? 'Insigna ta este câștigată. Jocurile rămân deschise pentru practică.' : selected.description}</p>
-            {!selectedCompleted && <div className="northern-requirements">
-              <label><span><img src="/images/games/viking-coin.png" alt="" />{selected.cost ? `${number(selectedCurrent ? Math.min(status.state.coins, selected.cost) : 0)} / ${number(selected.cost)} monede` : 'Fără cost de monede'}</span><progress max={selected.cost || 1} value={selected.cost ? selectedCurrent ? Math.min(status.state.coins, selected.cost) : 0 : 1} /></label>
-              <label><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3" /><path d="m8 8 2 2 5-4M8 15h8" /></svg>{selectedCurrent ? Math.min(status.stageSessions, selected.sessions) : 0} / {selected.sessions} {selected.sessions === 1 ? 'sesiune încheiată' : 'sesiuni încheiate'}</span><progress max={selected.sessions} value={selectedCurrent ? Math.min(status.stageSessions, selected.sessions) : 0} /></label>
-            </div>}
+        <div className="northern-dialog__map">
+          <div className="northern-map-heading"><h2 id="northern-map-title">Tărâmul legendelor</h2></div>
+          <NorthernPassMap stops={mapStops} completedCount={status.completedCount} selectedId={selectedId} onSelect={id => { setSelectedId(id); setNotice(''); setLockOpen(true); }} />
+          {lockOpen && <section className="legend-lock-panel" aria-label="Detalii obstacol" onKeyDown={event => { if(event.key === 'Escape') {event.stopPropagation();setLockOpen(false);} }}>
+            <button type="button" className="legend-lock-close" aria-label="Închide detaliile" onClick={() => setLockOpen(false)}>×</button>
+            <h3 ref={obstacleHeading} tabIndex={-1}>{selected.title}</h3>
+            <p className="legend-lock-price"><img src="/images/games/viking-coin.png" alt="" />{number(selected.cost)} monede</p>
+            <p>{selectedCompleted ? 'Obstacol depășit.' : !selectedCurrent ? 'Deblochează mai întâi obstacolele anterioare.' : status.remainingCoins ? 'Îți mai lipsesc ' + number(status.remainingCoins) + ' monede.' : status.remainingSessions ? 'Monedele sunt pregătite. Mai încheie ' + status.remainingSessions + ' sesiuni de joc.' : 'Poți debloca acest obstacol.'}</p>
+            {notice && <p role="status">{notice}</p>}
+            {selectedCurrent && <button type="button" className="northern-gold" disabled={!status.canClaim} onClick={claim}>Deblochează · {number(selected.cost)} monede</button>}
+          </section>}
+        </div>
+        <section className="legend-next" aria-label="Următorul obstacol" aria-live="polite">
+          <div className="legend-next__image" aria-hidden="true" />
+          <div className="legend-next__copy"><p>{status.finished ? 'Expediție încheiată' : 'Următorul obstacol'}</p><h3>{status.finished ? 'Ai explorat întregul tărâm!' : upcoming.title}</h3>
+          {!status.finished && <><div className="legend-next__balance"><img src="/images/games/viking-coin.png" alt="" /><strong>{number(Math.min(status.state.coins,upcoming.cost))} / {number(upcoming.cost)}</strong></div><progress aria-label="Monede pentru următorul obstacol" max={upcoming.cost || 1} value={upcoming.cost ? Math.min(status.state.coins,upcoming.cost) : 1} /><span className="legend-next__missing">{status.remainingCoins ? <>Îți mai lipsesc <strong>{number(status.remainingCoins)}</strong> monede</> : 'Ai monedele necesare'}</span></>}
           </div>
-          <aside className="northern-obstacle__reward"><small>{selectedCompleted ? 'Insignă câștigată' : 'Recompensă'}</small><ExpeditionBadge stop={selected} /><strong>{selected.reward}</strong></aside>
-          <p className="northern-obstacle__note" role="status">{notice || (selectedCompleted ? status.finished ? 'Ai depășit toate cele 10 obstacole. Felicitări!' : 'Continuă spre următorul obstacol.' : !selectedCurrent ? 'Depășește întâi popasurile anterioare.' : status.remainingCoins ? `Mai ai nevoie de ${number(status.remainingCoins)} monede.` : status.remainingSessions ? 'Câștigi monede din sesiuni de joc încheiate.' : 'Ai îndeplinit cerințele. Poți continua!')}</p>
-          {selectedCurrent ? status.canClaim
-            ? <button type="button" className="northern-gold northern-obstacle__action" onClick={claim}>{selected.action} <span aria-hidden="true">→</span></button>
-            : <Link className="northern-gold northern-obstacle__action" to={practiceHref}>Joacă și avansează <span aria-hidden="true">→</span></Link>
-            : status.finished ? <button type="button" className="northern-gold northern-obstacle__action" onClick={closeMap}>Continuă să joci <span aria-hidden="true">→</span></button>
-              : <button type="button" className="northern-gold northern-obstacle__action" onClick={() => { setSelectedId(status.currentStop.id); setNotice(''); focusObstacle(); }}>Obstacolul curent <span aria-hidden="true">→</span></button>}
         </section>
       </div>
       <MobileAppNav activeLevel={level} onNavigate={closeMap} />

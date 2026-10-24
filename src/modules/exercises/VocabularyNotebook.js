@@ -8,7 +8,6 @@ function Book() {
 }
 
 export default function VocabularyNotebook({ level, question, current, total, headingRef, answer, setAnswer, checked, correct, completeAnswer, onVerify, onNext, onExit }) {
-  const outcome = useRef(null);
   const feedback = useRef(null);
   const choice = question.type === 'choice';
   const stage = question.stage || 'recognize';
@@ -39,12 +38,14 @@ export default function VocabularyNotebook({ level, question, current, total, he
   }, [question.id, audioText, muted]);
   const stop = () => { audio.current?.abort(); setAudioStatus('idle'); };
   useEffect(() => {
-    if (!checked) return;
-    feedback.current?.focus({ preventScroll: true });
-    outcome.current?.scrollIntoView?.({ block: 'nearest' });
-  }, [checked]);
+    if (!checked) return undefined;
+    const dialog = feedback.current;
+    if (!dialog) return undefined;
+    dialog.showModal();
+    return () => dialog.close();
+  }, [checked, question.id]);
   return <div className="vocabulary-notebook">
-    <header className="vn-header"><button type="button" onClick={onExit} aria-label="Înapoi la jocuri">←</button><NorwegianFlagIcon className="game-brand-logo" /><span aria-label={'Nivel ' + level}>{level}</span></header>
+    <header className="vn-header"><button type="button" onClick={onExit} aria-label="Înapoi la jocuri">←</button><NorwegianFlagIcon className="game-brand-logo" /><span className="vn-level" aria-label={'Nivel ' + level}>{level}</span></header>
     <h1 className="vn-game-title">Vocabular</h1><section className="vn-sheet" aria-label="Carnetul de cuvinte">
       <div className="vn-flow-top"><div className="vn-stage">Pasul {current + 1} din {total}</div><button type="button" className="vn-sound-toggle" aria-pressed={!muted} onClick={() => setMuted(value => !value)}>{muted ? 'Sunet oprit' : 'Sunet pornit'}</button></div>
       <progress className="vn-progress" value={current + (checked ? 1 : 0)} max={total} aria-label="Cuvinte parcurse" />
@@ -55,13 +56,13 @@ export default function VocabularyNotebook({ level, question, current, total, he
       <p className="vn-hint" id="vn-instruction">{checked ? 'Citește explicația, apoi continuă.' : stage === 'context' ? <>Completează cu sensul: <strong>{question.translation}</strong></> : choice ? 'Atinge răspunsul pentru verificare.' : 'Scrie răspunsul, apoi verifică.'}</p>
       {choice ? <div className="vn-choices" role="group" aria-label="Alege sensul" aria-describedby="vn-instruction">{question.options.map((option, index) => {
         const state = checked ? option === question.answer ? 'correct' : option === answer ? 'wrong' : '' : '';
-        return <button type="button" key={option} className={state} disabled={checked} aria-pressed={answer === option} onClick={() => onVerify(option)}><span className="vn-letter" aria-hidden="true">{String.fromCharCode(65 + index)}</span><span className="vn-option-text">{option}</span>{state && <small><b aria-hidden="true">{state === 'correct' ? '✓' : '×'}</b>{state === 'correct' ? 'Corect' : 'Ai ales'}</small>}</button>;
+        return <button type="button" key={option} className={state} disabled={checked} aria-pressed={answer === option} onClick={() => onVerify(option)}><span className="vn-letter" aria-hidden="true">{String.fromCharCode(65 + index)}</span><span className="vn-option-text">{option}</span></button>;
       })}</div> : <form className="vn-answer" onSubmit={event => { event.preventDefault(); if (!checked && completeAnswer) onVerify(); }}><label htmlFor="vn-answer">Răspunsul tău în norvegiană</label><input id="vn-answer" lang="nb" value={answer} onChange={event => setAnswer(event.target.value)} disabled={checked} autoComplete="off" autoCorrect="off" autoCapitalize="none" spellCheck={false} enterKeyHint="done" placeholder="Scrie aici…" />{!checked && <><div className="vn-letters" aria-label="Litere norvegiene">{['æ', 'ø', 'å'].map(letter => <button key={letter} type="button" aria-label={'Adaugă ' + letter} onClick={() => setAnswer(answer + letter)}>{letter}</button>)}</div><button className="vn-continue" type="submit" disabled={!completeAnswer}>Verifică →</button><button type="button" className="vn-reveal" onClick={() => onVerify(null)}>Nu-mi amintesc</button></>}</form>}
-      <div ref={outcome} className="vn-outcome">{checked ? <>
-        <div className="vn-feedback" ref={feedback} tabIndex={-1} role="status"><Book /><div><h3>{correct ? 'Corect! ' : 'Reține: '}<span lang="nb">{question.word}</span> = {question.translation}</h3>{question.example && <p lang="nb">{question.example}</p>}{!correct && <small>Salvat pentru recapitulare.</small>}</div></div>
+      <div className="vn-outcome">{checked ? <dialog ref={feedback} className="vn-feedback-popup" aria-labelledby="vn-feedback-title" aria-describedby="vn-feedback-description" onCancel={event => { event.preventDefault(); onNext(); }}>
+        <div className="vn-feedback" id="vn-feedback-description"><Book /><div><h3 id="vn-feedback-title">{correct ? 'Corect! ' : 'Reține: '}<span lang="nb">{question.word}</span> = {question.translation}</h3>{question.example && <p lang="nb">{question.example}</p>}{!correct && <small>Salvat pentru recapitulare.</small>}</div></div>
         {stage !== 'recognize' && <button className="vn-replay" type="button" onClick={() => audioStatus === 'playing' ? stop() : play()}>{audioStatus === 'playing' ? 'Oprește redarea' : stage === 'context' ? 'Ascultă propoziția din nou' : 'Ascultă cuvântul din nou'}</button>}
-        <button type="button" className="vn-continue" onClick={onNext}>{current === total - 1 ? 'Vezi rezultatul' : 'Continuă'} <span aria-hidden="true">→</span></button>
-      </> : <p className="vn-note">{stage === 'recognize' ? 'Vezi cuvântul, ascultă și alege sensul.' : stage === 'context' ? 'Propoziția se aude după verificare.' : 'Încearcă din memorie. Sunetul vine după verificare.'}</p>}</div>
+        <button type="button" className="vn-continue" onClick={onNext} autoFocus>{current === total - 1 ? 'Vezi rezultatul' : 'Continuă'} <span aria-hidden="true">→</span></button>
+      </dialog> : <p className="vn-note">{stage === 'recognize' ? 'Vezi cuvântul, ascultă și alege sensul.' : stage === 'context' ? 'Propoziția se aude după verificare.' : 'Încearcă din memorie. Sunetul vine după verificare.'}</p>}</div>
     </section>
   </div>;
 }

@@ -41,7 +41,7 @@ function Route({ route, completedCount, stopCount }) {
 
 function StopSymbol({ status, number }) {
   if (status === 'completed') return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12 4 4 8-9" /></svg>;
-  if (status === 'current') return <span aria-hidden="true">{number}</span>;
+  
   return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 10V7a4 4 0 0 1 8 0v3" /><rect x="6" y="10" width="12" height="10" rx="3" /><path d="M12 14v2" /></svg>;
 }
 
@@ -82,7 +82,7 @@ export default function NorthernPassMap({ stops = [], completedCount = 0, select
         const statusLabel = status === 'completed' ? 'Încheiat' : status === 'current' ? 'Obstacolul curent' : 'Urmează mai târziu';
         const className = `npass-map__stop npass-map__stop--${status}${selectedId === stop.id ? ' npass-map__stop--selected' : ''}${index >= 7 ? ' npass-map__stop--upper' : ''}${index >= 8 ? ' npass-map__stop--edge' : ''}`;
         const style = { '--stop-x': `${normal[0]}%`, '--stop-y': `${normal[1]}%`, '--label-shift': normal[0] > 75 ? '-80%' : normal[0] < 25 ? '-20%' : '-50%'  };
-        const content = <><span className="npass-map__label">{name}</span><span className="npass-map__marker"><StopSymbol status={status} number={index + 1} /></span></>;
+        const content = <><span className="npass-map__label">{status === 'current' && !compact ? <>{stop.title || name} <span className="legend-label-price">· <img src="/images/games/viking-coin.png" alt="" /> {Number(stop.cost || 0).toLocaleString('ro-RO')}</span></> : name}</span><span className="npass-map__marker"><StopSymbol status={status} number={index + 1} /></span></>;
         return compact
           ? <span key={stop.id} className={className} style={style}>{content}</span>
           : <button key={stop.id} className={className} style={style} type="button" onClick={() => onSelect?.(stop.id)} aria-label={`Popasul ${index + 1}: ${name}. ${statusLabel}.`} aria-pressed={selectedId === stop.id}>{content}</button>;
