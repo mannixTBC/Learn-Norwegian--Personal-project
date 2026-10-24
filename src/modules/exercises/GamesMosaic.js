@@ -37,7 +37,11 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
   const focusObstacle = () => requestAnimationFrame(() => obstacleHeading.current?.focus());
   const byId = Object.fromEntries(cards.map(card => [card.id, card]));
   const listen = activities.find(card => card.id === 'listen');
-  const tiles = [{ ...listen, to: `${listen.to}?nivel=${level}`, percent: listen.progress.best, label: listen.progress.sessions ? `Record: ${listen.progress.best}%` : 'Nou' }, ...['pronunciation', 'quiz', 'order', 'verbs', 'word'].map(id => {
+  const listeningCard = { ...listen, to: `${listen.to}?nivel=${level}`, percent: listen.progress.best, label: listen.progress.sessions ? `Record: ${listen.progress.best}%` : 'Nou' };
+  const vocabulary = byId.quiz;
+  const studio = { id:'missions', title:'Studio de conversație', to:`/scenarii?nivel=${level}`, label:'Cu Nora' };
+  const tiles = [studio, ...['pronunciation', 'listen', 'order', 'verbs', 'word'].map(id => {
+    if (id === 'listen') return listeningCard;
     const card = byId[id];
     return { ...card, title: id === 'word' ? 'Descoperă cuvântul' : card.title, percent: Math.min(100, Math.round(card.progress.completed / card.progress.target * 100)), label: id === 'pronunciation' ? card.progress.completed ? `Record: ${card.progress.completed}%` : 'Nou' : `${card.progress.completed} / ${card.progress.target}` };
   })];
@@ -86,15 +90,15 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
       </div>
       <span className="expedition-streak" aria-label={`${streak} ${streak === 1 ? 'zi consecutivă' : 'zile consecutive'}`}><svg viewBox="0 0 24 28" aria-hidden="true"><path d="M13 1c2 7-5 8-3 13 2-1 3-3 3-5 6 4 9 8 7 13-3 8-17 6-17-3 0-5 3-8 5-10 0 5 1 6 2 6-2-6 4-9 3-14Z" fill="currentColor" /></svg><span>{streak} {streak === 1 ? 'zi' : 'zile'}</span></span>
     </section>
-    <section className="mini-grid" aria-label="Mini-jocuri">{tiles.map(card => <Link key={card.id} to={card.to} className={`mini-tile mini-tile--${card.id}`}>
+    <section className="mini-grid" aria-label="Mini-jocuri">{tiles.map(card => <Link key={card.id} to={card.to} data-game={card.id} className={`mini-tile mini-tile--${card.id}`}>
       <GameArt type={card.id} />
       {card.percent >= 100 && <span className="expedition-earned" role="img" aria-label={card.id === 'listen' || card.id === 'pronunciation' ? 'Record de 100%' : 'Obiectiv atins'} title={card.id === 'listen' || card.id === 'pronunciation' ? 'Record de 100%' : 'Obiectiv atins'}><svg viewBox="0 0 32 40" aria-hidden="true"><path d="m7 25-2 14 10-5 10 5-2-14" fill="#e9b64c"/><path d="m16 1 4 3 5 1 2 5 3 4-2 5-1 5-5 2-6 3-5-3-5-2-1-5-2-5 3-4 2-5 5-1Z" fill="#f4ca6d" stroke="#bd8b2d"/><circle cx="16" cy="15" r="9" fill="#eeb23b" stroke="#fff1bd"/><path d="m16 7 2 5 5 1-4 4 1 5-4-3-4 3 1-5-4-4 5-1Z" fill="#fff9e6"/></svg></span>}
       <div className="mini-tile-copy"><h3>{card.title}</h3></div>
-      <div className="mini-progress" aria-label={card.label}><span className="expedition-dots" aria-hidden="true">{Array.from({ length: 5 }, (_, index) => <i key={index} className={card.percent >= (index + 1) * 20 ? 'is-earned' : ''} />)}</span><small>{card.label}</small></div>
+      <div className="mini-progress" aria-label={card.label}>{card.percent !== undefined && <span className="expedition-dots" aria-hidden="true">{Array.from({ length: 5 }, (_, index) => <i key={index} className={card.percent >= (index + 1) * 20 ? 'is-earned' : ''} />)}</span>}<small>{card.label}</small></div>
       <span className="expedition-chevron" aria-hidden="true">›</span>
     </Link>)}</section>
     <div className="northern-utilities">
-      <Link className="mini-missions" to={"/scenarii?nivel=" + level}><GameArt type="missions" /><div><h2>Studio de conversație</h2><span>Intră în rol cu Nora</span></div><b aria-hidden="true">→</b></Link>
+      <Link className="mini-missions mini-vocabulary" data-game="quiz" to={vocabulary.to}><GameArt type="quiz" /><div><h2>Vocabular</h2><small>{vocabulary.progress.completed} / {vocabulary.progress.target} exerciții</small></div><b aria-hidden="true">→</b></Link>
       <Link className="mini-review" to={byId.review.to}><GameArt type="review" /><div><h2>Recapitulare</h2></div>{reviewStats.due > 0 && <span className="expedition-due" aria-label={`${reviewStats.due} de repetat`}>{reviewStats.due}</span>}<b aria-hidden="true">›</b></Link>
     </div>
     <MobileAppNav activeLevel={level}/>

@@ -113,6 +113,23 @@ try {
  });
  await page.goto('http://north-pass.test/');
  await page.waitForFunction(()=>Boolean(window.passQa&&document.querySelector('.mini-games')));
+ if(process.argv.includes('--cards-only')){
+  const failures=[];let screens=0;
+  for(const viewport of viewports){
+   await page.setViewportSize(viewport);await page.evaluate(()=>window.passQa.fixture('fresh','C2'));await page.waitForTimeout(70);
+   const state=await page.evaluate(()=>{
+    const tiles=[...document.querySelectorAll('.mini-grid>a')];
+    const overflow=tiles.flatMap(tile=>{const bounds=tile.getBoundingClientRect();return [...tile.querySelectorAll('h3,.mini-progress')].filter(el=>el.getClientRects().length).flatMap(el=>{const r=el.getBoundingClientRect();return r.top<bounds.top-1||r.bottom>bounds.bottom+1||r.left<bounds.left-1||r.right>bounds.right+1?[tile.textContent]:[];});});
+    return {order:tiles.map(el=>el.dataset.game).join(','),links:tiles.map(el=>el.getAttribute('href')),vocabulary:document.querySelector('.mini-vocabulary')?.getAttribute('href'),overflow,h:document.documentElement.scrollHeight,w:document.documentElement.scrollWidth};
+   });
+   if(state.order!=='missions,pronunciation,listen,order,verbs,word')failures.push('Wrong positions');
+   if(state.links[0]!=='/scenarii?nivel=C2'||state.links[2]!=='/asculta-si-alege?nivel=C2'||state.vocabulary!=='/chestionar?nivel=C2')failures.push('Wrong destinations/level');
+   if(state.overflow.length)failures.push(viewport.width+'x'+viewport.height+': clipped card '+state.overflow.join('|'));
+   if(state.h>viewport.height+1||state.w>viewport.width+1)failures.push(viewport.width+'x'+viewport.height+': page scroll');
+   if(viewport.width===390)await page.screenshot({path:resolve(artifacts,'reordered-games.png')});screens++;
+  }
+  console.log(JSON.stringify({screens,failures,browserErrors:report.browserErrors},null,2));process.exitCode=failures.length||report.browserErrors.length?1:0;await browser.close();process.exit(process.exitCode);
+ }
  if(process.argv.includes('--map-only')){
   const failures=[];
   for(const [width,height] of [[220,150],[284,230],[320,430],[390,650],[550,150],[700,700],[1000,600]]){

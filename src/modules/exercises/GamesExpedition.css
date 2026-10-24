@@ -105,3 +105,20 @@ html.is-installed-app .northern-games--expedition > .mobile-app-nav { position: 
 @media (max-height: 700px) {
   .northern-games--expedition .mini-missions > div > span { font-size: 12px; }
 }
+
+/* Compact conversation tile; vocabulary uses the wider lower utility slot. */
+.northern-games--expedition .mini-grid .mini-tile--missions .mini-tile-copy { width:100%; }
+.northern-games--expedition .mini-grid .mini-tile--missions h3 { font-size:clamp(14px,3.9vw,18px);line-height:1.12;text-wrap:balance;overflow-wrap:normal; }
+.northern-games--expedition .mini-grid .mini-tile--missions .mini-progress { min-height:12px; }
+.northern-games--expedition .mini-grid .mini-tile--missions>.mini-art { width:58px;height:42px; }
+.northern-games .mini-vocabulary { gap:8px; }
+.northern-games .mini-vocabulary small { display:block;margin-top:3px;color:#617985;font-size:10px;line-height:1.2; }
+@media(max-height:690px) {
+  .northern-games--expedition .mini-grid .mini-tile--missions>.mini-art { width:36px;height:29px; }
+  .northern-games--expedition .mini-grid .mini-tile--missions h3 { font-size:13px; }
+  .northern-games .mini-vocabulary small { display:none; }
+}
+@media(orientation:landscape) and (max-height:500px) {
+  .northern-games--expedition .mini-grid .mini-tile--missions h3 { font-size:10px; }
+  .northern-games--expedition .mini-grid .mini-tile--missions>.mini-art { width:18px;height:25px; }
+}
