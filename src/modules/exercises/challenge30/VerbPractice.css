@@ -29,13 +29,13 @@
 .verb-practice__meta>span:last-child{flex-shrink:0;padding:4px 8px;border-radius:8px;background:var(--verb-soft)}
 .verb-practice__discovery{display:flex;flex:1;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:11px}
 .verb-practice__discovery h2{font:400 clamp(30px,8vw,46px)/1.1 Georgia,serif;letter-spacing:-1px;color:var(--verb-ink);text-wrap:balance}
-.verb-practice__meaning{color:var(--verb-muted);font-size:15px}
+.verb-practice__meaning{color:var(--verb-ink);font-size:18px;font-weight:600;line-height:1.45}
 .verb-practice__form-pair{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:9px;margin:9px 0;padding:9px 14px;border-radius:12px;background:var(--verb-soft);font-size:14px}
 .verb-practice__form-pair strong{color:var(--verb-teal)}
 .verb-practice__form-pair small{color:var(--verb-muted);font-size:11px}
 .verb-practice__example{display:grid;justify-items:center;gap:7px;width:100%;margin-top:7px;padding-top:18px;border-top:1px solid var(--verb-line)}
 .verb-practice__example p:first-child{font:400 27px/1.2 Georgia,serif;letter-spacing:-.5px}
-.verb-practice__example p:nth-child(2){color:var(--verb-muted);font-size:14px}
+.verb-practice__example p:nth-child(2){color:var(--verb-ink);font-size:18px;font-weight:500;line-height:1.45}
 .verb-practice mark{padding:0;color:inherit;background:transparent;border-bottom:2px solid #e6bb5e}
 .verb-practice__audio{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;margin-top:7px;padding:8px 13px;border:1px solid #cadcd3;border-radius:12px;background:var(--verb-soft);color:var(--verb-teal);font-size:14px}
 .verb-practice__audio svg{width:18px;height:18px;flex-shrink:0}
