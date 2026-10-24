@@ -31,9 +31,9 @@ body:has(.career-onboarding), .App:has(.career-onboarding), .App:has(.career-onb
 .career-onboarding__brand { position: relative; display: flex; align-items: center; flex-direction: column; gap: 22px; }
 .career-onboarding__brand > img { width: 150px; height: auto; display: block; }
 .career-onboarding__back { position: absolute; top: 0; left: -4px; width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; color: #203b51; font-size: 26px; cursor: pointer; }
-.career-onboarding__route { display: flex; align-items: center; gap: 12px; padding: 12px 22px; border-radius: 16px; background: #255c7b; color: #fff; box-shadow: 0 5px 15px #255c7b18; }
+.career-onboarding__route { display: flex; align-items: center; gap: 12px; padding: 12px 22px; border-radius: 16px; background: #d5e9ed; color: #245b68; box-shadow: 0 5px 15px #255c7b18; }
 .career-onboarding__route span { display: grid; gap: 2px; }
-.career-onboarding__route small { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #e0edf4; }
+.career-onboarding__route small { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #426c77; }
 .career-onboarding__route strong { font-size: 17px; font-weight: 700; }
 .career-onboarding__content { animation: onboarding-appear .22s ease both; }
 .career-onboarding h1 { margin: 30px 0 22px; text-align: center; color: #203b51; font: 500 clamp(28px, 7vw, 34px)/1.2 Georgia, serif; letter-spacing: -.03em; }
@@ -53,11 +53,24 @@ body:has(.career-onboarding), .App:has(.career-onboarding), .App:has(.career-onb
 .career-onboarding__bars i:nth-child(4) { height: 26px; }
 .career-onboarding__bars i.is-filled { background: currentColor; }
 @media(hover: hover) { .career-onboarding__row:hover { background: #edf3f5; } }
-.career-onboarding__row.is-selected { background: #255c7b; color: #fff; }
-.career-onboarding__row.is-selected small { color: #eef6fa; }
+.career-onboarding__row.is-selected { background: #d5e9ed; color: #245b68; }
+.career-onboarding__row.is-selected small { color: #426c77; }
 .career-onboarding__row:disabled { opacity: 1; cursor: default; }
 .career-onboarding button:focus-visible { outline: 3px solid #4d8aaa; outline-offset: 3px; position: relative; z-index: 1; }
 .career-onboarding__error { margin-top: 18px; color: #a2223d; text-align: center; }
 @keyframes onboarding-appear { from { opacity: 0; } to { opacity: 1; } }
 @media(min-width: 768px) { .career-onboarding { padding-top: 38px; } .career-onboarding::before { background-size: auto, 900px auto; } }
 @media(prefers-reduced-motion: reduce) { .career-onboarding__content { animation: none; } .career-onboarding__row { transition: none; } }
+
+/* Fit the ten direct choices to the available screen without clipping content. */
+.career-onboarding--paths { padding-top: max(18px, env(safe-area-inset-top)); padding-bottom: max(18px, env(safe-area-inset-bottom)); }
+.career-onboarding--paths .career-onboarding__content { margin-top: 22px; }
+.career-onboarding--paths h1 { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; clip-path: inset(50%); white-space: nowrap; }
+.career-onboarding--paths .career-onboarding__row { min-height: clamp(44px, calc((100dvh - 130px) / 10), 60px); padding: 7px 18px; gap: 14px; }
+@media(max-height: 700px) {
+  .career-onboarding { padding-top: max(14px, env(safe-area-inset-top)); padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+  .career-onboarding__brand { gap: 16px; }
+  .career-onboarding h1 { margin-top: 22px; margin-bottom: 18px; }
+  .career-onboarding--paths h1 { margin: -1px; }
+  .career-onboarding__level { min-height: 80px; padding: 12px 18px; }
+}

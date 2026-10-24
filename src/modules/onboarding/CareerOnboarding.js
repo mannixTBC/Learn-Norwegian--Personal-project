@@ -54,7 +54,7 @@ const CareerOnboarding = () => {
   });
 
   return (
-    <div className="career-onboarding">
+    <div className={`career-onboarding career-onboarding--${path ? 'levels' : 'paths'}`}>
       <header className="career-onboarding__brand">
         {path && <button className="career-onboarding__back" type="button" aria-label="Înapoi la trasee" disabled={Boolean(pressed)} onClick={() => { setPath(null); setError(''); }}>←</button>}
         <img src="/branding/nordlingo-selected-color.png" alt="NordLingo" width="150" />

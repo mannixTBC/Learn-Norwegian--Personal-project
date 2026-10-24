@@ -28,8 +28,8 @@ const html=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewpor
 const {chromium}=await import(pathToFileURL(resolve(homedir(),'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs')).href);
 const browser=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'});
 try {
- for(const width of [320,390,1280]) {
-  const page=await browser.newPage({viewport:{width,height:844}});
+ for(const [width,height] of [[320,640],[360,640],[390,844],[1280,800]]) {
+  const page=await browser.newPage({viewport:{width,height}});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.route('**/*',async route=>{
    const pathname=new URL(route.request().url()).pathname;
@@ -41,6 +41,7 @@ try {
   await page.waitForSelector('.career-onboarding__row');
   assert.equal(await page.locator('.career-onboarding__row').count(),10);
   assert.equal(await page.locator('.navbar').isVisible(),false);
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight),true,'Route list fits viewport');
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
   assert.equal(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(250, 249, 244)');
   await page.getByRole('button',{name:'Transport',exact:true}).click();
@@ -48,6 +49,7 @@ try {
   await page.getByRole('heading',{name:'De unde pornim?'}).waitFor();
   assert.equal(await page.evaluate(()=>window.profile()),null);
   assert.equal(await page.locator('.career-onboarding__row').count(),4);
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight),true,'Levels fit viewport');
   assert.equal(await page.locator('.career-onboarding__route').innerText(),'TRASEUL TĂU\nTransport');
   await page.getByRole('button',{name:'Înapoi la trasee'}).click();
   await page.getByRole('button',{name:'Transport',exact:true}).click();
