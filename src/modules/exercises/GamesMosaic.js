@@ -80,7 +80,7 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
 
   return <main className="mini-games northern-games northern-games--expedition">
     <h1 className="mini-sr">Jocuri și expediția Tărâmul legendelor</h1>
-    <header className="mini-top"><Link to="/dashboard" className="mini-brand" aria-label="NordLingo — Acasă"><NorwegianFlagIcon className="northern-logo" /></Link><CoinBalance balance={status.state.coins} /><ExerciseLevelSelect level={level} /></header>
+    <header className="mini-top"><ExerciseLevelSelect level={level} /><Link to="/dashboard" className="mini-brand" aria-label="NordLingo — Acasă"><NorwegianFlagIcon className="northern-logo" /></Link><CoinBalance balance={status.state.coins} /></header>
     <section className="northern-overview expedition-feature" aria-labelledby="northern-pass-heading">
       <img className="expedition-feature__scene" src="/images/games/expedition-hero.jpg" alt="" width="1536" height="1024" fetchPriority="high" />
       <div className="expedition-feature__copy">

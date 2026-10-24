@@ -16,3 +16,10 @@ html body #root .App .listening-expedition--playing .expedition-header{grid-temp
  html body #root .App .pronunciation-nordic .cathedral-top{grid-column:1/-1;grid-row:1}
  html body #root .App .pronunciation-nordic .cathedral-top>*{grid-row:auto;grid-column:auto}
 }
+
+/* Games hub: level left, original logo on the page centerline, coins right. */
+html body #root .App .northern-games>.mini-top{display:grid;grid-template-columns:minmax(0,1fr) 145px minmax(0,1fr);gap:6px;align-items:center;min-height:44px}
+html body #root .App .northern-games>.mini-top>.exercise-level-select{justify-self:start}
+html body #root .App .northern-games>.mini-top>.mini-brand{justify-self:center;width:145px;height:44px;min-width:0;margin:0;display:flex;align-items:center;justify-content:center}
+html body #root .App .northern-games>.mini-top .northern-logo,html body #root .App .northern-games>.mini-top .northern-logo img{display:block;width:145px;height:44px;object-fit:contain}
+html body #root .App .northern-games>.mini-top>.mini-coins{justify-self:end;min-width:0;white-space:nowrap}

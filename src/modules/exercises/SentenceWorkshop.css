@@ -59,3 +59,66 @@ html body .App > .App__main > .sentence-workshop.sentence-workshop .sw-footer sm
 html:not(.is-installed-app) body:has(.sentence-workshop) {
   background: #f7f9fb;
 }
+
+/* Sentence workspace: balanced cards and a single, predictable vertical rhythm. */
+html body #root .App .sentence-workshop{
+ width:100%;max-width:1040px;margin:0 auto;padding:12px 18px max(12px,env(safe-area-inset-bottom));
+ display:flex;flex-direction:column;gap:14px;height:auto;min-height:0;border:0;border-radius:0;
+}
+html body #root .sentence-workshop .sw-header{flex:none;min-height:44px}
+html body #root .sentence-workshop .sw-title{text-align:center}
+html body #root .sentence-workshop .sw-title h1{font:700 32px/1.1 Georgia,serif;letter-spacing:-.8px;margin:0}
+html body #root .sentence-workshop .sw-title p{margin:5px 0 0;font-size:14px;color:#687a7d}
+html body #root .sentence-workshop .sw-progress{gap:12px;font-size:12px;color:#64767a}
+html body #root .sentence-workshop .sw-progress i{height:5px}
+html body #root .sentence-workshop .sw-prompt{padding:18px;border-radius:18px;border-color:#dfd2b5;background:linear-gradient(115deg,#fffdf6,#f7edd7);box-shadow:0 4px 14px #5c513808}
+html body #root .sentence-workshop .sw-prompt--illustrated{grid-template-columns:minmax(0,1fr) 100px;gap:16px;padding:14px 16px}
+html body #root .sentence-workshop .sw-prompt small{font-size:10px;line-height:1.4;letter-spacing:1px;color:#7f7156}
+html body #root .sentence-workshop .sw-prompt h2{margin:9px 0 0;font:700 25px/1.25 Georgia,serif;letter-spacing:-.4px}
+html body #root .sentence-workshop .sw-art{border-radius:14px;aspect-ratio:1;max-height:110px}
+html body #root .sentence-workshop .sw-compose{padding:14px;background:#fffdf780;border:1px solid #e5dcc9;border-radius:18px}
+html body #root .sentence-workshop .sw-label{align-items:center;gap:8px;margin-bottom:7px;font-size:10px;letter-spacing:.7px;color:#657579;min-height:30px}
+.sw-compose-tools{display:flex;align-items:center;gap:12px;flex:none}
+html body #root .sentence-workshop .sw-reset{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:50px;padding:0 5px;font-size:12px;letter-spacing:0;color:#46656a}
+html body #root .sentence-workshop .sw-answer{min-height:72px;gap:7px;padding:9px;border:1px dashed #c7cfc6;border-radius:12px;background:#f6f5ed;align-items:flex-start}
+html body #root .sentence-workshop .sw-empty{width:100%;margin:12px 0;text-align:center;font-size:13px;line-height:1.4;color:#89918a}
+html body #root .sentence-workshop .sw-answer button{background:#245a63;border-color:#245a63;border-radius:10px;color:#fffdf4;font:600 18px/1.2 Georgia,serif;padding:10px 13px;min-height:44px}
+html body #root .sentence-workshop .sw-bank{padding:4px 2px}
+html body #root .sentence-workshop .sw-bank h3{text-align:center;font-size:10px;letter-spacing:1px;color:#79817b;margin:0 0 10px}
+html body #root .sentence-workshop .sw-bank>div{gap:8px;align-items:center;justify-content:center}
+html body #root .sentence-workshop .sw-bank button{padding:10px 14px;min-height:44px;border:1px solid #ded0b2;background:#fffdf7;border-radius:10px;font:600 18px/1.2 Georgia,serif;box-shadow:0 2px 0 #c9b88b40}
+html body #root .sentence-workshop .sw-bank button:disabled{opacity:.28;box-shadow:none}
+html body #root .sentence-workshop .sw-bank p{margin:10px 0 0;font-size:12px;color:#81908a}
+html body #root .sentence-workshop .sw-footer{margin:0;padding:0}
+html body #root .sentence-workshop .sw-footer>button{min-height:48px;padding:12px 16px;border-radius:13px;background:#245a63;border:1px solid #245a63;color:#fffdf5;font:600 20px/1.2 Georgia,serif;box-shadow:0 3px 9px #245a6314}
+html body #root .sentence-workshop .sw-footer>button:disabled{background:#e2e4dc;border-color:#e2e4dc;color:#929b95;box-shadow:none}
+html body #root .sentence-workshop .sw-footer small{font-size:11px;margin:7px 0 0;color:#81908a}
+html body #root .sentence-workshop .sw-feedback{padding:16px;border-radius:16px}
+@media(min-width:861px){
+ html:not(.is-installed-app) body #root .App .sentence-workshop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-areas:'header header' 'title title' 'progress progress' 'prompt compose' 'prompt bank' 'prompt footer';gap:18px 28px;padding:24px 32px 28px;align-items:start}
+ html:not(.is-installed-app) body #root .sentence-workshop .sw-header{grid-area:header}
+ html:not(.is-installed-app) body #root .sentence-workshop .sw-title{grid-area:title;margin:0 0 4px}
+ html:not(.is-installed-app) body #root .sentence-workshop .sw-progress{grid-area:progress;margin:0 0 4px}
+ html:not(.is-installed-app) body #root .sentence-workshop .sw-prompt{grid-area:prompt;align-self:stretch;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:22px;min-height:300px;padding:28px}
+ html:not(.is-installed-app) body #root .sentence-workshop .sw-art{width:170px;max-height:170px;order:-1}
+ html:not(.is-installed-app) body #root .sentence-workshop .sw-prompt h2{font-size:30px}
+ html:not(.is-installed-app) body #root .sentence-workshop .sw-compose{grid-area:compose}
+ html:not(.is-installed-app) body #root .sentence-workshop :is(.sw-bank,.sw-feedback){grid-area:bank}
+ html:not(.is-installed-app) body #root .sentence-workshop .sw-footer{grid-area:footer}
+}
+@media(max-width:860px) and (min-height:780px){html body #root .App .sentence-workshop{gap:18px;padding-top:16px}.sentence-workshop .sw-bank{margin-top:4px}}
+@media(max-width:860px) and (max-height:740px){
+ html body #root .App .sentence-workshop{gap:9px;padding:8px 14px max(9px,env(safe-area-inset-bottom))}
+ html body #root .sentence-workshop .sw-title h1{font-size:28px}
+ html body #root .sentence-workshop .sw-title p{margin-top:3px;font-size:12px}
+ html body #root .sentence-workshop .sw-prompt{padding:12px}
+ html body #root .sentence-workshop .sw-prompt--illustrated{grid-template-columns:minmax(0,1fr) 74px;gap:10px}
+ html body #root .sentence-workshop .sw-prompt h2{font-size:21px;margin-top:6px}
+ html body #root .sentence-workshop .sw-compose{padding:8px 11px}
+ html body #root .sentence-workshop .sw-label{margin:0 0 4px}
+ html body #root .sentence-workshop .sw-answer{min-height:60px;padding:7px}
+ html body #root .sentence-workshop :is(.sw-answer button,.sw-bank button){font-size:16px;padding:8px 11px}
+ html body #root .sentence-workshop .sw-bank h3{margin-bottom:7px}
+ html body #root .sentence-workshop .sw-bank p{display:none}
+}
+html body #root .sentence-workshop .sw-prompt{min-height:0} @media(max-width:860px){html body #root .sentence-workshop .sw-prompt{align-self:stretch}}
