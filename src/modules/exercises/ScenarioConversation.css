@@ -43,3 +43,27 @@ html body #root .airy-conversation .guided-finish{width:auto;min-height:32px;pad
 html body #root .airy-conversation .airy-replay{float:right;width:36px;height:36px;margin:0 0 0 8px;border:0;background:none;color:#23595e;cursor:pointer}
 .airy-replay svg{width:22px;height:22px}
 html body #root .airy-conversation [hidden]{display:none!important}
+/* Match the approved mobile composition; supplementary controls live in Help. */
+html body #root .App .airy-conversation.natural-conversation{width:min(100%,640px);padding:20px 20px 24px;gap:16px}
+html body #root .App .airy-conversation.natural-conversation .airy-header a{font:700 22px Georgia,serif}
+html body #root .App .airy-conversation.natural-conversation>h1{font-size:38px;line-height:1.12;letter-spacing:-.6px}
+html body #root .App .airy-conversation.natural-conversation .guided-image{height:clamp(135px,23dvh,225px);border-radius:18px}
+html body #root .App .airy-conversation.natural-conversation .airy-messages{gap:22px;padding:0;max-height:40dvh}
+html body #root .App .airy-conversation.natural-conversation .airy-message{width:100%;gap:10px}
+html body #root .App .airy-conversation.natural-conversation .airy-message.user{width:auto;max-width:80%;align-items:center}
+html body #root .App .airy-conversation.natural-conversation .airy-message-copy p{font:18px/1.45 Georgia,serif;padding:12px 14px;border-radius:16px}
+html body #root .App .airy-conversation.natural-conversation .airy-message-copy small{font:16px Georgia,serif;margin-bottom:7px}
+html body #root .App .airy-conversation.natural-conversation .airy-avatar{width:54px;height:54px;flex-basis:54px}
+html body #root .App .airy-conversation.natural-conversation .user .airy-avatar{width:36px;height:36px;flex-basis:36px;padding:8px}
+html body #root .App .airy-conversation.natural-conversation .airy-actions{grid-template-columns:1fr 110px 1fr;align-items:end;gap:12px}
+html body #root .App .airy-conversation.natural-conversation .scenario-voice__mic{width:104px;height:104px;margin:0 auto 2px;background:#23595e;padding:26px}
+html body #root .App .airy-conversation.natural-conversation .airy-help{width:72px;min-height:70px;margin-bottom:8px;font-size:16px;gap:8px}
+html body #root .App .airy-conversation.natural-conversation .airy-help>span{width:29px;height:29px;font-size:23px}
+html body #root .App .airy-conversation.natural-conversation .scenario-voice__caption{font:18px/1.3 Georgia,serif;margin:12px 0 0;color:#193f48}
+html body #root .App .airy-conversation.natural-conversation .guided-dialogue{margin-top:2px}
+@media(max-width:600px){html body #root .App .airy-conversation.natural-conversation{padding:16px 16px 20px;gap:14px}}
+@media(max-height:740px){html body #root .App .airy-conversation.natural-conversation .guided-image{height:115px}html body #root .App .airy-conversation.natural-conversation .airy-messages{max-height:32dvh}html body #root .App .airy-conversation.natural-conversation .airy-avatar{width:42px;height:42px;flex-basis:42px}html body #root .App .airy-conversation.natural-conversation .airy-message-copy p{font-size:16px}}
+html body #root .App .airy-conversation.natural-conversation .guided-image>img{object-fit:cover;object-position:center}
+@media(min-height:741px){html body #root .App .airy-conversation.natural-conversation .guided-image{height:clamp(150px,21dvh,225px)}}
+
+@media(min-height:650px){html body #root .App .conversation-studio.airy-conversation:has(.airy-messages):not(:has(.conversation-result)):not(:has([aria-expanded="true"])){height:100dvh;gap:12px}html body #root .App .airy-conversation:has(.airy-messages):not(:has(.conversation-result)):not(:has([aria-expanded="true"])) .airy-messages{flex:1;min-height:140px;max-height:none}html body #root .App .airy-conversation:has(.airy-messages)>.guided-dialogue{flex-shrink:0}}

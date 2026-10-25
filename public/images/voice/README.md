@@ -17,3 +17,7 @@ Generated with image_gen for the guided cafe scenario. Fictional Nora at a Norwe
 ## scenario-illustrations.png
 
 User-supplied “Twelve Norwegian everyday scenes.png”. Shared by the games hub, scenario catalog and conversation screen. Original 1536 x 1024 atlas, four columns; row boundaries at 0, 330, 651 and 1024 pixels. ScenarioIllustration selects cells by stable scenario ID and preserves proportions with SVG slice scaling. First row: Nora, studio, transport, hotel. Second: office, cafe, construction, care. Third: cleaning, retail, studies, kindergarten.
+
+## Cafe interior
+
+cafe-interior.jpg is an AI-generated, people-free cafe scene created for the approved scenario conversation mockup (2026-10-25). Used only for the cafe conversation banner; catalog illustrations retain the shared atlas.

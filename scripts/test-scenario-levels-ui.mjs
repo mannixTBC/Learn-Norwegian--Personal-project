@@ -105,20 +105,24 @@ for (const mode of [false, true]) {
       const goalButton = renderer.root.findAllByType('button').find(n => n.props['aria-controls'] === 'mc-objective-list');
       await act(async () => goalButton.props.onClick());
       assert.equal(renderer.root.findByProps({ id: 'mc-objective-list' }).props.hidden, false);
+      await act(async () => classNodes(renderer, 'airy-help')[0].props.onClick());
       const contextButton = renderer.root.findAllByType('button').find(n => n.props['aria-controls'] === 'mc-context');
       assert.equal(renderer.root.findByProps({ id: 'mc-context' }).props.hidden, true);
       await act(async () => contextButton.props.onClick());
       assert.equal(renderer.root.findByProps({ id: 'mc-context' }).props.hidden, false);
       await act(async () => contextButton.props.onClick());
+      await act(async () => classNodes(renderer, 'airy-help')[0].props.onClick());
     }
     if (!mode) {
       assert.equal(renderer.root.findByProps({ id: 'dc-context' }).props.hidden, true,
         'starting collapses the briefing so the dialogue stays in focus');
+      await act(async () => classNodes(renderer, 'airy-help')[0].props.onClick());
       const contextButton = renderer.root.findAllByType('button').find(n => n.props['aria-controls'] === 'dc-context');
       await act(async () => contextButton.props.onClick());
       assert.equal(renderer.root.findByProps({ id: 'dc-context' }).props.hidden, false,
         'the learner can reopen the context during the dialogue');
       await act(async () => contextButton.props.onClick());
+      await act(async () => classNodes(renderer, 'airy-help')[0].props.onClick());
     }
     assert.ok(textOf(classNodes(renderer, 'conversation-messages')[0]).includes(expected.opening));
     assert.equal(renderer.root.findAll(node => typeof node.type === 'string' && node.props['aria-label'] === `0 din ${expected.turns} răspunsuri`).length, 1);

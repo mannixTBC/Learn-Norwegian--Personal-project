@@ -35,8 +35,11 @@ try{
   if(kind==='long')selected.brief+=' '+selected.brief.repeat(4);
   const session=kind==='result'?{done:true,achieved:[0],turn:10,maxTurns:10,endReason:'turn_limit',feedback:'Mai ai de exersat. '.repeat(30)}:kind==='active'?{done:false,achieved:[0],turn:1,maxTurns:10,sessionToken:'fixture'}:null;
   const flow={session,messages:kind==='active'?[{role:'assistant',text:'Hei! Hva vil du bestille?'},{role:'user',text:'En kaffe, takk.'},{role:'assistant',text:'Vil du ha en liten eller stor kaffe?'}]:[],draft:'',busy:false,progress:{},reset(){},start(){},again(){}};
+  globalThis.window={SpeechRecognition:class {}};
   const html=renderToStaticMarkup(React.createElement(MemoryRouter,null,React.createElement(installed?Mobile:Desktop,{level:'C2',path:{id:'transport'},scenarios:[selected],selected,flow})));
+  delete globalThis.window;
   await page.setContent('<html class="'+(installed?'is-installed-app':'')+'"><head><style>'+css+'</style></head><body><div id="root"><div class="App"><main class="App__main">'+html+'</main></div></div></body></html>');
+  if(kind==='active')await page.locator('.guided-image img').evaluate(im=>im.decode());
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),JSON.stringify({installed,width,height,kind}));
   const background=await page.evaluate(()=>[document.documentElement,document.body,document.querySelector('#root'),document.querySelector('.App'),document.querySelector('.App__main')].map(e=>getComputedStyle(e).backgroundColor));
   assert.ok(background.every(c=>c===background[0]),'uniform outer canvas');
