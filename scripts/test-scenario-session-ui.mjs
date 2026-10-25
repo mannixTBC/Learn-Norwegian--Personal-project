@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import assert from 'node:assert/strict';
 import React from 'react';
 import TestRenderer, { act } from 'react-test-renderer';
-import { MemoryRouter, useHistory } from 'react-router-dom';
+import { MemoryRouter, useHistory, useLocation } from 'react-router-dom';
 const require = createRequire(import.meta.url);
 const catalog = require('../src/modules/exercises/conversationScenarios.json');
 const { resolvePublicScenario } = await import('../src/modules/exercises/scenarioDifficulty.mjs');
@@ -23,10 +23,11 @@ await build({ configFile: resolve(root, 'vite.config.js'), logLevel: 'error',
     },
   }],
   build: { ssr: true, outDir, emptyOutDir: true, rollupOptions: {
-    input: resolve(root, 'src/modules/exercises/ConversationStudio.js'), output: { entryFileNames: 'studio.mjs' },
+    input: {studio:resolve(root, 'src/modules/exercises/ConversationStudio.js'),review:resolve(root, 'src/modules/lessons/ReviewPage.js')}, output: { entryFileNames: '[name].mjs' },
   } },
 });
 const { default: Studio } = await import(pathToFileURL(resolve(outDir, 'studio.mjs')));
+const { default: Review } = await import(pathToFileURL(resolve(outDir, 'review.mjs')));
 const temporary = new Map(), progress = new Map(), server = new Map();
 const storage = map => ({ getItem: key => map.get(key) ?? null, setItem: (key, value) => map.set(key, String(value)), removeItem: key => map.delete(key), key: i => [...map.keys()][i], get length() { return map.size; } });
 globalThis.sessionStorage = storage(temporary);
@@ -67,18 +68,19 @@ globalThis.fetch = async (url, options) => {
   calls.push({ operation, body, signal: options.signal });
   return handler(operation, body, options);
 };
-function Harness() { history = useHistory(); return React.createElement(Studio); }
+function Harness() { history = useHistory(); const location = useLocation(); return React.createElement(location.pathname === '/recapitulare' ? Review : Studio); }
 const nodes = (renderer, name) => renderer.root.findAll(node => typeof node.type === 'string' && node.props.className?.split(' ').includes(name));
 const textOf = node => typeof node === 'string' ? node : node.children.map(textOf).join('');
-const button = (renderer, text) => renderer.root.findAllByType('button').find(node => (node.props['aria-label'] || textOf(node)) === text);
+const plain = text => text.normalize('NFD').replace(/\p{M}/gu,'');
+const button = (renderer, text) => renderer.root.findAllByType('button').find(node => plain(node.props['aria-label'] || textOf(node)) === plain(text));
 const click = async (renderer, text) => {
   const node = button(renderer, text); assert.ok(node, 'Missing button: ' + text);
   await act(async () => { await node.props.onClick(); });
 };
-const render = async () => {
+const render = async (entry = '/scenarii?nivel=A1') => {
   let renderer;
   await act(async () => { renderer = TestRenderer.create(React.createElement(MemoryRouter,
-    { initialEntries: ['/scenarii?nivel=A1'] }, React.createElement(Harness)),
+    { initialEntries: [entry] }, React.createElement(Harness)),
     { createNodeMock: () => ({ focus() {}, scrollIntoView() {} }) }); });
   return renderer;
 };
@@ -97,6 +99,49 @@ const start = async () => { const r = await render(); await choose(r); await cli
 let checks = 0;
 for (const mode of [false, true]) {
   installed = mode;
+
+  setup();
+  let linked = await render('/scenarii?nivel=A1&scenariu=hotel-booking');
+  assert.equal(linked.root.findByProps({id:'guided-scenario-title'}).children.join(''),catalog.scenarios.find(s=>s.id==='hotel-booking').title);
+  assert.equal(calls.length,0,'a recap link selects preparation without starting AI');
+  await unmount(linked);
+  linked = await render('/scenarii?nivel=A1&scenariu=unknown');
+  assert.ok(nodes(linked,'conversation-card').length);
+  await unmount(linked);
+  setup();
+  linked = await start();
+  await unmount(linked);
+  linked = await render('/scenarii?nivel=A1&scenariu=hotel-booking');
+  assert.equal(linked.root.findByProps({id:'guided-scenario-title'}).children.join(''),source.title,'recap link must not discard an existing checkpoint');
+  await unmount(linked); checks++;
+
+  // Complete journey: catalog -> failed attempt -> recap -> retry -> success.
+  setup();
+  let journey = await start();
+  const max = resolvePublicScenario(source,catalog.levels,'A1').difficulty.turns;
+  handler = (op,body) => op === 'turn'
+    ? reply(200,baseResponse(turn(body,server.get(body.sessionToken).turn + 1 === max
+      ? {done:true,endReason:'turn_limit',achieved:[0],reply:'Takk for samtalen.'}:{}))) : normal(op,body);
+  for(let i=0;i<max;i++){await write(journey,'Jeg prøver igjen.');await send(journey);}
+  await act(async()=>{await new Promise(resolve=>setTimeout(resolve,25));});
+  assert.equal(progress.size>0,true);
+  const recapLink=journey.root.findAllByType('a').find(a=>a.props.href==='/recapitulare?nivel=A1');
+  assert.ok(recapLink,'terminal result links to recap');
+  await act(async()=>history.push(recapLink.props.href));
+  const recap=journey.root.findByProps({className:'recall-scenarios'});
+  assert.equal(recap.findAllByType('li').length,2);
+  const snapshot=JSON.stringify([...progress]);
+  await act(async()=>history.push(recap.findByType('a').props.href));
+  handler=normal;
+  await click(journey,'Exerseaza din nou');
+  await act(async()=>nodes(journey,'scenario-voice__mic')[0].props.onClick());
+  assert.equal(JSON.stringify([...progress]),snapshot,'opening a retry cannot clear review');
+  handler=(op,body)=>reply(200,baseResponse(turn(body,{done:true,endReason:'success',achieved:[0,1,2],reply:'Takk!'})));
+  await write(journey,'Ja, det gjør jeg.');await send(journey);
+  await act(async()=>{await new Promise(resolve=>setTimeout(resolve,25));});
+  await act(async()=>history.push('/recapitulare?nivel=A1'));
+  assert.equal(nodes(journey,'recall-scenarios').length,0,'successful retry clears missing objectives');
+  await unmount(journey); checks++;
 
   // Two clicks/submits in one event batch must reserve only one request.
   setup();
@@ -205,7 +250,7 @@ for (const mode of [false, true]) {
   assert.equal(waiting.signal.aborted, true);
   assert.equal(temporary.size, 0);
   await act(async () => { gate.resolve(normal('turn', waiting.body)); });
-  assert.equal(nodes(r, 'conversation-catalog').length, 1);
+  assert.equal(nodes(r, 'sc-grid').length, 1);
   assert.equal(nodes(r, 'conversation-messages').length, 0);
   handler = normal; await choose(r); await click(r, 'Începe conversația');
   await write(r, 'Hei'); gate = deferred(); handler = () => gate.promise; await send(r);
@@ -213,7 +258,7 @@ for (const mode of [false, true]) {
   await act(async () => history.push('/scenarii?nivel=C2'));
   assert.equal(levelPending.signal.aborted, true);
   await act(async () => { gate.resolve(normal('turn', levelPending.body)); });
-  assert.equal(nodes(r, 'conversation-catalog').length, 1);
+  assert.equal(nodes(r, 'sc-grid').length, 1);
   globalThis.scenarioTestUser = { id: 'different-user' };
   await act(async () => history.push('/scenarii?nivel=A1'));
   assert.equal(nodes(r, 'conversation-messages').length, 0);

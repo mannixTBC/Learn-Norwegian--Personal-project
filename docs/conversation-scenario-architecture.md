@@ -1,3 +1,50 @@
+## Actualizare 24 octombrie 2026 — taskul 4 din planul curent
+
+Planul curent este: 1 catalog, 2 Nora și ilustrații, 3 ecran conversație,
+4 logică/dificultate, 5 progres/recapitulare, 6 verificare parcurs.
+Numerotarea din secțiunile istorice de mai jos aparține planului anterior.
+
+Taskul 4 migrează celelalte nouă scenarii la contracte explicite: toate cele
+10 scenarii au acum variante A1–C2, criterii individuale, roluri, fapte,
+limite și o singură provocare permisă pentru nivelul ales. Catalogul public
+conține contextul, obiectivele, indiciul și bugetul; criteriile, exemplele de
+evaluare și regulile partenerului rămân exclusiv pe server.
+
+- A1: trei obiective de bază, sprijin concret, fără complicație, 7 replici.
+- A2: o clarificare contextuală suplimentară, fără complicație, 8 replici.
+- B1: explicație/comparație specifică situației, 9 replici.
+- B2: răspuns la o obiecție prevăzută, maximum 10 replici.
+- C1: condiții, responsabilități sau limite ale angajamentului, maximum 10 replici.
+- C2: clarificarea unei ambiguități specifice, maximum 10 replici.
+
+La scenariul autobuzului se păstrează variantele existente, inclusiv cele cinci
+obiective C2. La celelalte scenarii sunt trei obiective A1 și patru la A2–C2.
+Nivelul nu este schimbat în timpul sesiunii. Sprijinul se adaptează prin întrebări
+mai simple, repetare sau un scurt model de formulare; criteriile rămân aceleași.
+Nu se cer un număr minim de cuvinte, vocabular rar sau o anumită pronunție.
+
+Evaluarea este recalculată pe criterii după fiecare replică. Contradicțiile pot
+retrage o bifă, autocorectarea o poate restabili. Confirmarea după replica Norei
+este cerută doar unde obiectivul presupune acord; nu devine o condiție ascunsă
+pentru o comandă sau o încheiere politicoasă. Mesajul de succes este specific
+scenariului. Epuizarea replicilor nu acordă obiective lipsă.
+
+Scenariile migrate au revizia 2: sesiunile vechi sunt respinse înainte de AI,
+iar progresul cu altă definiție rămâne separat prin mecanismul existent.
+Fiecare replică neterminală folosește acum două apeluri AI și la cele nouă
+scenarii migrate: evaluator, apoi partener. Se păstrează o singură rezervare de
+cotă, înregistrarea consumului ambelor apeluri și termenul comun de 35 secunde.
+Această schimbare poate crește latența și consumul față de evaluatorul vechi.
+
+Validare automată: corespondența public/server pentru 60 de variante, lipsa
+provocărilor avansate la A1/A2, izolarea definițiilor, API start/turn/resume și
+respingerea reviziilor vechi pentru scenariile migrate; fluxurile existente de
+evaluare, progres, erori și voce. Aceste teste folosesc răspunsuri AI simulate:
+nu demonstrează judecata semantică a modelului real. Probele live și calibrarea
+cu furnizorul rămân distincte și nu sunt declarate trecute.
+
+---
+
 # Studio de conversație — structura și dificultatea scenariilor
 
 Status: taskurile 1 și 2 sunt implementate pentru scenariul-model `bus-delay`.
@@ -399,3 +446,22 @@ Rămân de închis după deploy: sincronizarea din aplicație pe două dispoziti
 probele AI reale și verificarea vizuală pe
 dispozitiv. Taskul 7 (ilustrațiile dedicate) nu este implementat. Celelalte nouă
 scenarii păstrează evaluarea anterioară până la migrarea individuală.
+
+## Taskul 5 din planul curent — progres și recapitulare
+
+Recapitularea citește rezultatele validate ale contului și nivelului curent. Afișează doar scenariile a căror ultimă încercare are obiective lipsă, în ordinea încercărilor recente. Un succes anterior este menționat și rămâne păstrat. O nouă încercare reușită scoate situația din această listă. Rezultatele vechi ca definiție și sesiunile incomplete nu sunt interpretate ca greșeli curente. Citirea nu modifică scoruri, obiective sau datele rezultatelor.
+
+Linkul de reluare selectează pregătirea scenariului prin parametrul scenariu; nu pornește AI. O sesiune temporară existentă are prioritate și nu este ștearsă de link. Ecranul de rezultat oferă acces la Recapitulare. Catalogul distinge Reușit, De reluat și Versiune nouă. Lista se actualizează la schimbarea contului/nivelului, revenirea în fereastră sau un eveniment storage. Sincronizarea existentă a rezultatelor este reutilizată.
+## Taskul 6 din planul curent — verificarea parcursului
+
+Verificarea locală din 24 octombrie 2026 acoperă:
+
+- 39 de teste backend, contracte, criterii, progres și transport, inclusiv toate cele 60 de variante.
+- 24 de verificări ale fluxului UI pe web și în modul instalat. Parcursul suplimentar folosește componentele și rutarea reale cu API simulat: catalog, încercare până la limita de replici, salvare, Recapitulare, revenire, reluare, succes și dispariția obiectivelor lipsă.
+- 24 de combinații de afișare în Chrome: web/aplicație, 360×640, 390×844, 1366×900 și 740×360; pregătire, context lung și rezultat lung. Controalele rămân accesibile, nu apare derulare orizontală, suprafața exterioară este uniformă și tema se curăță la navigare. Atlasul este încărcat și decodat local.
+- Catalogul cu filtre și paginare, Recapitularea, izolarea conturilor/nivelurilor, păstrarea succesului anterior și cele 78 de verificări ale canvasului comun.
+
+Comanda reproductibilă: `npm run test:scenario-flow`. Nu apelează furnizorul AI.
+Testele browserului folosesc componente randate și CSS de producție; nu sunt o probă a autentificării și sincronizării cu serviciile reale sau o probă pe telefon fizic.
+
+Proba live limitată `npm run test:scenarios:live -- A1-complete` s-a oprit cu `ENOTFOUND` la prima cerere. Zero dialoguri evaluate de AI real, fără reîncercări. Calitatea semantică A1–C2, cele nouă scenarii migrate și sincronizarea pe două dispozitive rămân de verificat într-un mediu conectat după deploy. Verificarea locală nu este prezentată ca validare live.

@@ -1,0 +1,47 @@
+import {readFile,readdir} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {homedir} from 'node:os';
+import {pathToFileURL} from 'node:url';
+import assert from 'node:assert/strict';
+import React from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {MemoryRouter} from 'react-router-dom';
+import {resolvePublicScenario} from '../src/modules/exercises/scenarioDifficulty.mjs';
+const root=resolve(import.meta.dirname,'..');
+const catalog=JSON.parse(await readFile(resolve(root,'src/modules/exercises/conversationScenarios.json'),'utf8'));
+const {default:Desktop}=await import(pathToFileURL(resolve(root,'node_modules/.cache/scenario-catalog-tests/desktop.mjs')));
+const {default:Mobile}=await import(pathToFileURL(resolve(root,'node_modules/.cache/scenario-catalog-tests/mobile.mjs')));
+const assets=resolve(root,'dist/assets');
+const css=(await Promise.all((await readdir(assets)).filter(n=>n.endsWith('.css')).map(n=>readFile(resolve(assets,n),'utf8')))).join('\n');
+const {chromium}=await import(pathToFileURL(resolve(homedir(),'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs')));
+const browser=await chromium.launch({headless:true,...(process.platform==='win32'?{executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'}:{})});
+let checks=0;
+try{
+ const page=await browser.newPage();
+ const atlas=await readFile(resolve(root,'public/images/voice/scenario-illustrations.png'));
+ await page.route('http://scenario.test/**',route=>route.fulfill(route.request().url().endsWith('.png')?{contentType:'image/png',body:atlas}:{contentType:'text/html',body:'<html></html>'}));
+ await page.goto('http://scenario.test/');
+ for(const installed of [false,true])for(const [width,height] of [[360,640],[390,844],[1366,900],[740,360]])for(const kind of ['ready','long','result']){
+  await page.setViewportSize({width,height});
+  const r=resolvePublicScenario(catalog.scenarios[0],catalog.levels,'C2');
+  const selected={...r.scenario,difficulty:r.difficulty};
+  if(kind==='long')selected.brief+=' '+selected.brief.repeat(4);
+  const session=kind==='result'?{done:true,achieved:[0],turn:10,maxTurns:10,endReason:'turn_limit',feedback:'Mai ai de exersat. '.repeat(30)}:null;
+  const flow={session,messages:[],draft:'',busy:false,progress:{},reset(){},start(){},again(){}};
+  const html=renderToStaticMarkup(React.createElement(MemoryRouter,null,React.createElement(installed?Mobile:Desktop,{level:'C2',path:{id:'transport'},scenarios:[selected],selected,flow})));
+  await page.setContent('<html class="'+(installed?'is-installed-app':'')+'"><head><style>'+css+'</style></head><body><div id="root"><div class="App"><main class="App__main">'+html+'</main></div></div></body></html>');
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),JSON.stringify({installed,width,height,kind}));
+  const background=await page.evaluate(()=>[document.documentElement,document.body,document.querySelector('#root'),document.querySelector('.App'),document.querySelector('.App__main')].map(e=>getComputedStyle(e).backgroundColor));
+  assert.ok(background.every(c=>c===background[0]),'uniform outer canvas');
+  const image=page.locator('.guided-image>.scenario-illustration');
+  const box=await image.boundingBox();assert.ok(box.width>100&&box.height>100,'scene must not inherit icon size');
+  const controls=kind==='result'?page.getByRole('link',{name:'Vezi recapitularea'}):page.locator('.scenario-voice__mic');
+  await controls.scrollIntoViewIfNeeded();assert.ok(await controls.isVisible());
+  if(kind==='result')assert.equal(await controls.getAttribute('href'),'/recapitulare?nivel=C2');
+  await page.evaluate(()=>document.querySelector('.App__main').innerHTML='<p>Jocuri</p>');
+  assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--exercise-canvas').trim()),'');
+  checks++;
+ }
+ await page.evaluate(async()=>{const im=new Image();im.src='/images/voice/scenario-illustrations.png';await im.decode();if(im.naturalWidth!==1536)throw Error('Invalid atlas');});
+}finally{await browser.close();}
+console.log('PASS: '+checks+' browser layouts: web/app, preparation, long content, result, accessible controls, artwork and navigation cleanup.');

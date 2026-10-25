@@ -8,7 +8,7 @@ import { MemoryRouter } from 'react-router-dom';
 const out = resolve('node_modules/.cache/recall-test');
 await build({ logLevel:'error', plugins:[{name:'recall-mocks', enforce:'pre',resolveId(id){if(id.endsWith('/learningActivity'))return 'virtual:activity';if(id.endsWith('/norwegianSpeech'))return 'virtual:speech';},load(id){if(id==='virtual:activity')return 'export const recordStudyActivity = () => {}';if(id==='virtual:speech')return 'export const speakNorwegian = async () => ({ok:false})';}}],build:{ssr:true,outDir:out,emptyOutDir:true,rollupOptions:{input:resolve('src/modules/lessons/ReviewPage.js'),output:{entryFileNames:'review.mjs'}}}});
 const {default:Review}=await import(pathToFileURL(resolve(out,'review.mjs')));
-const store=new Map(); globalThis.localStorage={getItem:key=>store.get(key)||null,setItem:(key,value)=>store.set(key,value)};
+const store=new Map(); globalThis.localStorage={get length(){return store.size;},key:i=>[...store.keys()][i],getItem:key=>store.get(key)||null,setItem:(key,value)=>store.set(key,value)};
 const key='norwegian_review_items';
 const item={id:'mistake',level:'A1',prompt:'Eu beau cafea.',answer:'Jeg drikker kaffe.',source:'lesson',dueAt:new Date(0).toISOString(),repetitions:2,intervalDays:7,lapses:1};
 store.set(key,JSON.stringify([item,{...item,id:'automatic-vocab',source:'curriculum',lapses:0}]));
@@ -26,3 +26,18 @@ assert.ok(Date.parse(JSON.parse(store.get(key))[0].dueAt)<Date.now()+2*86400000)
 await act(async()=>view.unmount());
 console.log('PASS: original logo, mistake-only queue, both actions, no mastery inflation, completion and restart.');
 
+
+const {saveScenarioResult}=await import('../src/modules/exercises/scenarioProgress.mjs');
+const {resolvePublicScenario}=await import('../src/modules/exercises/scenarioDifficulty.mjs');
+const {readFile}=await import('node:fs/promises');
+const catalog=JSON.parse(await readFile('src/modules/exercises/conversationScenarios.json','utf8'));
+const resolved=resolvePublicScenario(catalog.scenarios[0],catalog.levels,'A1');
+const scenario={...resolved.scenario,difficulty:resolved.difficulty};
+await saveScenarioResult({storage:globalThis.localStorage,level:'A1',scenario,result:{done:true,turn:scenario.difficulty.turns,endReason:'turn_limit',achieved:[0],sessionToken:'review-ui'}});
+await act(async()=>{view=TestRenderer.create(React.createElement(MemoryRouter,{initialEntries:['/recapitulare?nivel=A1']},React.createElement(Review)));});
+const panel=view.root.findByProps({className:'recall-scenarios'});
+assert.equal(panel.findAllByType('li').length,2);
+assert.equal(panel.findByType('a').props.href,'/scenarii?nivel=A1&scenariu=bus-delay');
+assert.ok(!panel.findAllByType('button').length,'reading objectives cannot award success');
+await act(async()=>view.unmount());
+console.log('PASS: scenario recap shows missing objectives and a direct practice link.');

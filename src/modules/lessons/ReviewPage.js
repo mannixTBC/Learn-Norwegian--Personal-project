@@ -7,6 +7,7 @@ import { getLearningLevel } from './learningLevel';
 import { courseCatalog } from './norwegian-program/lessonContent';
 import NorwegianFlagIcon from '../layout/Navbar/NorwegianFlagIcon';
 import './ReviewPage.css';
+import ScenarioReview from '../exercises/ScenarioReview.js';
 
 const normalize = value => String(value || '').normalize('NFC').toLowerCase().replace(/[\p{P}\p{S}]/gu, '').replace(/\s+/g, ' ').trim();
 const mistakes = items => items.filter(item => item.source !== 'curriculum' || item.lapses > 0);
@@ -58,6 +59,7 @@ function ReviewSession({ level }) {
     <header className="recall-brand"><Link to={`/jocuri?nivel=${level}`} aria-label="Înapoi la jocuri">←</Link><Link to="/dashboard" aria-label="NordLingo — Acasă"><NorwegianFlagIcon className="recall-logo" /></Link></header>
     <div className="recall-heading"><h1>Recapitulare</h1><p>Reia expresiile care ți-au dat de gândit.</p>{current && <div className="recall-progress"><span>{index + 1} din {queue.length}</span><progress aria-label="Progresul sesiunii" value={index + 1} max={queue.length} /></div>}</div>
     {card ? <><article className="recall-card" key={current.id} aria-live="polite"><span className="recall-category">♧ &nbsp; {card.category}</span><h2>{card.translation}</h2><div className="recall-divider" aria-hidden="true"><span>⌁</span></div><p className="recall-expression" lang={card.norwegian ? 'nb' : undefined}>{card.norwegian || current.answer}</p>{card.norwegian && <button type="button" className="recall-listen" onClick={listen}><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M11 4 5 9H2v6h3l6 5ZM15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" /></svg>{playing ? 'Oprește' : 'Ascultă'}</button>}{error && <small role="status">{error}</small>}{card.note && <aside className="recall-note"><span aria-hidden="true">♧</span><span>{card.note}</span></aside>}</article><div className="recall-actions"><button type="button" onClick={() => next(true)}><span aria-hidden="true">↻</span> Mai repet</button><button type="button" onClick={() => next(false)}>Continuă <span aria-hidden="true">→</span></button></div></> : <section className="recall-card recall-empty"><span className="recall-category">În ritmul tău</span><h2>{queue.length ? `Ai revăzut ${queue.length} expresii.` : 'Recapitularea este la zi.'}</h2><p>{queue.length ? 'Expresiile marcate „Mai repet” vor reveni mai curând.' : 'Dificultățile din lecții și jocuri se adună aici, pentru a le revedea pe îndelete.'}</p><Link to={`/jocuri?nivel=${level}`}>Înapoi la jocuri →</Link>{remaining.length > 0 && <button type="button" onClick={() => { setQueue(remaining.slice(0, 6)); setIndex(0); started.current = Date.now(); }}>Mai reiau câteva</button>}</section>}
+    <ScenarioReview level={level}/>
   </main>;
 }
 export default function ReviewPage() { const location = useLocation(); const level = getLearningLevel(location.search); return <ReviewSession key={level} level={level} />; }
