@@ -1,5 +1,5 @@
 import NaturalConversationExercise from './NaturalConversationExercise';
-import { ExerciseArtwork } from './NordicExerciseUI';
+import ScenarioIllustration from './ScenarioIllustration';
 import ScenarioProgress from './ScenarioProgressSummary';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -20,7 +20,7 @@ function Icon({ name = 'message' }) {
 }
 function Panorama({ scenario, small = false }) {
   return <div className={'dc-panorama' + (small ? ' dc-panorama--small' : '')} aria-hidden="true">
-    {scenario.id === 'cafe-order' ? <img className="scenario-cafe-photo" src="/images/voice/nora-cafe.png" alt="" loading={small ? 'lazy' : 'eager'}/> : <><ExerciseArtwork kind="missions" pathId={scenario.path}/><img className="scenario-scene-nora" src="/images/voice/nora-avatar.webp" alt=""/></>}
+    <ScenarioIllustration scenarioId={scenario.id}/>
     <span className="dc-scene-label">{scenario.place}</span>
   </div>;
 }

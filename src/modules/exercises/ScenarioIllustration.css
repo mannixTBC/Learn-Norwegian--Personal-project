@@ -1,0 +1,8 @@
+.scenario-illustration{display:block;width:100%;height:100%;overflow:hidden;background:#e9dfc7}
+html body #root .northern-games .mini-tile--missions .studio-nora{width:64px;height:64px;flex:none;border-radius:13px}
+html body #root .northern-games .mini-tile--missions .studio-mic{display:inline-block;width:17px;height:19px;margin-left:5px;vertical-align:middle;color:#b08a35;flex:none}
+.natural-conversation .natural-partner>.scenario-nora{width:69px;height:69px;flex:0 0 69px;border-radius:50%;border:3px solid white;background:#e9dfc7}
+@media(max-width:360px){.natural-conversation .natural-partner>.scenario-nora{width:59px;height:59px;flex-basis:59px}}
+.natural-conversation .guided-image>.scenario-illustration{display:block;width:100%;height:100%;max-width:none;max-height:none}
+
+.dc-panorama>.scenario-illustration,.mc-scene>.scenario-illustration{display:block;width:100%;height:100%;max-width:none;max-height:none}

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ExerciseArtwork } from './NordicExerciseUI';
+import ScenarioIllustration from './ScenarioIllustration';
 import ScenarioProgress from './ScenarioProgressSummary';
 import ScenarioVoiceControls from './ScenarioVoiceControls';
 
@@ -28,8 +28,8 @@ export default function NaturalConversationExercise({ mobile, level, selected, f
     <section className="conversation-brief guided-brief" aria-labelledby="guided-scenario-title">
       <div className="guided-scenario"><span className="guided-scenario-icon"><SceneIcon cafe={cafe}/></span><div><h1 id="guided-scenario-title" ref={title} tabIndex={-1}>{selected.title}</h1><p className="guided-role">{selected.role}</p><p>{selected.brief}</p></div></div>
       <div className="natural-scene">
-        <div className="natural-partner"><img src="/images/voice/nora-avatar.webp" alt="" width="72" height="72"/><div><strong>Nora <span>· {cafe ? 'Barista AI' : 'Partener AI'}</span></strong><p>Prietenoasă, răbdătoare și gata să te ajute.</p></div><span className="natural-speaker" aria-hidden="true"><Speaker/></span></div>
-        <div className="guided-image" aria-hidden="true">{cafe ? <img src="/images/voice/nora-cafe.png" alt=""/> : <ExerciseArtwork kind="missions" pathId={selected.path}/>}</div>
+        <div className="natural-partner"><ScenarioIllustration scenarioId="nora" className="scenario-nora"/><div><strong>Nora <span>· {cafe ? 'Barista AI' : 'Partener AI'}</span></strong><p>Prietenoasă, răbdătoare și gata să te ajute.</p></div><span className="natural-speaker" aria-hidden="true"><Speaker/></span></div>
+        <div className="guided-image" aria-hidden="true"><ScenarioIllustration scenarioId={selected.id}/></div>
         {session ? <div className="conversation-messages natural-current" role="log" aria-live="polite">
           {latest && <article className="conversation-message assistant"><span className="natural-speaker" aria-hidden="true"><Speaker/></span><p lang="nb">{latest.text}</p></article>}
           {busy && flow.operation === 'turn' && <article className="conversation-message user conversation-pending"><small>Tu · se trimite</small><p lang="nb">{draft}</p></article>}

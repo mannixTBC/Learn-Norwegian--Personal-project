@@ -13,3 +13,7 @@ Prompt: Square portrait avatar for Nora, a fictional AI Norwegian language tutor
 ## nora-cafe.png
 
 Generated with image_gen for the guided cafe scenario. Fictional Nora at a Norwegian cafe counter, compact landscape scene in the game palette. Display only for cafe-order; other scenarios reuse the existing career artwork.
+
+## scenario-illustrations.png
+
+User-supplied “Twelve Norwegian everyday scenes.png”. Shared by the games hub, scenario catalog and conversation screen. Original 1536 x 1024 atlas, four columns; row boundaries at 0, 330, 651 and 1024 pixels. ScenarioIllustration selects cells by stable scenario ID and preserves proportions with SVG slice scaling. First row: Nora, studio, transport, hotel. Second: office, cafe, construction, care. Third: cleaning, retail, studies, kindergarten.

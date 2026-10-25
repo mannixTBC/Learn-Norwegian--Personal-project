@@ -3,7 +3,7 @@ import ScenarioProgress from './ScenarioProgressSummary';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { getCareerPath } from '../../services/careerProfile';
-import { ExerciseArtwork } from './NordicExerciseUI';
+import ScenarioIllustration from './ScenarioIllustration';
 import { ExerciseLevelSelect } from './ExerciseUI';
 import MobileAppNav from '../layout/MobileAppNav';
 import NorwegianFlagIcon from '../layout/Navbar/NorwegianFlagIcon';
@@ -23,7 +23,7 @@ function Icon({ name = 'message' }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name] || paths.message}</svg>;
 }
 function Artwork({ scenario, compact = false }) {
-  return <div className={'mc-scene' + (compact ? ' mc-scene--compact' : '')}>{scenario.id === 'cafe-order' ? <img className="scenario-cafe-photo" src="/images/voice/nora-cafe.png" alt=""/> : <><ExerciseArtwork kind="missions" pathId={scenario.path}/><img className="scenario-scene-nora" src="/images/voice/nora-avatar.webp" alt=""/></>}<span>{scenario.place}</span></div>;
+  return <div className={'mc-scene' + (compact ? ' mc-scene--compact' : '')}><ScenarioIllustration scenarioId={scenario.id}/><span>{scenario.place}</span></div>;
 }
 
 export default function MobileConversationStudio({ level, path, scenarios, selected, flow, hint, setHint,

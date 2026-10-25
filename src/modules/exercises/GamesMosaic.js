@@ -9,6 +9,7 @@ import './GamesMosaic.css';
 import './GamesExpedition.css';
 import './LegendMap.css';
 import GameArt from './ExpeditionGameArt';
+import ScenarioIllustration from './ScenarioIllustration';
 import { getStudySummary } from '../../services/learningActivity';
 
 const number = (value) => Math.max(0, Math.floor(Number(value) || 0)).toLocaleString('ro-RO');
@@ -91,9 +92,9 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
       <span className="expedition-streak" aria-label={`${streak} ${streak === 1 ? 'zi consecutivă' : 'zile consecutive'}`}><svg viewBox="0 0 24 28" aria-hidden="true"><path d="M13 1c2 7-5 8-3 13 2-1 3-3 3-5 6 4 9 8 7 13-3 8-17 6-17-3 0-5 3-8 5-10 0 5 1 6 2 6-2-6 4-9 3-14Z" fill="currentColor" /></svg><span>{streak} {streak === 1 ? 'zi' : 'zile'}</span></span>
     </section>
     <section className="mini-grid" aria-label="Mini-jocuri">{tiles.map(card => <Link key={card.id} to={card.to} data-game={card.id} className={`mini-tile mini-tile--${card.id}`}>
-      <GameArt type={card.id} />
+      {card.id === 'missions' ? <ScenarioIllustration scenarioId="nora" className="mini-art studio-nora" /> : <GameArt type={card.id} />}
       {card.percent >= 100 && <span className="expedition-earned" role="img" aria-label={card.id === 'listen' || card.id === 'pronunciation' ? 'Record de 100%' : 'Obiectiv atins'} title={card.id === 'listen' || card.id === 'pronunciation' ? 'Record de 100%' : 'Obiectiv atins'}><svg viewBox="0 0 32 40" aria-hidden="true"><path d="m7 25-2 14 10-5 10 5-2-14" fill="#e9b64c"/><path d="m16 1 4 3 5 1 2 5 3 4-2 5-1 5-5 2-6 3-5-3-5-2-1-5-2-5 3-4 2-5 5-1Z" fill="#f4ca6d" stroke="#bd8b2d"/><circle cx="16" cy="15" r="9" fill="#eeb23b" stroke="#fff1bd"/><path d="m16 7 2 5 5 1-4 4 1 5-4-3-4 3 1-5-4-4 5-1Z" fill="#fff9e6"/></svg></span>}
-      <div className="mini-tile-copy"><h3>{card.title}</h3></div>
+      <div className="mini-tile-copy"><h3>{card.title}{card.id === 'missions' && <svg className="studio-mic" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></svg>}</h3></div>
       <div className="mini-progress" aria-label={card.label}>{card.percent !== undefined && <span className="expedition-dots" aria-hidden="true">{Array.from({ length: 5 }, (_, index) => <i key={index} className={card.percent >= (index + 1) * 20 ? 'is-earned' : ''} />)}</span>}<small>{card.label}</small></div>
       <span className="expedition-chevron" aria-hidden="true">›</span>
     </Link>)}</section>
