@@ -7,8 +7,8 @@ const tutor = require('../scenarioTutor');
 
 const reportFor = scenario => ({ feedback: 'Ai comunicat durata. Continuă cu motivul întârzierii.',
   objectives: scenario.definition.objectives.map((objective, index) => ({ id: objective.id,
-    criteria: objective.criteria.map((_, id) => ({ id, status: index === 0 ? 'met' : 'missing',
-      evidence: index === 0 ? [{ turn: 1, quote: 'ti minutter forsinket' }] : [], context: [] })) })) });
+    criteria: objective.criteria.map((_, id) => ({ id, status: scenario.id === 'bus-delay' && index === 0 ? 'met' : 'missing',
+      evidence: scenario.id === 'bus-delay' && index === 0 ? [{ turn: 1, quote: 'ti minutter forsinket' }] : [], context: [] })) })) });
 const completion = value => ({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(value) } }],
   usage: { prompt_tokens: 4, completion_tokens: 2, total_tokens: 6, prompt_tokens_details: { cached_tokens: 1 } } });
 
@@ -160,12 +160,27 @@ test('scenario API validates assessment before roleplay, records both calls, and
   const retry = await post('turn', { sessionToken: fresh.sessionToken, message: 'Jeg er ti minutter forsinket.' });
   assert.equal(retry.status, 200);
   assert.equal((await retry.json()).turn, 1);
-  const legacy = await (await post('start', { scenarioId: 'cafe-order', level: 'B1' })).json();
-  assert.equal(legacy.maxTurns, catalog.levels.B1.turns);
-  assert.equal(Object.hasOwn(decode(legacy.sessionToken), 'scenarioRevision'), false);
-  const beforeLegacy = calls.length;
-  assert.equal((await post('turn', { sessionToken: legacy.sessionToken, message: 'Hei' })).status, 200);
-  assert.equal(calls.length, beforeLegacy + 1);
+  for (const item of catalog.scenarios.filter(s => s.id !== 'bus-delay')) {
+    for (const level of Object.keys(catalog.levels)) {
+      const before = calls.length;
+      const start = await (await post('start', { scenarioId: item.id, level })).json();
+      assert.equal(start.maxTurns, item.variants[level].turns);
+      assert.equal(decode(start.sessionToken).scenarioRevision, item.revision);
+      assert.equal(calls.length, before, 'opening remains free of AI calls');
+      const stale = decode(start.sessionToken); delete stale.scenarioRevision;
+      assert.equal((await post('resume', { sessionToken: tutor.sign(stale) })).status, 409);
+      assert.equal(calls.length, before, 'old definition rejected before AI');
+      const response = await post('turn', { sessionToken: start.sessionToken, message: 'Hei' });
+      assert.equal(response.status, 200, item.id + ':' + level);
+      const turn = await response.json();
+      assert.deepEqual(turn.achieved, [], 'a greeting is not a completed task');
+      assert.equal(calls.length, before + 2);
+      assert.doesNotMatch(JSON.stringify(turn), /available-options|knownTo|priorPartnerCriteria|"criteria"/);
+      const resumed = await (await post('resume', { sessionToken: turn.sessionToken })).json();
+      assert.deepEqual(resumed.achieved, []);
+      assert.equal(calls.length, before + 2, 'resume never calls AI');
+    }
+  }
   assert.equal(usageRecords.length, reservations, 'all reservations are finalized, including failed turns');
 });
 

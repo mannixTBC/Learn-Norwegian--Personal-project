@@ -179,3 +179,44 @@ test('contract scenarios cannot accidentally fall back to the legacy quote-only 
   assert.throws(() => tutor.evaluate({ reply: 'Takk', feedback: '', achieved: [{ id: 2, evidence: 'Ja' }] },
     { history: [], achieved: [] }, 'Ja', scenario), error => error.status === 502);
 });
+
+test('migrated scenarios retract unsupported goals and close with their own outcome at every level', async () => {
+  const catalog = require('../src/modules/exercises/conversationScenarios.json');
+  for (const source of catalog.scenarios.filter(s => s.id !== 'bus-delay')) {
+    for (const level of Object.keys(catalog.levels)) {
+      const { scenario, difficulty } = tutor.context(source.id, level);
+      // Scripted model reports exercise provenance, lifecycle and closure only,
+      // not whether these words semantically satisfy each authored criterion.
+      const message = 'Ja, det stemmer.';
+      const session = { turn: 1, done: false, achieved: scenario.goals.map((_, i) => i),
+        history: [{ role: 'assistant', content: scenario.opening },
+          { role: 'user', content: 'Kan vi gjøre det slik?' },
+          { role: 'assistant', content: 'Ja, vi kan gjøre det slik.' }] };
+      const report = missingReport(scenario);
+      assert.deepEqual(assessment.assess(report, scenario, session, message).achieved, [],
+        'old achievements cannot survive a fresh report without evidence');
+      for (const objective of report.objectives) for (const criterion of objective.criteria) {
+        criterion.status = 'met';
+        criterion.evidence = [{ turn: 3, quote: message }];
+        criterion.context = [{ turn: 2, quote: session.history[2].content }];
+      }
+      const incomplete = structuredClone(report);
+      incomplete.objectives.at(-1).criteria.at(-1).status = 'missing';
+      assert.equal(assessment.assess(incomplete, scenario, session, message).achieved.length, scenario.goals.length - 1);
+      for (const [index, objective] of scenario.definition.objectives.entries()) {
+        for (const criterion of objective.priorPartnerCriteria || []) {
+          const premature = structuredClone(report);
+          premature.objectives[index].criteria[criterion].context = [];
+          assert.throws(() => assessment.assess(premature, scenario, session, message));
+        }
+      }
+      let calls = 0;
+      const result = await runScenarioTurn({ scenario, difficulty, session, message,
+        client: clientWith(async () => { calls++; return completion(report); }) });
+      assert.equal(calls, 1, 'terminal turns do not generate another question');
+      assert.equal(result.session.done, true);
+      assert.equal(result.reply, scenario.definition.completion.successReply);
+      assert.doesNotMatch(result.reply, /God tur|\?/);
+    }
+  }
+});

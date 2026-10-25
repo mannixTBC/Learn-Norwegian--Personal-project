@@ -21,7 +21,7 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
     achieved = evaluated.achieved;
     feedback = evaluated.feedback;
     if (achieved.length === scenario.goals.length) {
-      reply = 'Takk, da er planen avtalt. God tur!';
+      reply = scenario.definition.completion.successReply || 'Takk, da er planen avtalt. God tur!';
     } else if (session.turn + 1 >= difficulty.turns) {
       reply = 'Takk for samtalen. Vi avslutter øvelsen her.';
     } else {

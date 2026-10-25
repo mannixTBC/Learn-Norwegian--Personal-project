@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "cafe-order",
+  "roles": {
+    "learner": "Tu ești clientul. Nora este barista.",
+    "partner": "Nora, a barista. Respond to the customer, never order on their behalf."
+  },
+  "outcome": "Comandă cafeaua cu lapte de ovăz; Întreabă sau confirmă prețul; Precizează la pachet și încheie politicos",
+  "facts": [
+    {
+      "id": "situation",
+      "value": "The learner wants oat milk coffee to take away.",
+      "knownTo": "shared",
+      "disclosure": "Use only as allowed by the role. Facts in the learner brief are not spoken evidence. For partner-owned details, answer when asked or when clarification is needed; do not preempt the learner’s clarification goal."
+    },
+    {
+      "id": "available-options",
+      "value": "Oat milk coffee and takeaway are available. The price is 45 NOK. No real payment. No reusable-cup discount or policy has been specified.",
+      "knownTo": "shared",
+      "disclosure": "Discuss when relevant; do not invent extra options, prices, deadlines or policies."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "clarify-situation",
+      "label": "Comandă cafeaua cu lapte de ovăz",
+      "criteria": [
+        "Order coffee with oat milk, not another drink or milk."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "En kaffe med havremelk, takk."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "establish-details",
+      "label": "Întreabă sau confirmă prețul",
+      "criteria": [
+        "Ask the price or explicitly confirm the price of 45 NOK."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Koster den 45 kroner?"
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "complete-action",
+      "label": "Precizează la pachet și încheie politicos",
+      "criteria": [
+        "Specify takeaway.",
+        "Close the order politely, for example with takk; a long farewell is not required."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Jeg tar den med, takk."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    }
+  ],
+  "allowedResolutions": [
+    "Oat milk coffee and takeaway are available. The price is 45 NOK. No real payment. No reusable-cup discount or policy has been specified.",
+    "Accept any equivalent wording or feasible choice within these facts, not a memorized sentence."
+  ],
+  "boundaries": [
+    "Language roleplay only. Stay in the assigned role and use only the supplied fictional facts.",
+    "Never ask for real personal, payment or child data. Do not invent professional advice, medical procedures or unsafe shortcuts.",
+    "Do not change level or objectives mid-session. Respond to requests for help within the selected level."
+  ],
+  "completion": {
+    "success": "All listed criteria have learner evidence; any required confirmation follows a real partner response.",
+    "incomplete": "End politely when the turn budget is exhausted; identify unmet objectives without awarding them.",
+    "successReply": "Takk for bestillingen. Ha en fin dag!"
+  }
+}

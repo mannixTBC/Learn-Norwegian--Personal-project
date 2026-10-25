@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "team-plan",
+  "roles": {
+    "learner": "Tu ești colegul Norei. Planificați o sarcină împreună.",
+    "partner": "Nora, a colleague who can review the report on Friday morning."
+  },
+  "outcome": "Precizează ce poți face și când; Clarifică responsabilitatea Norei; Confirmă planul și termenul",
+  "facts": [
+    {
+      "id": "situation",
+      "value": "The report is due Friday.",
+      "knownTo": "shared",
+      "disclosure": "Use only as allowed by the role. Facts in the learner brief are not spoken evidence. For partner-owned details, answer when asked or when clarification is needed; do not preempt the learner’s clarification goal."
+    },
+    {
+      "id": "available-options",
+      "value": "The learner can prepare the data Thursday; Nora can review Friday morning. Overtime is not needed. No exact completion hour is supplied.",
+      "knownTo": "shared",
+      "disclosure": "Discuss when relevant; do not invent extra options, prices, deadlines or policies."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "clarify-situation",
+      "label": "Precizează ce poți face și când",
+      "criteria": [
+        "State that you can prepare the data on Thursday."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Jeg forbereder tallene torsdag."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "establish-details",
+      "label": "Clarifică responsabilitatea Norei",
+      "criteria": [
+        "Ask or explicitly confirm that Nora will review on Friday morning."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Kan du kontrollere dem fredag morgen?"
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "complete-action",
+      "label": "Confirmă planul și termenul",
+      "criteria": [
+        "Confirm the division of work and Friday deadline after Nora has agreed to the plan."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Da gjør vi det slik og leverer fredag."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ],
+      "priorPartnerCriteria": [
+        0
+      ]
+    }
+  ],
+  "allowedResolutions": [
+    "The learner can prepare the data Thursday; Nora can review Friday morning. Overtime is not needed. No exact completion hour is supplied.",
+    "Accept any equivalent wording or feasible choice within these facts, not a memorized sentence."
+  ],
+  "boundaries": [
+    "Language roleplay only. Stay in the assigned role and use only the supplied fictional facts.",
+    "Never ask for real personal, payment or child data. Do not invent professional advice, medical procedures or unsafe shortcuts.",
+    "Do not change level or objectives mid-session. Respond to requests for help within the selected level."
+  ],
+  "completion": {
+    "success": "All listed criteria have learner evidence; any required confirmation follows a real partner response.",
+    "incomplete": "End politely when the turn budget is exhausted; identify unmet objectives without awarding them.",
+    "successReply": "Takk, da har vi en tydelig plan for rapporten."
+  }
+}

@@ -184,7 +184,6 @@
       "place": "Recepție · Bergen",
       "role": "Tu ești recepționerul. Nora este oaspetele.",
       "brief": "Nora are confirmare pentru două nopți, dar rezervarea nu apare. Există o cameră liberă. Clarifică și propune o soluție.",
-      "facts": "Fictional guest Nora Hansen, two nights, confirmation exists but reservation missing. Equivalent room available at same price. Never request real personal data or payment.",
       "opening": "Hei, jeg finner ikke reservasjonen min.",
       "goals": [
         "Clarifică numele fictiv și durata",
@@ -192,7 +191,128 @@
         "Propune camera disponibilă și confirmă acordul"
       ],
       "hint": "Kan jeg få navnet på reservasjonen?",
-      "tile": 1
+      "tile": 1,
+      "revision": 2,
+      "variants": {
+        "A1": {
+          "turns": 7,
+          "label": "Replici simple, cu sprijin",
+          "expectation": "Comunică situația și îndeplinește cele trei obiective, cu replici simple.",
+          "brief": "Nora are confirmare pentru două nopți, dar rezervarea nu apare. Există o cameră liberă. Clarifică și propune o soluție.",
+          "opening": "Hei, jeg finner ikke reservasjonen min.",
+          "hint": "Kan jeg få navnet på reservasjonen?",
+          "goals": [
+            "Clarifică numele fictiv și durata",
+            "Explică verificarea rezervării",
+            "Propune camera disponibilă și confirmă acordul"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action"
+          ]
+        },
+        "A2": {
+          "turns": 8,
+          "label": "Clarificări concrete",
+          "expectation": "Clarifică prețul camerei oferite. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Nora are confirmare pentru două nopți, dar rezervarea nu apare. Există o cameră liberă. Clarifică și propune o soluție. La acest nivel: clarifică prețul camerei oferite.",
+          "opening": "Hei, jeg finner ikke reservasjonen min.",
+          "hint": "Det er samme pris, er det greit?",
+          "goals": [
+            "Clarifică numele fictiv și durata",
+            "Explică verificarea rezervării",
+            "Propune camera disponibilă și confirmă acordul",
+            "Clarifică prețul camerei oferite"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-a2-task"
+          ]
+        },
+        "B1": {
+          "turns": 9,
+          "label": "Explicații și motive",
+          "expectation": "Explică soluția și motivul ei. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Nora are confirmare pentru două nopți, dar rezervarea nu apare. Există o cameră liberă. Clarifică și propune o soluție. La acest nivel: explică soluția și motivul ei.",
+          "opening": "Hei, jeg finner ikke reservasjonen min.",
+          "hint": "Vi kan tilby et tilsvarende rom, siden reservasjonen mangler i systemet.",
+          "goals": [
+            "Clarifică numele fictiv și durata",
+            "Explică verificarea rezervării",
+            "Propune camera disponibilă și confirmă acordul",
+            "Explică soluția și motivul ei"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b1-task"
+          ]
+        },
+        "B2": {
+          "turns": 10,
+          "label": "Răspuns la o obiecție",
+          "expectation": "Răspunde obiecției despre cost. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Nora are confirmare pentru două nopți, dar rezervarea nu apare. Există o cameră liberă. Clarifică și propune o soluție. La acest nivel: răspunde obiecției despre cost.",
+          "opening": "Hei, jeg finner ikke reservasjonen min.",
+          "hint": "Rommet er tilsvarende, og du betaler samme pris.",
+          "goals": [
+            "Clarifică numele fictiv și durata",
+            "Explică verificarea rezervării",
+            "Propune camera disponibilă și confirmă acordul",
+            "Răspunde obiecției despre cost"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b2-task"
+          ]
+        },
+        "C1": {
+          "turns": 10,
+          "label": "Acorduri și condiții clare",
+          "expectation": "Clarifică ce verifici și ce poți oferi deja. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Nora are confirmare pentru două nopți, dar rezervarea nu apare. Există o cameră liberă. Clarifică și propune o soluție. La acest nivel: clarifică ce verifici și ce poți oferi deja.",
+          "opening": "Hei, jeg finner ikke reservasjonen min.",
+          "hint": "Jeg kan kontrollere bekreftelsen, men rommet til samme pris er allerede tilgjengelig.",
+          "goals": [
+            "Clarifică numele fictiv și durata",
+            "Explică verificarea rezervării",
+            "Propune camera disponibilă și confirmă acordul",
+            "Clarifică ce verifici și ce poți oferi deja"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c1-task"
+          ]
+        },
+        "C2": {
+          "turns": 10,
+          "label": "Precizie și reformulare",
+          "expectation": "Clarifică sensul camerei echivalente. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Nora are confirmare pentru două nopți, dar rezervarea nu apare. Există o cameră liberă. Clarifică și propune o soluție. La acest nivel: clarifică sensul camerei echivalente.",
+          "opening": "Hei, jeg finner ikke reservasjonen min.",
+          "hint": "Et tilsvarende rom betyr ikke at den opprinnelige reservasjonen er funnet; tilbudet har samme pris.",
+          "goals": [
+            "Clarifică numele fictiv și durata",
+            "Explică verificarea rezervării",
+            "Propune camera disponibilă și confirmă acordul",
+            "Clarifică sensul camerei echivalente"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c2-task"
+          ]
+        }
+      }
     },
     {
       "id": "team-plan",
@@ -201,7 +321,6 @@
       "place": "La birou · Oslo",
       "role": "Tu ești colegul Norei. Planificați o sarcină împreună.",
       "brief": "Raportul trebuie terminat vineri. Poți pregăti datele joi, iar Nora poate verifica vineri dimineață.",
-      "facts": "Report due Friday. Learner prepares data Thursday, Nora can review Friday morning. No overtime needed.",
       "opening": "Hei! Når kan vi gjøre rapporten ferdig?",
       "goals": [
         "Precizează ce poți face și când",
@@ -209,7 +328,128 @@
         "Confirmă planul și termenul"
       ],
       "hint": "Jeg kan forberede tallene på torsdag.",
-      "tile": 2
+      "tile": 2,
+      "revision": 2,
+      "variants": {
+        "A1": {
+          "turns": 7,
+          "label": "Replici simple, cu sprijin",
+          "expectation": "Comunică situația și îndeplinește cele trei obiective, cu replici simple.",
+          "brief": "Raportul trebuie terminat vineri. Poți pregăti datele joi, iar Nora poate verifica vineri dimineață.",
+          "opening": "Hei! Når kan vi gjøre rapporten ferdig?",
+          "hint": "Jeg kan forberede tallene på torsdag.",
+          "goals": [
+            "Precizează ce poți face și când",
+            "Clarifică responsabilitatea Norei",
+            "Confirmă planul și termenul"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action"
+          ]
+        },
+        "A2": {
+          "turns": 8,
+          "label": "Clarificări concrete",
+          "expectation": "Clarifică ordinea activităților. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Raportul trebuie terminat vineri. Poți pregăti datele joi, iar Nora poate verifica vineri dimineață. La acest nivel: clarifică ordinea activităților.",
+          "opening": "Hei! Når kan vi gjøre rapporten ferdig?",
+          "hint": "Skal jeg gjøre tallene klare før du kontrollerer dem?",
+          "goals": [
+            "Precizează ce poți face și când",
+            "Clarifică responsabilitatea Norei",
+            "Confirmă planul și termenul",
+            "Clarifică ordinea activităților"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-a2-task"
+          ]
+        },
+        "B1": {
+          "turns": 9,
+          "label": "Explicații și motive",
+          "expectation": "Justifică împărțirea muncii. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Raportul trebuie terminat vineri. Poți pregăti datele joi, iar Nora poate verifica vineri dimineață. La acest nivel: justifică împărțirea muncii.",
+          "opening": "Hei! Når kan vi gjøre rapporten ferdig?",
+          "hint": "Da har du tallene klare til kontroll fredag morgen.",
+          "goals": [
+            "Precizează ce poți face și când",
+            "Clarifică responsabilitatea Norei",
+            "Confirmă planul și termenul",
+            "Justifică împărțirea muncii"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b1-task"
+          ]
+        },
+        "B2": {
+          "turns": 10,
+          "label": "Răspuns la o obiecție",
+          "expectation": "Răspunde îngrijorării despre termen. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Raportul trebuie terminat vineri. Poți pregăti datele joi, iar Nora poate verifica vineri dimineață. La acest nivel: răspunde îngrijorării despre termen.",
+          "opening": "Hei! Når kan vi gjøre rapporten ferdig?",
+          "hint": "Tallene er klare torsdag, så du kan kontrollere fredag morgen før fristen.",
+          "goals": [
+            "Precizează ce poți face și când",
+            "Clarifică responsabilitatea Norei",
+            "Confirmă planul și termenul",
+            "Răspunde îngrijorării despre termen"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b2-task"
+          ]
+        },
+        "C1": {
+          "turns": 10,
+          "label": "Acorduri și condiții clare",
+          "expectation": "Delimitează angajamentul de ora necunoscută. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Raportul trebuie terminat vineri. Poți pregăti datele joi, iar Nora poate verifica vineri dimineață. La acest nivel: delimitează angajamentul de ora necunoscută.",
+          "opening": "Hei! Når kan vi gjøre rapporten ferdig?",
+          "hint": "Vi har avtalt fredag, men ikke et bestemt klokkeslett for levering.",
+          "goals": [
+            "Precizează ce poți face și când",
+            "Clarifică responsabilitatea Norei",
+            "Confirmă planul și termenul",
+            "Delimitează angajamentul de ora necunoscută"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c1-task"
+          ]
+        },
+        "C2": {
+          "turns": 10,
+          "label": "Precizie și reformulare",
+          "expectation": "Clarifică diferența dintre date și raport final. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Raportul trebuie terminat vineri. Poți pregăti datele joi, iar Nora poate verifica vineri dimineață. La acest nivel: clarifică diferența dintre date și raport final.",
+          "opening": "Hei! Når kan vi gjøre rapporten ferdig?",
+          "hint": "Tallene er klare torsdag; rapporten er ikke ferdig før kontrollen fredag.",
+          "goals": [
+            "Precizează ce poți face și când",
+            "Clarifică responsabilitatea Norei",
+            "Confirmă planul și termenul",
+            "Clarifică diferența dintre date și raport final"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c2-task"
+          ]
+        }
+      }
     },
     {
       "id": "cafe-order",
@@ -218,7 +458,6 @@
       "place": "Cafenea · Trondheim",
       "role": "Tu ești clientul. Nora este barista.",
       "brief": "Comandă o cafea cu lapte de ovăz, întreabă prețul și precizează că o iei la pachet. Costă 45 de coroane.",
-      "facts": "Oat milk coffee available, 45 NOK, takeaway available. No real transaction. Advanced learners can clarify reusable cup preference, without inventing prices.",
       "opening": "Hei! Hva vil du ha?",
       "goals": [
         "Comandă cafeaua cu lapte de ovăz",
@@ -226,7 +465,128 @@
         "Precizează la pachet și încheie politicos"
       ],
       "hint": "Jeg vil gjerne ha en kaffe med havremelk.",
-      "tile": 3
+      "tile": 3,
+      "revision": 2,
+      "variants": {
+        "A1": {
+          "turns": 7,
+          "label": "Replici simple, cu sprijin",
+          "expectation": "Comunică situația și îndeplinește cele trei obiective, cu replici simple.",
+          "brief": "Comandă o cafea cu lapte de ovăz, întreabă prețul și precizează că o iei la pachet. Costă 45 de coroane.",
+          "opening": "Hei! Hva vil du ha?",
+          "hint": "Jeg vil gjerne ha en kaffe med havremelk.",
+          "goals": [
+            "Comandă cafeaua cu lapte de ovăz",
+            "Întreabă sau confirmă prețul",
+            "Precizează la pachet și încheie politicos"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action"
+          ]
+        },
+        "A2": {
+          "turns": 8,
+          "label": "Clarificări concrete",
+          "expectation": "Verifică tipul de lapte. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Comandă o cafea cu lapte de ovăz, întreabă prețul și precizează că o iei la pachet. Costă 45 de coroane. La acest nivel: verifică tipul de lapte.",
+          "opening": "Hei! Hva vil du ha?",
+          "hint": "Er det havremelk i kaffen?",
+          "goals": [
+            "Comandă cafeaua cu lapte de ovăz",
+            "Întreabă sau confirmă prețul",
+            "Precizează la pachet și încheie politicos",
+            "Verifică tipul de lapte"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-a2-task"
+          ]
+        },
+        "B1": {
+          "turns": 9,
+          "label": "Explicații și motive",
+          "expectation": "Explică preferința pentru paharul propriu. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Comandă o cafea cu lapte de ovăz, întreabă prețul și precizează că o iei la pachet. Costă 45 de coroane. Poți întreba dacă este acceptat paharul propriu. Politica și eventualele reduceri nu sunt cunoscute; prețul comunicat rămâne 45 NOK. La acest nivel: explică preferința pentru paharul propriu.",
+          "opening": "Hei! Hva vil du ha?",
+          "hint": "Kan jeg bruke min egen kopp? Jeg vil gjerne bruke mindre emballasje.",
+          "goals": [
+            "Comandă cafeaua cu lapte de ovăz",
+            "Întreabă sau confirmă prețul",
+            "Precizează la pachet și încheie politicos",
+            "Explică preferința pentru paharul propriu"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b1-task"
+          ]
+        },
+        "B2": {
+          "turns": 10,
+          "label": "Răspuns la o obiecție",
+          "expectation": "Separă întrebarea despre pahar de presupunerea unei reduceri. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Comandă o cafea cu lapte de ovăz, întreabă prețul și precizează că o iei la pachet. Costă 45 de coroane. Poți întreba dacă este acceptat paharul propriu. Politica și eventualele reduceri nu sunt cunoscute; prețul comunicat rămâne 45 NOK. La acest nivel: separă întrebarea despre pahar de presupunerea unei reduceri.",
+          "opening": "Hei! Hva vil du ha?",
+          "hint": "Kan jeg bruke egen kopp? Jeg regner fortsatt med 45 kroner, ikke rabatt.",
+          "goals": [
+            "Comandă cafeaua cu lapte de ovăz",
+            "Întreabă sau confirmă prețul",
+            "Precizează la pachet și încheie politicos",
+            "Separă întrebarea despre pahar de presupunerea unei reduceri"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b2-task"
+          ]
+        },
+        "C1": {
+          "turns": 10,
+          "label": "Acorduri și condiții clare",
+          "expectation": "Propune o variantă dacă paharul propriu nu este acceptat. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Comandă o cafea cu lapte de ovăz, întreabă prețul și precizează că o iei la pachet. Costă 45 de coroane. Poți întreba dacă este acceptat paharul propriu. Politica și eventualele reduceri nu sunt cunoscute; prețul comunicat rămâne 45 NOK. La acest nivel: propune o variantă dacă paharul propriu nu este acceptat.",
+          "opening": "Hei! Hva vil du ha?",
+          "hint": "Hvis egen kopp er tillatt, bruker jeg den; ellers tar jeg vanlig take-away til 45 kroner.",
+          "goals": [
+            "Comandă cafeaua cu lapte de ovăz",
+            "Întreabă sau confirmă prețul",
+            "Precizează la pachet și încheie politicos",
+            "Propune o variantă dacă paharul propriu nu este acceptat"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c1-task"
+          ]
+        },
+        "C2": {
+          "turns": 10,
+          "label": "Precizie și reformulare",
+          "expectation": "Clarifică la pachet versus tipul paharului. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Comandă o cafea cu lapte de ovăz, întreabă prețul și precizează că o iei la pachet. Costă 45 de coroane. Poți întreba dacă este acceptat paharul propriu. Politica și eventualele reduceri nu sunt cunoscute; prețul comunicat rămâne 45 NOK. La acest nivel: clarifică la pachet versus tipul paharului.",
+          "opening": "Hei! Hva vil du ha?",
+          "hint": "Jeg skal ta kaffen med uansett; spørsmålet om egen kopp gjelder bare emballasjen.",
+          "goals": [
+            "Comandă cafeaua cu lapte de ovăz",
+            "Întreabă sau confirmă prețul",
+            "Precizează la pachet și încheie politicos",
+            "Clarifică la pachet versus tipul paharului"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c2-task"
+          ]
+        }
+      }
     },
     {
       "id": "site-materials",
@@ -235,7 +595,6 @@
       "place": "Șantier · Bergen",
       "role": "Tu ești lucrătorul. Nora coordonează echipa.",
       "brief": "Lipsesc panourile pentru camera 2. Sosesc mâine la 9. Astăzi poți pregăti camera 3.",
-      "facts": "Panels for room 2 arrive tomorrow 09:00. Room 3 can be prepared today. Never bypass safety rules.",
       "opening": "Hei! Hva mangler vi til rom to?",
       "goals": [
         "Spune ce materiale lipsesc",
@@ -243,7 +602,128 @@
         "Propune pregătirea camerei 3 și confirmă planul"
       ],
       "hint": "Vi mangler panelene til rom to.",
-      "tile": 4
+      "tile": 4,
+      "revision": 2,
+      "variants": {
+        "A1": {
+          "turns": 7,
+          "label": "Replici simple, cu sprijin",
+          "expectation": "Comunică situația și îndeplinește cele trei obiective, cu replici simple.",
+          "brief": "Lipsesc panourile pentru camera 2. Sosesc mâine la 9. Astăzi poți pregăti camera 3.",
+          "opening": "Hei! Hva mangler vi til rom to?",
+          "hint": "Vi mangler panelene til rom to.",
+          "goals": [
+            "Spune ce materiale lipsesc",
+            "Precizează când sosesc",
+            "Propune pregătirea camerei 3 și confirmă planul"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action"
+          ]
+        },
+        "A2": {
+          "turns": 8,
+          "label": "Clarificări concrete",
+          "expectation": "Clarifică încăperea pentru astăzi. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Lipsesc panourile pentru camera 2. Sosesc mâine la 9. Astăzi poți pregăti camera 3. La acest nivel: clarifică încăperea pentru astăzi.",
+          "opening": "Hei! Hva mangler vi til rom to?",
+          "hint": "Skal vi forberede rom tre i dag?",
+          "goals": [
+            "Spune ce materiale lipsesc",
+            "Precizează când sosesc",
+            "Propune pregătirea camerei 3 și confirmă planul",
+            "Clarifică încăperea pentru astăzi"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-a2-task"
+          ]
+        },
+        "B1": {
+          "turns": 9,
+          "label": "Explicații și motive",
+          "expectation": "Justifică schimbarea ordinii. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Lipsesc panourile pentru camera 2. Sosesc mâine la 9. Astăzi poți pregăti camera 3. La acest nivel: justifică schimbarea ordinii.",
+          "opening": "Hei! Hva mangler vi til rom to?",
+          "hint": "Vi forbereder rom tre fordi panelene til rom to først kommer i morgen.",
+          "goals": [
+            "Spune ce materiale lipsesc",
+            "Precizează când sosesc",
+            "Propune pregătirea camerei 3 și confirmă planul",
+            "Justifică schimbarea ordinii"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b1-task"
+          ]
+        },
+        "B2": {
+          "turns": 10,
+          "label": "Răspuns la o obiecție",
+          "expectation": "Răspunde cererii de a începe camera 2. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Lipsesc panourile pentru camera 2. Sosesc mâine la 9. Astăzi poți pregăti camera 3. La acest nivel: răspunde cererii de a începe camera 2.",
+          "opening": "Hei! Hva mangler vi til rom to?",
+          "hint": "Vi mangler panelene, men vi kan forberede rom tre i dag.",
+          "goals": [
+            "Spune ce materiale lipsesc",
+            "Precizează când sosesc",
+            "Propune pregătirea camerei 3 și confirmă planul",
+            "Răspunde cererii de a începe camera 2"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b2-task"
+          ]
+        },
+        "C1": {
+          "turns": 10,
+          "label": "Acorduri și condiții clare",
+          "expectation": "Condiționează continuarea de livrare. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Lipsesc panourile pentru camera 2. Sosesc mâine la 9. Astăzi poți pregăti camera 3. La acest nivel: condiționează continuarea de livrare.",
+          "opening": "Hei! Hva mangler vi til rom to?",
+          "hint": "Vi fortsetter når panelene er mottatt og arbeidet kan gjøres trygt; ni er leveringstid.",
+          "goals": [
+            "Spune ce materiale lipsesc",
+            "Precizează când sosesc",
+            "Propune pregătirea camerei 3 și confirmă planul",
+            "Condiționează continuarea de livrare"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c1-task"
+          ]
+        },
+        "C2": {
+          "turns": 10,
+          "label": "Precizie și reformulare",
+          "expectation": "Corectează confuzia dintre livrare și finalizare. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Lipsesc panourile pentru camera 2. Sosesc mâine la 9. Astăzi poți pregăti camera 3. La acest nivel: corectează confuzia dintre livrare și finalizare.",
+          "opening": "Hei! Hva mangler vi til rom to?",
+          "hint": "Ni gjelder levering, ikke ferdig montering. I dag forbereder vi rom tre.",
+          "goals": [
+            "Spune ce materiale lipsesc",
+            "Precizează când sosesc",
+            "Propune pregătirea camerei 3 și confirmă planul",
+            "Corectează confuzia dintre livrare și finalizare"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c2-task"
+          ]
+        }
+      }
     },
     {
       "id": "care-comfort",
@@ -252,7 +732,6 @@
       "place": "Centru de îngrijire · Tromsø",
       "role": "Tu lucrezi în îngrijire. Nora este rezidenta.",
       "brief": "Norei îi este frig. Sunt disponibile o pătură și un loc fără curent de aer. Întreabă ce preferă.",
-      "facts": "Resident feels cold. Blanket and draught-free seat available. Comfort conversation only; no diagnosis, medicines or symptoms.",
       "opening": "Hei, jeg fryser litt.",
       "goals": [
         "Întreabă ce ar ajuta-o",
@@ -260,7 +739,128 @@
         "Confirmă preferința și verifică dacă este confortabil"
       ],
       "hint": "Vil du ha et teppe?",
-      "tile": 5
+      "tile": 5,
+      "revision": 2,
+      "variants": {
+        "A1": {
+          "turns": 7,
+          "label": "Replici simple, cu sprijin",
+          "expectation": "Comunică situația și îndeplinește cele trei obiective, cu replici simple.",
+          "brief": "Norei îi este frig. Sunt disponibile o pătură și un loc fără curent de aer. Întreabă ce preferă.",
+          "opening": "Hei, jeg fryser litt.",
+          "hint": "Vil du ha et teppe?",
+          "goals": [
+            "Întreabă ce ar ajuta-o",
+            "Oferă pătura sau locul disponibil",
+            "Confirmă preferința și verifică dacă este confortabil"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action"
+          ]
+        },
+        "A2": {
+          "turns": 8,
+          "label": "Clarificări concrete",
+          "expectation": "Verifică preferința înainte de acțiune. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Norei îi este frig. Sunt disponibile o pătură și un loc fără curent de aer. Întreabă ce preferă. La acest nivel: verifică preferința înainte de acțiune.",
+          "opening": "Hei, jeg fryser litt.",
+          "hint": "Vil du at jeg henter teppet?",
+          "goals": [
+            "Întreabă ce ar ajuta-o",
+            "Oferă pătura sau locul disponibil",
+            "Confirmă preferința și verifică dacă este confortabil",
+            "Verifică preferința înainte de acțiune"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-a2-task"
+          ]
+        },
+        "B1": {
+          "turns": 9,
+          "label": "Explicații și motive",
+          "expectation": "Prezintă ambele opțiuni fără a decide în locul ei. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Norei îi este frig. Sunt disponibile o pătură și un loc fără curent de aer. Întreabă ce preferă. La acest nivel: prezintă ambele opțiuni fără a decide în locul ei.",
+          "opening": "Hei, jeg fryser litt.",
+          "hint": "Et teppe kan varme, og stolen er uten trekk. Hva foretrekker du?",
+          "goals": [
+            "Întreabă ce ar ajuta-o",
+            "Oferă pătura sau locul disponibil",
+            "Confirmă preferința și verifică dacă este confortabil",
+            "Prezintă ambele opțiuni fără a decide în locul ei"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b1-task"
+          ]
+        },
+        "B2": {
+          "turns": 10,
+          "label": "Răspuns la o obiecție",
+          "expectation": "Respectă refuzul uneia dintre opțiuni. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Norei îi este frig. Sunt disponibile o pătură și un loc fără curent de aer. Întreabă ce preferă. La acest nivel: respectă refuzul uneia dintre opțiuni.",
+          "opening": "Hei, jeg fryser litt.",
+          "hint": "Du trenger ikke flytte deg. Vil du heller ha et teppe?",
+          "goals": [
+            "Întreabă ce ar ajuta-o",
+            "Oferă pătura sau locul disponibil",
+            "Confirmă preferința și verifică dacă este confortabil",
+            "Respectă refuzul uneia dintre opțiuni"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b2-task"
+          ]
+        },
+        "C1": {
+          "turns": 10,
+          "label": "Acorduri și condiții clare",
+          "expectation": "Negociază ajutorul respectând autonomia. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Norei îi este frig. Sunt disponibile o pătură și un loc fără curent de aer. Întreabă ce preferă. La acest nivel: negociază ajutorul respectând autonomia.",
+          "opening": "Hei, jeg fryser litt.",
+          "hint": "Hvis du ønsker det, henter jeg et teppe. Si fra hvis du vil velge noe annet.",
+          "goals": [
+            "Întreabă ce ar ajuta-o",
+            "Oferă pătura sau locul disponibil",
+            "Confirmă preferința și verifică dacă este confortabil",
+            "Negociază ajutorul respectând autonomia"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c1-task"
+          ]
+        },
+        "C2": {
+          "turns": 10,
+          "label": "Precizie și reformulare",
+          "expectation": "Clarifică oferta fără promisiune medicală. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Norei îi este frig. Sunt disponibile o pătură și un loc fără curent de aer. Întreabă ce preferă. La acest nivel: clarifică oferta fără promisiune medicală.",
+          "opening": "Hei, jeg fryser litt.",
+          "hint": "Jeg tilbyr teppet for komfort, ikke som behandling. Du kan si om det hjelper.",
+          "goals": [
+            "Întreabă ce ar ajuta-o",
+            "Oferă pătura sau locul disponibil",
+            "Confirmă preferința și verifică dacă este confortabil",
+            "Clarifică oferta fără promisiune medicală"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c2-task"
+          ]
+        }
+      }
     },
     {
       "id": "cleaning-plan",
@@ -269,7 +869,6 @@
       "place": "Clădire de birouri · Oslo",
       "role": "Tu faci curățenie. Nora coordonează programul.",
       "brief": "Holul trebuie să fie gata la 10. Podeaua este încă umedă. Poți curăța biroul 3 între timp. Semnul de avertizare rămâne până se usucă.",
-      "facts": "Hall due 10:00, floor wet. Office 3 can be cleaned meanwhile. Warning sign stays until dry. Never mix chemicals.",
       "opening": "Hei! Er gangen klar?",
       "goals": [
         "Explică starea podelei",
@@ -277,7 +876,128 @@
         "Confirmă termenul și păstrarea semnului de avertizare"
       ],
       "hint": "Gulvet er fortsatt vått.",
-      "tile": 6
+      "tile": 6,
+      "revision": 2,
+      "variants": {
+        "A1": {
+          "turns": 7,
+          "label": "Replici simple, cu sprijin",
+          "expectation": "Comunică situația și îndeplinește cele trei obiective, cu replici simple.",
+          "brief": "Holul trebuie să fie gata la 10. Podeaua este încă umedă. Poți curăța biroul 3 între timp. Semnul de avertizare rămâne până se usucă.",
+          "opening": "Hei! Er gangen klar?",
+          "hint": "Gulvet er fortsatt vått.",
+          "goals": [
+            "Explică starea podelei",
+            "Propune ce poți face între timp",
+            "Confirmă termenul și păstrarea semnului de avertizare"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action"
+          ]
+        },
+        "A2": {
+          "turns": 8,
+          "label": "Clarificări concrete",
+          "expectation": "Verifică momentul îndepărtării semnului. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Holul trebuie să fie gata la 10. Podeaua este încă umedă. Poți curăța biroul 3 între timp. Semnul de avertizare rămâne până se usucă. La acest nivel: verifică momentul îndepărtării semnului.",
+          "opening": "Hei! Er gangen klar?",
+          "hint": "Skal skiltet stå til gulvet er helt tørt?",
+          "goals": [
+            "Explică starea podelei",
+            "Propune ce poți face între timp",
+            "Confirmă termenul și păstrarea semnului de avertizare",
+            "Verifică momentul îndepărtării semnului"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-a2-task"
+          ]
+        },
+        "B1": {
+          "turns": 9,
+          "label": "Explicații și motive",
+          "expectation": "Justifică activitatea făcută între timp. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Holul trebuie să fie gata la 10. Podeaua este încă umedă. Poți curăța biroul 3 între timp. Semnul de avertizare rămâne până se usucă. La acest nivel: justifică activitatea făcută între timp.",
+          "opening": "Hei! Er gangen klar?",
+          "hint": "Jeg vasker kontor tre mens gulvet tørker, så vi bruker tiden uten å fjerne skiltet.",
+          "goals": [
+            "Explică starea podelei",
+            "Propune ce poți face între timp",
+            "Confirmă termenul și păstrarea semnului de avertizare",
+            "Justifică activitatea făcută între timp"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b1-task"
+          ]
+        },
+        "B2": {
+          "turns": 10,
+          "label": "Răspuns la o obiecție",
+          "expectation": "Răspunde presiunii termenului fără a elimina avertizarea. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Holul trebuie să fie gata la 10. Podeaua este încă umedă. Poți curăța biroul 3 între timp. Semnul de avertizare rămâne până se usucă. La acest nivel: răspunde presiunii termenului fără a elimina avertizarea.",
+          "opening": "Hei! Er gangen klar?",
+          "hint": "Selv om fristen er ti, må skiltet stå så lenge gulvet er vått.",
+          "goals": [
+            "Explică starea podelei",
+            "Propune ce poți face între timp",
+            "Confirmă termenul și păstrarea semnului de avertizare",
+            "Răspunde presiunii termenului fără a elimina avertizarea"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b2-task"
+          ]
+        },
+        "C1": {
+          "turns": 10,
+          "label": "Acorduri și condiții clare",
+          "expectation": "Stabilește un plan condiționat de uscare. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Holul trebuie să fie gata la 10. Podeaua este încă umedă. Poți curăța biroul 3 între timp. Semnul de avertizare rămâne până se usucă. La acest nivel: stabilește un plan condiționat de uscare.",
+          "opening": "Hei! Er gangen klar?",
+          "hint": "Jeg sjekker gulvet og gir beskjed hvis det fortsatt er vått klokka ti; skiltet blir stående.",
+          "goals": [
+            "Explică starea podelei",
+            "Propune ce poți face între timp",
+            "Confirmă termenul și păstrarea semnului de avertizare",
+            "Stabilește un plan condiționat de uscare"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c1-task"
+          ]
+        },
+        "C2": {
+          "turns": 10,
+          "label": "Precizie și reformulare",
+          "expectation": "Clarifică termenul versus garanția de siguranță. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Holul trebuie să fie gata la 10. Podeaua este încă umedă. Poți curăța biroul 3 între timp. Semnul de avertizare rămâne până se usucă. La acest nivel: clarifică termenul versus garanția de siguranță.",
+          "opening": "Hei! Er gangen klar?",
+          "hint": "Ti er målet, ikke en garanti. Skiltet fjernes først når vi har sjekket at gulvet er tørt.",
+          "goals": [
+            "Explică starea podelei",
+            "Propune ce poți face între timp",
+            "Confirmă termenul și păstrarea semnului de avertizare",
+            "Clarifică termenul versus garanția de siguranță"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c2-task"
+          ]
+        }
+      }
     },
     {
       "id": "shop-exchange",
@@ -286,7 +1006,6 @@
       "place": "Magazin · Stavanger",
       "role": "Tu ești vânzătorul. Nora este clienta.",
       "brief": "Nora schimbă un pulover albastru M cu unul L. Are bonul, articolul este nepurtat și L este disponibil la același preț.",
-      "facts": "Blue sweater M exchanged for L. Receipt present, unworn, L in stock at same price. No real payment.",
       "opening": "Hei! Kan jeg bytte denne genseren?",
       "goals": [
         "Clarifică mărimea dorită",
@@ -294,7 +1013,128 @@
         "Propune schimbul și confirmă acordul"
       ],
       "hint": "Hvilken størrelse ønsker du?",
-      "tile": 7
+      "tile": 7,
+      "revision": 2,
+      "variants": {
+        "A1": {
+          "turns": 7,
+          "label": "Replici simple, cu sprijin",
+          "expectation": "Comunică situația și îndeplinește cele trei obiective, cu replici simple.",
+          "brief": "Nora schimbă un pulover albastru M cu unul L. Are bonul, articolul este nepurtat și L este disponibil la același preț.",
+          "opening": "Hei! Kan jeg bytte denne genseren?",
+          "hint": "Hvilken størrelse ønsker du?",
+          "goals": [
+            "Clarifică mărimea dorită",
+            "Verifică bonul și disponibilitatea",
+            "Propune schimbul și confirmă acordul"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action"
+          ]
+        },
+        "A2": {
+          "turns": 8,
+          "label": "Clarificări concrete",
+          "expectation": "Verifică starea articolului. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Nora schimbă un pulover albastru M cu unul L. Are bonul, articolul este nepurtat și L este disponibil la același preț. La acest nivel: verifică starea articolului.",
+          "opening": "Hei! Kan jeg bytte denne genseren?",
+          "hint": "Er genseren ubrukt?",
+          "goals": [
+            "Clarifică mărimea dorită",
+            "Verifică bonul și disponibilitatea",
+            "Propune schimbul și confirmă acordul",
+            "Verifică starea articolului"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-a2-task"
+          ]
+        },
+        "B1": {
+          "turns": 9,
+          "label": "Explicații și motive",
+          "expectation": "Explică de ce se poate face acest schimb. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Nora schimbă un pulover albastru M cu unul L. Are bonul, articolul este nepurtat și L este disponibil la același preț. La acest nivel: explică de ce se poate face acest schimb.",
+          "opening": "Hei! Kan jeg bytte denne genseren?",
+          "hint": "Du har kvitteringen, genseren er ubrukt, og vi har L tilgjengelig.",
+          "goals": [
+            "Clarifică mărimea dorită",
+            "Verifică bonul și disponibilitatea",
+            "Propune schimbul și confirmă acordul",
+            "Explică de ce se poate face acest schimb"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b1-task"
+          ]
+        },
+        "B2": {
+          "turns": 10,
+          "label": "Răspuns la o obiecție",
+          "expectation": "Clarifică faptul că nu există diferență de preț. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Nora schimbă un pulover albastru M cu unul L. Are bonul, articolul este nepurtat și L este disponibil la același preț. La acest nivel: clarifică faptul că nu există diferență de preț.",
+          "opening": "Hei! Kan jeg bytte denne genseren?",
+          "hint": "Du betaler ikke ekstra for dette byttet; prisen er den samme.",
+          "goals": [
+            "Clarifică mărimea dorită",
+            "Verifică bonul și disponibilitatea",
+            "Propune schimbul și confirmă acordul",
+            "Clarifică faptul că nu există diferență de preț"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b2-task"
+          ]
+        },
+        "C1": {
+          "turns": 10,
+          "label": "Acorduri și condiții clare",
+          "expectation": "Delimitează schimbul de o cerere de rambursare. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Nora schimbă un pulover albastru M cu unul L. Are bonul, articolul este nepurtat și L este disponibil la același preț. La acest nivel: delimitează schimbul de o cerere de rambursare.",
+          "opening": "Hei! Kan jeg bytte denne genseren?",
+          "hint": "Vi kan gjøre byttet til L. Reglene for refusjon må undersøkes separat.",
+          "goals": [
+            "Clarifică mărimea dorită",
+            "Verifică bonul și disponibilitatea",
+            "Propune schimbul și confirmă acordul",
+            "Delimitează schimbul de o cerere de rambursare"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c1-task"
+          ]
+        },
+        "C2": {
+          "turns": 10,
+          "label": "Precizie și reformulare",
+          "expectation": "Clarifică acest caz fără a generaliza politica. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Nora schimbă un pulover albastru M cu unul L. Are bonul, articolul este nepurtat și L este disponibil la același preț. La acest nivel: clarifică acest caz fără a generaliza politica.",
+          "opening": "Hei! Kan jeg bytte denne genseren?",
+          "hint": "Dette gjelder denne ubrukte genseren med kvittering, ikke en garanti for alle senere bytter.",
+          "goals": [
+            "Clarifică mărimea dorită",
+            "Verifică bonul și disponibilitatea",
+            "Propune schimbul și confirmă acordul",
+            "Clarifică acest caz fără a generaliza politica"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c2-task"
+          ]
+        }
+      }
     },
     {
       "id": "study-meeting",
@@ -303,7 +1143,6 @@
       "place": "Bibliotecă · Trondheim",
       "role": "Tu ești studentul. Nora este colega ta.",
       "brief": "Prezentarea este vineri. Vă puteți întâlni miercuri la 14 sau joi la 10 în bibliotecă. Tu pregătești introducerea, Nora exemplele.",
-      "facts": "Presentation Friday. Meet Wednesday 14:00 or Thursday 10:00 at library. Learner prepares introduction, Nora examples.",
       "opening": "Hei! Når skal vi øve på presentasjonen?",
       "goals": [
         "Propune un interval și locul",
@@ -311,7 +1150,128 @@
         "Confirmă întâlnirea și termenul"
       ],
       "hint": "Kan vi møtes på onsdag?",
-      "tile": 8
+      "tile": 8,
+      "revision": 2,
+      "variants": {
+        "A1": {
+          "turns": 7,
+          "label": "Replici simple, cu sprijin",
+          "expectation": "Comunică situația și îndeplinește cele trei obiective, cu replici simple.",
+          "brief": "Prezentarea este vineri. Vă puteți întâlni miercuri la 14 sau joi la 10 în bibliotecă. Tu pregătești introducerea, Nora exemplele.",
+          "opening": "Hei! Når skal vi øve på presentasjonen?",
+          "hint": "Kan vi møtes på onsdag?",
+          "goals": [
+            "Propune un interval și locul",
+            "Clarifică ce pregătește fiecare",
+            "Confirmă întâlnirea și termenul"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action"
+          ]
+        },
+        "A2": {
+          "turns": 8,
+          "label": "Clarificări concrete",
+          "expectation": "Verifică ora întâlnirii. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Prezentarea este vineri. Vă puteți întâlni miercuri la 14 sau joi la 10 în bibliotecă. Tu pregătești introducerea, Nora exemplele. La acest nivel: verifică ora întâlnirii.",
+          "opening": "Hei! Når skal vi øve på presentasjonen?",
+          "hint": "Passer onsdag klokka fjorten?",
+          "goals": [
+            "Propune un interval și locul",
+            "Clarifică ce pregătește fiecare",
+            "Confirmă întâlnirea și termenul",
+            "Verifică ora întâlnirii"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-a2-task"
+          ]
+        },
+        "B1": {
+          "turns": 9,
+          "label": "Explicații și motive",
+          "expectation": "Compară cele două intervale și justifică alegerea. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Prezentarea este vineri. Vă puteți întâlni miercuri la 14 sau joi la 10 în bibliotecă. Tu pregătești introducerea, Nora exemplele. La acest nivel: compară cele două intervale și justifică alegerea.",
+          "opening": "Hei! Når skal vi øve på presentasjonen?",
+          "hint": "Onsdag gir mer tid etterpå, mens torsdag er nærmere presentasjonen. Jeg foretrekker onsdag.",
+          "goals": [
+            "Propune un interval și locul",
+            "Clarifică ce pregătește fiecare",
+            "Confirmă întâlnirea și termenul",
+            "Compară cele două intervale și justifică alegerea"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b1-task"
+          ]
+        },
+        "B2": {
+          "turns": 10,
+          "label": "Răspuns la o obiecție",
+          "expectation": "Răspunde preferinței pentru celălalt interval. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Prezentarea este vineri. Vă puteți întâlni miercuri la 14 sau joi la 10 în bibliotecă. Tu pregătești introducerea, Nora exemplele. La acest nivel: răspunde preferinței pentru celălalt interval.",
+          "opening": "Hei! Når skal vi øve på presentasjonen?",
+          "hint": "Torsdag klokka ti passer også; da har vi fortsatt tid før fredag.",
+          "goals": [
+            "Propune un interval și locul",
+            "Clarifică ce pregătește fiecare",
+            "Confirmă întâlnirea și termenul",
+            "Răspunde preferinței pentru celălalt interval"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b2-task"
+          ]
+        },
+        "C1": {
+          "turns": 10,
+          "label": "Acorduri și condiții clare",
+          "expectation": "Negociază un acord explicit. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Prezentarea este vineri. Vă puteți întâlni miercuri la 14 sau joi la 10 în bibliotecă. Tu pregătești introducerea, Nora exemplele. La acest nivel: negociază un acord explicit.",
+          "opening": "Hei! Når skal vi øve på presentasjonen?",
+          "hint": "Vi kan velge torsdag klokka ti hvis det passer best; jeg forbereder innledningen på forhånd.",
+          "goals": [
+            "Propune un interval și locul",
+            "Clarifică ce pregătește fiecare",
+            "Confirmă întâlnirea și termenul",
+            "Negociază un acord explicit"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c1-task"
+          ]
+        },
+        "C2": {
+          "turns": 10,
+          "label": "Precizie și reformulare",
+          "expectation": "Clarifică repetiția versus prezentarea. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Prezentarea este vineri. Vă puteți întâlni miercuri la 14 sau joi la 10 în bibliotecă. Tu pregătești introducerea, Nora exemplele. La acest nivel: clarifică repetiția versus prezentarea.",
+          "opening": "Hei! Når skal vi øve på presentasjonen?",
+          "hint": "Biblioteksmøtet er øving onsdag klokka fjorten; selve presentasjonen er fredag.",
+          "goals": [
+            "Propune un interval și locul",
+            "Clarifică ce pregătește fiecare",
+            "Confirmă întâlnirea și termenul",
+            "Clarifică repetiția versus prezentarea"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c2-task"
+          ]
+        }
+      }
     },
     {
       "id": "kindergarten-plan",
@@ -320,7 +1280,6 @@
       "place": "Grădiniță · Bergen",
       "role": "Tu ești părintele. Nora este educatoarea.",
       "brief": "Copilul fictiv Alex începe luni la 9. Prima zi durează două ore, părintele rămâne acolo. Sunt necesare haine de schimb.",
-      "facts": "Fictional Alex starts Monday 09:00, first day two hours, parent stays. Bring spare clothes. Never request real child data.",
       "opening": "Hei! Har du spørsmål om den første dagen?",
       "goals": [
         "Clarifică ora și durata",
@@ -328,7 +1287,128 @@
         "Confirmă prezența ta și planul"
       ],
       "hint": "Når skal vi komme på mandag?",
-      "tile": 9
+      "tile": 9,
+      "revision": 2,
+      "variants": {
+        "A1": {
+          "turns": 7,
+          "label": "Replici simple, cu sprijin",
+          "expectation": "Comunică situația și îndeplinește cele trei obiective, cu replici simple.",
+          "brief": "Copilul fictiv Alex începe luni la 9. Prima zi durează două ore, părintele rămâne acolo. Sunt necesare haine de schimb.",
+          "opening": "Hei! Har du spørsmål om den første dagen?",
+          "hint": "Når skal vi komme på mandag?",
+          "goals": [
+            "Clarifică ora și durata",
+            "Întreabă ce trebuie adus",
+            "Confirmă prezența ta și planul"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action"
+          ]
+        },
+        "A2": {
+          "turns": 8,
+          "label": "Clarificări concrete",
+          "expectation": "Clarifică ora încheierii. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Copilul fictiv Alex începe luni la 9. Prima zi durează două ore, părintele rămâne acolo. Sunt necesare haine de schimb. La acest nivel: clarifică ora încheierii.",
+          "opening": "Hei! Har du spørsmål om den første dagen?",
+          "hint": "Er vi ferdige klokka elleve?",
+          "goals": [
+            "Clarifică ora și durata",
+            "Întreabă ce trebuie adus",
+            "Confirmă prezența ta și planul",
+            "Clarifică ora încheierii"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-a2-task"
+          ]
+        },
+        "B1": {
+          "turns": 9,
+          "label": "Explicații și motive",
+          "expectation": "Explică planul primei zile. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Copilul fictiv Alex începe luni la 9. Prima zi durează două ore, părintele rămâne acolo. Sunt necesare haine de schimb. La acest nivel: explică planul primei zile.",
+          "opening": "Hei! Har du spørsmål om den første dagen?",
+          "hint": "Jeg blir de to timene og tar med skiftetøy, så vi følger planen for den første dagen.",
+          "goals": [
+            "Clarifică ora și durata",
+            "Întreabă ce trebuie adus",
+            "Confirmă prezența ta și planul",
+            "Explică planul primei zile"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b1-task"
+          ]
+        },
+        "B2": {
+          "turns": 10,
+          "label": "Răspuns la o obiecție",
+          "expectation": "Clarifică prezența pe întreaga durată. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Copilul fictiv Alex începe luni la 9. Prima zi durează două ore, părintele rămâne acolo. Sunt necesare haine de schimb. La acest nivel: clarifică prezența pe întreaga durată.",
+          "opening": "Hei! Har du spørsmål om den første dagen?",
+          "hint": "Jeg skal bli hele den første dagen, ikke bare levere Alex klokka ni.",
+          "goals": [
+            "Clarifică ora și durata",
+            "Întreabă ce trebuie adus",
+            "Confirmă prezența ta și planul",
+            "Clarifică prezența pe întreaga durată"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-b2-task"
+          ]
+        },
+        "C1": {
+          "turns": 10,
+          "label": "Acorduri și condiții clare",
+          "expectation": "Separă planul confirmat de zilele următoare. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Copilul fictiv Alex începe luni la 9. Prima zi durează două ore, părintele rămâne acolo. Sunt necesare haine de schimb. La acest nivel: separă planul confirmat de zilele următoare.",
+          "opening": "Hei! Har du spørsmål om den første dagen?",
+          "hint": "Mandag blir jeg fra ni til elleve. Hvordan planlegger vi de neste dagene?",
+          "goals": [
+            "Clarifică ora și durata",
+            "Întreabă ce trebuie adus",
+            "Confirmă prezența ta și planul",
+            "Separă planul confirmat de zilele următoare"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c1-task"
+          ]
+        },
+        "C2": {
+          "turns": 10,
+          "label": "Precizie și reformulare",
+          "expectation": "Clarifică durata fără a promite adaptarea. Contează sensul și claritatea, nu lungimea răspunsului.",
+          "brief": "Copilul fictiv Alex începe luni la 9. Prima zi durează două ore, părintele rămâne acolo. Sunt necesare haine de schimb. La acest nivel: clarifică durata fără a promite adaptarea.",
+          "opening": "Hei! Har du spørsmål om den første dagen?",
+          "hint": "To timer er varigheten på første besøk, ikke en garanti for at Alex er ferdig tilvendt.",
+          "goals": [
+            "Clarifică ora și durata",
+            "Întreabă ce trebuie adus",
+            "Confirmă prezența ta și planul",
+            "Clarifică durata fără a promite adaptarea"
+          ],
+          "objectiveIds": [
+            "clarify-situation",
+            "establish-details",
+            "complete-action",
+            "level-c2-task"
+          ]
+        }
+      }
     }
   ]
 }

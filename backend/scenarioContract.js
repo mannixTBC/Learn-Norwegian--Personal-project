@@ -1,9 +1,19 @@
-const busDelay = require('./scenarios/bus-delay.json');
-const busDelayLevels = require('./scenarios/bus-delay.levels.json');
-const levelDefinitions = new Map([[busDelay.scenarioId, busDelayLevels]]);
+// Explicit imports keep every private contract in the server bundle only.
+const contracts = [
+  [require('./scenarios/bus-delay.json'), require('./scenarios/bus-delay.levels.json')],
+  [require('./scenarios/hotel-booking.json'), require('./scenarios/hotel-booking.levels.json')],
+  [require('./scenarios/team-plan.json'), require('./scenarios/team-plan.levels.json')],
+  [require('./scenarios/cafe-order.json'), require('./scenarios/cafe-order.levels.json')],
+  [require('./scenarios/site-materials.json'), require('./scenarios/site-materials.levels.json')],
+  [require('./scenarios/care-comfort.json'), require('./scenarios/care-comfort.levels.json')],
+  [require('./scenarios/cleaning-plan.json'), require('./scenarios/cleaning-plan.levels.json')],
+  [require('./scenarios/shop-exchange.json'), require('./scenarios/shop-exchange.levels.json')],
+  [require('./scenarios/study-meeting.json'), require('./scenarios/study-meeting.levels.json')],
+  [require('./scenarios/kindergarten-plan.json'), require('./scenarios/kindergarten-plan.levels.json')],
+];
+const definitions = new Map(contracts.map(([base]) => [base.scenarioId, base]));
+const levelDefinitions = new Map(contracts.map(([base, levels]) => [base.scenarioId, levels]));
 
-// Partner-only facts stay on the server, outside the public scenario catalog.
-const definitions = new Map([[busDelay.scenarioId, busDelay]]);
 const assert = (condition, message) => {
   if (!condition) throw new Error('Invalid scenario contract: ' + message);
 };
@@ -54,6 +64,7 @@ function validateDefinition(definition, scenario) {
     assert(textList(definition[field]), 'missing ' + field);
   }
   assert(record(definition.completion) && text(definition.completion.success) && text(definition.completion.incomplete), 'completion rules are required');
+  if (definition.completion.successReply !== undefined) assert(text(definition.completion.successReply) && definition.completion.successReply.length <= 1800, 'invalid success reply');
   return definition;
 }
 
@@ -61,7 +72,10 @@ function getScenarioDefinition(scenario, level, publicScenario) {
   assert(record(scenario) && identifier(scenario.id), 'invalid public scenario');
   const definition = definitions.get(scenario.id);
   // A caller must not be able to change the definition used by later sessions.
-  if (!definition) return null;
+  if (!definition) {
+    assert(!scenario.variants, 'tailored scenario requires a private definition');
+    return null;
+  }
   const base = validateDefinition(definition, scenario);
   if (level === undefined) return structuredClone(base);
   const variants = levelDefinitions.get(scenario.id);
@@ -98,7 +112,7 @@ function composeLevelDefinition(base, variant, publicScenario, level) {
     language: variant.language, interaction: variant.interaction,
     completion: {
       ...base.completion,
-      success: 'All objectives listed in this resolved definition must have learner evidence. The safe plan must be confirmed. There are no additional generic or hidden level goals.',
+      success: 'All objectives listed in this resolved definition must have learner evidence. Require partner context only where an objective explicitly calls for confirmation. There are no additional generic or hidden level goals.',
     },
   });
   validateDefinition(combined, publicScenario);

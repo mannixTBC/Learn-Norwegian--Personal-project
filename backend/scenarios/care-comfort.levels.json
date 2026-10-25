@@ -1,0 +1,247 @@
+{
+  "A1": {
+    "language": {
+      "vocabulary": "Common concrete words from this situation.",
+      "syntax": "Short present-tense phrases and one concrete question.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Ask one missing detail at a time. If the learner struggles, simplify or offer a brief phrase scaffold without completing their objectives. Never require an advanced task.",
+      "challenge": null
+    },
+    "facts": [],
+    "extraObjectives": []
+  },
+  "A2": {
+    "language": {
+      "vocabulary": "Common concrete words from this situation.",
+      "syntax": "Short clauses and simple questions.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Ask one missing detail at a time. If the learner struggles, simplify or offer a brief phrase scaffold without completing their objectives. Never require an advanced task.",
+      "challenge": null
+    },
+    "facts": [],
+    "extraObjectives": [
+      {
+        "id": "level-a2-task",
+        "label": "Verifică preferința înainte de acțiune",
+        "criteria": [
+          "Ask or explicitly check permission for the chosen comfort option before proceeding."
+        ],
+        "factIds": [
+          "situation",
+          "available-options"
+        ],
+        "accept": [
+          "Vil du at jeg henter teppet?"
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "B1": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Connected clauses with simple reasons.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Hvilke muligheter har jeg?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Describe both the blanket and draught-free seat as comfort choices, explain how they may help, and leave the choice to Nora.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-b1-task",
+        "label": "Prezintă ambele opțiuni fără a decide în locul ei",
+        "criteria": [
+          "Describe both the blanket and draught-free seat as comfort choices, explain how they may help, and leave the choice to Nora."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Et teppe kan varme, og stolen er uten trekk. Hva foretrekker du?"
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "B2": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Clear connected explanation and polite response to an objection.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Jeg vil helst ikke flytte meg. Finnes det et annet alternativ?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "After Nora declines moving, acknowledge her refusal and offer the blanket without pressure or claims of medical benefit.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-b2-task",
+        "label": "Respectă refuzul uneia dintre opțiuni",
+        "criteria": [
+          "After Nora declines moving, acknowledge her refusal and offer the blanket without pressure or claims of medical benefit."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Du trenger ikke flytte deg. Vil du heller ha et teppe?"
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "C1": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Precise conditions and responsibilities in a natural register.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Jeg vil gjerne bestemme selv om jeg trenger hjelp.",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Make a conditional comfort offer based on Nora’s consent and invite her to change her mind, without overriding a refusal.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-c1-task",
+        "label": "Negociază ajutorul respectând autonomia",
+        "criteria": [
+          "Make a conditional comfort offer based on Nora’s consent and invite her to change her mind, without overriding a refusal."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Hvis du ønsker det, henter jeg et teppe. Si fra hvis du vil velge noe annet."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "C2": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Nuanced clarification and concise reformulation; no artificial complexity.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Mener du at teppet garantert løser problemet?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Clarify that the blanket or seat is offered for comfort, not as a guarantee or treatment; invite Nora’s own assessment of comfort.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-c2-task",
+        "label": "Clarifică oferta fără promisiune medicală",
+        "criteria": [
+          "Clarify that the blanket or seat is offered for comfort, not as a guarantee or treatment; invite Nora’s own assessment of comfort."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Jeg tilbyr teppet for komfort, ikke som behandling. Du kan si om det hjelper."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  }
+}

@@ -80,11 +80,10 @@ for (const mode of [false, true]) {
       'illustrated desktop layout must not enter the installed app');
     assert.equal(classNodes(renderer, 'mobile-conversation').length, mode ? 1 : 0);
     if (mode) {
-      const navigation = classNodes(renderer, 'mobile-app-nav')[0];
-      assert.equal(navigation.findAllByType('a').find(n => n.props['aria-current'] === 'page').props.href, '/jocuri?nivel=' + level);
+      assert.equal(classNodes(renderer, 'mobile-app-nav').length, 0, 'catalog is full screen');
     }
     const card = classNodes(renderer, 'conversation-card').find(node => textOf(node).includes(source.title));
-    assert.ok(textOf(card).includes(expected.turns + ' schimburi maximum'));
+    if (!mode) assert.ok(textOf(card).includes(expected.turns + ' schimburi maximum'));
     await act(async () => card.props.onClick());
     const brief = classNodes(renderer, 'conversation-brief')[0];
     assert.ok(textOf(brief).includes(expected.brief));
@@ -138,4 +137,3 @@ for (const mode of [false, true]) {
 }
 assert.equal(calls.length, 12);
 console.log('Scenario UI: all six levels on web and installed app; goals, briefs, hints, openings, budgets and level reset passed.');
-

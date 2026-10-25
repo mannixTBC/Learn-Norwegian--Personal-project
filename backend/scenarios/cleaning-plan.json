@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "cleaning-plan",
+  "roles": {
+    "learner": "Tu faci curățenie. Nora coordonează programul.",
+    "partner": "Nora, cleaning coordinator. Never ask the learner to mix chemicals or disregard safety."
+  },
+  "outcome": "Explică starea podelei; Propune ce poți face între timp; Confirmă termenul și păstrarea semnului de avertizare",
+  "facts": [
+    {
+      "id": "situation",
+      "value": "The hall should be ready by 10:00, but the floor is still wet.",
+      "knownTo": "shared",
+      "disclosure": "Use only as allowed by the role. Facts in the learner brief are not spoken evidence. For partner-owned details, answer when asked or when clarification is needed; do not preempt the learner’s clarification goal."
+    },
+    {
+      "id": "available-options",
+      "value": "Office 3 can be cleaned meanwhile. The warning sign must stay until the floor is dry. The exact drying time is unknown; the deadline does not override safety.",
+      "knownTo": "shared",
+      "disclosure": "Discuss when relevant; do not invent extra options, prices, deadlines or policies."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "clarify-situation",
+      "label": "Explică starea podelei",
+      "criteria": [
+        "Explain that the hall floor is still wet."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Gulvet er fortsatt vått."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "establish-details",
+      "label": "Propune ce poți face între timp",
+      "criteria": [
+        "Propose cleaning office 3 while the hall dries."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Jeg kan vaske kontor tre imens."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "complete-action",
+      "label": "Confirmă termenul și păstrarea semnului de avertizare",
+      "criteria": [
+        "Acknowledge the 10:00 target and explicitly keep the warning sign until the floor is dry; do not guarantee drying by 10:00."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Målet er klokka ti, men skiltet må stå til gulvet er tørt."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    }
+  ],
+  "allowedResolutions": [
+    "Office 3 can be cleaned meanwhile. The warning sign must stay until the floor is dry. The exact drying time is unknown; the deadline does not override safety.",
+    "Accept any equivalent wording or feasible choice within these facts, not a memorized sentence."
+  ],
+  "boundaries": [
+    "Language roleplay only. Stay in the assigned role and use only the supplied fictional facts.",
+    "Never ask for real personal, payment or child data. Do not invent professional advice, medical procedures or unsafe shortcuts.",
+    "Do not change level or objectives mid-session. Respond to requests for help within the selected level."
+  ],
+  "completion": {
+    "success": "All listed criteria have learner evidence; any required confirmation follows a real partner response.",
+    "incomplete": "End politely when the turn budget is exhausted; identify unmet objectives without awarding them.",
+    "successReply": "Takk, da følger vi planen og lar skiltet stå til gulvet er tørt."
+  }
+}

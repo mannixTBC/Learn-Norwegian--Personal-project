@@ -1,0 +1,247 @@
+{
+  "A1": {
+    "language": {
+      "vocabulary": "Common concrete words from this situation.",
+      "syntax": "Short present-tense phrases and one concrete question.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Ask one missing detail at a time. If the learner struggles, simplify or offer a brief phrase scaffold without completing their objectives. Never require an advanced task.",
+      "challenge": null
+    },
+    "facts": [],
+    "extraObjectives": []
+  },
+  "A2": {
+    "language": {
+      "vocabulary": "Common concrete words from this situation.",
+      "syntax": "Short clauses and simple questions.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Ask one missing detail at a time. If the learner struggles, simplify or offer a brief phrase scaffold without completing their objectives. Never require an advanced task.",
+      "challenge": null
+    },
+    "facts": [],
+    "extraObjectives": [
+      {
+        "id": "level-a2-task",
+        "label": "Verifică momentul îndepărtării semnului",
+        "criteria": [
+          "Ask or explicitly confirm that the sign can be removed only after the floor is dry."
+        ],
+        "factIds": [
+          "situation",
+          "available-options"
+        ],
+        "accept": [
+          "Skal skiltet stå til gulvet er helt tørt?"
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "B1": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Connected clauses with simple reasons.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Hvorfor går du til kontor tre nå?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Explain why cleaning office 3 uses the waiting time while keeping the hall warning in place.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-b1-task",
+        "label": "Justifică activitatea făcută între timp",
+        "criteria": [
+          "Explain why cleaning office 3 uses the waiting time while keeping the hall warning in place."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Jeg vasker kontor tre mens gulvet tørker, så vi bruker tiden uten å fjerne skiltet."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "B2": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Clear connected explanation and polite response to an objection.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Hva gjør vi hvis gulvet fortsatt er vått klokka ti?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Respond to concern about 10:00 by retaining the sign until dry and refusing to treat the deadline as proof of safe access.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-b2-task",
+        "label": "Răspunde presiunii termenului fără a elimina avertizarea",
+        "criteria": [
+          "Respond to concern about 10:00 by retaining the sign until dry and refusing to treat the deadline as proof of safe access."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Selv om fristen er ti, må skiltet stå så lenge gulvet er vått."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "C1": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Precise conditions and responsibilities in a natural register.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Hvordan følger du opp hvis gangen ikke er klar til fristen?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Propose checking dryness and informing Nora if the hall is still wet at the target time; keep the sign and avoid inventing drying time.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-c1-task",
+        "label": "Stabilește un plan condiționat de uscare",
+        "criteria": [
+          "Propose checking dryness and informing Nora if the hall is still wet at the target time; keep the sign and avoid inventing drying time."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Jeg sjekker gulvet og gir beskjed hvis det fortsatt er vått klokka ti; skiltet blir stående."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "C2": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Nuanced clarification and concise reformulation; no artificial complexity.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Betyr fristen at skiltet automatisk kan fjernes klokka ti?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Explicitly distinguish the 10:00 target from a guarantee that the floor will be dry, explaining the observable condition for removing the sign.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-c2-task",
+        "label": "Clarifică termenul versus garanția de siguranță",
+        "criteria": [
+          "Explicitly distinguish the 10:00 target from a guarantee that the floor will be dry, explaining the observable condition for removing the sign."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Ti er målet, ikke en garanti. Skiltet fjernes først når vi har sjekket at gulvet er tørt."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  }
+}

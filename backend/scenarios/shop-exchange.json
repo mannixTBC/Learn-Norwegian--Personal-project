@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "shop-exchange",
+  "roles": {
+    "learner": "Tu ești vânzătorul. Nora este clienta.",
+    "partner": "Nora, a customer with an unworn blue size M sweater and receipt, requesting size L. Reveal these when asked."
+  },
+  "outcome": "Clarifică mărimea dorită; Verifică bonul și disponibilitatea; Propune schimbul și confirmă acordul",
+  "facts": [
+    {
+      "id": "situation",
+      "value": "Nora has an unworn blue size M sweater, the receipt, and wants size L.",
+      "knownTo": "partner",
+      "disclosure": "Use only as allowed by the role. Facts in the learner brief are not spoken evidence. For partner-owned details, answer when asked or when clarification is needed; do not preempt the learner’s clarification goal."
+    },
+    {
+      "id": "available-options",
+      "value": "Blue size L is available at the same price. This fictional exchange does not establish a general returns policy, refund right or future stock guarantee. No real payment.",
+      "knownTo": "shared",
+      "disclosure": "Discuss when relevant; do not invent extra options, prices, deadlines or policies."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "clarify-situation",
+      "label": "Clarifică mărimea dorită",
+      "criteria": [
+        "Ask for or explicitly verify desired size L."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Ønsker du størrelse L?"
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "establish-details",
+      "label": "Verifică bonul și disponibilitatea",
+      "criteria": [
+        "Ask for or verify the receipt.",
+        "State or check that size L is available."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Har du kvitteringen? Vi har L."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "complete-action",
+      "label": "Propune schimbul și confirmă acordul",
+      "criteria": [
+        "Offer the same-price exchange from M to L.",
+        "Acknowledge the agreement after Nora accepts the exchange in an earlier turn."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Du kan bytte til L til samme pris."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ],
+      "priorPartnerCriteria": [
+        1
+      ]
+    }
+  ],
+  "allowedResolutions": [
+    "Blue size L is available at the same price. This fictional exchange does not establish a general returns policy, refund right or future stock guarantee. No real payment.",
+    "Accept any equivalent wording or feasible choice within these facts, not a memorized sentence."
+  ],
+  "boundaries": [
+    "Language roleplay only. Stay in the assigned role and use only the supplied fictional facts.",
+    "Never ask for real personal, payment or child data. Do not invent professional advice, medical procedures or unsafe shortcuts.",
+    "Do not change level or objectives mid-session. Respond to requests for help within the selected level."
+  ],
+  "completion": {
+    "success": "All listed criteria have learner evidence; any required confirmation follows a real partner response.",
+    "incomplete": "End politely when the turn budget is exhausted; identify unmet objectives without awarding them.",
+    "successReply": "Takk, da bytter jeg til størrelse L."
+  }
+}

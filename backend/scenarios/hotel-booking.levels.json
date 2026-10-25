@@ -1,0 +1,247 @@
+{
+  "A1": {
+    "language": {
+      "vocabulary": "Common concrete words from this situation.",
+      "syntax": "Short present-tense phrases and one concrete question.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Ask one missing detail at a time. If the learner struggles, simplify or offer a brief phrase scaffold without completing their objectives. Never require an advanced task.",
+      "challenge": null
+    },
+    "facts": [],
+    "extraObjectives": []
+  },
+  "A2": {
+    "language": {
+      "vocabulary": "Common concrete words from this situation.",
+      "syntax": "Short clauses and simple questions.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Ask one missing detail at a time. If the learner struggles, simplify or offer a brief phrase scaffold without completing their objectives. Never require an advanced task.",
+      "challenge": null
+    },
+    "facts": [],
+    "extraObjectives": [
+      {
+        "id": "level-a2-task",
+        "label": "Clarifică prețul camerei oferite",
+        "criteria": [
+          "Explicitly ask or confirm that the replacement has the same price."
+        ],
+        "factIds": [
+          "situation",
+          "available-options"
+        ],
+        "accept": [
+          "Det er samme pris, er det greit?"
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "B1": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Connected clauses with simple reasons.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Hvorfor foreslår du et annet rom?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Explain why the available equivalent room solves the missing-booking problem without claiming the original booking was found.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-b1-task",
+        "label": "Explică soluția și motivul ei",
+        "criteria": [
+          "Explain why the available equivalent room solves the missing-booking problem without claiming the original booking was found."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Vi kan tilby et tilsvarende rom, siden reservasjonen mangler i systemet."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "B2": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Clear connected explanation and polite response to an objection.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Må jeg betale mer når reservasjonen ikke finnes?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Respond to Nora’s concern about paying extra by linking the equivalent room and unchanged price; do not invent discounts.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-b2-task",
+        "label": "Răspunde obiecției despre cost",
+        "criteria": [
+          "Respond to Nora’s concern about paying extra by linking the equivalent room and unchanged price; do not invent discounts."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Rommet er tilsvarende, og du betaler samme pris."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "C1": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Precise conditions and responsibilities in a natural register.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Kan du garantere at den opprinnelige reservasjonen dukker opp?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Distinguish checking the missing reservation from the currently available same-price room; explain both without promising the reservation will be recovered.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-c1-task",
+        "label": "Clarifică ce verifici și ce poți oferi deja",
+        "criteria": [
+          "Distinguish checking the missing reservation from the currently available same-price room; explain both without promising the reservation will be recovered."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Jeg kan kontrollere bekreftelsen, men rommet til samme pris er allerede tilgjengelig."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "C2": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Nuanced clarification and concise reformulation; no artificial complexity.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Betyr et tilsvarende rom at du har funnet den opprinnelige reservasjonen?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Explain that equivalent means an available comparable room at the same price, not proof the missing original reservation has been found.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-c2-task",
+        "label": "Clarifică sensul camerei echivalente",
+        "criteria": [
+          "Explain that equivalent means an available comparable room at the same price, not proof the missing original reservation has been found."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Et tilsvarende rom betyr ikke at den opprinnelige reservasjonen er funnet; tilbudet har samme pris."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  }
+}

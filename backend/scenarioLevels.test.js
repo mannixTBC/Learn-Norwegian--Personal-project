@@ -73,15 +73,23 @@ test('missing or mismatched level definitions fail instead of falling back silen
   }
 });
 
-test('the nine unmigrated scenarios retain their original level behavior', () => {
-  for (const s of catalog.scenarios.filter(s => s.id !== source.id)) {
-    for (const level of Object.keys(catalog.levels)) {
-      const resolved = resolvePublicScenario(s, catalog.levels, level);
-      assert.deepEqual(resolved.scenario.goals, [...s.goals, ...(catalog.levels[level].goal ? [catalog.levels[level].goal] : [])]);
-      assert.equal(resolved.scenario.opening, s.opening);
-      assert.equal(resolved.difficulty.turns, catalog.levels[level].turns);
-      assert.equal(resolved.difficulty.instruction, catalog.levels[level].instruction);
-    }
+test('all ten scenarios resolve the same tailored goals on server and client', () => {
+  for (const s of catalog.scenarios) for (const level of Object.keys(catalog.levels)) {
+    const browser = resolvePublicScenario(s, catalog.levels, level);
+    const server = tutor.context(s.id, level);
+    const { definition, ...publicPart } = server.scenario;
+    assert.deepEqual(publicPart, browser.scenario);
+    assert.deepEqual(definition.objectives.map(o => o.label), browser.scenario.goals);
+    assert.deepEqual(definition.objectives.map(o => o.id), browser.scenario.objectiveIds);
+    assert.equal(Object.hasOwn(publicPart, 'facts'), false);
+    assert.equal(Object.hasOwn(browser.difficulty, 'instruction'), false);
+    assert.equal(browser.difficulty.turns, s.variants[level].turns);
+    assert.ok(s.revision >= 2);
+    if (['A1','A2'].includes(level)) assert.equal(definition.interaction.challenge, null);
+    else assert.ok(definition.interaction.challenge.prompt);
+    const untouched = tutor.context(s.id, 'A1');
+    definition.facts.pop();
+    assert.deepEqual(tutor.context(s.id, 'A1'), untouched);
   }
 });
 

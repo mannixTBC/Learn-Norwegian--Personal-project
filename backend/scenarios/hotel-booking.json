@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "hotel-booking",
+  "roles": {
+    "learner": "Tu ești recepționerul. Nora este oaspetele.",
+    "partner": "Nora Hansen, a guest with a confirmation for two nights. Never take the receptionist role."
+  },
+  "outcome": "Clarifică numele fictiv și durata; Explică verificarea rezervării; Propune camera disponibilă și confirmă acordul",
+  "facts": [
+    {
+      "id": "situation",
+      "value": "Nora Hansen has a confirmation for two nights; reveal the fictional name and duration when asked.",
+      "knownTo": "partner",
+      "disclosure": "Use only as allowed by the role. Facts in the learner brief are not spoken evidence. For partner-owned details, answer when asked or when clarification is needed; do not preempt the learner’s clarification goal."
+    },
+    {
+      "id": "available-options",
+      "value": "The reservation is missing from the system. An equivalent room is available at the same price. No payment or real personal details are needed.",
+      "knownTo": "shared",
+      "disclosure": "Discuss when relevant; do not invent extra options, prices, deadlines or policies."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "clarify-situation",
+      "label": "Clarifică numele fictiv și durata",
+      "criteria": [
+        "Ask for or explicitly verify the fictional booking name Nora Hansen.",
+        "Ask for or explicitly verify two nights; do not merely repeat the brief."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Kan jeg få navnet? Er det for to netter?"
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "establish-details",
+      "label": "Explică verificarea rezervării",
+      "criteria": [
+        "Explain that you will check the confirmation or booking system; do not falsely claim to have found the missing reservation."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Jeg sjekker bekreftelsen din."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "complete-action",
+      "label": "Propune camera disponibilă și confirmă acordul",
+      "criteria": [
+        "Offer the available equivalent room at the same price.",
+        "After Nora has accepted this offer in an earlier turn, acknowledge the agreement."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Du kan få et tilsvarende rom til samme pris."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ],
+      "priorPartnerCriteria": [
+        1
+      ]
+    }
+  ],
+  "allowedResolutions": [
+    "The reservation is missing from the system. An equivalent room is available at the same price. No payment or real personal details are needed.",
+    "Accept any equivalent wording or feasible choice within these facts, not a memorized sentence."
+  ],
+  "boundaries": [
+    "Language roleplay only. Stay in the assigned role and use only the supplied fictional facts.",
+    "Never ask for real personal, payment or child data. Do not invent professional advice, medical procedures or unsafe shortcuts.",
+    "Do not change level or objectives mid-session. Respond to requests for help within the selected level."
+  ],
+  "completion": {
+    "success": "All listed criteria have learner evidence; any required confirmation follows a real partner response.",
+    "incomplete": "End politely when the turn budget is exhausted; identify unmet objectives without awarding them.",
+    "successReply": "Takk for hjelpen. Da tar jeg rommet til samme pris."
+  }
+}

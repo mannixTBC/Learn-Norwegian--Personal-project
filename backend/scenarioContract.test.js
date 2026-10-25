@@ -25,9 +25,9 @@ test('partner knowledge is absent from the public model while the server retains
   assert.equal(definition.facts.find(f => f.id === 'dispatch-help').knownTo, 'partner');
 });
 
-test('legacy scenarios remain usable at every level', () => {
+test('every catalog scenario has a criterion contract at every level', () => {
   for (const item of catalog.scenarios.filter(s => s.id !== scenario.id)) {
-    assert.equal(getScenarioDefinition(item), null);
+    assert.equal(getScenarioDefinition(item).scenarioId, item.id);
     for (const level of Object.keys(catalog.levels)) {
       assert.equal(tutor.context(item.id, level).scenario.id, item.id);
     }

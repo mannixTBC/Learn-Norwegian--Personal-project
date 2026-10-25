@@ -1,0 +1,247 @@
+{
+  "A1": {
+    "language": {
+      "vocabulary": "Common concrete words from this situation.",
+      "syntax": "Short present-tense phrases and one concrete question.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Ask one missing detail at a time. If the learner struggles, simplify or offer a brief phrase scaffold without completing their objectives. Never require an advanced task.",
+      "challenge": null
+    },
+    "facts": [],
+    "extraObjectives": []
+  },
+  "A2": {
+    "language": {
+      "vocabulary": "Common concrete words from this situation.",
+      "syntax": "Short clauses and simple questions.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Ask one missing detail at a time. If the learner struggles, simplify or offer a brief phrase scaffold without completing their objectives. Never require an advanced task.",
+      "challenge": null
+    },
+    "facts": [],
+    "extraObjectives": [
+      {
+        "id": "level-a2-task",
+        "label": "Clarifică ordinea activităților",
+        "criteria": [
+          "Ask or explicitly confirm that data preparation comes before Nora’s review."
+        ],
+        "factIds": [
+          "situation",
+          "available-options"
+        ],
+        "accept": [
+          "Skal jeg gjøre tallene klare før du kontrollerer dem?"
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "B1": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Connected clauses with simple reasons.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Hvorfor passer denne fordelingen?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Explain why Thursday preparation and Friday-morning review support the Friday deadline.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-b1-task",
+        "label": "Justifică împărțirea muncii",
+        "criteria": [
+          "Explain why Thursday preparation and Friday-morning review support the Friday deadline."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Da har du tallene klare til kontroll fredag morgen."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "B2": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Clear connected explanation and polite response to an objection.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Rekker vi fristen med kontroll fredag morgen?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Respond to concern about the deadline using the preparation and review sequence; do not promise an unsupported exact hour.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-b2-task",
+        "label": "Răspunde îngrijorării despre termen",
+        "criteria": [
+          "Respond to concern about the deadline using the preparation and review sequence; do not promise an unsupported exact hour."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Tallene er klare torsdag, så du kan kontrollere fredag morgen før fristen."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "C1": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Precise conditions and responsibilities in a natural register.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Hvilket klokkeslett kan du love at rapporten leveres?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "State each responsibility and the known Friday deadline while explicitly leaving the exact delivery hour unconfirmed.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-c1-task",
+        "label": "Delimitează angajamentul de ora necunoscută",
+        "criteria": [
+          "State each responsibility and the known Friday deadline while explicitly leaving the exact delivery hour unconfirmed."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Vi har avtalt fredag, men ikke et bestemt klokkeslett for levering."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "C2": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Nuanced clarification and concise reformulation; no artificial complexity.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Mener du at hele rapporten er ferdig torsdag?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Correct the interpretation that Thursday data preparation means the report is complete Thursday; include Friday review and deadline.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-c2-task",
+        "label": "Clarifică diferența dintre date și raport final",
+        "criteria": [
+          "Correct the interpretation that Thursday data preparation means the report is complete Thursday; include Friday review and deadline."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Tallene er klare torsdag; rapporten er ikke ferdig før kontrollen fredag."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  }
+}

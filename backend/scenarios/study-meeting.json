@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "study-meeting",
+  "roles": {
+    "learner": "Tu ești studentul. Nora este colega ta.",
+    "partner": "Nora, a fellow student. Both supplied meeting slots are possible. You prepare examples."
+  },
+  "outcome": "Propune un interval și locul; Clarifică ce pregătește fiecare; Confirmă întâlnirea și termenul",
+  "facts": [
+    {
+      "id": "situation",
+      "value": "The presentation is Friday.",
+      "knownTo": "shared",
+      "disclosure": "Use only as allowed by the role. Facts in the learner brief are not spoken evidence. For partner-owned details, answer when asked or when clarification is needed; do not preempt the learner’s clarification goal."
+    },
+    {
+      "id": "available-options",
+      "value": "Available meeting slots are Wednesday at 14:00 or Thursday at 10:00, at the library. The learner prepares the introduction; Nora prepares examples. No exact Friday presentation hour is supplied.",
+      "knownTo": "shared",
+      "disclosure": "Discuss when relevant; do not invent extra options, prices, deadlines or policies."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "clarify-situation",
+      "label": "Propune un interval și locul",
+      "criteria": [
+        "Propose either Wednesday 14:00 or Thursday 10:00 and the library; do not invent a third slot."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Kan vi møtes onsdag klokka fjorten på biblioteket?"
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "establish-details",
+      "label": "Clarifică ce pregătește fiecare",
+      "criteria": [
+        "Clarify that you prepare the introduction and Nora the examples."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Jeg lager innledningen, og du lager eksemplene."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "complete-action",
+      "label": "Confirmă întâlnirea și termenul",
+      "criteria": [
+        "Confirm the selected meeting slot and Friday presentation deadline after Nora agrees to the proposed plan."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Da møtes vi onsdag klokka fjorten før presentasjonen fredag."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ],
+      "priorPartnerCriteria": [
+        0
+      ]
+    }
+  ],
+  "allowedResolutions": [
+    "Available meeting slots are Wednesday at 14:00 or Thursday at 10:00, at the library. The learner prepares the introduction; Nora prepares examples. No exact Friday presentation hour is supplied.",
+    "Accept any equivalent wording or feasible choice within these facts, not a memorized sentence."
+  ],
+  "boundaries": [
+    "Language roleplay only. Stay in the assigned role and use only the supplied fictional facts.",
+    "Never ask for real personal, payment or child data. Do not invent professional advice, medical procedures or unsafe shortcuts.",
+    "Do not change level or objectives mid-session. Respond to requests for help within the selected level."
+  ],
+  "completion": {
+    "success": "All listed criteria have learner evidence; any required confirmation follows a real partner response.",
+    "incomplete": "End politely when the turn budget is exhausted; identify unmet objectives without awarding them.",
+    "successReply": "Takk, da har vi avtalt øvingen og forberedelsene."
+  }
+}

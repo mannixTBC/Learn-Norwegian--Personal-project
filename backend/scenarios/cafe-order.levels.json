@@ -1,0 +1,247 @@
+{
+  "A1": {
+    "language": {
+      "vocabulary": "Common concrete words from this situation.",
+      "syntax": "Short present-tense phrases and one concrete question.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Ask one missing detail at a time. If the learner struggles, simplify or offer a brief phrase scaffold without completing their objectives. Never require an advanced task.",
+      "challenge": null
+    },
+    "facts": [],
+    "extraObjectives": []
+  },
+  "A2": {
+    "language": {
+      "vocabulary": "Common concrete words from this situation.",
+      "syntax": "Short clauses and simple questions.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Ask one missing detail at a time. If the learner struggles, simplify or offer a brief phrase scaffold without completing their objectives. Never require an advanced task.",
+      "challenge": null
+    },
+    "facts": [],
+    "extraObjectives": [
+      {
+        "id": "level-a2-task",
+        "label": "Verifică tipul de lapte",
+        "criteria": [
+          "Ask or explicitly check that the coffee uses oat milk."
+        ],
+        "factIds": [
+          "situation",
+          "available-options"
+        ],
+        "accept": [
+          "Er det havremelk i kaffen?"
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "B1": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Connected clauses with simple reasons.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Du kan spørre om egen kopp. Hvorfor foretrekker du det?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "State a preference for using your own cup and a personal reason, while asking whether this is possible rather than assuming a policy.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-b1-task",
+        "label": "Explică preferința pentru paharul propriu",
+        "criteria": [
+          "State a preference for using your own cup and a personal reason, while asking whether this is possible rather than assuming a policy."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Kan jeg bruke min egen kopp? Jeg vil gjerne bruke mindre emballasje."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "B2": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Clear connected explanation and polite response to an objection.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Mener du at egen kopp automatisk gir rabatt?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Ask whether a reusable cup is possible without assuming a discount, and explicitly keep the known price at 45 NOK unless new verified information is available.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-b2-task",
+        "label": "Separă întrebarea despre pahar de presupunerea unei reduceri",
+        "criteria": [
+          "Ask whether a reusable cup is possible without assuming a discount, and explicitly keep the known price at 45 NOK unless new verified information is available."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Kan jeg bruke egen kopp? Jeg regner fortsatt med 45 kroner, ikke rabatt."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "C1": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Precise conditions and responsibilities in a natural register.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Hva foretrekker du hvis vi ikke kan bruke koppen din?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Make a conditional request to use your own cup if allowed, otherwise accept ordinary takeaway at the known price; do not invent a cup policy.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-c1-task",
+        "label": "Propune o variantă dacă paharul propriu nu este acceptat",
+        "criteria": [
+          "Make a conditional request to use your own cup if allowed, otherwise accept ordinary takeaway at the known price; do not invent a cup policy."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Hvis egen kopp er tillatt, bruker jeg den; ellers tar jeg vanlig take-away til 45 kroner."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  },
+  "C2": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Nuanced clarification and concise reformulation; no artificial complexity.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Ask one question at a time. Give a brief scaffold or repeat when requested; keep the selected communicative task. Do not introduce additional complications.",
+      "challenge": {
+        "trigger": "Only after the base situation is established, if this level task has not already been addressed. At most this one challenge, then clarify rather than add new complications.",
+        "prompt": "Betyr egen kopp at du vil drikke kaffen her?",
+        "factIds": [
+          "level-task",
+          "available-options"
+        ]
+      }
+    },
+    "facts": [
+      {
+        "id": "level-task",
+        "value": "Explain that takeaway is where the drink is consumed, whereas a reusable cup is a separate conditional packaging preference; do not assume permission or a discount.",
+        "knownTo": "shared",
+        "disclosure": "A communicative task, not a new factual claim. Use the challenge only when needed; never present its questionable interpretation as a fact."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "level-c2-task",
+        "label": "Clarifică la pachet versus tipul paharului",
+        "criteria": [
+          "Explain that takeaway is where the drink is consumed, whereas a reusable cup is a separate conditional packaging preference; do not assume permission or a discount."
+        ],
+        "factIds": [
+          "situation",
+          "available-options",
+          "level-task"
+        ],
+        "accept": [
+          "Jeg skal ta kaffen med uansett; spørsmålet om egen kopp gjelder bare emballasjen."
+        ],
+        "reject": [
+          "Ja. (A bare agreement does not demonstrate this additional communicative act.)",
+          "Do not count the partner’s explanation as learner performance."
+        ]
+      }
+    ]
+  }
+}

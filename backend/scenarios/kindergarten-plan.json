@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "kindergarten-plan",
+  "roles": {
+    "learner": "Tu ești părintele. Nora este educatoarea.",
+    "partner": "Nora, kindergarten educator discussing fictional Alex’s first day. Do not request real child information."
+  },
+  "outcome": "Clarifică ora și durata; Întreabă ce trebuie adus; Confirmă prezența ta și planul",
+  "facts": [
+    {
+      "id": "situation",
+      "value": "Fictional Alex starts Monday at 09:00.",
+      "knownTo": "shared",
+      "disclosure": "Use only as allowed by the role. Facts in the learner brief are not spoken evidence. For partner-owned details, answer when asked or when clarification is needed; do not preempt the learner’s clarification goal."
+    },
+    {
+      "id": "available-options",
+      "value": "The first day lasts two hours, the parent stays throughout, and spare clothes are required. No later-week schedule or guarantee about settling in is supplied.",
+      "knownTo": "shared",
+      "disclosure": "Discuss when relevant; do not invent extra options, prices, deadlines or policies."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "clarify-situation",
+      "label": "Clarifică ora și durata",
+      "criteria": [
+        "Ask or explicitly confirm Monday 09:00 and the two-hour duration."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Starter vi mandag klokka ni, i to timer?"
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "establish-details",
+      "label": "Întreabă ce trebuie adus",
+      "criteria": [
+        "Ask what to bring or explicitly ask whether spare clothes are required."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Skal vi ta med skiftetøy?"
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "complete-action",
+      "label": "Confirmă prezența ta și planul",
+      "criteria": [
+        "Confirm that you will stay for the whole first day and acknowledge the agreed plan after Nora’s earlier response."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Da blir jeg hele tiden, fra ni til elleve."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ],
+      "priorPartnerCriteria": [
+        0
+      ]
+    }
+  ],
+  "allowedResolutions": [
+    "The first day lasts two hours, the parent stays throughout, and spare clothes are required. No later-week schedule or guarantee about settling in is supplied.",
+    "Accept any equivalent wording or feasible choice within these facts, not a memorized sentence."
+  ],
+  "boundaries": [
+    "Language roleplay only. Stay in the assigned role and use only the supplied fictional facts.",
+    "Never ask for real personal, payment or child data. Do not invent professional advice, medical procedures or unsafe shortcuts.",
+    "Do not change level or objectives mid-session. Respond to requests for help within the selected level."
+  ],
+  "completion": {
+    "success": "All listed criteria have learner evidence; any required confirmation follows a real partner response.",
+    "incomplete": "End politely when the turn budget is exhausted; identify unmet objectives without awarding them.",
+    "successReply": "Takk, da sees vi mandag klokka ni med skiftetøy."
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "site-materials",
+  "roles": {
+    "learner": "Tu ești lucrătorul. Nora coordonează echipa.",
+    "partner": "Nora, team coordinator. Do not invent construction procedures."
+  },
+  "outcome": "Spune ce materiale lipsesc; Precizează când sosesc; Propune pregătirea camerei 3 și confirmă planul",
+  "facts": [
+    {
+      "id": "situation",
+      "value": "The learner lacks panels for room 2.",
+      "knownTo": "shared",
+      "disclosure": "Use only as allowed by the role. Facts in the learner brief are not spoken evidence. For partner-owned details, answer when asked or when clarification is needed; do not preempt the learner’s clarification goal."
+    },
+    {
+      "id": "available-options",
+      "value": "Panels arrive tomorrow at 09:00. Room 3 can be prepared today under normal safety rules. Delivery is not the same as completion of installation; no installation duration is supplied.",
+      "knownTo": "shared",
+      "disclosure": "Discuss when relevant; do not invent extra options, prices, deadlines or policies."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "clarify-situation",
+      "label": "Spune ce materiale lipsesc",
+      "criteria": [
+        "State that panels for room 2 are missing."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Vi mangler panelene til rom to."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "establish-details",
+      "label": "Precizează când sosesc",
+      "criteria": [
+        "State delivery tomorrow at 09:00."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "De kommer i morgen klokka ni."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "complete-action",
+      "label": "Propune pregătirea camerei 3 și confirmă planul",
+      "criteria": [
+        "Propose preparing room 3 today without bypassing safety rules.",
+        "Confirm that plan after Nora has agreed in an earlier turn."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Vi kan forberede rom tre i dag."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ],
+      "priorPartnerCriteria": [
+        1
+      ]
+    }
+  ],
+  "allowedResolutions": [
+    "Panels arrive tomorrow at 09:00. Room 3 can be prepared today under normal safety rules. Delivery is not the same as completion of installation; no installation duration is supplied.",
+    "Accept any equivalent wording or feasible choice within these facts, not a memorized sentence."
+  ],
+  "boundaries": [
+    "Language roleplay only. Stay in the assigned role and use only the supplied fictional facts.",
+    "Never ask for real personal, payment or child data. Do not invent professional advice, medical procedures or unsafe shortcuts.",
+    "Do not change level or objectives mid-session. Respond to requests for help within the selected level."
+  ],
+  "completion": {
+    "success": "All listed criteria have learner evidence; any required confirmation follows a real partner response.",
+    "incomplete": "End politely when the turn budget is exhausted; identify unmet objectives without awarding them.",
+    "successReply": "Takk, da forbereder vi rom tre og følger den avtalte planen."
+  }
+}

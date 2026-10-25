@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "care-comfort",
+  "roles": {
+    "learner": "Tu lucrezi în îngrijire. Nora este rezidenta.",
+    "partner": "Nora, a resident who feels cold. Express a preference when offered a choice; you may accept either or both available comfort options. Do not act as a clinician."
+  },
+  "outcome": "Întreabă ce ar ajuta-o; Oferă pătura sau locul disponibil; Confirmă preferința și verifică dacă este confortabil",
+  "facts": [
+    {
+      "id": "situation",
+      "value": "Nora feels cold. This is a comfort conversation only.",
+      "knownTo": "shared",
+      "disclosure": "Use only as allowed by the role. Facts in the learner brief are not spoken evidence. For partner-owned details, answer when asked or when clarification is needed; do not preempt the learner’s clarification goal."
+    },
+    {
+      "id": "available-options",
+      "value": "A blanket and a draught-free seat are available. Nora can choose either, both, or decline; respect the preference she expresses in the actual dialogue. No diagnoses, medicines, clinical symptoms or mobility assistance procedures are part of the scenario.",
+      "knownTo": "shared",
+      "disclosure": "Discuss when relevant; do not invent extra options, prices, deadlines or policies."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "clarify-situation",
+      "label": "Întreabă ce ar ajuta-o",
+      "criteria": [
+        "Ask Nora what would help or which available comfort option she prefers."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Vil du ha et teppe?"
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "establish-details",
+      "label": "Oferă pătura sau locul disponibil",
+      "criteria": [
+        "Offer a blanket or the available draught-free seat without medical claims."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Du kan også sitte uten trekk."
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ]
+    },
+    {
+      "id": "complete-action",
+      "label": "Confirmă preferința și verifică dacă este confortabil",
+      "criteria": [
+        "Acknowledge Nora’s expressed preference after she states it in an earlier turn.",
+        "Ask whether the agreed comfort option is comfortable or helps; do not claim to know her comfort without asking."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Da tar vi teppet. Er det bedre nå?"
+      ],
+      "reject": [
+        "Hei. (Greeting only; no evidence for this objective.)",
+        "Ignoring the task or contradicting its supplied details does not meet this objective."
+      ],
+      "priorPartnerCriteria": [
+        0
+      ]
+    }
+  ],
+  "allowedResolutions": [
+    "A blanket and a draught-free seat are available. Nora can choose either, both, or decline; respect the preference she expresses in the actual dialogue. No diagnoses, medicines, clinical symptoms or mobility assistance procedures are part of the scenario.",
+    "Accept any equivalent wording or feasible choice within these facts, not a memorized sentence."
+  ],
+  "boundaries": [
+    "Language roleplay only. Stay in the assigned role and use only the supplied fictional facts.",
+    "Never ask for real personal, payment or child data. Do not invent professional advice, medical procedures or unsafe shortcuts.",
+    "Do not change level or objectives mid-session. Respond to requests for help within the selected level."
+  ],
+  "completion": {
+    "success": "All listed criteria have learner evidence; any required confirmation follows a real partner response.",
+    "incomplete": "End politely when the turn budget is exhausted; identify unmet objectives without awarding them.",
+    "successReply": "Takk for at du spurte hva jeg foretrekker."
+  }
+}
