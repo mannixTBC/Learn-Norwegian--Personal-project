@@ -54,12 +54,23 @@ const {chromium}=await import(pathToFileURL(resolve(homedir(),'.cache/codex-runt
 const browser=await chromium.launch({headless:true,...(process.platform==='win32'?{executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'}:{})});
 try{
  const page=await browser.newPage();
+ await page.route('http://scenario.test/**',async route=>{
+   try {
+    const pathname=new URL(route.request().url()).pathname;
+    if(!pathname.startsWith('/branding/')&&!pathname.startsWith('/images/'))return route.fulfill({contentType:'text/html',body:'<html></html>'});
+    const body=await readFile(resolve(root,'public','.'+pathname));
+    return route.fulfill({contentType:pathname.endsWith('.webp')?'image/webp':'image/png',body});
+   }catch{return route.fulfill({status:404,body:''});}
+  });
+ await page.goto('http://scenario.test/');
  for(const installed of [false,true]) for(const [width,height] of [[360,640],[390,844],[1366,900],[740,360]]){
   await page.setViewportSize({width,height});
   for(const kind of ['normal','long','empty']){
    const data=kind==='empty'?[]:kind==='long'?scenarios.map(s=>({...s,title:s.title+' — o situație cu mai multe detalii de discutat',place:s.place+' și detalii suplimentare pentru această conversație'})):scenarios;
    const html=renderToStaticMarkup(wrap(installed?Mobile:Desktop,{...props,scenarios:data}));
-   await page.setContent('<html class="'+(installed?'is-installed-app':'')+'"><head><style>'+css+'</style></head><body><div id="root"><div class="App"><main class="App__main">'+html+'</main></div></div></body></html>');
+   await page.setContent('<html class="'+(installed?'is-installed-app':'')+'"><head><base href="http://scenario.test/"><style>'+css+'</style></head><body><div id="root"><div class="App"><main class="App__main">'+html+'</main></div></div></body></html>');
+   await page.locator('.sc-brand img').evaluate(im=>im.decode());
+   assert.ok(await page.locator('.sc-brand img').evaluate(im=>im.naturalWidth>0),'real brand image must decode');
    const result=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,height:innerHeight,scrollHeight:document.documentElement.scrollHeight,canvas:[document.documentElement,document.body,document.getElementById('root'),document.querySelector('.App'),document.querySelector('.App__main')].map(e=>getComputedStyle(e).backgroundColor)}));
    assert.ok(result.scrollWidth<=width+1,JSON.stringify({installed,width,height,kind,result}));
    assert.ok(result.canvas.every(c=>c==='rgb(247, 241, 226)'),JSON.stringify(result));

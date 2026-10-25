@@ -19,7 +19,14 @@ let checks=0;
 try{
  const page=await browser.newPage();
  const atlas=await readFile(resolve(root,'public/images/voice/scenario-illustrations.png'));
- await page.route('http://scenario.test/**',route=>route.fulfill(route.request().url().endsWith('.png')?{contentType:'image/png',body:atlas}:{contentType:'text/html',body:'<html></html>'}));
+ await page.route('http://scenario.test/**',async route=>{
+   try {
+    const pathname=new URL(route.request().url()).pathname;
+    if(!pathname.startsWith('/branding/')&&!pathname.startsWith('/images/'))return route.fulfill({contentType:'text/html',body:'<html></html>'});
+    const body=await readFile(resolve(root,'public','.'+pathname));
+    return route.fulfill({contentType:pathname.endsWith('.webp')?'image/webp':'image/png',body});
+   }catch{return route.fulfill({status:404,body:''});}
+  });
  await page.goto('http://scenario.test/');
  for(const installed of [false,true])for(const [width,height] of [[360,640],[390,844],[1366,900],[740,360]])for(const kind of ['ready','long','result']){
   await page.setViewportSize({width,height});
