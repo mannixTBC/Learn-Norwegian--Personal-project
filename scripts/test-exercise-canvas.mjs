@@ -19,6 +19,8 @@ const fixtures=[
  ['verb-practice verb-practice--app','verbs'],['pronunciation-cathedral pronunciation-nordic','pronunciation'],
  ['review-page recall-sheet','review'],['conversation-studio mobile-conversation','scenarios'],
  ['exercise-screen final-test','final test'],
+ ['conversation-studio mobile-conversation mobile-conversation--catalog','scenario catalog'],
+ ['conversation-studio desktop-conversation desktop-conversation--catalog','scenario catalog'],
 ];
 let checks=0;
 try {
@@ -37,7 +39,7 @@ try {
    });
    const context=`${label}, ${installed?'installed':'web'}, ${width}x${height}`;
    const installedColors={'Nordic exercise':'rgb(6, 45, 61)',vocabulary:'rgb(245, 234, 214)',sentences:'rgb(255, 250, 240)',listening:'rgb(243, 232, 212)','word discovery':'rgb(8, 47, 63)',verbs:'rgb(255, 250, 240)',pronunciation:'rgb(250, 249, 244)',review:'rgb(243, 237, 223)',scenarios:'rgb(250, 248, 239)'};
-   const theme=installed?(installedColors[label]||'rgb(244, 249, 250)'):(label==='pronunciation'?'rgb(250, 249, 244)':label==='review'?'rgb(243, 237, 223)':'rgb(247, 249, 251)');
+   const theme=label==='scenario catalog'?'rgb(247, 241, 226)':installed?(installedColors[label]||'rgb(244, 249, 250)'):(label==='pronunciation'?'rgb(250, 249, 244)':label==='review'?'rgb(243, 237, 223)':'rgb(247, 249, 251)');
    assert.equal(actual.expected,theme,context+': correct theme surface');
    assert.notEqual(actual.expected,'rgb(255, 255, 255)',context+': explicit exercise surface');
    assert.notEqual(actual.expected,'rgba(0, 0, 0, 0)',context+': opaque canvas');

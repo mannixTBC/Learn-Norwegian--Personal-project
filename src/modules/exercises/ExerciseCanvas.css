@@ -38,3 +38,5 @@ html body #root .App>.App__main:has(:is(.exercise-screen,.practice-game,.activit
 }
 html body #root .App:has(>.App__main :is(.exercise-screen,.practice-game,.activity-game,.desktop-activity,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery,.verb-practice,.verb-practice__sessions,.pronunciation-cathedral,.review-page,.conversation-studio))>.footer { display:none !important; }
 html.is-installed-app:has(.mobile-conversation) { --exercise-canvas:#faf8ef; }
+
+html:has(.App__main :is(.mobile-conversation--catalog,.desktop-conversation--catalog)) { --exercise-canvas:#f7f1e2; }

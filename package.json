@@ -65,7 +65,8 @@
     "test:dialogue:live": "node scripts/test-dialogue-live.mjs",
     "test:scenarios": "node --test scripts/test-scenario-progress.mjs backend/scenarioContract.test.js backend/scenarioLevels.test.js backend/scenarioAssessment.test.js backend/scenarioSession.test.js scripts/test-scenario-session-transport.mjs backend/routes/scenarios.test.js && node scripts/test-scenario-levels-ui.mjs && node scripts/test-scenario-session-ui.mjs && node scripts/test-scenario-voice-ui.mjs",
     "test:scenarios:live": "node scripts/test-scenarios-live.mjs",
-    "preview:scenarios": "node scripts/preview-conversation-desktop.mjs"
+    "preview:scenarios": "node scripts/preview-conversation-desktop.mjs",
+    "test:scenario-catalog": "npm run build:client && node scripts/test-scenario-catalog.mjs"
   },
   "browserslist": {
     "production": [

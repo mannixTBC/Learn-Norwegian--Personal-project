@@ -23,17 +23,17 @@ import PageLoading from './modules/layout/PageLoading';
 export function AppContent() {
   const mainRef = useRef(null);
   const { pathname } = useLocation();
-  const isSentenceGame = /^\/drag(?:\/|$)/.test(pathname);
+  const isFocusedExercise = /^\/(?:drag|scenarii)(?:\/|$)/.test(pathname);
   return (
     <AuthProvider>
       <SeoManager />
       <div className="App">
-        {!isSentenceGame && <Navbar />}
+        {!isFocusedExercise && <Navbar />}
         <main className="App__main" ref={mainRef}>
           <AppRoutes />
           <PageLoading contentRef={mainRef} />
         </main>
-        {!isSentenceGame && <Footer />}
+        {!isFocusedExercise && <Footer />}
       </div>
     </AuthProvider>
   );
@@ -44,4 +44,3 @@ function App() {
 }
 
 export default App;
-
