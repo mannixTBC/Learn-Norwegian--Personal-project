@@ -85,9 +85,9 @@ for (const mode of [false, true]) {
     const card = classNodes(renderer, 'conversation-card').find(node => textOf(node).includes(source.title));
     if (!mode) assert.ok(textOf(card).includes(expected.turns + ' schimburi maximum'));
     await act(async () => card.props.onClick());
-    const brief = classNodes(renderer, 'conversation-brief')[0];
+    const brief = classNodes(renderer, 'airy-conversation')[0];
     assert.ok(textOf(brief).includes(expected.brief));
-    assert.deepEqual(brief.findAllByType('li').map(node => textOf(node).slice(1)), expected.goals);
+    assert.deepEqual(brief.findAllByType('li').map(node => textOf(node).replace(/^.*? · /,'')), expected.goals);
     assert.equal(textOf(classNodes(renderer, 'conversation-criteria')[0]), expected.expectation);
     if (!mode) assert.equal(renderer.root.findByProps({ id: 'dc-context' }).props.hidden, true);
     if (mode) {
@@ -122,16 +122,16 @@ for (const mode of [false, true]) {
     }
     assert.ok(textOf(classNodes(renderer, 'conversation-messages')[0]).includes(expected.opening));
     assert.equal(renderer.root.findAll(node => typeof node.type === 'string' && node.props['aria-label'] === `0 din ${expected.turns} răspunsuri`).length, 1);
-    const hintButton = classNodes(renderer, 'conversation-link').find(node => textOf(node).includes('Un punct de pornire'));
+    const hintButton = classNodes(renderer, 'airy-help')[0];
     await act(async () => hintButton.props.onClick());
     assert.equal(textOf(classNodes(renderer, 'conversation-hint')[0]), expected.hint);
     const nextLevel = level === 'C2' ? 'A1' : 'C2';
     await act(async () => history.push('/scenarii?nivel=' + nextLevel));
-    assert.equal(classNodes(renderer, 'conversation-brief').length, 0, 'level change clears the old session');
+    assert.equal(classNodes(renderer, 'airy-conversation').length, 0, 'level change clears the old session');
     assert.equal(classNodes(renderer, 'conversation-hint').length, 0, 'hints do not leak between levels');
     const nextCard = classNodes(renderer, 'conversation-card').find(node => textOf(node).includes(source.title));
     await act(async () => nextCard.props.onClick());
-    assert.equal(classNodes(renderer, 'conversation-brief')[0].findAllByType('li').length, source.variants[nextLevel].goals.length);
+    assert.equal(classNodes(renderer, 'airy-conversation')[0].findAllByType('li').length, source.variants[nextLevel].goals.length);
     await act(async () => renderer.unmount());
   }
 }

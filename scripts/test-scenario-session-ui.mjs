@@ -87,11 +87,12 @@ const render = async (entry = '/scenarii?nivel=A1') => {
 const choose = async renderer => {
   await act(async () => nodes(renderer, 'conversation-card').find(node => textOf(node).includes(source.title)).props.onClick());
 };
+const voiceFlow = renderer => renderer.root.find(n => typeof n.type === 'function' && n.props.flow && n.props.onHelp).props.flow;
 const write = async (renderer, text) => {
-  await act(async () => renderer.root.findByType('textarea').props.onChange({ target: { value: text } }));
+  await act(async () => voiceFlow(renderer).setDraft(text));
 };
 const send = async renderer => {
-  await act(async () => { renderer.root.findByType('form').props.onSubmit({ preventDefault() {} }); });
+  await act(async () => { button(renderer, 'Trimite răspunsul vocal').props.onClick(); });
 };
 const unmount = async renderer => { await act(async () => renderer.unmount()); };
 const setup = () => { temporary.clear(); progress.clear(); server.clear(); calls = []; handler = normal; globalThis.scenarioTestUser = { id: 'flow-test-user' }; };
@@ -153,28 +154,15 @@ for (const mode of [false, true]) {
   await act(async () => { gate.resolve(normal('start', { level: 'A1' })); });
   await write(r, 'Jeg er ti minutter forsinket.');
   gate = deferred(); handler = () => gate.promise;
-  const form = r.root.findByType('form');
+  const form = {props:{onSubmit:()=>voiceFlow(r).send()}};
   await act(async () => { form.props.onSubmit({ preventDefault() {} }); form.props.onSubmit({ preventDefault() {} }); });
   assert.equal(calls.length, 2);
   assert.equal(nodes(r, 'conversation-pending').length, 1);
-  assert.equal(r.root.findByType('textarea').props.disabled, true);
+  assert.equal(voiceFlow(r).busy, true);
   await act(async () => { gate.resolve(normal('turn', calls.at(-1).body)); });
-  assert.equal(nodes(r, 'conversation-message').length, 3);
-  assert.equal(r.root.findByType('textarea').props.value, '');
-  if (!mode) {
-    assert.equal(r.root.findByProps({ id: 'dc-history' }).props.hidden, true);
-    await click(r, 'Istoricul conversației (3)');
-    assert.equal(r.root.findByProps({ id: 'dc-history' }).props.hidden, false,
-      'past dialogue remains available from the compact current-reply view');
-    await click(r, 'Ascunde istoricul');
-    assert.equal(r.root.findByProps({ id: 'dc-history' }).props.hidden, true);
-  } else {
-    assert.equal(r.root.findByProps({ id: 'mc-history' }).props.hidden, true);
-    await click(r, 'Istoric');
-    assert.equal(r.root.findByProps({ id: 'mc-history' }).props.hidden, false);
-    await click(r, 'Ascunde istoricul');
-    assert.equal(r.root.findByProps({ id: 'mc-history' }).props.hidden, true);
-  }
+  assert.equal(nodes(r, 'airy-message').length, 3);
+  assert.equal(voiceFlow(r).draft, '');
+  assert.equal(nodes(r,'airy-message').length,3,'full dialogue remains visible');
   await unmount(r); checks++;
 
   // A failed start can be retried without abandoning the selected brief.
@@ -192,13 +180,13 @@ for (const mode of [false, true]) {
   const token = [...server.keys()][0];
   handler = () => { throw new TypeError('Network failed'); };
   await send(r);
-  assert.equal(nodes(r, 'conversation-message').length, 1);
-  assert.equal(r.root.findByType('textarea').props.value, 'Jeg er ti minutter forsinket.');
+  assert.equal(nodes(r, 'airy-message').length, 1);
+  assert.equal(voiceFlow(r).draft, 'Jeg er ti minutter forsinket.');
   await write(r, 'Jeg er omtrent ti minutter forsinket.');
   handler = normal; await click(r, 'Reîncearcă');
   assert.equal(calls.at(-1).body.sessionToken, token);
   assert.equal(calls.at(-1).body.message, 'Jeg er omtrent ti minutter forsinket.');
-  assert.equal(nodes(r, 'conversation-message').length, 3);
+  assert.equal(nodes(r, 'airy-message').length, 3);
   await unmount(r); checks++;
 
   // Reload restores the verified transcript and unsent draft without a new start or turn.
@@ -208,8 +196,8 @@ for (const mode of [false, true]) {
   r = await render();
   assert.equal(calls.length, beforeReload + 1);
   assert.equal(calls.at(-1).operation, 'resume');
-  assert.equal(nodes(r, 'conversation-message').length, 3);
-  assert.equal(r.root.findByType('textarea').props.value, 'Det er mye trafikk.');
+  assert.equal(nodes(r, 'airy-message').length, 3);
+  assert.equal(voiceFlow(r).draft, 'Det er mye trafikk.');
   assert.match(textOf(r.root), /Conversația a fost reluată/);
   await unmount(r); checks++;
 
@@ -218,15 +206,15 @@ for (const mode of [false, true]) {
   handler = () => reply(410, { code: 'SCENARIO_SESSION_EXPIRED', error: 'Sesiunea a expirat.' });
   await send(r);
   assert.ok(button(r, 'Începe o sesiune nouă'));
-  assert.equal(button(r, 'Trimite →').props.disabled, true);
+  assert.equal(button(r, 'Trimite răspunsul vocal').props.disabled, true);
   handler = () => reply(503, { error: 'Unavailable' });
   await click(r, 'Începe o sesiune nouă');
-  assert.equal(button(r, 'Trimite →').props.disabled, true, 'failed restart must not send into the expired session');
-  assert.equal(r.root.findByType('textarea').props.value, 'Det er mye trafikk.');
+  assert.equal(button(r, 'Trimite răspunsul vocal').props.disabled, true, 'failed restart must not send into the expired session');
+  assert.equal(voiceFlow(r).draft, 'Det er mye trafikk.');
   handler = normal; await click(r, 'Reîncearcă');
   assert.equal(calls.at(-1).operation, 'start');
-  assert.equal(r.root.findByType('textarea').props.value, 'Det er mye trafikk.');
-  assert.equal(nodes(r, 'conversation-message').length, 1);
+  assert.equal(voiceFlow(r).draft, 'Det er mye trafikk.');
+  assert.equal(nodes(r, 'airy-message').length, 1);
   await unmount(r); checks++;
 
   // Authentication and quota problems have distinct actions and never retry automatically.
@@ -239,14 +227,14 @@ for (const mode of [false, true]) {
   await click(r, 'Verifică din nou disponibilitatea');
   const login = r.root.findAllByType('a').find(a => textOf(a) === 'Conectează-te');
   assert.match(login.props.href, /^\/autentificare\?redirect=/);
-  assert.equal(r.root.findByType('textarea').props.value, 'Hei');
+  assert.equal(voiceFlow(r).draft, 'Hei');
   await unmount(r); checks++;
 
   // Late responses cannot resurrect a discarded scenario or a different account/level.
   setup(); r = await start(); await write(r, 'Hei');
   gate = deferred(); handler = () => gate.promise;
   await send(r); const waiting = calls.at(-1);
-  await click(r, mode ? 'Scenarii practice' : 'Înapoi la scenarii');
+  await click(r, 'Scenarii practice');
   assert.equal(waiting.signal.aborted, true);
   assert.equal(temporary.size, 0);
   await act(async () => { gate.resolve(normal('turn', waiting.body)); });
@@ -308,16 +296,16 @@ for (const mode of [false, true]) {
   assert.ok(button(r, 'Reîncearcă'));
   handler = normal; await click(r, 'Reîncearcă');
   assert.equal(calls.at(-1).operation, 'resume');
-  assert.equal(r.root.findByType('textarea').props.value, 'Et utkast.');
+  assert.equal(voiceFlow(r).draft, 'Et utkast.');
   gate = deferred(); handler = () => gate.promise; await send(r);
   const interrupted = calls.at(-1);
   await unmount(r);
   assert.equal(interrupted.signal.aborted, true);
   handler = normal; r = await render();
-  assert.equal(nodes(r, 'conversation-message').length, 1);
-  assert.equal(r.root.findByType('textarea').props.value, 'Et utkast.');
+  assert.equal(nodes(r, 'airy-message').length, 1);
+  assert.equal(voiceFlow(r).draft, 'Et utkast.');
   await act(async () => { gate.resolve(normal('turn', interrupted.body)); });
-  assert.equal(nodes(r, 'conversation-message').length, 1, 'abandoned response cannot alter a restored checkpoint');
+  assert.equal(nodes(r, 'airy-message').length, 1, 'abandoned response cannot alter a restored checkpoint');
   await unmount(r); checks++;
 
   // Corrupt or unavailable storage cannot prevent a new conversation.

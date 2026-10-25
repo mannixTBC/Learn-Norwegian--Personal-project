@@ -40,3 +40,4 @@ html body #root .App:has(>.App__main :is(.exercise-screen,.practice-game,.activi
 html.is-installed-app:has(.mobile-conversation) { --exercise-canvas:#faf8ef; }
 
 html:has(.App__main :is(.mobile-conversation--catalog,.desktop-conversation--catalog)) { --exercise-canvas:#f7f1e2; }
+html:has(.App__main .airy-conversation) { --exercise-canvas:#fffcf2; }

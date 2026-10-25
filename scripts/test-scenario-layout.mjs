@@ -28,13 +28,13 @@ try{
    }catch{return route.fulfill({status:404,body:''});}
   });
  await page.goto('http://scenario.test/');
- for(const installed of [false,true])for(const [width,height] of [[360,640],[390,844],[1366,900],[740,360]])for(const kind of ['ready','long','result']){
+ for(const installed of [false,true])for(const [width,height] of [[360,640],[390,844],[1366,900],[740,360]])for(const kind of ['ready','long','active','result']){
   await page.setViewportSize({width,height});
-  const r=resolvePublicScenario(catalog.scenarios[0],catalog.levels,'C2');
+  const r=resolvePublicScenario(catalog.scenarios.find(s=>s.id==='cafe-order'),catalog.levels,'C2');
   const selected={...r.scenario,difficulty:r.difficulty};
   if(kind==='long')selected.brief+=' '+selected.brief.repeat(4);
-  const session=kind==='result'?{done:true,achieved:[0],turn:10,maxTurns:10,endReason:'turn_limit',feedback:'Mai ai de exersat. '.repeat(30)}:null;
-  const flow={session,messages:[],draft:'',busy:false,progress:{},reset(){},start(){},again(){}};
+  const session=kind==='result'?{done:true,achieved:[0],turn:10,maxTurns:10,endReason:'turn_limit',feedback:'Mai ai de exersat. '.repeat(30)}:kind==='active'?{done:false,achieved:[0],turn:1,maxTurns:10,sessionToken:'fixture'}:null;
+  const flow={session,messages:kind==='active'?[{role:'assistant',text:'Hei! Hva vil du bestille?'},{role:'user',text:'En kaffe, takk.'},{role:'assistant',text:'Vil du ha en liten eller stor kaffe?'}]:[],draft:'',busy:false,progress:{},reset(){},start(){},again(){}};
   const html=renderToStaticMarkup(React.createElement(MemoryRouter,null,React.createElement(installed?Mobile:Desktop,{level:'C2',path:{id:'transport'},scenarios:[selected],selected,flow})));
   await page.setContent('<html class="'+(installed?'is-installed-app':'')+'"><head><style>'+css+'</style></head><body><div id="root"><div class="App"><main class="App__main">'+html+'</main></div></div></body></html>');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),JSON.stringify({installed,width,height,kind}));
@@ -45,8 +45,10 @@ try{
   const controls=kind==='result'?page.getByRole('link',{name:'Vezi recapitularea'}):page.locator('.scenario-voice__mic');
   await controls.scrollIntoViewIfNeeded();assert.ok(await controls.isVisible());
   if(kind==='result')assert.equal(await controls.getAttribute('href'),'/recapitulare?nivel=C2');
+  if(kind==='active'&&width===390&&installed){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:resolve(root,'node_modules/.cache/scenario-active.png'),fullPage:true});}
   await page.evaluate(()=>document.querySelector('.App__main').innerHTML='<p>Jocuri</p>');
   assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--exercise-canvas').trim()),'');
+  assert.equal(await page.locator('textarea,input[type=text]').count(),0);
   checks++;
  }
  await page.evaluate(async()=>{const im=new Image();im.src='/images/voice/scenario-illustrations.png';await im.decode();if(im.naturalWidth!==1536)throw Error('Invalid atlas');});
