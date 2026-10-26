@@ -260,4 +260,3 @@ html.is-installed-app .northern-dialog .mobile-app-nav { position: static; inset
   .mini-games.northern-games { grid-template-rows:44px minmax(90px,1fr) 116px 44px 64px; }
   .northern-dialog[open] { gap:3px; }
 }
-

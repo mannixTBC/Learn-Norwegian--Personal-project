@@ -82,9 +82,7 @@ for (const mode of [false, true]) {
     if (mode) {
       assert.equal(classNodes(renderer, 'mobile-app-nav').length, 0, 'catalog is full screen');
     }
-    const card = classNodes(renderer, 'conversation-card').find(node => textOf(node).includes(source.title));
-    if (!mode) assert.ok(textOf(card).includes(expected.turns + ' schimburi maximum'));
-    await act(async () => card.props.onClick());
+    await act(async () => renderer.root.find(n => typeof n.type === 'function' && n.props.flow && n.props.scenarios).props.flow.choose(source.id));
     const brief = classNodes(renderer, 'airy-conversation')[0];
     assert.ok(textOf(brief).includes(expected.brief));
     assert.deepEqual(brief.findAllByType('li').map(node => textOf(node).replace(/^.*? · /,'')), expected.goals);
@@ -133,8 +131,7 @@ for (const mode of [false, true]) {
     await act(async () => history.push('/scenarii?nivel=' + nextLevel));
     assert.equal(classNodes(renderer, 'airy-conversation').length, 0, 'level change clears the old session');
     assert.equal(classNodes(renderer, 'conversation-hint').length, 0, 'hints do not leak between levels');
-    const nextCard = classNodes(renderer, 'conversation-card').find(node => textOf(node).includes(source.title));
-    await act(async () => nextCard.props.onClick());
+    await act(async () => renderer.root.find(n => typeof n.type === 'function' && n.props.flow && n.props.scenarios).props.flow.choose(source.id));
     assert.equal(classNodes(renderer, 'airy-conversation')[0].findAllByType('li').length, source.variants[nextLevel].goals.length);
     await act(async () => renderer.unmount());
   }

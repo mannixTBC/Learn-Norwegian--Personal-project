@@ -240,6 +240,129 @@
   color:#175f68;background:#edf7f5;font-family:inherit;cursor:pointer;
   white-space:nowrap;
 }
+
+.navbar__toggle span { position: absolute; left: 10px; display: block; width: 22px; height: 2px; margin: 0; background: #14213d; border-radius: 2px; transform-origin: center; transition: top .18s ease,opacity .14s ease,transform .18s ease,background-color .18s ease; }
+.navbar__toggle span:nth-child(1) { top: 14px; }
+.navbar__toggle span:nth-child(2) { top: 21px; }
+.navbar__toggle span:nth-child(3) { top: 28px; }
+.navbar__toggle:hover { border-color: #d5e8e8; background: #f0f8f8; }
+.navbar__toggle:active { transform: scale(.96); }
+.navbar__toggle:focus-visible { outline: 3px solid #8fd3d7; outline-offset: 2px; }
+.navbar__toggle--open { border-color: #badbdd; background: #e7f5f4; box-shadow: 0 4px 12px rgba(23,78,89,.1); }
+.navbar__toggle--open span { background: #17636b; }
+.navbar__toggle--open span:nth-child(1) { top: 21px; transform: rotate(45deg); }
+.navbar__toggle--open span:nth-child(2) { opacity: 0; transform: scaleX(.45); }
+.navbar__toggle--open span:nth-child(3) { top: 21px; transform: rotate(-45deg); }
+.navbar__backdrop { position: fixed; z-index: 99; inset: 62px 0 0; background: rgba(20,33,61,.16); backdrop-filter: blur(1.5px); animation: navbar-backdrop-in .18s ease both; }
+
+@keyframes navbar-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes navbar-dropdown-in { from { opacity: 0; transform: translateY(-7px) scaleY(.98); } to { opacity: 1; transform: translateY(0) scaleY(1); } }
+
+@media (max-width: 860px) {
+  .navbar__inner { grid-template-columns: 1fr auto; gap: 8px; height: 62px; padding: 0 18px; }
+  .navbar__toggle { display: block; }
+  .navbar__nav { display: none; }
+  .navbar__nav--open {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 18px 18px;
+    background: #fff;
+    border-bottom: 1px solid #e4e9f0;
+    box-shadow: 0 12px 24px rgba(20, 33, 61, 0.1);
+    transform-origin: top center;
+    animation: navbar-dropdown-in .18s ease both;
+  }
+  .nav-link { width: 100%; padding: 13px 14px; }
+  .navbar__account { display: none; }
+  .navbar__login { padding: 8px 10px; font-size: .75rem; }
+  .navbar__logo-icon img { width: 136px; }
+  .navbar__mobile-account {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 12px;
+    align-items: center;
+    margin-top: 8px;
+    padding: 15px 14px 2px;
+    border-top: 1px solid #e5eaef;
+  }
+  .navbar__mobile-user { display: flex; grid-column:1/-1; min-width: 0; gap: 10px; align-items: center; padding: 6px; border-radius: 11px; text-decoration: none; transition:background-color .18s ease; }
+  .navbar__mobile-user:hover { background: #edf7f7; text-decoration: none; }
+  .navbar__mobile-user:focus-visible { outline: 3px solid rgba(31,111,120,.24); outline-offset: 2px; }
+  .navbar__avatar--menu { width: 38px; height: 38px; flex-basis: 38px; border-radius: 11px; }
+  .navbar__mobile-user>div { min-width: 0; }
+  .navbar__mobile-user small,.navbar__mobile-user strong { display: block; line-height: 1.2; }
+  .navbar__mobile-user small { color: #7b8997; font-size: .58rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+  .navbar__mobile-user strong { max-width: 145px; overflow: hidden; color: #14213d; font-size: .78rem; text-overflow: ellipsis; white-space: nowrap; }
+  .navbar__mobile-settings,.navbar__mobile-delete,.navbar__mobile-logout,.navbar__mobile-login { display: inline-flex; min-height: 40px; justify-content: center; align-items: center; padding: 0 12px; border-radius: 11px; font-family: inherit; font-size: .7rem; font-weight: 850; text-decoration: none; cursor: pointer; }
+  .navbar__mobile-settings { color: #174e59; border: 1px solid #bad8da; background: #edf8f8; }
+  .navbar__mobile-settings:hover { color: #fff; background: var(--fjord); text-decoration: none; }
+  .navbar__mobile-delete{gap:6px;color:#8b3041;border:1px solid #ead0d5;background:#fff7f8}
+  .navbar__mobile-delete svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .navbar__mobile-delete:hover{color:#fff;border-color:#8b3041;background:#8b3041;text-decoration:none}
+  .navbar__mobile-logout { gap: 7px; min-height: 42px; color: #8b3041; border: 1px solid #e4bcc4; background: #fff7f8; box-shadow: 0 4px 12px rgba(109,35,50,.06); font-size: .76rem; font-weight: 800; letter-spacing: .005em; transition: color .18s ease,border-color .18s ease,background-color .18s ease,box-shadow .18s ease,transform .18s ease; }
+  .navbar__mobile-logout svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .navbar__mobile-logout:hover { color: #fff; border-color: #8b3041; background: #8b3041; box-shadow: 0 7px 16px rgba(109,35,50,.2); text-decoration: none; transform: translateY(-1px); }
+  .navbar__mobile-logout:active { box-shadow: none; transform: translateY(0); }
+  .navbar__mobile-logout:focus-visible { outline: 3px solid #efc6ce; outline-offset: 2px; }
+  .navbar__mobile-login { color: #174e59; border: 1px solid #b9d6d8; background: #edf8f8; }
+  .navbar__mobile-login:hover { color: #fff; border-color: var(--fjord); background: var(--fjord); text-decoration: none; }
+  .navbar__mobile-login { grid-column: 1/-1; color: #fff; border-color: var(--fjord); background: var(--fjord); }
+}
+
+@media (max-width: 480px) {
+  .navbar__mobile-account { grid-template-columns: 1fr 1fr; }
+  .navbar__mobile-user { grid-column: 1 / -1; }
+  .navbar__mobile-settings,.navbar__mobile-delete,.navbar__mobile-logout { width: 100%; }
+  .navbar__mobile-logout{grid-column:1/-1}
+}
+
+/* Aplicația instalată: bara de sus păstrează doar explorarea secundară.
+   Acasă, Lecții, Jocuri și Cont sunt disponibile în navigația inferioară. */
+@media (max-width: 860px) {
+  html.is-installed-app .navbar__inner{height:60px;padding:0 15px}
+  html.is-installed-app .navbar__logo-icon img{width:128px}
+  html.is-installed-app .navbar__toggle{display:block;width:42px;min-width:42px;height:42px;padding:0;color:#31515b;border-color:#d4e4e6;border-radius:12px;background:#f7fbfb;box-shadow:0 4px 12px rgba(20,33,61,.055)}
+  html.is-installed-app .navbar__toggle span{left:12px;width:18px;background:currentColor}
+  html.is-installed-app .navbar__toggle span:nth-child(1){top:13px}
+  html.is-installed-app .navbar__toggle span:nth-child(2){top:20px}
+  html.is-installed-app .navbar__toggle span:nth-child(3){top:27px}
+  html.is-installed-app .navbar__toggle--open span:nth-child(1),html.is-installed-app .navbar__toggle--open span:nth-child(3){top:20px}
+  html.is-installed-app .navbar__nav--open{gap:7px;padding:13px 15px calc(17px + env(safe-area-inset-bottom));border-bottom:1px solid #dbe6e8;background:rgba(255,255,255,.98);box-shadow:0 16px 34px rgba(20,33,61,.13)}
+  html.is-installed-app .navbar__app-menu-title{display:block;padding:5px 10px 2px;color:#789097;font-size:.61rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+  html.is-installed-app .navbar__nav--open>.nav-link:not(.nav-link--app-secondary){display:none}
+  html.is-installed-app .navbar__nav--open>.nav-link--app-secondary{display:flex;min-height:52px;align-items:center;justify-content:space-between;padding:0 14px;color:#294750;border:1px solid #dce7e8;border-radius:13px;background:linear-gradient(145deg,#fff,#f4fafa);font-size:.8rem;font-weight:850}
+  html.is-installed-app .navbar__nav--open>.nav-link--app-secondary:after{display:grid;width:28px;height:28px;place-items:center;color:var(--fjord);border-radius:9px;background:#e7f4f4;content:'→';font-size:.9rem}
+  html.is-installed-app .navbar__nav--open>.nav-link--app-secondary.nav-link--active{color:#174e59;border-color:#bad8da;background:#edf8f8}
+  html.is-installed-app .navbar__mobile-account{display:none}
+}
+
+/* Ecranele de studiu au propriul control Înapoi și rămân fără meniuri globale. */
+@media (max-width: 680px) {
+  html.is-installed-app .App:has(.lesson-shell)>.navbar,
+  html.is-installed-app .App:has(.practice-game)>.navbar,
+  html.is-installed-app .App:has(.challenge30)>.navbar,
+  html.is-installed-app .App:has(.pronuntie)>.navbar,
+  html.is-installed-app .App:has(.review-page)>.navbar,
+  html.is-installed-app .App:has(.final-test)>.navbar{display:none}
+}
+
+.navbar__logo:hover { color: var(--fjord); }
+.navbar__login { background: var(--fjord); }
+.navbar__login:hover { background: var(--fjord-hover); }
+.nav-link--active { color: var(--fjord); background: var(--fjord-soft); }
+
+/* Browser installation entry in the website navigation. */
+.navbar__nav .navbar__install {
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  min-height:44px;border:1px solid #c4dfdf;border-radius:10px;
+  color:#175f68;background:#edf7f5;font-family:inherit;cursor:pointer;
+  white-space:nowrap;
+}
 .navbar__nav .navbar__install:hover { color:#fff;background:#1f6f78;border-color:#1f6f78; }
 .navbar__install:focus-visible { outline:3px solid #73b9bf;outline-offset:3px; }
 .navbar__install .pwa-install-icon { width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round; }

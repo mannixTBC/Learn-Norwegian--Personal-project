@@ -1,0 +1,9602 @@
+{
+  "version": 1,
+  "curriculumVersion": "2026.2",
+  "levels": {
+    "A1": [
+      {
+        "id": 1,
+        "uid": "a1-greetings",
+        "title": "Salutări și prezentări",
+        "sectionId": "a1-contact-identity"
+      },
+      {
+        "id": 2,
+        "uid": "a1-origin-languages",
+        "title": "De unde vii și ce limbi vorbești",
+        "sectionId": "a1-contact-identity"
+      },
+      {
+        "id": 3,
+        "uid": "a1-contact-details",
+        "title": "Numere și date de contact",
+        "sectionId": "a1-contact-identity"
+      },
+      {
+        "id": 4,
+        "uid": "a1-a1-contact-identity-mission",
+        "title": "Misiune: Fă cunoștință cu un coleg de curs și completează o fișă fictivă de contact.",
+        "sectionId": "a1-contact-identity"
+      },
+      {
+        "id": 5,
+        "uid": "a1-family",
+        "title": "Familie și persoane",
+        "sectionId": "a1-home-people"
+      },
+      {
+        "id": 6,
+        "uid": "a1-home-rooms",
+        "title": "Acasă: camere și lucruri",
+        "sectionId": "a1-home-people"
+      },
+      {
+        "id": 7,
+        "uid": "a1-neighbours-description",
+        "title": "Vecini și descrieri simple",
+        "sectionId": "a1-home-people"
+      },
+      {
+        "id": 8,
+        "uid": "a1-a1-home-people-mission",
+        "title": "Misiune: Prezintă o persoană apropiată și arată-i unui vizitator locuința ta fictivă.",
+        "sectionId": "a1-home-people"
+      },
+      {
+        "id": 9,
+        "uid": "a1-daily-routine",
+        "title": "Acasă și rutina zilnică",
+        "sectionId": "a1-time-routine"
+      },
+      {
+        "id": 10,
+        "uid": "a1-time-meetings",
+        "title": "Timp, zile și întâlniri",
+        "sectionId": "a1-time-routine"
+      },
+      {
+        "id": 11,
+        "uid": "a1-free-time-frequency",
+        "title": "Timp liber și obiceiuri",
+        "sectionId": "a1-time-routine"
+      },
+      {
+        "id": 12,
+        "uid": "a1-a1-time-routine-mission",
+        "title": "Misiune: Povestește programul unei zile și găsește un interval liber pentru o întâlnire.",
+        "sectionId": "a1-time-routine"
+      },
+      {
+        "id": 13,
+        "uid": "a1-cafe",
+        "title": "La cafenea",
+        "sectionId": "a1-food-shopping"
+      },
+      {
+        "id": 14,
+        "uid": "a1-store-payment",
+        "title": "În magazin",
+        "sectionId": "a1-food-shopping"
+      },
+      {
+        "id": 15,
+        "uid": "a1-groceries-quantities",
+        "title": "Lista de cumpărături și preferințe",
+        "sectionId": "a1-food-shopping"
+      },
+      {
+        "id": 16,
+        "uid": "a1-a1-food-shopping-mission",
+        "title": "Misiune: Comandă la cafenea și cumpără ingredientele unei mese simple.",
+        "sectionId": "a1-food-shopping"
+      },
+      {
+        "id": 17,
+        "uid": "a1-city-places",
+        "title": "Locuri din oraș și poziții",
+        "sectionId": "a1-city-travel"
+      },
+      {
+        "id": 18,
+        "uid": "a1-transport-directions",
+        "title": "Drumuri și transport",
+        "sectionId": "a1-city-travel"
+      },
+      {
+        "id": 19,
+        "uid": "a1-weather-clothes",
+        "title": "Vreme și îmbrăcăminte",
+        "sectionId": "a1-city-travel"
+      },
+      {
+        "id": 20,
+        "uid": "a1-a1-city-travel-mission",
+        "title": "Misiune: Ajungi la bibliotecă folosind transportul și explici ce iei cu tine dacă plouă.",
+        "sectionId": "a1-city-travel"
+      },
+      {
+        "id": 21,
+        "uid": "a1-first-workday",
+        "title": "La serviciu",
+        "sectionId": "a1-work-social"
+      },
+      {
+        "id": 22,
+        "uid": "a1-clarification-instructions",
+        "title": "Înțeleg, întreb și confirm",
+        "sectionId": "a1-work-social"
+      },
+      {
+        "id": 23,
+        "uid": "a1-colleague-break",
+        "title": "O pauză și o invitație simplă",
+        "sectionId": "a1-work-social"
+      },
+      {
+        "id": 24,
+        "uid": "a1-a1-work-social-mission",
+        "title": "Misiune: Treci prin prima dimineață la serviciu: prezentare, instrucțiune și o invitație la pauză.",
+        "sectionId": "a1-work-social"
+      }
+    ],
+    "A2": [
+      {
+        "id": 1,
+        "uid": "a2-plans-invitations",
+        "title": "Planuri și invitații",
+        "sectionId": "a2-relationships-plans"
+      },
+      {
+        "id": 2,
+        "uid": "a2-friendship-preferences",
+        "title": "Cunoști oameni și alegi o activitate",
+        "sectionId": "a2-relationships-plans"
+      },
+      {
+        "id": 3,
+        "uid": "a2-family-comparisons",
+        "title": "Familia de acum și schimbări simple",
+        "sectionId": "a2-relationships-plans"
+      },
+      {
+        "id": 4,
+        "uid": "a2-a2-relationships-plans-mission",
+        "title": "Misiune: Planifică o activitate cu un prieten și alegeți împreună o variantă potrivită.",
+        "sectionId": "a2-relationships-plans"
+      },
+      {
+        "id": 5,
+        "uid": "a2-shopping-returns",
+        "title": "Cumpărături și retururi",
+        "sectionId": "a2-shopping-housing"
+      },
+      {
+        "id": 6,
+        "uid": "a2-housing-repairs",
+        "title": "Locuință și probleme acasă",
+        "sectionId": "a2-shopping-housing"
+      },
+      {
+        "id": 7,
+        "uid": "a2-budget-offers",
+        "title": "Prețuri, oferte și cheltuieli",
+        "sectionId": "a2-shopping-housing"
+      },
+      {
+        "id": 8,
+        "uid": "a2-a2-shopping-housing-mission",
+        "title": "Misiune: Alege o ofertă, cere schimbarea unui produs nepotrivit și scrie proprietarului.",
+        "sectionId": "a2-shopping-housing"
+      },
+      {
+        "id": 9,
+        "uid": "a2-health-pharmacy",
+        "title": "La medic și la farmacie",
+        "sectionId": "a2-health-appointments"
+      },
+      {
+        "id": 10,
+        "uid": "a2-reschedule-appointment",
+        "title": "Schimbi sau anulezi o programare",
+        "sectionId": "a2-health-appointments"
+      },
+      {
+        "id": 11,
+        "uid": "a2-understand-appointment-instructions",
+        "title": "Înțelegi și verifici ce ai de făcut",
+        "sectionId": "a2-health-appointments"
+      },
+      {
+        "id": 12,
+        "uid": "a2-a2-health-appointments-mission",
+        "title": "Misiune: Fă o programare fictivă, schimbă ora și confirmă ce trebuie să aduci.",
+        "sectionId": "a2-health-appointments"
+      },
+      {
+        "id": 13,
+        "uid": "a2-yesterday",
+        "title": "Ce ai făcut ieri",
+        "sectionId": "a2-past-experiences"
+      },
+      {
+        "id": 14,
+        "uid": "a2-life-experiences",
+        "title": "Experiențe în Norvegia",
+        "sectionId": "a2-past-experiences"
+      },
+      {
+        "id": 15,
+        "uid": "a2-story-sequence",
+        "title": "O întâmplare de la început până la sfârșit",
+        "sectionId": "a2-past-experiences"
+      },
+      {
+        "id": 16,
+        "uid": "a2-a2-past-experiences-mission",
+        "title": "Misiune: Povestește o zi din Norvegia și răspunde la două întrebări despre experiențele tale.",
+        "sectionId": "a2-past-experiences"
+      },
+      {
+        "id": 17,
+        "uid": "a2-work-cooperation",
+        "title": "Colaborare la serviciu",
+        "sectionId": "a2-work-collaboration"
+      },
+      {
+        "id": 18,
+        "uid": "a2-work-instruction-check",
+        "title": "Pași clari și întrebări de verificare",
+        "sectionId": "a2-work-collaboration"
+      },
+      {
+        "id": 19,
+        "uid": "a2-work-status-updates",
+        "title": "Ce ai terminat și ce mai rămâne",
+        "sectionId": "a2-work-collaboration"
+      },
+      {
+        "id": 20,
+        "uid": "a2-a2-work-collaboration-mission",
+        "title": "Misiune: Primește o sarcină, verifică un pas neclar și trimite o actualizare colegului.",
+        "sectionId": "a2-work-collaboration"
+      },
+      {
+        "id": 21,
+        "uid": "a2-digital-services",
+        "title": "Servicii publice și viață digitală",
+        "sectionId": "a2-services-autonomy"
+      },
+      {
+        "id": 22,
+        "uid": "a2-forms-confirmation",
+        "title": "Completezi, trimiți și verifici o cerere",
+        "sectionId": "a2-services-autonomy"
+      },
+      {
+        "id": 23,
+        "uid": "a2-transport-delays",
+        "title": "Transport și întârzieri",
+        "sectionId": "a2-services-autonomy"
+      },
+      {
+        "id": 24,
+        "uid": "a2-a2-services-autonomy-mission",
+        "title": "Misiune: Trimite o cerere fictivă, verifică o confirmare și anunță că întârzii la programare.",
+        "sectionId": "a2-services-autonomy"
+      }
+    ],
+    "B1": [
+      {
+        "id": 1,
+        "uid": "b1-experiente-povestire",
+        "title": "Experiențe și povești",
+        "sectionId": "b1-povesti"
+      },
+      {
+        "id": 2,
+        "uid": "b1-experiente-reactii",
+        "title": "Ce s-a schimbat după experiență",
+        "sectionId": "b1-povesti"
+      },
+      {
+        "id": 3,
+        "uid": "b1-relatare-clarificare",
+        "title": "Povestește mai departe și clarifică",
+        "sectionId": "b1-povesti"
+      },
+      {
+        "id": 4,
+        "uid": "b1-b1-povesti-mission",
+        "title": "Misiune: Redă unui coleg o călătorie cu o schimbare neașteptată de plan.",
+        "sectionId": "b1-povesti"
+      },
+      {
+        "id": 5,
+        "uid": "b1-opinii-motive",
+        "title": "Opinii și justificări",
+        "sectionId": "b1-opinii"
+      },
+      {
+        "id": 6,
+        "uid": "b1-comparare-alternative",
+        "title": "Compară două variante și alege",
+        "sectionId": "b1-opinii"
+      },
+      {
+        "id": 7,
+        "uid": "b1-dezacord-politicos",
+        "title": "Ascultă părerea celuilalt și răspunde",
+        "sectionId": "b1-opinii"
+      },
+      {
+        "id": 8,
+        "uid": "b1-b1-opinii-mission",
+        "title": "Misiune: Alegeți împreună un program de lucru și justificați compromisul.",
+        "sectionId": "b1-opinii"
+      },
+      {
+        "id": 9,
+        "uid": "b1-sanatate-clarificare",
+        "title": "Sănătate și comunicarea cu medicul",
+        "sectionId": "b1-probleme"
+      },
+      {
+        "id": 10,
+        "uid": "b1-locuinta-reclamatie",
+        "title": "Locuință, contract și reclamații",
+        "sectionId": "b1-probleme"
+      },
+      {
+        "id": 11,
+        "uid": "b1-probleme-plan",
+        "title": "De la reclamație la un plan clar",
+        "sectionId": "b1-probleme"
+      },
+      {
+        "id": 12,
+        "uid": "b1-b1-probleme-mission",
+        "title": "Misiune: Transformă o reclamație într-o înțelegere clară și verificabilă.",
+        "sectionId": "b1-probleme"
+      },
+      {
+        "id": 13,
+        "uid": "b1-munca-responsabilitati",
+        "title": "Responsabilități la serviciu",
+        "sectionId": "b1-munca"
+      },
+      {
+        "id": 14,
+        "uid": "b1-munca-candidatura",
+        "title": "Căutarea unui loc de muncă",
+        "sectionId": "b1-munca"
+      },
+      {
+        "id": 15,
+        "uid": "b1-competente-dezvoltare",
+        "title": "Explică ce știi și ce vrei să înveți",
+        "sectionId": "b1-munca"
+      },
+      {
+        "id": 16,
+        "uid": "b1-b1-munca-mission",
+        "title": "Misiune: Pregătește candidatura și un plan de progres pentru prima lună.",
+        "sectionId": "b1-munca"
+      },
+      {
+        "id": 17,
+        "uid": "b1-stiri-surse",
+        "title": "Știri și societate",
+        "sectionId": "b1-societate"
+      },
+      {
+        "id": 18,
+        "uid": "b1-servicii-intrebari",
+        "title": "Servicii publice și comunicare formală",
+        "sectionId": "b1-societate"
+      },
+      {
+        "id": 19,
+        "uid": "b1-comunitate-relatii",
+        "title": "Cultură, relații și integrare",
+        "sectionId": "b1-societate"
+      },
+      {
+        "id": 20,
+        "uid": "b1-b1-societate-mission",
+        "title": "Misiune: Verifică o informație și folosește-o pentru a participa la o activitate locală.",
+        "sectionId": "b1-societate"
+      },
+      {
+        "id": 21,
+        "uid": "b1-prezentare-idee",
+        "title": "Prezentare, argumentare și planuri",
+        "sectionId": "b1-proiect"
+      },
+      {
+        "id": 22,
+        "uid": "b1-proiect-comunitate",
+        "title": "Organizează împreună o activitate",
+        "sectionId": "b1-proiect"
+      },
+      {
+        "id": 23,
+        "uid": "b1-evaluare-plan-urmator",
+        "title": "Evaluează rezultatul și pregătește pasul următor",
+        "sectionId": "b1-proiect"
+      },
+      {
+        "id": 24,
+        "uid": "b1-b1-proiect-mission",
+        "title": "Misiune: Organizați o cafenea de conversație și propuneți îmbunătățiri pe baza feedbackului.",
+        "sectionId": "b1-proiect"
+      }
+    ],
+    "B2": [
+      {
+        "id": 1,
+        "uid": "b2-argumentare-nuante",
+        "title": "Opinii și argumentare",
+        "sectionId": "b2-argumente"
+      },
+      {
+        "id": 2,
+        "uid": "b2-argument-dovada",
+        "title": "Separă afirmația, dovada și presupunerea",
+        "sectionId": "b2-argumente"
+      },
+      {
+        "id": 3,
+        "uid": "b2-obiectii-raspuns",
+        "title": "Construiește și răspunde unui contraargument",
+        "sectionId": "b2-argumente"
+      },
+      {
+        "id": 4,
+        "uid": "b2-b2-argumente-mission",
+        "title": "Misiune: Susține o propunere despre munca flexibilă și precizează limitele dovezilor.",
+        "sectionId": "b2-argumente"
+      },
+      {
+        "id": 5,
+        "uid": "b2-conflict-feedback",
+        "title": "Leadership și gestionarea conflictelor",
+        "sectionId": "b2-negociere"
+      },
+      {
+        "id": 6,
+        "uid": "b2-negociere-conditii",
+        "title": "Negociază condiții și un acord verificabil",
+        "sectionId": "b2-negociere"
+      },
+      {
+        "id": 7,
+        "uid": "b2-mediere-rezumat",
+        "title": "Mediază două poziții și rezumă acordul",
+        "sectionId": "b2-negociere"
+      },
+      {
+        "id": 8,
+        "uid": "b2-b2-negociere-mission",
+        "title": "Misiune: Ajutați două părți să ajungă la un acord pe care ambele îl confirmă.",
+        "sectionId": "b2-negociere"
+      },
+      {
+        "id": 9,
+        "uid": "b2-media-credibilitate",
+        "title": "Societate și media",
+        "sectionId": "b2-surse"
+      },
+      {
+        "id": 10,
+        "uid": "b2-date-interpretare",
+        "title": "Descrie date fără să exagerezi concluzia",
+        "sectionId": "b2-surse"
+      },
+      {
+        "id": 11,
+        "uid": "b2-comparare-surse",
+        "title": "Compară surse și transmite esențialul",
+        "sectionId": "b2-surse"
+      },
+      {
+        "id": 12,
+        "uid": "b2-b2-surse-mission",
+        "title": "Misiune: Pregătește o sinteză echilibrată despre utilizarea bibliotecii.",
+        "sectionId": "b2-surse"
+      },
+      {
+        "id": 13,
+        "uid": "b2-decizii-sustenabilitate",
+        "title": "Climă și sustenabilitate",
+        "sectionId": "b2-decizii"
+      },
+      {
+        "id": 14,
+        "uid": "b2-decizii-costuri",
+        "title": "Economie și viața profesională",
+        "sectionId": "b2-decizii"
+      },
+      {
+        "id": 15,
+        "uid": "b2-decizii-tehnologie",
+        "title": "Tehnologie, confidențialitate și etică",
+        "sectionId": "b2-decizii"
+      },
+      {
+        "id": 16,
+        "uid": "b2-b2-decizii-mission",
+        "title": "Misiune: Recomandă o schimbare locală sau profesională cu condiții și criterii de evaluare.",
+        "sectionId": "b2-decizii"
+      },
+      {
+        "id": 17,
+        "uid": "b2-comunicare-profesionala",
+        "title": "Comunicare profesională",
+        "sectionId": "b2-comunicare"
+      },
+      {
+        "id": 18,
+        "uid": "b2-raport-structurat",
+        "title": "Exprimare academică și formală",
+        "sectionId": "b2-comunicare"
+      },
+      {
+        "id": 19,
+        "uid": "b2-perspective-identitate",
+        "title": "Cultură, limbă și identitate",
+        "sectionId": "b2-comunicare"
+      },
+      {
+        "id": 20,
+        "uid": "b2-b2-comunicare-mission",
+        "title": "Misiune: Transmite o recomandare unui coordonator și explică perspectivele persoanelor afectate.",
+        "sectionId": "b2-comunicare"
+      },
+      {
+        "id": 21,
+        "uid": "b2-proiect-delimitare",
+        "title": "Delimitează o propunere pentru comunitate",
+        "sectionId": "b2-proiect"
+      },
+      {
+        "id": 22,
+        "uid": "b2-proiect-dezbatere",
+        "title": "Prezintă propunerea și răspunde obiecțiilor",
+        "sectionId": "b2-proiect"
+      },
+      {
+        "id": 23,
+        "uid": "b2-proiect-revizuire",
+        "title": "Revizuiește recomandarea după feedback",
+        "sectionId": "b2-proiect"
+      },
+      {
+        "id": 24,
+        "uid": "b2-b2-proiect-mission",
+        "title": "Misiune: Propuneți o perioadă de probă pentru programul bibliotecii și prezentați evaluarea necesară.",
+        "sectionId": "b2-proiect"
+      }
+    ],
+    "C1": [
+      {
+        "id": 1,
+        "uid": "c1-register-formalitet",
+        "title": "Aceeași intenție, registre diferite",
+        "sectionId": "c1-register-og-undertekst"
+      },
+      {
+        "id": 2,
+        "uid": "c1-undertekst-innvending",
+        "title": "Ce se sugerează într-un dezacord",
+        "sectionId": "c1-register-og-undertekst"
+      },
+      {
+        "id": 3,
+        "uid": "c1-perspektiv-bibliotek",
+        "title": "Perspective și presupuneri într-un text",
+        "sectionId": "c1-register-og-undertekst"
+      },
+      {
+        "id": 4,
+        "uid": "c1-c1-register-og-undertekst-mission",
+        "title": "Misiune: Reformulează aceeași problemă pentru un coleg, un manager și un destinatar instituțional.",
+        "sectionId": "c1-register-og-undertekst"
+      },
+      {
+        "id": 5,
+        "uid": "c1-pastand-belegg",
+        "title": "Afirmația și dovada",
+        "sectionId": "c1-kilder-og-syntese"
+      },
+      {
+        "id": 6,
+        "uid": "c1-data-usikkerhet",
+        "title": "Tendințe și incertitudine",
+        "sectionId": "c1-kilder-og-syntese"
+      },
+      {
+        "id": 7,
+        "uid": "c1-sammenstille-kilder",
+        "title": "Două surse, o sinteză responsabilă",
+        "sectionId": "c1-kilder-og-syntese"
+      },
+      {
+        "id": 8,
+        "uid": "c1-c1-kilder-og-syntese-mission",
+        "title": "Misiune: Pregătește o notă care separă afirmațiile, dovezile și limitele a două surse.",
+        "sectionId": "c1-kilder-og-syntese"
+      },
+      {
+        "id": 9,
+        "uid": "c1-prosjekt-avgrensning",
+        "title": "Delimitarea unui proiect",
+        "sectionId": "c1-profesjonell-samhandling"
+      },
+      {
+        "id": 10,
+        "uid": "c1-forhandling-forbehold",
+        "title": "Negociere și acord condiționat",
+        "sectionId": "c1-profesjonell-samhandling"
+      },
+      {
+        "id": 11,
+        "uid": "c1-formell-redegjorelse",
+        "title": "Răspuns formal și justificare",
+        "sectionId": "c1-profesjonell-samhandling"
+      },
+      {
+        "id": 12,
+        "uid": "c1-c1-profesjonell-samhandling-mission",
+        "title": "Misiune: Negociază o modificare de proiect și documentează acordul, condițiile și responsabilitățile.",
+        "sectionId": "c1-profesjonell-samhandling"
+      },
+      {
+        "id": 13,
+        "uid": "c1-arsak-sammenheng",
+        "title": "Legătură, cauză și explicație",
+        "sectionId": "c1-drofting-og-argumentasjon"
+      },
+      {
+        "id": 14,
+        "uid": "c1-konsesjon-vilkar",
+        "title": "Concesie și condiții relevante",
+        "sectionId": "c1-drofting-og-argumentasjon"
+      },
+      {
+        "id": 15,
+        "uid": "c1-droftende-tekst",
+        "title": "O analiză care conduce la o concluzie",
+        "sectionId": "c1-drofting-og-argumentasjon"
+      },
+      {
+        "id": 16,
+        "uid": "c1-c1-drofting-og-argumentasjon-mission",
+        "title": "Misiune: Susține o propunere publică și răspunde celui mai puternic contraargument.",
+        "sectionId": "c1-drofting-og-argumentasjon"
+      },
+      {
+        "id": 17,
+        "uid": "c1-forventninger-intensjon",
+        "title": "Intenția și felul în care este percepută",
+        "sectionId": "c1-interkulturell-mediering"
+      },
+      {
+        "id": 18,
+        "uid": "c1-megling-fellesgrunnlag",
+        "title": "Redarea fidelă a două perspective",
+        "sectionId": "c1-interkulturell-mediering"
+      },
+      {
+        "id": 19,
+        "uid": "c1-sprakvariasjon",
+        "title": "Variație lingvistică și adaptarea registrului",
+        "sectionId": "c1-interkulturell-mediering"
+      },
+      {
+        "id": 20,
+        "uid": "c1-c1-interkulturell-mediering-mission",
+        "title": "Misiune: Mediază un dezacord despre comunicarea din echipă și formulează un acord comun.",
+        "sectionId": "c1-interkulturell-mediering"
+      },
+      {
+        "id": 21,
+        "uid": "c1-muntlig-rodtrad",
+        "title": "Firul unei intervenții orale",
+        "sectionId": "c1-selvstendig-formidling"
+      },
+      {
+        "id": 22,
+        "uid": "c1-redigering-presisjon",
+        "title": "Revizia pentru claritate și precizie",
+        "sectionId": "c1-selvstendig-formidling"
+      },
+      {
+        "id": 23,
+        "uid": "c1-prosjekt-beslutningsgrunnlag",
+        "title": "De la surse la recomandare",
+        "sectionId": "c1-selvstendig-formidling"
+      },
+      {
+        "id": 24,
+        "uid": "c1-c1-selvstendig-formidling-mission",
+        "title": "Misiune: Realizează o notă de decizie și o prezentare orală pornind de la surse și obiecții.",
+        "sectionId": "c1-selvstendig-formidling"
+      }
+    ],
+    "C2": [
+      {
+        "id": 1,
+        "uid": "c2-premiss-implikasjon",
+        "title": "Ce presupune o formulare",
+        "sectionId": "c2-presisjon-og-implikasjon"
+      },
+      {
+        "id": 2,
+        "uid": "c2-modalitet-forpliktelse",
+        "title": "Posibilitate, probabilitate și obligație",
+        "sectionId": "c2-presisjon-og-implikasjon"
+      },
+      {
+        "id": 3,
+        "uid": "c2-reformulering-meningsinnhold",
+        "title": "Reformulare fără schimbarea sensului",
+        "sectionId": "c2-presisjon-og-implikasjon"
+      },
+      {
+        "id": 4,
+        "uid": "c2-c2-presisjon-og-implikasjon-mission",
+        "title": "Misiune: Rescrie o recomandare sensibilă, arătând ce presupune, ce implică și ce nu poate promite.",
+        "sectionId": "c2-presisjon-og-implikasjon"
+      },
+      {
+        "id": 5,
+        "uid": "c2-retorisk-innramming",
+        "title": "Cum orientează metaforele dezbaterea",
+        "sectionId": "c2-retorikk-og-undertekst"
+      },
+      {
+        "id": 6,
+        "uid": "c2-ironi-satire",
+        "title": "Ironie și critică indirectă",
+        "sectionId": "c2-retorikk-og-undertekst"
+      },
+      {
+        "id": 7,
+        "uid": "c2-forteller-perspektiv",
+        "title": "Vocea naratorului și lectura critică",
+        "sectionId": "c2-retorikk-og-undertekst"
+      },
+      {
+        "id": 8,
+        "uid": "c2-c2-retorikk-og-undertekst-mission",
+        "title": "Misiune: Comentează un text ironic și rescrie argumentul lui într-o formă explicită și echilibrată.",
+        "sectionId": "c2-retorikk-og-undertekst"
+      },
+      {
+        "id": 9,
+        "uid": "c2-kilder-sammenlignbarhet",
+        "title": "Când rezultatele pot fi comparate",
+        "sectionId": "c2-kritisk-kildesyntese"
+      },
+      {
+        "id": 10,
+        "uid": "c2-begreper-perspektiv",
+        "title": "Categorii care schimbă concluzia",
+        "sectionId": "c2-kritisk-kildesyntese"
+      },
+      {
+        "id": 11,
+        "uid": "c2-syntese-motstrid",
+        "title": "Sinteză fără consens artificial",
+        "sectionId": "c2-kritisk-kildesyntese"
+      },
+      {
+        "id": 12,
+        "uid": "c2-c2-kritisk-kildesyntese-mission",
+        "title": "Misiune: Elaborează un raport care arată ce poate fi comparat și ce rămâne incomensurabil.",
+        "sectionId": "c2-kritisk-kildesyntese"
+      },
+      {
+        "id": 13,
+        "uid": "c2-mediering-asymmetri",
+        "title": "Voce, putere și mandat",
+        "sectionId": "c2-kompleks-mediering"
+      },
+      {
+        "id": 14,
+        "uid": "c2-fagspraak-formidling",
+        "title": "Între expert și public",
+        "sectionId": "c2-kompleks-mediering"
+      },
+      {
+        "id": 15,
+        "uid": "c2-etisk-avveining",
+        "title": "Dezacord etic și proporționalitate",
+        "sectionId": "c2-kompleks-mediering"
+      },
+      {
+        "id": 16,
+        "uid": "c2-c2-kompleks-mediering-mission",
+        "title": "Misiune: Mediază o decizie de serviciu între experți, utilizatori și conducere, păstrând dezacordul relevant.",
+        "sectionId": "c2-kompleks-mediering"
+      },
+      {
+        "id": 17,
+        "uid": "c2-stil-kollokasjon",
+        "title": "Voce și combinații naturale de cuvinte",
+        "sectionId": "c2-stil-og-sprakvalg"
+      },
+      {
+        "id": 18,
+        "uid": "c2-oversettelse-pragmatikk",
+        "title": "Traducerea sensului și a funcției",
+        "sectionId": "c2-stil-og-sprakvalg"
+      },
+      {
+        "id": 19,
+        "uid": "c2-stilistisk-redigering",
+        "title": "Revizie care păstrează vocea",
+        "sectionId": "c2-stil-og-sprakvalg"
+      },
+      {
+        "id": 20,
+        "uid": "c2-c2-stil-og-sprakvalg-mission",
+        "title": "Misiune: Transformă un text pentru două categorii de public, păstrând sensul și justificând alegerile.",
+        "sectionId": "c2-stil-og-sprakvalg"
+      },
+      {
+        "id": 21,
+        "uid": "c2-muntlig-motstand",
+        "title": "Argumentare sub întrebări dificile",
+        "sectionId": "c2-selvstendig-portefolje"
+      },
+      {
+        "id": 22,
+        "uid": "c2-kritikk-revisjon",
+        "title": "Critică solidă și revizuire intelectuală",
+        "sectionId": "c2-selvstendig-portefolje"
+      },
+      {
+        "id": 23,
+        "uid": "c2-portefolje-dommekraft",
+        "title": "Portofoliu: poziție, surse și reflecție",
+        "sectionId": "c2-selvstendig-portefolje"
+      },
+      {
+        "id": 24,
+        "uid": "c2-c2-selvstendig-portefolje-mission",
+        "title": "Misiune: Construiește un portofoliu cu sinteză, text pentru public și apărare orală, apoi revizuiește-l după critică.",
+        "sectionId": "c2-selvstendig-portefolje"
+      }
+    ]
+  },
+  "links": {
+    "bus-delay": {
+      "A1": {
+        "lessonIds": [
+          18,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          6
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          7,
+          9
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          17,
+          20
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-booking": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          8,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          12,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          20,
+          18
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "team-plan": {
+      "A1": {
+        "lessonIds": [
+          22,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          16,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "C2": {
+        "lessonIds": [
+          16,
+          14
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cafe-order": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          11,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          6
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          1
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-materials": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          12,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          7,
+          9
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          11,
+          9
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-comfort": {
+      "A1": {
+        "lessonIds": [
+          2,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          6,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          6
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "C2": {
+        "lessonIds": [
+          8,
+          6
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-plan": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          7,
+          9
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          12,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          10,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          7,
+          9
+        ],
+        "basis": "stage"
+      }
+    },
+    "shop-exchange": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          5,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          16,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          11
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-meeting": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          6,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          4,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          21,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      }
+    },
+    "kindergarten-plan": {
+      "A1": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          11,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          11,
+          21
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          15,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          12,
+          9
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "bus-ticket": {
+      "A1": {
+        "lessonIds": [
+          21,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          8,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "bus-lost-bag": {
+      "A1": {
+        "lessonIds": [
+          18,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          24,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          1,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          24,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          11,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "bus-stop-question": {
+      "A1": {
+        "lessonIds": [
+          17,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          23,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-towels": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          11,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          9,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-room-noise": {
+      "A1": {
+        "lessonIds": [
+          17,
+          21
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          23,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          13,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          15,
+          11
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-luggage": {
+      "A1": {
+        "lessonIds": [
+          4,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          8,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-meeting-time": {
+      "A1": {
+        "lessonIds": [
+          10,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          10,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          6,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-file-access": {
+      "A1": {
+        "lessonIds": [
+          4,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          22,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          6,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          3,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-handover": {
+      "A1": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-parcel": {
+      "A1": {
+        "lessonIds": [
+          22,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-neighbor-noise": {
+      "A1": {
+        "lessonIds": [
+          22,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          22,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          20,
+          18
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-hair-appointment": {
+      "A1": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          10,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          6,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          11,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-tool-missing": {
+      "A1": {
+        "lessonIds": [
+          24,
+          18
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          17,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-instructions": {
+      "A1": {
+        "lessonIds": [
+          22,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          3,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          2,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-delivery-count": {
+      "A1": {
+        "lessonIds": [
+          22,
+          18
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          23,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          23,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          2,
+          21
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-visit-time": {
+      "A1": {
+        "lessonIds": [
+          10,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          2,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-water-request": {
+      "A1": {
+        "lessonIds": [
+          17,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          7,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          6,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          4,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-room-air": {
+      "A1": {
+        "lessonIds": [
+          19,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          22,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          19,
+          20
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-occupied-room": {
+      "A1": {
+        "lessonIds": [
+          17,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          6
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          21
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          19,
+          20
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-supplies": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          2,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          3,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-spill": {
+      "A1": {
+        "lessonIds": [
+          21,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          24,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          20,
+          18
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          21
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          15,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-find-product": {
+      "A1": {
+        "lessonIds": [
+          4,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          14,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-price-label": {
+      "A1": {
+        "lessonIds": [
+          12,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          7,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          10,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          21
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          20,
+          19
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-receipt": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          7,
+          9
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          8,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-library-book": {
+      "A1": {
+        "lessonIds": [
+          2,
+          21
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-assignment": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          17,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          15,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          14,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-group-roles": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          16,
+          15
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-pickup-delay": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          17,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          3,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          10,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          21,
+          11
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-spare-clothes": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          2,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          15,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          6
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-parent-meeting": {
+      "A1": {
+        "lessonIds": [
+          10,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          10,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          24,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-introduction": {
+      "A1": {
+        "lessonIds": [
+          4,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-driver-card": {
+      "A1": {
+        "lessonIds": [
+          1,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          2,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-break-room": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-radio-check": {
+      "A1": {
+        "lessonIds": [
+          2,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          6,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-shift-time": {
+      "A1": {
+        "lessonIds": [
+          3,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-break-change": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-delivery-window": {
+      "A1": {
+        "lessonIds": [
+          10,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-vehicle-handover": {
+      "A1": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          2,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          15
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-wrong-address": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          12,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-damaged-box": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-missing-label": {
+      "A1": {
+        "lessonIds": [
+          21,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          2,
+          21
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-passenger-transfer": {
+      "A1": {
+        "lessonIds": [
+          18,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          16,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          6,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          4,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          16,
+          15
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-diversion-message": {
+      "A1": {
+        "lessonIds": [
+          21,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          22,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          2,
+          21
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-load-priority": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          20,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          15,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-disputed-delivery": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          2,
+          21
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "transport-shift-summary": {
+      "A1": {
+        "lessonIds": [
+          12,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          11,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          7,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          24,
+          21
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-first-shift": {
+      "A1": {
+        "lessonIds": [
+          1,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          11,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-room-direction": {
+      "A1": {
+        "lessonIds": [
+          17,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          23,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          6,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          15,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-breakfast-place": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-extra-cup": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-breakfast-time": {
+      "A1": {
+        "lessonIds": [
+          1,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          11,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-table-booking": {
+      "A1": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-cleaning-time": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          10,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-late-arrival": {
+      "A1": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          12,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          10,
+          6
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-wrong-order": {
+      "A1": {
+        "lessonIds": [
+          12,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          14,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          17,
+          19
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-room-key": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-lamp-report": {
+      "A1": {
+        "lessonIds": [
+          17,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          21,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          10,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          21
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          1,
+          17
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-bill-question": {
+      "A1": {
+        "lessonIds": [
+          21,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-food-information": {
+      "A1": {
+        "lessonIds": [
+          8,
+          6
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-group-arrival": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          16,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-shift-notes": {
+      "A1": {
+        "lessonIds": [
+          12,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          11,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          18,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          24,
+          21
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "hotel-service-recovery": {
+      "A1": {
+        "lessonIds": [
+          24,
+          21
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          11,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          6,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          24
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-introduction": {
+      "A1": {
+        "lessonIds": [
+          4,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          17,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-desk": {
+      "A1": {
+        "lessonIds": [
+          1,
+          6
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          7,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-contact": {
+      "A1": {
+        "lessonIds": [
+          22,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-name-check": {
+      "A1": {
+        "lessonIds": [
+          4,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-lunch": {
+      "A1": {
+        "lessonIds": [
+          10,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          2,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          10,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-room-booking": {
+      "A1": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          12,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-online-call": {
+      "A1": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          22,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-training-time": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          21
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-printer": {
+      "A1": {
+        "lessonIds": [
+          21,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-wrong-attachment": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          21,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          12,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          17,
+          19
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-task-question": {
+      "A1": {
+        "lessonIds": [
+          22,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-deadline-risk": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          18
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          15,
+          11
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-conflicting-feedback": {
+      "A1": {
+        "lessonIds": [
+          14,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          20,
+          18
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          15,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          15,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          15
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-scope-change": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          20,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          19,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          24,
+          23
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-status-report": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "office-workload": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          20,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          18
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          13,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-introduction": {
+      "A1": {
+        "lessonIds": [
+          4,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-library-card": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          9,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          6,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-toilet": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-phone-number": {
+      "A1": {
+        "lessonIds": [
+          4,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-gym-visit": {
+      "A1": {
+        "lessonIds": [
+          10,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          2,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-coffee-invite": {
+      "A1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-laundry-time": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-weather-plan": {
+      "A1": {
+        "lessonIds": [
+          12,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          2,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-wrong-parcel": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-home-repair": {
+      "A1": {
+        "lessonIds": [
+          21,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          21,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-wrong-drink": {
+      "A1": {
+        "lessonIds": [
+          16,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          4,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-missed-visit": {
+      "A1": {
+        "lessonIds": [
+          21,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          16,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-subscription": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-building-work": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          11,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          17,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-event-change": {
+      "A1": {
+        "lessonIds": [
+          22,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          10,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "general-service-followup": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-new-colleague": {
+      "A1": {
+        "lessonIds": [
+          4,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-storage-location": {
+      "A1": {
+        "lessonIds": [
+          17,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-marked-box": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-clothing-size": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          5,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-start-time": {
+      "A1": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          12,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-delivery-arrival": {
+      "A1": {
+        "lessonIds": [
+          1,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          12,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-work-order": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          20,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          11,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          8
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-meeting-reschedule": {
+      "A1": {
+        "lessonIds": [
+          10,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          10,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          6,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-drawing-version": {
+      "A1": {
+        "lessonIds": [
+          22,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-wrong-material": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-damaged-tool": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-access-card": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-weather-update": {
+      "A1": {
+        "lessonIds": [
+          20,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          11,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-handover-incomplete": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          24,
+          21
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          2,
+          24
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-two-crews": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "site-extra-request": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          20,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          15,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-new-colleague": {
+      "A1": {
+        "lessonIds": [
+          4,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-reading-glasses": {
+      "A1": {
+        "lessonIds": [
+          5,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          7,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-blanket": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          7,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          3,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-common-room": {
+      "A1": {
+        "lessonIds": [
+          17,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-phone-call": {
+      "A1": {
+        "lessonIds": [
+          10,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-activity-choice": {
+      "A1": {
+        "lessonIds": [
+          11,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          7,
+          9
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          13,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          24,
+          12
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-visitor-time": {
+      "A1": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          12,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-room-preference": {
+      "A1": {
+        "lessonIds": [
+          7,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          10,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          15
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-missing-belonging": {
+      "A1": {
+        "lessonIds": [
+          17,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-message-repeat": {
+      "A1": {
+        "lessonIds": [
+          22,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          17,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          14,
+          23
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-appointment-note": {
+      "A1": {
+        "lessonIds": [
+          22,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-light-request": {
+      "A1": {
+        "lessonIds": [
+          12,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-family-update": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          15,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-choice-respect": {
+      "A1": {
+        "lessonIds": [
+          11,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          20,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          16,
+          13
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-support-handover": {
+      "A1": {
+        "lessonIds": [
+          12,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          8,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          24,
+          21
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "care-activity-cancelled": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          24,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-new-team": {
+      "A1": {
+        "lessonIds": [
+          4,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-cupboard": {
+      "A1": {
+        "lessonIds": [
+          12,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          14,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-room-number": {
+      "A1": {
+        "lessonIds": [
+          4,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          10,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          6,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          17,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-count-cloths": {
+      "A1": {
+        "lessonIds": [
+          4,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          6
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-start-time": {
+      "A1": {
+        "lessonIds": [
+          1,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          19,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          2,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          11,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-floor-order": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          15
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-meeting-room": {
+      "A1": {
+        "lessonIds": [
+          10,
+          21
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          12,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          6,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-shift-swap": {
+      "A1": {
+        "lessonIds": [
+          17,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          10,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          9,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          12,
+          11
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-vacuum-report": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-unmarked-bottle": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          15,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          2,
+          21
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-forgotten-item": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-feedback-spot": {
+      "A1": {
+        "lessonIds": [
+          17,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          18
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          21
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          15,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-extra-room": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          19,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          15,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-client-complaint": {
+      "A1": {
+        "lessonIds": [
+          22,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-handover": {
+      "A1": {
+        "lessonIds": [
+          12,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          21,
+          24
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "cleaning-scope": {
+      "A1": {
+        "lessonIds": [
+          24,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          20,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          21,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-new-colleague": {
+      "A1": {
+        "lessonIds": [
+          1,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          15,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-bag-request": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          7,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-color": {
+      "A1": {
+        "lessonIds": [
+          4,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          6
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-quantity": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-opening-time": {
+      "A1": {
+        "lessonIds": [
+          1,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          11,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-reserve-item": {
+      "A1": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          12,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-shift-plan": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          10,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-collection-time": {
+      "A1": {
+        "lessonIds": [
+          10,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          2,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          17,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-damaged-package": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-missing-item": {
+      "A1": {
+        "lessonIds": [
+          4,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          10,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-wrong-size-label": {
+      "A1": {
+        "lessonIds": [
+          22,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-payment-status": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          11,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-return-question": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          23,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          23,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          11,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-stock-promise": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          20,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          15,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          14,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          14,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-queue-help": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          24,
+          23
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "shop-order-change": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          21,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-introduction": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-classroom": {
+      "A1": {
+        "lessonIds": [
+          17,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-borrow-pencil": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          10,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-repeat-word": {
+      "A1": {
+        "lessonIds": [
+          4,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          6,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-course-time": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          19,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-practice-partner": {
+      "A1": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          10,
+          7
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          11
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          10,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-book-room": {
+      "A1": {
+        "lessonIds": [
+          12,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-late-arrival": {
+      "A1": {
+        "lessonIds": [
+          17,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          23,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          6,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-platform-access": {
+      "A1": {
+        "lessonIds": [
+          21,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          22,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          10,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          6,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-missed-class": {
+      "A1": {
+        "lessonIds": [
+          18,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          16,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-feedback": {
+      "A1": {
+        "lessonIds": [
+          22,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          11,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-submit-file": {
+      "A1": {
+        "lessonIds": [
+          22,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          17,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          16,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          6,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-source-check": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          20,
+          18
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          22,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-group-absence": {
+      "A1": {
+        "lessonIds": [
+          24,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          20,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          10,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-presentation-length": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          23,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          21
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "study-project-revision": {
+      "A1": {
+        "lessonIds": [
+          22,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          21
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          18,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          16,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-new-neighbor": {
+      "A1": {
+        "lessonIds": [
+          4,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          6,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          5,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-playground": {
+      "A1": {
+        "lessonIds": [
+          17,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          5,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          4
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-name-label": {
+      "A1": {
+        "lessonIds": [
+          4,
+          9
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          5,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-bring-book": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          2
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-playdate": {
+      "A1": {
+        "lessonIds": [
+          10,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          1,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-school-meeting": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          7,
+          9
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          10,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-activity-signup": {
+      "A1": {
+        "lessonIds": [
+          10,
+          1
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          10,
+          22
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-shared-dinner": {
+      "A1": {
+        "lessonIds": [
+          15,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          7,
+          9
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-lost-mittens": {
+      "A1": {
+        "lessonIds": [
+          17,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          13
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          16,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          16,
+          13
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-message-unclear": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          13,
+          14
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          11,
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          17,
+          13
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-photo-consent": {
+      "A1": {
+        "lessonIds": [
+          22,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          15,
+          12
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          8
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          16,
+          15
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-wrong-bag": {
+      "A1": {
+        "lessonIds": [
+          22,
+          23
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          18,
+          20
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          19,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-pickup-change": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          17
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          16
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          2,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-group-disagreement": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          19,
+          21
+        ],
+        "basis": "stage"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          20,
+          19
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-cost-question": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          20,
+          18
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          24
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          21,
+          15
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          17,
+          10
+        ],
+        "basis": "vocabulary"
+      }
+    },
+    "family-event-followup": {
+      "A1": {
+        "lessonIds": [
+          4,
+          2
+        ],
+        "basis": "vocabulary"
+      },
+      "A2": {
+        "lessonIds": [
+          3
+        ],
+        "basis": "vocabulary"
+      },
+      "B1": {
+        "lessonIds": [
+          13,
+          10
+        ],
+        "basis": "vocabulary"
+      },
+      "B2": {
+        "lessonIds": [
+          5
+        ],
+        "basis": "vocabulary"
+      },
+      "C1": {
+        "lessonIds": [
+          9,
+          14
+        ],
+        "basis": "vocabulary"
+      },
+      "C2": {
+        "lessonIds": [
+          10,
+          4
+        ],
+        "basis": "vocabulary"
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import catalog from './conversationScenarios.json';
+import { readStudioLearning } from './studioLearning';
 import { resolvePublicScenario } from './scenarioDifficulty.mjs';
 import useConversationSession from './useConversationSession';
 import { getLearningLevel } from '../lessons/learningLevel';
@@ -15,7 +16,15 @@ import './GuidedMission.css';
 export default function ConversationStudio() {
   const { user } = useAuth();
   const location = useLocation();
+  const [, refreshLearning] = useState(0);
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.addEventListener) return;
+    const update = () => refreshLearning(v => v + 1);
+    window.addEventListener('storage', update); window.addEventListener('focus', update);
+    return () => { window.removeEventListener('storage', update); window.removeEventListener('focus', update); };
+  }, []);
   const level = getLearningLevel(location.search);
+  const learning = readStudioLearning(level, user);
   const path = getCareerPath(getCareerProfile(user)?.pathId);
   const scenarios = useMemo(() => catalog.scenarios.map(source => {
     const resolved = resolvePublicScenario(source, catalog.levels, level);
@@ -40,6 +49,6 @@ export default function ConversationStudio() {
   }, [busy, session, error]);
 
   const View = isInstalledAppView() ? MobileConversationStudio : DesktopConversationStudio;
-  return <View {...{ level, path, scenarios, selected, flow, hint, setHint, loginUrl, blocked, restoring, remaining }}
+  return <View userId={user?.id} learning={learning} {...{ level, path, scenarios, selected, flow, hint, setHint, loginUrl, blocked, restoring, remaining }}
     bottomRef={bottom} inputRef={input} resultRef={result} errorRef={errorBox}/>;
 }

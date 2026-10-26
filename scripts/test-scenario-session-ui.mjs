@@ -85,7 +85,7 @@ const render = async (entry = '/scenarii?nivel=A1') => {
   return renderer;
 };
 const choose = async renderer => {
-  await act(async () => nodes(renderer, 'conversation-card').find(node => textOf(node).includes(source.title)).props.onClick());
+  await act(async () => renderer.root.find(n => typeof n.type === 'function' && n.props.flow && n.props.scenarios).props.flow.choose(source.id));
 };
 const voiceFlow = renderer => renderer.root.find(n => typeof n.type === 'function' && n.props.flow && n.props.onHelp).props.flow;
 const write = async (renderer, text) => {

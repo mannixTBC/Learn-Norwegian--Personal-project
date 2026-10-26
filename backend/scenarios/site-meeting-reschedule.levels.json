@@ -1,0 +1,285 @@
+{
+  "A1": {
+    "language": {
+      "vocabulary": "Common concrete words from this situation.",
+      "syntax": "Short present-tense phrases and one concrete question.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Ask one concrete question at a time; simplify and offer short scaffolds when requested. Do not introduce advanced constraints. Accept a feasible request, propose its next step and let the learner confirm. For A2, leave space for the learner clarification rather than answering it unprompted.",
+      "challenge": null
+    },
+    "facts": [],
+    "extraObjectives": []
+  },
+  "A2": {
+    "language": {
+      "vocabulary": "Common concrete words from this situation.",
+      "syntax": "Short clauses and simple questions.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 2
+    },
+    "interaction": {
+      "support": "Ask one concrete question at a time; simplify and offer short scaffolds when requested. Do not introduce advanced constraints. Accept a feasible request, propose its next step and let the learner confirm. For A2, leave space for the learner clarification rather than answering it unprompted.",
+      "challenge": null
+    },
+    "facts": [
+      {
+        "id": "clarification-answer",
+        "value": "Ja, fjorten passer.",
+        "knownTo": "partner",
+        "disclosure": "Use only these fictional details. Answer relevant questions; do not invent policies, prices, deadlines, outcomes or third-party confirmation."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "clarify-detail",
+        "label": "Clarifică detaliul înainte de a confirma planul",
+        "criteria": [
+          "Ask or explicitly check the detail conveyed by: Passer fjorten for deg? Do not require exact words. A bare yes is not the clarification."
+        ],
+        "factIds": [
+          "available-options",
+          "clarification-answer"
+        ],
+        "accept": [
+          "Passer fjorten for deg?"
+        ],
+        "reject": [
+          "A greeting or bare yes without relevant prior context is insufficient.",
+          "Invented facts, repeating the partner without the required communicative act, and unresolved contradictions do not satisfy the criterion."
+        ]
+      }
+    ]
+  },
+  "B1": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Connected clauses with simple reasons.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Stay within the single authored challenge. Give brief scaffolds when asked. Accept valid proposals and explicitly offer a next step so confirmation is possible. Do not reveal assessment answers or require exact examples.",
+      "challenge": {
+        "prompt": "Hvilke to muligheter har vi, og hvilken foretrekker du?",
+        "factIds": [
+          "available-options"
+        ],
+        "trigger": "After the basic situation is established, and only if this communicative task has not already been demonstrated. Introduce at most this one challenge. Ask one question per reply, then clarify rather than add obstacles."
+      }
+    },
+    "facts": [],
+    "extraObjectives": [
+      {
+        "id": "compare-options",
+        "label": "Compară opțiunile și justifică alegerea",
+        "criteria": [
+          "Identify both concrete permitted alternatives from available-options.",
+          "Choose one and give a relevant reason; a personal preference is allowed, but invented policies are not."
+        ],
+        "factIds": [
+          "available-options"
+        ],
+        "accept": [
+          "Vi kan møtes klokka tolv eller møtes klokka fjorten. Jeg foreslår det første alternativet fordi det hjelper oss å avklare behovet før vi går videre."
+        ],
+        "reject": [
+          "A greeting or bare yes without relevant prior context is insufficient.",
+          "Invented facts, repeating the partner without the required communicative act, and unresolved contradictions do not satisfy the criterion."
+        ]
+      }
+    ]
+  },
+  "B2": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Clear connected explanation and polite response to an objection.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Stay within the single authored challenge. Give brief scaffolds when asked. Accept valid proposals and explicitly offer a next step so confirmation is possible. Do not reveal assessment answers or require exact examples.",
+      "challenge": {
+        "prompt": "Kan vi heller møtes klokka fjorten?",
+        "factIds": [
+          "available-options",
+          "level-constraint"
+        ],
+        "trigger": "After the basic situation is established, and only if this communicative task has not already been demonstrated. Introduce at most this one challenge. Ask one question per reply, then clarify rather than add obstacles."
+      }
+    },
+    "facts": [
+      {
+        "id": "level-constraint",
+        "value": "Nora preferă varianta «møtes klokka fjorten», dar alegerea nu este stabilită. Discută motivul preferinței tale fără să inventezi termene, permisiuni ori rezultate.",
+        "knownTo": "shared",
+        "disclosure": "Use only these fictional details. Answer relevant questions; do not invent policies, prices, deadlines, outcomes or third-party confirmation."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "handle-objection",
+        "label": "Răspunde obiecției fără promisiuni nefondate",
+        "criteria": [
+          "Acknowledge or address the specific constraint: Nora preferă varianta «møtes klokka fjorten», dar alegerea nu este stabilită. Discută motivul preferinței tale fără să inventezi termene, permisiuni ori rezultate.",
+          "Give a feasible next step and explain why it respects that constraint. The learner may address it proactively, without waiting for the challenge."
+        ],
+        "factIds": [
+          "available-options",
+          "level-constraint"
+        ],
+        "accept": [
+          "Jeg forstår at du foretrekker å møtes klokka fjorten. Jeg foreslår likevel å møtes klokka tolv først, så vi kan avklare behovet. Vi kan vurdere det andre alternativet etterpå."
+        ],
+        "reject": [
+          "A greeting or bare yes without relevant prior context is insufficient.",
+          "Invented facts, repeating the partner without the required communicative act, and unresolved contradictions do not satisfy the criterion."
+        ]
+      }
+    ]
+  },
+  "C1": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Precise conditions and responsibilities in a natural register.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Stay within the single authored challenge. Give brief scaffolds when asked. Accept valid proposals and explicitly offer a next step so confirmation is possible. Do not reveal assessment answers or require exact examples.",
+      "challenge": {
+        "prompt": "Kan vi heller møtes klokka fjorten?",
+        "factIds": [
+          "level-constraint",
+          "handoff-options"
+        ],
+        "trigger": "After the basic situation is established, and only if this communicative task has not already been demonstrated. Introduce at most this one challenge. Ask one question per reply, then clarify rather than add obstacles."
+      }
+    },
+    "facts": [
+      {
+        "id": "level-constraint",
+        "value": "Nora preferă varianta «møtes klokka fjorten», dar alegerea nu este stabilită. Discută motivul preferinței tale fără să inventezi termene, permisiuni ori rezultate.",
+        "knownTo": "shared",
+        "disclosure": "Use only these fictional details. Answer relevant questions; do not invent policies, prices, deadlines, outcomes or third-party confirmation."
+      },
+      {
+        "id": "handoff-options",
+        "value": "A permitted responsibility arrangement, not a completed action: Jeg forklarer behovet mitt, og du avklarer neste steg med meg. Vi følger opp når vi har den nødvendige bekreftelsen.",
+        "knownTo": "shared",
+        "disclosure": "Use only these fictional details. Answer relevant questions; do not invent policies, prices, deadlines, outcomes or third-party confirmation."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "negotiate-responsibilities",
+        "label": "Negociază responsabilitățile și urmărirea situației",
+        "criteria": [
+          "Explain a tradeoff or limit grounded in level-constraint.",
+          "Propose a concrete responsibility for the learner and for Nora, consistent with available-options. Equivalent feasible allocations are accepted.",
+          "State a meaningful sequence, condition or checkpoint for follow-up; do not invent a deadline or claim an unperformed action is complete."
+        ],
+        "factIds": [
+          "available-options",
+          "level-constraint",
+          "handoff-options"
+        ],
+        "accept": [
+          "Jeg forstår at du foretrekker å møtes klokka fjorten. Jeg foreslår likevel å møtes klokka tolv først, så vi kan avklare behovet. Vi kan vurdere det andre alternativet etterpå. Jeg forklarer behovet mitt, og du avklarer neste steg med meg. Vi følger opp når vi har den nødvendige bekreftelsen."
+        ],
+        "reject": [
+          "A greeting or bare yes without relevant prior context is insufficient.",
+          "Invented facts, repeating the partner without the required communicative act, and unresolved contradictions do not satisfy the criterion."
+        ]
+      }
+    ]
+  },
+  "C2": {
+    "language": {
+      "vocabulary": "Natural vocabulary relevant to this situation, without requiring rare words.",
+      "syntax": "Nuanced clarification and concise reformulation; no artificial complexity.",
+      "register": "Polite natural conversation appropriate to the assigned roles.",
+      "tolerance": "Accept equivalent meanings, minor grammar errors and explicit self-correction. At A1 accept intelligible fragments and contextual short confirmations. No word count, accent score or required phrase. Communication criteria decide completion.",
+      "partnerMaxSentences": 3
+    },
+    "interaction": {
+      "support": "Stay within the single authored challenge. Give brief scaffolds when asked. Accept valid proposals and explicitly offer a next step so confirmation is possible. Do not reveal assessment answers or require exact examples.",
+      "challenge": {
+        "prompt": "Hvordan vil du presisere uttrykket «så snart som mulig» her?",
+        "factIds": [
+          "meaning-boundary",
+          "available-options"
+        ],
+        "trigger": "After the basic situation is established, and only if this communicative task has not already been demonstrated. Introduce at most this one challenge. Ask one question per reply, then clarify rather than add obstacles."
+      }
+    },
+    "facts": [
+      {
+        "id": "level-constraint",
+        "value": "Nora preferă varianta «møtes klokka fjorten», dar alegerea nu este stabilită. Discută motivul preferinței tale fără să inventezi termene, permisiuni ori rezultate.",
+        "knownTo": "shared",
+        "disclosure": "Use only these fictional details. Answer relevant questions; do not invent policies, prices, deadlines, outcomes or third-party confirmation."
+      },
+      {
+        "id": "meaning-boundary",
+        "value": "The phrase «så snart som mulig» is a hypothetical ambiguity to clarify, not a new event. Correct distinction: Uttrykket «så snart som mulig» angir ingen bestemt frist. Hvis vi avtaler et tidspunkt, må vi oppgi det uttrykkelig.",
+        "knownTo": "shared",
+        "disclosure": "Use only these fictional details. Answer relevant questions; do not invent policies, prices, deadlines, outcomes or third-party confirmation."
+      },
+      {
+        "id": "handoff-options",
+        "value": "A feasible future plan, not a completed action: Jeg forklarer behovet mitt, og du avklarer neste steg med meg. Vi følger opp når vi har den nødvendige bekreftelsen.",
+        "knownTo": "shared",
+        "disclosure": "Use only these fictional details. Answer relevant questions; do not invent policies, prices, deadlines, outcomes or third-party confirmation."
+      }
+    ],
+    "extraObjectives": [
+      {
+        "id": "resolve-ambiguity",
+        "label": "Clarifică sensul și reformulează precis",
+        "criteria": [
+          "Explicitly distinguish the meanings or states confused by «så snart som mulig», preserving this meaning: Uttrykket «så snart som mulig» angir ingen bestemt frist. Hvis vi avtaler et tidspunkt, må vi oppgi det uttrykkelig.",
+          "Offer a clear reformulation suitable for Nora without claiming unsupported completion or certainty. Equivalent wording is accepted."
+        ],
+        "factIds": [
+          "available-options",
+          "meaning-boundary"
+        ],
+        "accept": [
+          "Uttrykket «så snart som mulig» angir ingen bestemt frist. Hvis vi avtaler et tidspunkt, må vi oppgi det uttrykkelig."
+        ],
+        "reject": [
+          "A greeting or bare yes without relevant prior context is insufficient.",
+          "Invented facts, repeating the partner without the required communicative act, and unresolved contradictions do not satisfy the criterion."
+        ]
+      },
+      {
+        "id": "agree-follow-up",
+        "label": "Precizează responsabilitățile și condiția de confirmare",
+        "criteria": [
+          "Propose who does the next step and what follows, consistent with the permitted roles and options.",
+          "Explain the prerequisite or limit on confirming completion, using meaning-boundary. No additional second confirmation is required beyond confirm-plan."
+        ],
+        "factIds": [
+          "available-options",
+          "meaning-boundary",
+          "handoff-options"
+        ],
+        "accept": [
+          "Uttrykket «så snart som mulig» angir ingen bestemt frist. Hvis vi avtaler et tidspunkt, må vi oppgi det uttrykkelig. Jeg forklarer behovet mitt, og du avklarer neste steg med meg. Vi følger opp når vi har den nødvendige bekreftelsen."
+        ],
+        "reject": [
+          "A greeting or bare yes without relevant prior context is insufficient.",
+          "Invented facts, repeating the partner without the required communicative act, and unresolved contradictions do not satisfy the criterion."
+        ]
+      }
+    ]
+  }
+}

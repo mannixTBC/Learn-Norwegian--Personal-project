@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "study-borrow-pencil",
+  "roles": {
+    "learner": "Ești cursantul. Nora este colega ta.",
+    "partner": "Play only Nora in the role described here: Ești cursantul. Nora este colega ta. Never speak for the learner."
+  },
+  "outcome": "Ești cursantul. Nora este colega ta. Ai uitat creionul și vrei să împrumuți unul pentru oră.",
+  "facts": [
+    {
+      "id": "situation",
+      "value": "Ești cursantul. Nora este colega ta. Ai uitat creionul și vrei să împrumuți unul pentru oră.",
+      "knownTo": "learner",
+      "disclosure": "This is learner background, not spoken evidence. Do not disclose learner-only information before it is reported. Ask neutrally."
+    },
+    {
+      "id": "available-options",
+      "value": "În această situație fictivă puteți alege: «låne en blyant av Nora» sau «spørre læreren etter en ekstra». O cerere de verificare nu garantează rezultatul; datele nespecificate rămân necunoscute.",
+      "knownTo": "shared",
+      "disclosure": "Use only these fictional details. Answer relevant questions; do not invent policies, prices, deadlines, outcomes or third-party confirmation."
+    }
+  ],
+  "objectives": [
+    {
+      "id": "describe-situation",
+      "label": "Explică situația concretă",
+      "criteria": [
+        "Convey the situation with the essential details in this semantic example: Jeg har glemt blyanten min. Accept equivalent Norwegian wording and intelligible beginner fragments; never require memorization."
+      ],
+      "factIds": [
+        "situation"
+      ],
+      "accept": [
+        "Jeg har glemt blyanten min."
+      ],
+      "reject": [
+        "A greeting or bare yes without relevant prior context is insufficient.",
+        "Invented facts, repeating the partner without the required communicative act, and unresolved contradictions do not satisfy the criterion."
+      ]
+    },
+    {
+      "id": "request-action",
+      "label": "Formulează cererea sau propunerea",
+      "criteria": [
+        "Request or offer the concrete action conveyed by: Kan jeg låne en blyant? A polite equivalent, statement of need or offer is acceptable."
+      ],
+      "factIds": [
+        "situation",
+        "available-options"
+      ],
+      "accept": [
+        "Kan jeg låne en blyant?"
+      ],
+      "reject": [
+        "A greeting or bare yes without relevant prior context is insufficient.",
+        "Invented facts, repeating the partner without the required communicative act, and unresolved contradictions do not satisfy the criterion."
+      ]
+    },
+    {
+      "id": "confirm-plan",
+      "label": "Confirmă următorul pas convenit",
+      "criteria": [
+        "After an actual partner reply offering or accepting a feasible next step, confirm that step. A short contextual confirmation is enough. A proposal alone or yes before any plan is not an agreement."
+      ],
+      "factIds": [
+        "available-options"
+      ],
+      "accept": [
+        "Ja, da gjør vi det slik. (Only after Nora has offered or accepted a concrete permitted next step.)"
+      ],
+      "reject": [
+        "A greeting or bare yes without relevant prior context is insufficient.",
+        "Invented facts, repeating the partner without the required communicative act, and unresolved contradictions do not satisfy the criterion."
+      ],
+      "priorPartnerCriteria": [
+        0
+      ]
+    }
+  ],
+  "allowedResolutions": [
+    "În această situație fictivă puteți alege: «låne en blyant av Nora» sau «spørre læreren etter en ekstra». O cerere de verificare nu garantează rezultatul; datele nespecificate rămân necunoscute.",
+    "A feasible equivalent within these facts is acceptable. Agreement is on the next step, not proof that real-world work has already happened."
+  ],
+  "boundaries": [
+    "Fictional Norwegian language roleplay only. Do not ask for real names, child details, passwords or payment information.",
+    "Do not give medical, legal, technical safety or operational instructions. Discuss communication and coordination only; refer unspecified procedures to the responsible person.",
+    "No new obstacles, hidden goals, invented facts or changing the selected level. Examples are calibration, not transcript evidence."
+  ],
+  "completion": {
+    "success": "All listed objectives need learner evidence. Confirmation requires actual prior partner context.",
+    "incomplete": "At the turn limit report missing objectives without granting success.",
+    "successReply": "Takk, da har vi avtalt neste steg."
+  }
+}

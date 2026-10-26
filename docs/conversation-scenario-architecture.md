@@ -1,3 +1,124 @@
+## Extindere 25 octombrie 2026 — 200 de situații / 1.200 de variante
+
+Starea curentă înlocuiește numerele din notele istorice de mai jos:
+10 direcții × 20 de situații × 6 niveluri (A1, A2, B1, B2, C1, C2).
+Fiecare direcție are cinci situații în fiecare dintre cele patru etape:
+Introducere, Consolidare, Aplicare, Autonomie. Sunt 200 de situații distincte,
+nu 1.200 de povești fără legătură; fiecare situație are șase variante CEFR.
+
+### Progresul din lecții
+
+Programa curentă are 24 de lecții pe nivel. Studioul citește cheile existente,
+izolate pe cont și nivel, prin readCourseProgress:
+- 0–5 lecții finalizate: etapa 1;
+- 6–11: etapa 2;
+- 12–17: etapa 3;
+- 18–24: etapa 4.
+Un test final de nivel promovat permite etapa 4. Numărul de lecții deblocate,
+vizitele în pagini și rezultate ale altui cont/nivel nu sunt dovezi de progres.
+Schimbarea etapei nu promovează automat utilizatorul la alt nivel CEFR.
+Rezultatele conversațiilor nu modifică și nu blochează progresul în lecții.
+
+scenarioLessonMap.json leagă toate variantele de ID-uri reale din programa
+2026.2. Legăturile prioritizează suprapunerea de vocabular norvegian între
+expresiile scenariului și lecții. Când nu există suprapunere, sunt folosite
+repere din blocul de șase lecții al etapei, marcate explicit cu basis: stage.
+Aceste legături sunt recomandări, nu o afirmație că întregul vocabular al
+situației a fost deja predat. După schimbarea programei se regenerează harta;
+o versiune nepotrivită nu contribuie cu legături sau progres vechi.
+
+### Dificultatea și recomandările
+
+Etapa este metadată editorială fixă a situației. Cazurile introductive cer
+prezentare, identificare și solicitări simple; cazurile târzii includ diferențe
+între mesaje, predări, prioritizare și clarificări. Contractul privat adaugă
+politica de sprijin a etapei la politica CEFR: ghidare concretă la început,
+apoi inițiativă mai mare, fără criterii ascunse, vocabular rar obligatoriu sau
+refuzul ajutorului. A1/A2 nu primesc provocările avansate ale nivelurilor B/C.
+
+Interfața afișează exact patru carduri, când există suficiente situații:
+două noi din etapa curentă, una de reluat după ultima încercare incompletă
+și una pentru consolidare, dacă istoricul permite. Locurile rămase sunt
+completate din situațiile eligibile. Legăturile cu lecțiile finalizate cresc
+prioritatea. Selecția este amestecată determinist pentru cont/nivel/direcție,
+etapă și istoric; refresh-ul păstrează selecția dacă progresul nu s-a schimbat.
+„Alte scenarii” persistă o nouă rundă și favorizează carduri diferite.
+Finalizarea unei conversații schimbă istoricul și, implicit, recomandările.
+Dacă stocarea e blocată, practica funcționează și interfața explică faptul că
+runda aleasă se poate reseta.
+
+„Explorează” afișează tot patru carduri, din toate cele 20 ale direcției,
+inclusiv etape ulterioare, fără să deblocheze lecții. Filtrul implicit este
+direcția utilizatorului; există și explorarea tuturor direcțiilor.
+Linkurile de recapitulare și reluarea sesiunilor păstrează comportamentul anterior.
+
+### Surse și mentenanță
+
+- scripts/conversation-expansion-data.cjs: cele 160 de situații din această extindere.
+- scripts/expand-conversation-catalog.cjs: sursa editorială a celor 30 precedente,
+  adaptările comune A1–C2, repartizarea pe etape și generarea JSON-urilor.
+- npm run build:conversation-catalog: regenerează catalogul, contractele serverului,
+  ilustrațiile asociate și legăturile cu lecțiile.
+- Cele zece contracte inițiale rămân individuale. Pentru cele 40 de situații
+  existente, ID-urile obiectivelor, bugetele și reviziile sunt păstrate, astfel
+  încât rezultatele deja salvate rămân valabile.
+- Sunt refolosite ilustrațiile celor zece direcții; nu sunt 200 de imagini noi.
+- Importurile private sunt explicite în backend/scenarioContract.js. Criteriile,
+  exemplele de evaluare și faptele interne nu sunt trimise în catalogul public.
+
+Validarea automată acoperă cardinalitatea, cele 1.200 de contracte public/server,
+izolarea nivelurilor și etapelor, legăturile cu programa, selecția stabilă,
+rotația, conturile, progresul, recapitularea și interfața web/aplicație.
+Testele de evaluator folosesc răspunsuri simulate. Calibrarea semantică a
+tuturor situațiilor cu AI real nu este declarată efectuată.
+
+---
+
+## Extindere 25 octombrie 2026 — patru scenarii pe direcție
+
+Catalogul conține acum 40 de situații distincte: 10 existente și 30 noi.
+Fiecare are șase variante A1–C2: 240 de variante în total.
+
+| Direcție | Cele trei situații adăugate |
+|---|---|
+| Transport | Biletul nu se afișează; Un rucsac uitat în autobuz; La ce stație cobor? |
+| Hoteluri | Lipsesc prosoapele; Zgomot pe hol; Bagajul după check-out |
+| Birou | Mutăm ședința; Nu pot deschide fișierul; Predarea sarcinii înainte de liber |
+| General | Ridicarea unui colet; O discuție cu vecina; Schimbarea unei programări |
+| Construcții | Unealta lipsește; Clarificarea unei sarcini; Lipsesc două cutii |
+| Îngrijire | Ora vizitei; Un pahar cu apă; Aerisim camera |
+| Curățenie | Camera este ocupată; Lipsesc lavetele curate; O pată pe hol |
+| Magazine | Unde găsesc produsul?; Prețul de pe raft; Bonul nu a ieșit |
+| Studii | Prelungirea împrumutului; Ce trebuie să predau?; Împărțim proiectul |
+| Familie | Întârzii la grădiniță; Hainele de schimb; Programarea discuției cu educatoarea |
+
+Cele 30 de scenarii noi au câte trei obiective de bază: explicarea situației,
+cererea/propunerea concretă și confirmarea unui pas acceptat de partener.
+A2 adaugă o clarificare specifică; B1 compară opțiunile; B2 tratează o obiecție;
+C1 negociază responsabilități și urmărirea situației; C2 distinge sensurile unei
+formulări ambigue și precizează condițiile confirmării. Numărul de obiective
+este 3/4/4/4/4/5; bugetul intervențiilor este 7/8/9/10/10/10.
+
+Fiecare situație are alternative, limite și exemple proprii. A1/A2 nu primesc
+provocările avansate. Informațiile de evaluare rămân în backend. Scenariile sunt
+fictive, inclusiv orele, prețurile și disponibilitatea. Cele de îngrijire se
+limitează la comunicare neclinică. Nu sunt prezentate ca reguli profesionale.
+
+Sursa editorială a extinderii este `scripts/expand-conversation-catalog.cjs`.
+Generatorul produce JSON public și contracte private explicite și înregistrează
+importurile serverului. Poate fi rulat din nou, dar înlocuiește cele 30 de
+scenarii generate: modificările editoriale pentru ele se fac în generator.
+Cele zece scenarii anterioare sunt păstrate. Ilustrațiile existente sunt refolosite
+pe direcție; nu au fost generate 30 de imagini noi. Fiecare direcție are patru
+carduri, accesibile pe o singură pagină prin filtrul existent.
+
+Validarea automată verifică toate cele 240 de rezolvări public/server și
+obiectivele, izolarea nivelurilor, progresul și selectarea celor patru scenarii
+din fiecare direcție în web/aplicație. Evaluatorul AI real necesită probe
+semantice separate; testele cu răspunsuri simulate nu echivalează cu acestea.
+
+---
+
 ## Actualizare 24 octombrie 2026 — taskul 4 din planul curent
 
 Planul curent este: 1 catalog, 2 Nora și ilustrații, 3 ecran conversație,

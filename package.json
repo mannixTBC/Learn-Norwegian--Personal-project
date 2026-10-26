@@ -63,12 +63,14 @@
     "android:apk": "npm run android:sync && cd android && gradlew.bat assembleDebug",
     "test:dialogue": "node --test backend/routes/chat.test.js backend/routes/voice.test.js backend/routes/voicePractice.test.js backend/voiceTutor.test.js backend/voiceTranscriptDecision.test.js backend/voiceStreamTicket.test.js scripts/test-dialogue-audit.mjs scripts/test-dialogue-ui.mjs && node scripts/test-voice-client.mjs && node scripts/test-voice-practice-client.mjs",
     "test:dialogue:live": "node scripts/test-dialogue-live.mjs",
-    "test:scenarios": "node --test scripts/test-scenario-progress.mjs backend/scenarioContract.test.js backend/scenarioLevels.test.js backend/scenarioAssessment.test.js backend/scenarioSession.test.js scripts/test-scenario-session-transport.mjs backend/routes/scenarios.test.js && node scripts/test-scenario-levels-ui.mjs && node scripts/test-scenario-session-ui.mjs && node scripts/test-scenario-voice-ui.mjs",
+    "test:scenarios": "node --test scripts/test-scenario-progress.mjs backend/scenarioContract.test.js backend/scenarioLevels.test.js backend/scenarioAssessment.test.js backend/scenarioSession.test.js scripts/test-scenario-session-transport.mjs backend/routes/scenarios.test.js && node scripts/test-scenario-levels-ui.mjs && node scripts/test-scenario-session-ui.mjs && node scripts/test-scenario-voice-ui.mjs && npm run test:scenario-recommendations",
     "test:scenarios:live": "node scripts/test-scenarios-live.mjs",
     "preview:scenarios": "node scripts/preview-conversation-desktop.mjs",
     "test:scenario-catalog": "npm run build:client && node scripts/test-scenario-catalog.mjs",
     "test:scenario-review": "node --test scripts/test-scenario-review.mjs",
-    "test:scenario-flow": "npm run test:exercise-canvas && npm run test:scenarios && npm run test:scenario-review && node scripts/test-review-sheet.mjs && node scripts/test-scenario-catalog.mjs && node scripts/test-scenario-layout.mjs"
+    "test:scenario-flow": "npm run test:exercise-canvas && npm run test:scenarios && npm run test:scenario-review && node scripts/test-review-sheet.mjs && node scripts/test-scenario-catalog.mjs && node scripts/test-scenario-layout.mjs",
+    "build:conversation-catalog": "node scripts/expand-conversation-catalog.cjs && node scripts/link-conversation-lessons.mjs",
+    "test:scenario-recommendations": "node --test scripts/test-scenario-recommendations.mjs && node scripts/test-studio-learning.mjs"
   },
   "browserslist": {
     "production": [

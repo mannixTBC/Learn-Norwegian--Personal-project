@@ -73,7 +73,7 @@ test('missing or mismatched level definitions fail instead of falling back silen
   }
 });
 
-test('all ten scenarios resolve the same tailored goals on server and client', () => {
+test('all catalog scenarios resolve the same tailored goals on server and client', () => {
   for (const s of catalog.scenarios) for (const level of Object.keys(catalog.levels)) {
     const browser = resolvePublicScenario(s, catalog.levels, level);
     const server = tutor.context(s.id, level);
@@ -114,5 +114,33 @@ test('level-specific shared knowledge does not change the base scenario', () => 
   copy.factOverrides = [{ ...copy.factOverrides[0], id: 'unknown-base-fact' }];
   assert.throws(() => composeLevelDefinition(getScenarioDefinition(source), copy,
     resolvePublicScenario(source, catalog.levels, 'B1').scenario, 'B1'), /Invalid scenario contract/);
+});
+
+
+test('catalog covers twenty situations per direction, four stages and 1200 complete level variants', () => {
+  const expectedPaths = ['transport','hospitality','office','general','construction','healthcare','cleaning','retail','studies','family'];
+  assert.equal(catalog.scenarios.length, 200);
+  assert.equal(new Set(catalog.scenarios.map(s => s.id)).size, 200);
+  assert.deepEqual([...new Set(catalog.scenarios.map(s => s.path))].sort(), [...expectedPaths].sort());
+  for (const path of expectedPaths) {
+    const items = catalog.scenarios.filter(s => s.path === path);
+    assert.equal(items.length, 20, path);
+    assert.equal(new Set(items.map(s => s.title)).size, 20, path);
+    for (let stage=1;stage<=4;stage++) assert.equal(items.filter(s=>s.stage===stage).length,5,path+' stage '+stage);
+    for (const item of items) {
+      assert.deepEqual(Object.keys(item.variants).sort(), ['A1','A2','B1','B2','C1','C2']);
+      for (const level of Object.keys(item.variants)) {
+        const { scenario } = tutor.context(item.id, level);
+        assert.equal(scenario.definition.stage, item.stage);
+        assert.ok(scenario.definition.objectives.every(o => o.criteria.length && o.accept.length && o.reject.length));
+        if (['A1','A2'].includes(level)) {
+          assert.equal(scenario.definition.interaction.challenge, null);
+          assert.ok(!scenario.definition.facts.some(f => ['level-constraint','meaning-boundary','handoff-options'].includes(f.id)));
+        }
+        const publicText = JSON.stringify(resolvePublicScenario(item, catalog.levels, level).scenario);
+        assert.doesNotMatch(publicText, /"criteria"|"accept"|"reject"|"knownTo"|"disclosure"/);
+      }
+    }
+  }
 });
 

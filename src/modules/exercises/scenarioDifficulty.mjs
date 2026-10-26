@@ -1,3 +1,4 @@
+import { getScenarioStage } from './scenarioStages.mjs';
 // Shared by the browser and Node 24 backend. This module has no private data.
 const own = (value, key) => value && typeof key === 'string' && Object.hasOwn(value, key);
 const text = value => typeof value === 'string' && value.trim().length > 0;
@@ -7,6 +8,7 @@ export function resolvePublicScenario(source, levels, level) {
   if (!source || !own(levels, level)) throw new Error('Invalid scenario or level');
   const { variants, ...base } = source;
   const generic = levels[level];
+  if (base.stage !== undefined && (!Number.isInteger(base.stage) || base.stage < 1 || base.stage > 4)) throw new Error('Invalid scenario stage');
   if (!variants) {
     return {
       scenario: { ...base, goals: [...base.goals, ...(generic.goal ? [generic.goal] : [])] },
@@ -29,7 +31,7 @@ export function resolvePublicScenario(source, levels, level) {
       goals: [...variant.goals], objectiveIds: [...variant.objectiveIds],
     },
     // Do not carry generic instructions or extra goals into a tailored variant.
-    difficulty: { code: level, label: variant.label, turns: variant.turns, expectation: variant.expectation },
+    difficulty: { code: level, label: variant.label, turns: variant.turns, expectation: variant.expectation, stage: base.stage || 1, stageLabel: getScenarioStage(base.stage).label },
   };
 }
 
