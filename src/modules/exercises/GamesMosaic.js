@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import MobileAppNav from '../layout/MobileAppNav';
 import NorwegianFlagIcon from '../layout/Navbar/NorwegianFlagIcon';
-import { ExerciseLevelSelect } from './ExerciseUI';
 import NorthernPassMap from './NorthernPassMap';
 import { NORTHERN_PASS_STOPS, getNorthernPassStatus } from '../../services/northernPassProgress';
 import './GamesMosaic.css';
@@ -67,7 +66,6 @@ export default function GamesMosaic({ level, balance = 0, cards, activities, rev
   };
 
   return <main className="northern-games practice-hub">
-    <header className="practice-top"><Link to="/dashboard" className="practice-brand" aria-label="NordLingo - Acasă"><NorwegianFlagIcon /></Link><ExerciseLevelSelect level={level} /><CoinBalance balance={status.state.coins} /></header>
     <PracticeOverview {...{level, cards, activities, reviewStats, mapTrigger, openMap}} />
     <MobileAppNav activeLevel={level}/>
     <dialog ref={dialog} className="northern-dialog legend-map-dialog" aria-labelledby="northern-map-title" onCancel={(event) => { event.preventDefault(); closeMap(); }} onClose={closeMap}>

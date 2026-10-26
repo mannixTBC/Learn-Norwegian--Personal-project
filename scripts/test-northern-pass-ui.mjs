@@ -126,7 +126,7 @@ try {
    if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1))failures.push('Horizontal overflow '+installed+JSON.stringify(viewport));
    if(installed){
     if(viewport.height>=800&&viewport.width<600&&await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight+1))failures.push('Tall mobile scroll');
-    await page.locator('.practice-words summary').click();
+    await page.getByRole('button',{name:/Reține cuvintele/}).click();
     for(const [id,path] of [['quiz','/chestionar'],['verbs','/challenge30'],['word','/hangman'],['listen','/asculta-si-alege'],['order','/drag'],['pronunciation','/pronuntie']]){
      if(await page.locator('[data-game="'+id+'"]').getAttribute('href')!==path+'?nivel=C2')failures.push('Wrong route '+id);
     }

@@ -43,3 +43,8 @@ html:has(.App__main :is(.mobile-conversation--catalog,.desktop-conversation--cat
 html:has(.App__main .airy-conversation) { --exercise-canvas:#fffcf2; }
 
 html:has(.App__main :is(.practice-hub,.desktop-games-hub)) { --exercise-canvas:#f8f6ee; }
+
+/* The reference hub grows naturally on short screens and when a picker opens. */
+html:has(.App__main .practice-hub){--exercise-canvas:#fefcf7;height:auto}
+body:has(.practice-hub),#root:has(.practice-hub),.App:has(.practice-hub),.App__main:has(.practice-hub){height:auto}
+body:has(.practice-hub){overflow:visible}

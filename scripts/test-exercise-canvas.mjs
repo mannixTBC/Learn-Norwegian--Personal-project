@@ -13,7 +13,7 @@ const css=(await Promise.all(cssFiles.map(name=>readFile(resolve(assets,name),'u
 const {chromium}=await import(pathToFileURL(resolve(homedir(),'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs')));
 const browser=await chromium.launch({headless:true,...(process.platform==='win32'?{executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'}:{})});
 const fixtures=[
- ['practice-hub','practice hub'],['desktop-games-hub','practice hub'],
+ ['practice-hub','ivory practice hub'],['desktop-games-hub','practice hub'],
  ['conversation-studio airy-conversation','airy scenario'],
  ['exercise-screen','generic exercise'],['exercise-screen nordic-exercise','Nordic exercise'],
  ['vocabulary-notebook','vocabulary'],['sentence-workshop','sentences'],
@@ -41,7 +41,7 @@ try {
    });
    const context=`${label}, ${installed?'installed':'web'}, ${width}x${height}`;
    const installedColors={'Nordic exercise':'rgb(6, 45, 61)',vocabulary:'rgb(245, 234, 214)',sentences:'rgb(255, 250, 240)',listening:'rgb(243, 232, 212)','word discovery':'rgb(8, 47, 63)',verbs:'rgb(255, 250, 240)',pronunciation:'rgb(250, 249, 244)',review:'rgb(243, 237, 223)',scenarios:'rgb(250, 248, 239)'};
-   const theme=label==='practice hub'?'rgb(248, 246, 238)':label==='airy scenario'?'rgb(255, 252, 242)':label==='scenario catalog'?'rgb(247, 241, 226)':installed?(installedColors[label]||'rgb(244, 249, 250)'):(label==='pronunciation'?'rgb(250, 249, 244)':label==='review'?'rgb(243, 237, 223)':'rgb(247, 249, 251)');
+   const theme=label==='ivory practice hub'?'rgb(254, 252, 247)':label==='practice hub'?'rgb(248, 246, 238)':label==='airy scenario'?'rgb(255, 252, 242)':label==='scenario catalog'?'rgb(247, 241, 226)':installed?(installedColors[label]||'rgb(244, 249, 250)'):(label==='pronunciation'?'rgb(250, 249, 244)':label==='review'?'rgb(243, 237, 223)':'rgb(247, 249, 251)');
    assert.equal(actual.expected,theme,context+': correct theme surface');
    assert.notEqual(actual.expected,'rgb(255, 255, 255)',context+': explicit exercise surface');
    assert.notEqual(actual.expected,'rgba(0, 0, 0, 0)',context+': opaque canvas');

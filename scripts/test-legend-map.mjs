@@ -18,7 +18,7 @@ const mount=async props=>act(async()=>{view=TestRenderer.create(React.createElem
 const text=node=>node.children.map(c=>typeof c==='string'?c:text(c)).join('');
 await mount({onClaimStop:()=>{calls++;}});
 const grid=view.root.findByProps({className:'practice-rows'});
-assert.deepEqual(grid.findAll(node=>node.type==='a').map(node=>node.props['data-game']),['quiz','verbs','word','listen','order','pronunciation'],'grouped vocabulary and quick practice links');
+assert.deepEqual(grid.findAll(node=>node.type==='a').map(node=>node.props['data-game']),['listen','order','pronunciation'],'quick practice links');
 assert.ok(view.root.findAll(node=>node.type==='a').some(node=>node.props.href==='/scenarii?nivel=A1'));
 const summary=view.root.findByProps({className:'legend-next'});
 assert.equal(summary.findAllByType('button').length,0,'summary is informational only');
