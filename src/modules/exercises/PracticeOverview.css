@@ -14,8 +14,6 @@
 .practice-top .exercise-level-select select{width:calc(64 * var(--u));min-height:44px;height:calc(46 * var(--u));padding:6px 9px;border:1px solid #dbcdb6;border-radius:13px;color:#092b49;background:#fffcf5;font:600 17px Arial,sans-serif}
 .practice-heading{display:flex;gap:calc(14 * var(--u));align-items:center;padding:0 calc(4 * var(--u)) calc(7 * var(--u))}
 .practice-heading h1{margin:0;color:#092b49;font:700 clamp(29px,9.7cqw,38px)/.96 'Times New Roman',serif;letter-spacing:-.6px}
-.practice-map{display:grid;place-items:center;width:calc(60 * var(--u));height:calc(64 * var(--u));min-width:44px;min-height:44px;border:1px solid #c2d9d4;border-radius:13px;background:#f0f7f0eb;color:#00616a;padding:8px;flex:none;box-shadow:0 2px 5px #214a4a05}
-.practice-map svg{width:34px;max-width:100%;height:42px}
 .practice-review{display:flex;gap:calc(15 * var(--u));align-items:center;min-height:calc(60 * var(--u));padding:7px calc(15 * var(--u));border-radius:17px;background:#edf4ed;color:#092b49}
 .practice-review>svg{width:calc(44 * var(--u));height:calc(44 * var(--u));color:#07636c;flex:none;stroke-width:1.2}
 .practice-review strong{display:block;font:700 clamp(15px,4.6cqw,18px)/1.1 'Times New Roman',serif}
@@ -41,11 +39,6 @@
 .practice-hub .practice-studio-action{display:flex;align-items:center;justify-content:center;gap:calc(8 * var(--u));flex:1.2;min-width:0;border:1px solid #00616b;border-radius:13px;background:#006771;color:#fff;font:500 clamp(10px,3.32cqw,13px)/1.1 Arial,sans-serif;padding:4px;text-decoration:none;cursor:pointer}
 .practice-hub .practice-studio-action--free{flex:1;background:#fff;color:#00606b}
 .practice-studio-action svg{width:calc(24 * var(--u));height:calc(24 * var(--u));flex:none}
-html .practice-hub>.mobile-app-nav{display:grid;position:static;inset:auto;width:calc(100% + 32px);margin:7px -16px 0;padding:5px 16px;border:0;border-top:1px solid #efeee8;border-radius:0;background:#fff;box-shadow:none;backdrop-filter:none;font-family:Arial,sans-serif}
-.practice-hub>.mobile-app-nav>a{font-size:12px;font-weight:400;color:#626f7b;min-height:49px;gap:5px}
-.practice-hub>.mobile-app-nav>a.active{background:none;color:#00626a;box-shadow:none;font-weight:700}
-.practice-hub>.mobile-app-nav .mobile-app-nav__icon,.practice-hub>.mobile-app-nav svg{width:24px;height:24px}
-.practice-hub>.mobile-app-nav>a.active svg{stroke-width:2}
 .practice-hub :is(a,button,select):focus-visible{outline:3px solid #b58c3c;outline-offset:3px}
 .practice-hub .practice-row:hover{border-color:#b9d0cd}
 .practice-hub .practice-row:active{background:#f6f8f3}
@@ -65,11 +58,73 @@ html .practice-hub>.mobile-app-nav{display:grid;position:static;inset:auto;width
 @media(prefers-reduced-motion:no-preference){.practice-row,.practice-studio-action{transition:background-color .15s,border-color .15s}}
 .practice-overview{min-width:0;grid-template-columns:minmax(0,1fr)}
 .practice-quick,.practice-rows{min-width:0}
-html.is-installed-app .practice-hub>.mobile-app-nav{position:static;inset:auto;width:calc(100% + 32px);margin:7px -16px 0;padding:5px 16px}
 .practice-studio{min-width:0;width:100%}
 .practice-top .exercise-level-select select{min-width:57px}
 
-.practice-top .exercise-level-select{transform:translateY(4px)}
 .practice-fjord{mask-image:radial-gradient(ellipse at 100% 20%,#000 38%,transparent 78%)}
 
 .practice-studio{margin-top:calc(3 * var(--u))}
+
+/* Use the shared Home/Lessons navigation without changing its visual styles. */
+.practice-hub>.mobile-app-nav{display:grid;margin-top:10px}
+.practice-top .exercise-level-select{position:relative;transform:none}
+.practice-top .exercise-level-select::after{content:'';position:absolute;right:14px;top:18px;width:7px;height:7px;border-right:2px solid #17616b;border-bottom:2px solid #17616b;transform:rotate(45deg);pointer-events:none}
+.practice-top .exercise-level-select select{appearance:none;-webkit-appearance:none;width:78px;min-width:78px;max-width:none;height:44px;padding:8px 30px 8px 13px;line-height:24px;cursor:pointer;background:#fffcf5}
+@media(max-width:680px){
+  .practice-hub{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
+  .practice-hub>.mobile-app-nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:80;margin:0}
+}
+/* Compact the content itself; never clip the document to hide overflow. */
+@media(max-height:920px){
+  .practice-header{min-height:120px;padding-top:max(6px,env(safe-area-inset-top))}
+  .practice-top{min-height:44px;margin-bottom:8px}
+  .practice-heading h1{font-size:32px}
+  .practice-review{min-height:52px}
+  .practice-row{min-height:64px}
+  .practice-art{width:94px;max-height:58px}
+  .practice-studio{aspect-ratio:auto;height:180px;min-height:0}
+  .practice-studio h2{font-size:30px}
+  .practice-studio-actions{min-height:44px;top:auto;bottom:6%}
+  .practice-studio p{margin-top:7px;font-size:11px}
+}
+@media(max-height:760px){
+  .practice-overview{gap:6px}
+  .practice-header{min-height:103px}
+  .practice-top{margin-bottom:3px}
+  .practice-heading h1{font-size:27px}
+  .practice-review{min-height:46px;padding-block:4px}
+  .practice-review>svg{width:34px;height:34px}
+  .practice-quick h2{font-size:23px;margin:0 4px 6px}
+  .practice-rows{gap:5px}
+  .practice-row{min-height:52px;gap:10px}
+  .practice-art{width:78px;max-height:46px}
+  .practice-studio{height:150px}
+  .practice-studio-copy{top:10%}
+  .practice-studio h2{font-size:27px}
+  .practice-eyebrow{margin-bottom:6px}
+  .practice-studio p{margin-top:5px;font-size:10px}
+  .practice-studio-actions{right:10%;bottom:5%}
+}
+@media(max-height:620px){
+  .practice-overview{gap:4px}
+  .practice-header{min-height:0;padding-top:max(2px,env(safe-area-inset-top))}
+  .practice-top{margin-bottom:0}
+  .practice-brand{width:132px}
+  .practice-heading{padding-bottom:2px}
+  .practice-heading h1{font-size:25px;line-height:1.05}
+  .practice-heading h1 br{display:none}
+  .practice-review{min-height:44px}
+  .practice-review small{margin-top:2px;font-size:11px}
+  .practice-quick h2{font-size:21px;margin-bottom:4px}
+  .practice-rows{gap:3px}
+  .practice-row{min-height:44px;gap:8px}
+  .practice-art{width:62px;max-height:38px}
+  .practice-row small{margin-top:3px;font-size:10px}
+  .practice-row strong{font-size:13px}
+  .practice-studio{height:130px;margin-top:0}
+  .practice-studio-copy{top:10px;width:54%}
+  .practice-studio h2{font-size:26px;line-height:1.05;letter-spacing:-.5px}
+  .practice-studio h2 br{display:block}
+  .practice-studio p,.practice-eyebrow{display:none}
+  .practice-studio-actions{bottom:6px;right:10%}
+}
