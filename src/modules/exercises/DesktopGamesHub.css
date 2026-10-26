@@ -48,3 +48,12 @@
 @media(max-width:480px){.desktop-games-hub__grid{grid-template-columns:1fr}.desktop-games-hub__heading{align-items:flex-start}.desktop-games-hub__heading p{font-size:.88rem}}
 @media(prefers-reduced-motion:reduce){.desktop-games-hub__card{transition:none}}
 .desktop-games-hub a:hover{text-decoration:none}
+
+/* Match the ivory and petrol practice palette while retaining the desktop overview. */
+.desktop-games-hub{color:#183e46}
+.desktop-games-hub__heading h1,.desktop-games-hub__recommendation h2{color:#183e46;font-family:Georgia,serif}
+.desktop-games-hub__card,.desktop-games-hub__consolidate{background:#fffdf6;border-color:#dfdfd3;color:#25494e}
+.desktop-games-hub__recommendation{background:#e9eddf;border-color:#d6dccc}
+.desktop-games-hub__mission{background:#1e5057;color:#fff9e9;border-color:#173e43}
+.desktop-games-hub__mission h2,.desktop-games-hub__mission p{color:#fff9e9}
+.desktop-games-hub__mission a{background:#faf7e9;color:#285454}

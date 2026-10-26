@@ -2,7 +2,7 @@
    Keep the document, React root and App on the same surface. A card ending before
    the viewport must never expose the browser's default white background.
    Add a new standalone exercise selector here and to test-exercise-canvas.mjs. */
-html:where(:has(.App__main :is(.exercise-screen,.practice-game,.activity-game,.desktop-activity,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery,.verb-practice,.verb-practice__sessions,.pronunciation-cathedral,.review-page,.conversation-studio))) {
+html:where(:has(.App__main :is(.practice-hub,.desktop-games-hub,.exercise-screen,.practice-game,.activity-game,.desktop-activity,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery,.verb-practice,.verb-practice__sessions,.pronunciation-cathedral,.review-page,.conversation-studio))) {
   --exercise-canvas:#f4f9fa;
   background-color:var(--exercise-canvas);
 }
@@ -15,29 +15,31 @@ html:has(:is(.verb-practice,.verb-practice__sessions)) { --exercise-canvas:#fffa
 html:has(.pronunciation-cathedral) { --exercise-canvas:#111d29; }
 html:has(.pronunciation-nordic) { --exercise-canvas:#faf9f4; }
 html:has(.recall-sheet) { --exercise-canvas:#f3eddf; }
-html:not(.is-installed-app):where(:has(.App__main :is(.exercise-screen,.practice-game,.activity-game,.desktop-activity,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery,.verb-practice,.verb-practice__sessions,.review-page,.conversation-studio))) { --exercise-canvas:#f7f9fb; }
+html:not(.is-installed-app):where(:has(.App__main :is(.practice-hub,.desktop-games-hub,.exercise-screen,.practice-game,.activity-game,.desktop-activity,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery,.verb-practice,.verb-practice__sessions,.review-page,.conversation-studio))) { --exercise-canvas:#f7f9fb; }
 html:not(.is-installed-app):has(.recall-sheet) { --exercise-canvas:#f3eddf; }
-html:has(.App__main :is(.exercise-screen,.practice-game,.activity-game,.desktop-activity,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery,.verb-practice,.verb-practice__sessions,.pronunciation-cathedral,.review-page,.conversation-studio)) :is(body,#root) {
+html:has(.App__main :is(.practice-hub,.desktop-games-hub,.exercise-screen,.practice-game,.activity-game,.desktop-activity,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery,.verb-practice,.verb-practice__sessions,.pronunciation-cathedral,.review-page,.conversation-studio)) :is(body,#root) {
   margin:0;
   padding:0;
   background-color:var(--exercise-canvas);
 }
 /* Overrides old per-game min-height:0 patches; the App owns viewport coverage.
    Natural document overflow is preserved for long text and accessibility zoom. */
-html body #root .App:has(>.App__main :is(.exercise-screen,.practice-game,.activity-game,.desktop-activity,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery,.verb-practice,.verb-practice__sessions,.pronunciation-cathedral,.review-page,.conversation-studio)) {
+html body #root .App:has(>.App__main :is(.practice-hub,.desktop-games-hub,.exercise-screen,.practice-game,.activity-game,.desktop-activity,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery,.verb-practice,.verb-practice__sessions,.pronunciation-cathedral,.review-page,.conversation-studio)) {
   box-sizing:border-box;
   min-height:100dvh !important;
   background-color:var(--exercise-canvas) !important;
 }
-html body #root .App>.App__main:has(:is(.exercise-screen,.practice-game,.activity-game,.desktop-activity,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery,.verb-practice,.verb-practice__sessions,.pronunciation-cathedral,.review-page,.conversation-studio)) {
+html body #root .App>.App__main:has(:is(.practice-hub,.desktop-games-hub,.exercise-screen,.practice-game,.activity-game,.desktop-activity,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery,.verb-practice,.verb-practice__sessions,.pronunciation-cathedral,.review-page,.conversation-studio)) {
   box-sizing:border-box;
   min-height:0;
   margin:0;
   padding:0 !important;
   background-color:var(--exercise-canvas) !important;
 }
-html body #root .App:has(>.App__main :is(.exercise-screen,.practice-game,.activity-game,.desktop-activity,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery,.verb-practice,.verb-practice__sessions,.pronunciation-cathedral,.review-page,.conversation-studio))>.footer { display:none !important; }
+html body #root .App:has(>.App__main :is(.practice-hub,.desktop-games-hub,.exercise-screen,.practice-game,.activity-game,.desktop-activity,.vocabulary-notebook,.sentence-workshop,.listening-expedition,.word-discovery,.verb-practice,.verb-practice__sessions,.pronunciation-cathedral,.review-page,.conversation-studio))>.footer { display:none !important; }
 html.is-installed-app:has(.mobile-conversation) { --exercise-canvas:#faf8ef; }
 
 html:has(.App__main :is(.mobile-conversation--catalog,.desktop-conversation--catalog)) { --exercise-canvas:#f7f1e2; }
 html:has(.App__main .airy-conversation) { --exercise-canvas:#fffcf2; }
+
+html:has(.App__main :is(.practice-hub,.desktop-games-hub)) { --exercise-canvas:#f8f6ee; }

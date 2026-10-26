@@ -104,7 +104,7 @@ export default function Navbar() {
           aria-label="Navigație principală"
         >
           <span className="navbar__app-menu-title">Explorează Norvegia</span>
-          {navigation.flatMap((item, index) => index === 0 && !isInstalledAppView() ? [item, { to: '/jocuri', label: 'Jocuri' }] : [item]).map((item) => (
+          {navigation.flatMap((item, index) => index === 0 && !isInstalledAppView() ? [item, { to: '/jocuri', label: 'Practică' }] : [item]).map((item) => (
             <NavLink
               key={item.to}
               to={item.to}

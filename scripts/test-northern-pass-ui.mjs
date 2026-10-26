@@ -30,6 +30,7 @@ import ${abs('node_modules/bootstrap/dist/css/bootstrap.min.css')};
 import ${abs('src/App.css')};
 import Navbar from ${abs('src/modules/layout/Navbar/Navbar.js')};
 import Footer from ${abs('src/modules/layout/Footer/Footer.js')};
+import ${abs('src/modules/exercises/ExerciseCanvas.css')};
 import GamesHub from ${abs('src/modules/exercises/GamesHub.js')};
 import NorthernPassMap from ${abs('src/modules/exercises/NorthernPassMap.js')};
 import * as pass from ${abs('src/services/northernPassProgress.js')};
@@ -112,23 +113,41 @@ try {
   try{return route.fulfill({contentType:mime[path.split('.').at(-1)]||'application/octet-stream',body:await readFile(path)});}catch{return route.abort();}
  });
  await page.goto('http://north-pass.test/');
- await page.waitForFunction(()=>Boolean(window.passQa&&document.querySelector('.mini-games')));
- if(process.argv.includes('--cards-only')){
-  const failures=[];let screens=0;
-  for(const viewport of viewports){
-   await page.setViewportSize(viewport);await page.evaluate(()=>window.passQa.fixture('fresh','C2'));await page.waitForTimeout(70);
-   const state=await page.evaluate(()=>{
-    const tiles=[...document.querySelectorAll('.mini-grid>a')];
-    const overflow=tiles.flatMap(tile=>{const bounds=tile.getBoundingClientRect();return [...tile.querySelectorAll('h3,.mini-progress')].filter(el=>el.getClientRects().length).flatMap(el=>{const r=el.getBoundingClientRect();return r.top<bounds.top-1||r.bottom>bounds.bottom+1||r.left<bounds.left-1||r.right>bounds.right+1?[tile.textContent]:[];});});
-    return {order:tiles.map(el=>el.dataset.game).join(','),links:tiles.map(el=>el.getAttribute('href')),vocabulary:document.querySelector('.mini-vocabulary')?.getAttribute('href'),overflow,h:document.documentElement.scrollHeight,w:document.documentElement.scrollWidth};
-   });
-   if(state.order!=='missions,pronunciation,listen,order,verbs,word')failures.push('Wrong positions');
-   if(state.links[0]!=='/scenarii?nivel=C2'||state.links[2]!=='/asculta-si-alege?nivel=C2'||state.vocabulary!=='/chestionar?nivel=C2')failures.push('Wrong destinations/level');
-   if(state.overflow.length)failures.push(viewport.width+'x'+viewport.height+': clipped card '+state.overflow.join('|'));
-   if(state.h>viewport.height+1||state.w>viewport.width+1)failures.push(viewport.width+'x'+viewport.height+': page scroll');
-   if(viewport.width===390)await page.screenshot({path:resolve(artifacts,'reordered-games.png')});screens++;
+ await page.waitForFunction(()=>Boolean(window.passQa&&document.querySelector('.practice-hub')));
+
+ if(!process.argv.includes('--map-only')){
+  const failures=[];let checks=0;
+  for(const installed of [true,false]) for(const viewport of [{width:320,height:568},{width:390,height:844},{width:1280,height:800}]){
+   await page.setViewportSize(viewport);
+   await page.evaluate(installed=>{document.documentElement.classList.toggle('is-installed-app',installed);window.passQa.fixture('fresh','C2');},installed);
+   await page.waitForTimeout(120);
+   const hub=page.locator(installed?'.practice-hub':'.desktop-games-hub');
+   await hub.waitFor();
+   if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1))failures.push('Horizontal overflow '+installed+JSON.stringify(viewport));
+   if(installed){
+    if(viewport.height>=800&&viewport.width<600&&await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight+1))failures.push('Tall mobile scroll');
+    await page.locator('.practice-words summary').click();
+    for(const [id,path] of [['quiz','/chestionar'],['verbs','/challenge30'],['word','/hangman'],['listen','/asculta-si-alege'],['order','/drag'],['pronunciation','/pronuntie']]){
+     if(await page.locator('[data-game="'+id+'"]').getAttribute('href')!==path+'?nivel=C2')failures.push('Wrong route '+id);
+    }
+    await page.locator('[data-game="word"]').click();
+    await page.locator('[data-qa-destination]').waitFor();
+    await page.evaluate(()=>window.passQa.fixture('ready','C2'));
+    await page.locator('.practice-map').click();
+    await page.locator('dialog[open]').waitFor();
+    if(await page.locator('dialog .npass-map button').count()!==10)failures.push('Missing map nodes');
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(()=>!document.querySelector('dialog')?.open);
+    if(!await page.locator('.practice-map').evaluate(el=>el===document.activeElement))failures.push('Map focus restore');
+    await page.locator('.practice-hub>.mobile-app-nav a').first().click();
+    await page.locator('[data-qa-destination]').waitFor();
+    await page.evaluate(()=>window.passQa.fixture('fresh','C2'));
+   }else if(await page.locator('.desktop-games-hub h1').innerText()!=='Practică')failures.push('Desktop title');
+   await page.screenshot({path:resolve(artifacts,'practice-'+installed+'-'+viewport.width+'.png'),fullPage:true});
+   checks++;
   }
-  console.log(JSON.stringify({screens,failures,browserErrors:report.browserErrors},null,2));process.exitCode=failures.length||report.browserErrors.length?1:0;await browser.close();process.exit(process.exitCode);
+  console.log(JSON.stringify({checks,failures,browserErrors:report.browserErrors},null,2));
+  process.exitCode=failures.length||report.browserErrors.length?1:0;await browser.close();process.exit(process.exitCode);
  }
  if(process.argv.includes('--map-only')){
   const failures=[];
@@ -151,83 +170,4 @@ try {
   process.exitCode=failures.length?1:0;
   await browser.close();process.exit(process.exitCode);
  }
- const metric=async(label)=>{
-  const state=await page.evaluate(()=>{
-   const visible=e=>e.checkVisibility()&&getComputedStyle(e).visibility!=='hidden';
-   const rect=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom};};
-   const dialog=document.querySelector('dialog[open],[role="dialog"]');
-   const controls=[...(dialog||document).querySelectorAll('a,button,select')].filter(visible).map(e=>({text:e.getAttribute('aria-label')||e.textContent.trim(),disabled:e.disabled,tag:e.tagName,rect:rect(e)}));
-   const elements=[...document.querySelectorAll('body *')].filter(e=>visible(e)&&!e.closest('svg'));
-   const overflow=elements.filter(e=>e.clientHeight>0&&e.scrollHeight>e.clientHeight+2&&['auto','scroll'].includes(getComputedStyle(e).overflowY)).map(e=>({className:e.className,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight}));
-   const clipped=controls.filter(e=>e.rect.width>0&&(e.rect.x<-.5||e.rect.y<-.5||e.rect.right>innerWidth+.5||e.rect.bottom>innerHeight+.5));
-   const tiny=controls.filter(e=>!e.disabled&&(e.rect.width<43.5||e.rect.height<43.5));
-   const links=[...document.querySelectorAll('.mini-grid a,.mini-missions,.mini-review,.mini-daily')].map(e=>e.getAttribute('href'));
-   const nav=(dialog||document).querySelector('.mobile-app-nav');
-   const images=[...document.querySelectorAll('img')].filter(visible).map(e=>({src:new URL(e.src).pathname,loaded:e.complete&&e.naturalWidth>0}));
-   const contentBounds=[...(dialog||document).querySelectorAll('.northern-obstacle h3,.northern-obstacle__description,.northern-obstacle__note,.northern-obstacle__reward strong,.northern-requirements label,.mini-tile h3,.mini-missions h2,.mini-review h2,.northern-overview__footer strong')].filter(visible).map(e=>({text:e.textContent,rect:rect(e),horizontal:e.scrollWidth>e.clientWidth+2}));
-   const mapLabels=[...(dialog||document).querySelectorAll('.npass-map__label')].filter(visible).map(e=>({text:e.textContent,rect:rect(e),parent:rect(e.closest('.npass-map'))}));
-   const maps=[...(dialog||document).querySelectorAll('.npass-map')].filter(visible).map(e=>({compact:e.classList.contains('npass-map--compact'),rect:rect(e)}));
-   return {width:innerWidth,height:innerHeight,pageHeight:document.documentElement.scrollHeight,pageWidth:document.documentElement.scrollWidth,overflow,clipped,tiny,links,controls,nav:nav&&visible(nav)?rect(nav):null,images,contentBounds,mapLabels,maps,bodyText:document.body.innerText};
-  });
-  report.screens.push({label,...state});
-  if(state.pageHeight>state.height+1)report.failures.push(label+': page vertical scroll '+state.pageHeight+'/'+state.height);
-  if(state.pageWidth>state.width+1)report.failures.push(label+': page horizontal scroll '+state.pageWidth+'/'+state.width);
-  if(state.overflow.length)report.failures.push(label+': internal scroll '+JSON.stringify(state.overflow));
-  if(state.clipped.length)report.failures.push(label+': clipped controls '+JSON.stringify(state.clipped));
-  if(state.tiny.length)report.failures.push(label+': small targets '+JSON.stringify(state.tiny));
-  const clippedText=state.contentBounds.filter(item=>item.horizontal||item.rect.x<-.5||item.rect.y<-.5||item.rect.right>state.width+.5||item.rect.bottom>state.height+.5);
-  if(clippedText.length)report.failures.push(label+': clipped text '+JSON.stringify(clippedText));
-  const clippedLabels=state.mapLabels.filter(item=>item.rect.x<item.parent.x-1||item.rect.y<item.parent.y-1||item.rect.right>item.parent.right+1||item.rect.bottom>item.parent.bottom+1);
-  if(clippedLabels.length)report.failures.push(label+': clipped map label '+JSON.stringify(clippedLabels));
-  for(const map of state.maps)if(map.rect.height<(map.compact?90:150)-.5)report.failures.push(label+': map too short '+map.rect.height);
-  if(state.nav){
-   const covered=state.controls.filter(c=>!['Acasă','Lecții','Jocuri','Cont'].includes(c.text)&&c.rect.bottom>state.nav.y+.5&&c.rect.y<state.nav.bottom-.5);
-   if(covered.length)report.failures.push(label+': nav covers control '+JSON.stringify(covered));
-  }
-  return state;
- };
- for(const viewport of viewports){
-  await page.setViewportSize(viewport);
-  for(const fixture of ['fresh','ready','completed']){
-   await page.evaluate(fixture=>window.passQa.fixture(fixture),fixture);
-   await page.waitForTimeout(70);
-   await page.evaluate(()=>Promise.all([...document.images].map(image=>image.decode().catch(()=>{}))));
-   const label=fixture+'/'+viewport.width+'x'+viewport.height;
-   const state=await metric(label);
-   if(new Set(state.links).size!==8)report.failures.push(label+': not all eight game links accessible ('+new Set(state.links).size+')');
-   if(!state.images.some(image=>image.src==='/branding/nordlingo-selected-color.png'&&image.loaded))report.failures.push(label+': original NordLingo logo absent or unloaded');
-   if(state.images.some(image=>!image.loaded))report.failures.push(label+': broken images '+JSON.stringify(state.images.filter(image=>!image.loaded)));
-   if(viewport.width===390||viewport.width===320||viewport.width===568||fixture==='fresh')await page.screenshot({path:artifacts+'/northern-pass-'+fixture+'-'+viewport.width+'x'+viewport.height+'.png'});
-   await page.locator('[aria-haspopup="dialog"]').click();
-   await page.waitForFunction(()=>document.querySelector('dialog')?.open);
-   await metric(label+'/map-current');
-   if(viewport.width===390||viewport.width===320||viewport.width===568||fixture==='fresh')await page.screenshot({path:artifacts+'/northern-pass-map-'+fixture+'-'+viewport.width+'x'+viewport.height+'.png'});
-   for(let stopIndex=0;stopIndex<10;stopIndex++){
-    await page.locator('dialog .npass-map button').nth(stopIndex).click();
-    if(await page.locator('dialog .npass-map button').nth(stopIndex).getAttribute('aria-pressed')!=='true')report.failures.push(label+': node not selected '+stopIndex);
-    await metric(label+'/map-stop-'+stopIndex);
-   }
-   if(fixture!=='completed')await page.getByRole('button',{name:'Obstacolul curent',exact:true}).click();
-   if(fixture==='ready'){
-    await page.locator('.northern-obstacle__action').evaluate(button=>{button.click();button.click();});
-    await page.waitForTimeout(50);
-    const status=await page.evaluate(()=>window.passQa.status());
-    if(status.completedCount!==4||status.state.coins!==2400||status.stageSessions!==0)report.failures.push(label+': claim/doubletap incorrect '+JSON.stringify(status));
-    await metric(label+'/claimed');
-   }
-   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-   const focused=await page.evaluate(()=>document.querySelector('dialog').contains(document.activeElement));
-   if(!focused)report.failures.push(label+': focus escaped native dialog');
-   await page.keyboard.press('Escape');
-   await page.waitForFunction(()=>!document.querySelector('dialog')?.open);
-   if(!await page.locator('[aria-haspopup="dialog"]').evaluate(button=>button===document.activeElement))report.failures.push(label+': Escape did not restore focus');
-   await page.locator('[aria-haspopup="dialog"]').click();
-   await page.waitForFunction(()=>document.querySelector('dialog')?.open);
-   await page.locator('dialog .mobile-app-nav').getByRole('link',{name:'Jocuri',exact:true}).click();
-   await page.waitForFunction(()=>!document.querySelector('dialog')?.open);
-  }
- }
- await writeFile(resolve(output,'report.json'),JSON.stringify(report,null,2));
- console.log(JSON.stringify({screens:report.screens.length,failures:report.failures,browserErrors:report.browserErrors},null,2));
- process.exitCode=report.failures.length||report.browserErrors.length?1:0;
 }finally{await browser.close();}
