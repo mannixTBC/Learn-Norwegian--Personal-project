@@ -74,57 +74,60 @@
   .practice-hub{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
   .practice-hub>.mobile-app-nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:80;margin:0}
 }
-/* Compact the content itself; never clip the document to hide overflow. */
-@media(max-height:920px){
-  .practice-header{min-height:120px;padding-top:max(6px,env(safe-area-inset-top))}
-  .practice-top{min-height:44px;margin-bottom:8px}
-  .practice-heading h1{font-size:32px}
-  .practice-review{min-height:52px}
-  .practice-row{min-height:64px}
-  .practice-art{width:94px;max-height:58px}
-  .practice-studio{aspect-ratio:auto;height:180px;min-height:0}
-  .practice-studio h2{font-size:30px}
-  .practice-studio-actions{min-height:44px;top:auto;bottom:6%}
-  .practice-studio p{margin-top:7px;font-size:11px}
-}
+
+/* Let the exercise rows use the space above the shared navigation. */
+.practice-hub{min-height:100dvh;display:flex;flex-direction:column}
+.practice-overview{flex:1;grid-template-rows:auto auto minmax(min-content,1fr) auto;gap:8px}
+.practice-header{min-height:0;padding-top:max(6px,env(safe-area-inset-top))}
+.practice-top{min-height:44px;margin-bottom:5px}
+.practice-heading h1{font-size:clamp(29px,9cqw,36px)}
+.practice-quick{display:flex;flex-direction:column}
+.practice-rows{flex:1;grid-template-rows:repeat(4,minmax(min-content,1fr))}
+.practice-row{min-height:64px;gap:12px}
+.practice-art{width:26%;max-width:111px;aspect-ratio:111/70}
+.practice-studio{height:auto;min-height:0;aspect-ratio:393/221;margin-top:2px}
+.practice-studio-scene{border-radius:inherit}
+.practice-studio-actions{min-height:44px;top:auto;bottom:6%;height:22.2%}
+.practice-top .exercise-level-select{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
+.practice-top .exercise-level-select select{box-sizing:border-box;box-shadow:none;background-image:none}
+/* A text-free landscape crop never paints a second level selector. */
+.practice-fjord{inset:48px -16px auto auto;width:43%;height:85px;mask-image:linear-gradient(180deg,transparent,#000 18%,#000 75%,transparent)}
 @media(max-height:760px){
-  .practice-overview{gap:6px}
-  .practice-header{min-height:103px}
-  .practice-top{margin-bottom:3px}
-  .practice-heading h1{font-size:27px}
-  .practice-review{min-height:46px;padding-block:4px}
-  .practice-review>svg{width:34px;height:34px}
-  .practice-quick h2{font-size:23px;margin:0 4px 6px}
-  .practice-rows{gap:5px}
-  .practice-row{min-height:52px;gap:10px}
-  .practice-art{width:78px;max-height:46px}
-  .practice-studio{height:150px}
-  .practice-studio-copy{top:10%}
-  .practice-studio h2{font-size:27px}
-  .practice-eyebrow{margin-bottom:6px}
-  .practice-studio p{margin-top:5px;font-size:10px}
-  .practice-studio-actions{right:10%;bottom:5%}
+ .practice-overview{gap:6px}
+ .practice-top{margin-bottom:2px}
+ .practice-brand{width:145px}
+ .practice-heading h1{font-size:28px}
+ .practice-review{min-height:46px;padding-block:4px}
+ .practice-review>svg{width:34px;height:34px}
+ .practice-quick h2{font-size:23px;margin:0 4px 6px}
+ .practice-rows{gap:5px}
+ .practice-row{min-height:50px;gap:10px}
+ .practice-art{width:75px}
+ .practice-studio{aspect-ratio:auto;height:148px}
+ .practice-studio-copy{top:10%;width:56%}
+ .practice-studio h2{font-size:27px}
+ .practice-eyebrow{margin-bottom:6px}
+ .practice-studio p{font-size:10px;margin-top:5px}
+ .practice-studio-actions{right:10%;bottom:5%;height:44px}
 }
 @media(max-height:620px){
-  .practice-overview{gap:4px}
-  .practice-header{min-height:0;padding-top:max(2px,env(safe-area-inset-top))}
-  .practice-top{margin-bottom:0}
-  .practice-brand{width:132px}
-  .practice-heading{padding-bottom:2px}
-  .practice-heading h1{font-size:25px;line-height:1.05}
-  .practice-heading h1 br{display:none}
-  .practice-review{min-height:44px}
-  .practice-review small{margin-top:2px;font-size:11px}
-  .practice-quick h2{font-size:21px;margin-bottom:4px}
-  .practice-rows{gap:3px}
-  .practice-row{min-height:44px;gap:8px}
-  .practice-art{width:62px;max-height:38px}
-  .practice-row small{margin-top:3px;font-size:10px}
-  .practice-row strong{font-size:13px}
-  .practice-studio{height:130px;margin-top:0}
-  .practice-studio-copy{top:10px;width:54%}
-  .practice-studio h2{font-size:26px;line-height:1.05;letter-spacing:-.5px}
-  .practice-studio h2 br{display:block}
-  .practice-studio p,.practice-eyebrow{display:none}
-  .practice-studio-actions{bottom:6px;right:10%}
+ .practice-overview{gap:4px}
+ .practice-header{padding-top:max(2px,env(safe-area-inset-top))}
+ .practice-brand{width:132px}
+ .practice-heading{padding-bottom:2px}
+ .practice-heading h1{font-size:25px;line-height:1.05}
+ .practice-heading h1 br{display:none}
+ .practice-review{min-height:44px}
+ .practice-review small{margin-top:2px;font-size:11px}
+ .practice-quick h2{font-size:21px;margin-bottom:4px}
+ .practice-rows{gap:3px}
+ .practice-row{min-height:44px;gap:8px}
+ .practice-art{width:62px}
+ .practice-row small{font-size:10px;margin-top:3px}
+ .practice-row strong{font-size:13px}
+ .practice-studio{height:130px;margin-top:0}
+ .practice-studio-copy{top:10px;width:54%}
+ .practice-studio h2{font-size:26px;line-height:1.05}
+ .practice-studio p,.practice-eyebrow{display:none}
+ .practice-studio-actions{bottom:6px}
 }
