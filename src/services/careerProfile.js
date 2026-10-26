@@ -374,9 +374,9 @@ export const getCareerProfile = (user) => {
     return null;
   }
 };
-export const saveCareerProfile = (user, pathId) => {
+export const saveCareerProfile = (user, pathId, { supportLanguage = 'ro', learningLanguage = 'nb' } = {}) => {
   const path = getCareerPath(pathId);
-  const profile = { pathId: path.id, selectedAt: new Date().toISOString() };
+  const profile = { pathId: path.id, supportLanguage, learningLanguage, selectedAt: new Date().toISOString() };
   localStorage.setItem(storageKey(user), JSON.stringify(profile));
   return profile;
 };
