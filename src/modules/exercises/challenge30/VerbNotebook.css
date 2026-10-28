@@ -43,3 +43,43 @@ html body #root .App .verb-notebook .vn-feedback :is(strong,p,small){display:blo
 .vn-tense-card .vn-rule{margin-top:18px}
 .vn-rule h3{margin:0 0 6px;color:#007f83;font:700 18px/1.3 Georgia,serif}
 .vn-comparison .vn-person-note{margin:0}
+
+/* One comparison card, using the existing application navigation. */
+html body #root .App .verb-notebook:has(.vn-comparison){padding-top:12px}
+.verb-notebook:has(.vn-comparison) .vn-header{margin-bottom:16px}
+.vn-paper.vn-comparison{display:block;padding:18px 14px}
+.vn-comparison-title{position:relative;justify-content:center;text-align:center;padding:0 40px 15px;border-bottom:1px solid #e5d8c5}
+.vn-comparison-title>div{min-width:0}
+.vn-comparison-title h1{font-size:30px}
+.vn-comparison-title p{font-size:15px}
+.vn-comparison-title .vn-sound{position:absolute;right:0;top:0;width:36px;height:36px}
+.vn-comparison-table{table-layout:fixed;width:100%;margin:12px 0 0;font-size:15px}
+.vn-comparison-table .vn-person-column{width:20%}
+.vn-comparison-table th,.vn-comparison-table td{width:auto;padding:6px 3px;overflow-wrap:anywhere;vertical-align:middle}
+.vn-comparison-table thead th{color:#007f83;font-weight:700;font-size:14px;line-height:1.2;padding-block:8px}
+.vn-comparison-table thead th:not(:first-child),.vn-comparison-table td{text-align:center}
+.vn-comparison-rules{margin-top:16px}
+.vn-comparison-rules h2{font-size:20px;margin-bottom:7px}
+.vn-comparison-rules p{font-size:12px;line-height:1.4;margin:5px 0}
+.vn-comparison .vn-person-note{margin-top:10px;font-size:11px}
+.verb-notebook:has(.vn-comparison)>.vn-primary{margin-top:16px}
+@media(max-width:360px){
+ .vn-paper.vn-comparison{padding:14px 10px}
+ .vn-comparison-title h1{font-size:25px}
+ .vn-comparison-table{font-size:13px}
+ .vn-comparison-table thead th{font-size:12px}
+}
+@media(max-height:740px){
+ .verb-notebook:has(.vn-comparison) .vn-header{margin-bottom:10px}
+ .vn-paper.vn-comparison{padding-top:12px;padding-bottom:12px}
+ .vn-comparison-title{padding-bottom:10px}
+ .vn-comparison-table{margin-top:6px}
+ .vn-comparison-table th,.vn-comparison-table td{padding-block:4px}
+ .vn-comparison-rules{margin-top:10px}
+}
+
+.vn-comparison-title{display:block}
+.vn-comparison-title h1{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.vn-comparison-table thead th:first-child{white-space:nowrap;font-size:12px;letter-spacing:-.3px}
+.vn-comparison-table th,.vn-comparison-table td{padding-block:5px}
+.vn-comparison-rules p{line-height:1.35;margin:4px 0}
