@@ -1,5 +1,6 @@
 import { getVerbSessions } from './verbsForLevel';
 import { verbPracticeContent } from './verbPracticeContent';
+import { getVerbFormChoices } from './verbFormChoices';
 
 export const VERB_PRACTICE_VERSION = 1;
 const levels = ['A1','A2','B1','B2','C1','C2'];
@@ -91,7 +92,10 @@ const makeQuestion = (verb, phase, pool, old=false) => {
     answer, acceptedAnswers, infinitive:verb.norwegian, formLabel:verb.formLabel,
     ...(!meaning ? {sentence:content.sentence,translation:content.translation} : {}),
   };
-  if (phase !== 'recall') {
+  if (phase === 'recall') {
+    question.prompt = 'Alege forma corectă la prezent, potrivită sensului din română.';
+    question.options = orderedOptions(getVerbFormChoices(verb), id);
+  } else {
     const distractors = [];
     for (const candidate of pool) {
       if (candidate.id === verb.id || (meaning && equivalentMeaning(verb,candidate))) continue;

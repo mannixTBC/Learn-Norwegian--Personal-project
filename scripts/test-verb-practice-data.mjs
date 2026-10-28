@@ -43,11 +43,14 @@ for(const level of levels){
       assert.ok(isVerbPracticeAnswerCorrect(question,`  ${question.answer.toLocaleUpperCase('nb-NO')}. `),'Harmless case/spacing/punctuation ignored');
       assert.ok(!isVerbPracticeAnswerCorrect(question,'no-such-answer'));
       if(question.old) assert.ok(known.has(question.verbId),'Review never invents prior knowledge');
-      if(question.phase==='recall') assert.equal(question.options,undefined,'Unaided recall has no choices');
-      else{
+      {
         assert.ok(question.options.length>=2&&question.options.length<=3,`${question.id}: useful distinct choices`);
         assert.equal(new Set(question.options).size,question.options.length);
         assert.equal(question.options.filter(option=>isVerbPracticeAnswerCorrect(question,option)).length,1,`${question.id}: exactly one accepted choice`);
+      }
+      if(question.phase==='recall') {
+        assert.equal(question.options.length,3,'Three distinct verb forms, including for s-verbs and modals');
+        assert.match(question.prompt,/prezent/,'Tense is explicit');
       }
       if(question.phase!=='meaning'){
         assert.ok(question.translation,'Every blank has an explicit intended Romanian meaning');

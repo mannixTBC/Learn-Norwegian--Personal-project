@@ -26,7 +26,7 @@ export default function PracticeOverview({ level, cards = [], activities = [], r
   const closeWords=()=>{wordDialog.current?.close();setWordsOpen(false);wordsTrigger.current?.focus();};
   return <div className="practice-overview">
     <header className="practice-header">
-      <svg className="practice-fjord" viewBox="305 175 166 85" preserveAspectRatio="xMaxYMin slice" aria-hidden="true" focusable="false"><image href={reference} width="1461" height="1076" /></svg>
+      <img className="practice-header-art" src="/images/practice/notebook.png" alt="" aria-hidden="true" width="1280" height="1280" />
       <div className="practice-top"><Link to="/dashboard" className="practice-brand" aria-label="NordLingo - Acasă"><NorwegianFlagIcon/></Link><ExerciseLevelSelect level={level}/></div>
       <div className="practice-heading"><h1>Ce vrei să <br/>exersezi?</h1></div>
     </header>

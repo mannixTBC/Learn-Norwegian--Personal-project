@@ -195,8 +195,13 @@ try {
     for (let index = 0; index < plan.questions.length; index++) {
       const question = await currentQuestion(plan);
       const isInput = await page.locator('#verb-answer').count() > 0;
+      assert.equal(isInput, false, 'All verb exercises use selectable answers');
+      if (question.phase === 'recall') {
+        assert.equal(await page.locator('[data-choice]').count(), 3);
+        assert.match(await page.locator('.verb-practice__question-title').innerText(), /Alege forma corectă|Îți mai amintești/);
+      }
       if (isInput) inputIndex++;
-      const wrong = makeMistakes && isInput && !wrongDone;
+      const wrong = makeMistakes && question.phase === 'recall' && !wrongDone;
       const hint = makeMistakes && isInput && !wrong && !hintDone;
       if (layoutLabel && (index === 0 || isInput && inputIndex === 1 || checkEveryFrame)) await checkLayout(layoutLabel + ' ' + question.id);
       if (capture && !captured.has(question.phase)) {
@@ -221,7 +226,7 @@ try {
       }
     }
     await page.waitForSelector('.verb-practice__result');
-    assert.ok(!makeMistakes || wrongDone && hintDone, 'Session exercises include wrong and assisted recall');
+    assert.ok(!makeMistakes || wrongDone, 'Session exercises include an incorrect form choice');
     return { correct: plan.questions.length - (wrongDone ? 1 : 0), helped: hintDone ? 1 : 0, total: plan.questions.length };
   };
   const assertScore = async expected => {
