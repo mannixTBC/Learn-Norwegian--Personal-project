@@ -103,6 +103,13 @@ for (const mode of [false, true]) {
   installed = mode;
 
   setup();
+  const fromLesson=await render('/scenarii?nivel=A1&scenariu=bus-delay&porneste=1');
+  assert.equal(calls.length,1,'lesson recommendation starts once');
+  assert.equal(calls[0].operation,'start');
+  assert.equal(calls[0].body.scenarioId,'bus-delay');
+  await unmount(fromLesson);
+  checks++;
+  setup();
   const direct=await render();
   const directFlow=direct.root.find(n=>typeof n.type==='function'&&n.props.flow&&n.props.scenarios).props.flow;
   await act(async()=>{directFlow.choose(source.id,true);directFlow.choose(source.id,true);});

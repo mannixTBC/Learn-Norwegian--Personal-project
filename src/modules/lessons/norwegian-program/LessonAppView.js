@@ -1,12 +1,12 @@
 import RecallFocus from './RecallFocus';
-import DialogueWalkthrough from './DialogueWalkthrough';
+import LessonDialogueOverview from './LessonDialogueOverview';
+import {lessonNextPractice} from './lessonNextPractice';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
 import PremiumGate from '../../premium/PremiumGate';
-import ChatAssistant from '../../chat/ChatAssistant';
 import VoiceLessonConversation from '../../chat/VoiceLessonConversation';
-import { LessonMetaIcon, HighlightedSentence, DialogueAudioButton, SpeakerAvatar, getDialogueVoice, DialogueLineAudioButton } from './lessonParts';
+import { LessonMetaIcon, HighlightedSentence } from './lessonParts';
 import LessonAppExercise from './LessonAppExercise';
 import { getLessonImage } from '../lessonVisuals';
 
@@ -19,15 +19,9 @@ import './LessonProgramApp.css';
 
 const PlayIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5Z" /></svg>;
 const PauseIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5h2.8v13H8Zm5.2 0H16v13h-2.8Z" /></svg>;
-const HeartIcon = ({ filled }) => (
-  <svg viewBox="0 0 24 24" aria-hidden="true" className={filled ? 'is-filled' : ''}>
-    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-  </svg>
-);
 const BookIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5c3.2-.9 5.8-.3 8 1.7v12c-2.2-2-4.8-2.6-8-1.7ZM20 5.5c-3.2-.9-5.8-.3-8 1.7v12c2.2-2 4.8-2.6 8-1.7Z" /></svg>
 );
-const ChevronIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9.5 6 6 6-6" /></svg>;
 const CheckIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>;
 
 /* Meniul principal este separat de navigarea între întrebări. */
@@ -75,15 +69,6 @@ const AudioWave = ({ text, label, slow, size }) => {
   );
 };
 
-const SaveButton = () => {
-  const [saved, setSaved] = useState(false);
-  return (
-    <button type="button" className={`lapp-save ${saved ? 'is-saved' : ''}`} onClick={() => setSaved((v) => !v)} aria-pressed={saved} aria-label={saved ? 'Elimină din favorite' : 'Salvează în favorite'}>
-      <HeartIcon filled={saved} />
-    </button>
-  );
-};
-
 const AppChip = ({ children }) => <span className="lapp-chip">{children}</span>;
 
 /* Bara fixă cu butoanele conturate + CTA, ca în referințe. */
@@ -115,12 +100,13 @@ const AppExpressionBar = ({ current, total, onBack, onNext, onComplete, nextLabe
 const LessonAppView = (props) => {
   const {
     step, steps, lesson, course, levelCode, courseLessons, lessonExercises, careerModule, careerPathId, voiceCompleted,
-    vocabularyIndex, careerPhraseIndex, exerciseIndex, answers, exerciseResponses, showVocabularyTranslations, showTranslations,
+    vocabularyIndex, careerPhraseIndex, exerciseIndex, answers, exerciseResponses,
     contentRef, resultStep,
     setVocabularyIndex, setCareerPhraseIndex, setExerciseIndex,
-    toggleVocabularyTranslation, toggleTranslation, next, previous, goNextLesson, onRecordResult, onDraftExercise,
+    next, previous, goNextLesson, onRecordResult, onDraftExercise,
   } = props;
   const history = useHistory();
+  const recommended = lessonNextPractice(levelCode, lesson.id);
   const art = getLessonImage(levelCode, lesson.id);
   const score = Object.values(answers).filter(Boolean).length;
   const answered = Object.keys(answers).length;
@@ -162,20 +148,15 @@ const LessonAppView = (props) => {
               <article className="lapp-card lapp-vocab" key={word}>
                 <div className="lapp-card__top">
                   <AppChip>{index + 1} din {lesson.vocabulary.length}</AppChip>
-                  <SaveButton />
+
                 </div>
                 <h2 lang="no">{word}</h2>
                 <p className="lapp-vocab__sub">{wordTranslation}</p>
                 <AudioWave text={word} />
                 <div className="lapp-vocab__example">
                   <p lang="no"><HighlightedSentence sentence={example} word={word} highlight={highlight} /></p>
-                  <div className={`lapp-vocab__translation ${showVocabularyTranslations[index] ? 'is-visible' : ''}`} lang="ro">{sentenceTranslation}</div>
+                  <div className="lapp-vocab__translation is-visible" lang="ro">{sentenceTranslation}</div>
                 </div>
-                <button type="button" className="lapp-reveal" aria-expanded={showVocabularyTranslations[index] === true} onClick={() => toggleVocabularyTranslation(index)}>
-                  <BookIcon />
-                  <span>{showVocabularyTranslations[index] ? 'Ascunde traducerea' : 'Vezi traducerea exemplului'}</span>
-                  <ChevronIcon />
-                </button>
               </article>
             ))}
             <AppExpressionBar current={vocabularyIndex} total={lesson.vocabulary.length} nextLabel="Următoarea"
@@ -212,12 +193,7 @@ const LessonAppView = (props) => {
 
         {step === LESSON_STAGE.DIALOGUE && (
           <section>
-            <StepHeading title="Conversație în context" sub="Ascultă dialogul și descoperă cum se leagă replicile." />
-            <DialogueWalkthrough key={lesson.uid} dialogue={lesson.dialogue}>
-            <PremiumGate feature="Asistentul virtual de conversație">
-              <ChatAssistant key={`${levelCode}-${lesson.id}-${careerPathId}-app`} level={levelCode} lessonId={lesson.id} pathId={careerPathId} lessonTitle={lesson.title} />
-            </PremiumGate>
-            </DialogueWalkthrough>
+            <LessonDialogueOverview key={lesson.uid} dialogue={lesson.dialogue} />
           </section>
         )}
 
@@ -277,13 +253,16 @@ const LessonAppView = (props) => {
               <p className="lapp-result__sub">Ai terminat „{lesson.title}”.</p>
             </div>
             <div className="lapp-statscard">
-              <div><span><LessonMetaIcon type="vocabulary" /></span><strong>{score} din {lessonExercises.length}<small>Exerciții corecte</small></strong><b>{percentage}%</b></div>
+              <div><span><LessonMetaIcon type="vocabulary" /></span><strong>{score} din {lessonExercises.length}<small>Exerciții corecte</small>{reviewCount > 0 && <small className="lapp-result__inline-review">{reviewCount} de repetat</small>}</strong><b>{percentage}%</b></div>
               <div><span><LessonMetaIcon type="voice" /></span><strong>{voiceCompleted ? 'Dialog vocal finalizat' : 'Dialog vocal de exersat'}</strong><b>{voiceCompleted ? '✓' : '—'}</b></div>
               <button type="button" className="lapp-result__vocabulary" onClick={() => props.onReviewVocabulary()}><span><BookIcon /></span><strong>Revezi vocabularul</strong><b aria-hidden="true">→</b></button>
             </div>
-            {reviewCount > 0 && (
-              <div className="lapp-result__review-count"><span>De repetat</span><strong>{reviewCount}</strong></div>
-            )}
+            <section className="lapp-next-practice" aria-label="Continuă practica">
+              <h2>Ce poți exersa mai departe</h2>
+              {recommended.scenario && <Link to={'/scenarii?nivel='+levelCode+'&scenariu='+encodeURIComponent(recommended.scenario.id)+'&porneste=1'}><strong>Vorbește cu Nora</strong><small>{recommended.scenario.title}</small><span aria-hidden="true">→</span></Link>}
+              <Link to={'/hangman?nivel='+levelCode}><strong>Descoperă cuvântul</strong><small>Exersează vocabularul în imagini</small><span aria-hidden="true">→</span></Link>
+              {recommended.verb && <Link to={'/challenge30?nivel='+levelCode+'&lectie='+lesson.id+'&verb='+encodeURIComponent(recommended.verb.id)}><strong>Exersează verbele</strong><small>{recommended.verb.infinitive} · {recommended.verb.translation}</small><span aria-hidden="true">→</span></Link>}
+            </section>
             <div className="lapp-result__actions">
               {lesson.id < courseLessons.length
                 ? <button type="button" className="is-solid" onClick={goNextLesson}>Următoarea lecție →</button>

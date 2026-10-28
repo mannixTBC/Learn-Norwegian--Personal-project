@@ -101,13 +101,15 @@ export function createNotebookQuestion(verb,tense,random=Math.random){
  const options=shuffle([answer,...shuffle(candidates,random).slice(0,2)],random);
  return {...example,tense,answer,options,context:contexts[tense],meaning:verb.translation};
 }
-export function createNotebookRound(level,memory={records:{},recent:[]},previous=null,random=Math.random,learning={completed:[],unlocked:1}){
+export function createNotebookRound(level,memory={records:{},recent:[]},previous=null,random=Math.random,learning={completed:[],unlocked:1},requested=null){
  const pools=selectionPools(level,memory,previous,learning);
  // Renormalize only the available categories. Empty lesson/review pools never
  // silently count as those categories. Default split: lessons 60 / review 25 / common 15.
  const categories=[{source:pools.lessons.length?'lesson':'level',weight:60,pool:pools.lessons.length?pools.lessons:pools.fallback},{source:'review',weight:25,pool:pools.review},{source:'common',weight:15,pool:pools.common}].filter(c=>c.pool.length);
  let roll=random()*categories.reduce((sum,c)=>sum+c.weight,0),category=categories[categories.length-1];for(const c of categories){roll-=c.weight;if(roll<0){category=c;break;}}
- const verb=pick(category.pool,random),available=tensesForVerb(verb,level);
+ const requestedVerb=requested&&byId.get(requested.verb);
+ const linked=requestedVerb?.sources.some(source=>source.level===level&&source.id===Number(requested.lesson));
+ const verb=linked?requestedVerb:pick(category.pool,random),available=tensesForVerb(verb,level);
  const weak=available.filter(t=>memory.records?.[verb.id+':'+t]?.needsReview);
  const extras=available.filter(t=>!['present','past','future'].includes(t));
  // Always compare three forms. Beginners compare present/past/future; later
@@ -115,7 +117,7 @@ export function createNotebookRound(level,memory={records:{},recent:[]},previous
  let tenses=['present','past','future'];
  if(extras.length){const focus=pick(weak.length?weak:extras,random);const contrast=focus==='perfect'||focus==='pastPerfect'?['past','perfect'].filter(t=>t!==focus):['present','future'];tenses=[...new Set([focus,...contrast,...shuffle(available,random)])].slice(0,3);}
  const questions=shuffle(tenses,random).map(t=>createNotebookQuestion(verb,t,random));
- return {verb,tenses,questions,source:category.source};
+ return {verb,tenses,questions,source:linked?'lesson':category.source};
 }
 export function saveNotebookRound(storage,userId,level,round,answers){
  if(answers.length!==round.questions.length)throw new Error('Cannot save an incomplete verb round');

@@ -30,13 +30,14 @@ const root=createRoot(document.getElementById('root'));
 const user={id:'lesson-feedback-ui'};
 let run=0,key;
 window.feedbackQa={
- mount(level='A1',id=1,index=0){
+ mount(level='A1',id=1,index=0,stage=LESSON_STAGE.EXERCISES){
   localStorage.clear();
   const lesson=courseCatalog[level].lessons.find(lesson=>lesson.id===id);
   const exercises=[...lesson.exercises,getCareerLessonModule('general',level,id,lesson).exercise];
   key=lessonResumeKey(level,id,user)+'_voice_v1';
-  localStorage.setItem(key,JSON.stringify(lessonStepState(LESSON_STAGE.EXERCISES)));
+  localStorage.setItem(key,JSON.stringify(lessonStepState(stage)));
   localStorage.setItem(key+'_exercise_index',JSON.stringify(index));
+  if(stage===LESSON_STAGE.RESULT)localStorage.setItem(key+'_answers',JSON.stringify({0:false}));
   root.render(<MemoryRouter key={++run} initialEntries={['/lectii/'+level.toLowerCase()+'/'+id]}><div className="App"><main className="App__main"><Route path="/lectii/:level/:lessonId" component={Lesson}/></main></div></MemoryRouter>);
   return exercises[index];
  },
@@ -84,6 +85,32 @@ try {
     return route.abort();
   });
   await page.goto('http://lesson-feedback.local/');
+  for(const level of ['A1','C2']){
+   await page.setViewportSize({width:390,height:844});
+   for(const stage of [2,4,6,8]){
+    await page.evaluate(({level,stage})=>window.feedbackQa.mount(level,1,0,stage),{level,stage});
+    await page.waitForSelector('.lapp--step-'+stage);
+    if(stage===2){
+     assert.equal(await page.locator('.lapp-save,.lapp-reveal').count(),0);
+     assert.ok(await page.locator('.lapp-vocab__translation').isVisible());
+    }
+    if(stage===4){
+     assert.ok(await page.locator('.lapp-dialogue-lines article').count()>2);
+     await page.getByRole('button',{name:'Ascultă dialogul',exact:true}).click();
+     assert.ok(await page.evaluate(()=>Boolean(window.feedbackSpeech)));
+    }
+    if(stage===8){
+     assert.equal(await page.locator('.lapp-next-practice a').count(),3);
+     assert.equal(await page.locator('.lapp-result__inline-review').innerText(),'1 de repetat');
+     assert.equal(await page.locator('.lapp-result__review-count').count(),0);
+     assert.ok((await page.locator('.lapp-next-practice a').first().getAttribute('href')).includes('scenariu='));
+     assert.ok((await page.locator('.lapp-next-practice a').last().getAttribute('href')).includes('verb='));
+    }
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+    if(level==='A1'&&[4,6,8].includes(stage))assert.ok(await page.locator('.lapp-content').evaluate(el=>el.scrollHeight<=el.clientHeight+1),'A1 step '+stage+' should fit at 390x844');
+    await page.screenshot({path:resolve(artifacts,'step-'+stage+'-'+level+'.png'),fullPage:true});
+   }
+  }
   const paint = () => page.evaluate(() => new Promise(done => requestAnimationFrame(() => requestAnimationFrame(done))));
   const mount = async (level = 'A1', id = 1, index = 0) => {
     const exercise = await page.evaluate(args => window.feedbackQa.mount(...args), [level, id, index]);

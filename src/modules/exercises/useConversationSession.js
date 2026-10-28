@@ -12,7 +12,7 @@ const getAccessToken = async () => {
   return session?.data?.session?.access_token;
 };
 
-export default function useConversationSession({ userId, level, pathId, scenarios, initialScenarioId }) {
+export default function useConversationSession({ userId, level, pathId, scenarios, initialScenarioId, autoStart = false }) {
   const [state, setState] = useState(empty);
   const current = useRef(state);
   const pending = useRef(null);
@@ -94,12 +94,14 @@ export default function useConversationSession({ userId, level, pathId, scenario
     cancel();
     const saved = readConversation(key, options.current);
     const progress = readProgress();
-    update(saved ? { ...empty(), progress, scenarioId: saved.scenarioId, savedToken: saved.sessionToken, draft: saved.draft } : { ...empty(), progress, scenarioId: options.current.some(s => s.id === initialScenarioId) ? initialScenarioId : null });
-    if (saved) void run('resume');
+    const direct = autoStart && options.current.some(s => s.id === initialScenarioId);
+    update(direct ? { ...empty(), progress, scenarioId: initialScenarioId } : saved ? { ...empty(), progress, scenarioId: saved.scenarioId, savedToken: saved.sessionToken, draft: saved.draft } : { ...empty(), progress, scenarioId: options.current.some(s => s.id === initialScenarioId) ? initialScenarioId : null });
+    if (direct) void run('start');
+    else if (saved) void run('resume');
     return () => { mounted.current = false; cancel(); };
     // Scope changes intentionally reset UI state before loading a separate checkpoint.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key]);
+  }, [key, initialScenarioId, autoStart]);
 
   function choose(scenarioId, autoStart = false) {
     if (autoStart && current.current.scenarioId === scenarioId && pending.current) return;

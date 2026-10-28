@@ -9,10 +9,10 @@ import {createNotebookRound,readNotebookMemory,readNotebookLearning,saveNotebook
 import './VerbNotebook.css';
 const shortTense=tense=>tense==='past'?'Trecut':tenseLabels[tense];
 const storage=()=>{try{return window.localStorage;}catch{return null;}};
-const persons=['jeg','du','han','hun','den','det','vi','dere','de'];
+const persons=['jeg','du','han','hun','vi','dere','de'];
 function SoundIcon(){return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4V5ZM15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></svg>;}
-export default function VerbNotebook({level,userId}){
- const nextRound=previous=>createNotebookRound(level,readNotebookMemory(storage(),userId,level),previous,Math.random,readNotebookLearning(userId,level));
+export default function VerbNotebook({level,userId,requested}){
+ const nextRound=previous=>createNotebookRound(level,readNotebookMemory(storage(),userId,level),previous,Math.random,readNotebookLearning(userId,level),previous?null:requested);
  const [round,setRound]=useState(()=>nextRound(null));
  const [stage,setStage]=useState('learn'),[index,setIndex]=useState(0),[selected,setSelected]=useState(null),[checked,setChecked]=useState(false),[answers,setAnswers]=useState([]),[hint,setHint]=useState(false),[helped,setHelped]=useState(false),[audioError,setAudioError]=useState(''),[playing,setPlaying]=useState(null),[saveError,setSaveError]=useState('');
  const audio=useRef(null),lock=useRef(false),saved=useRef(false),heading=useRef(null),started=useRef(Date.now());

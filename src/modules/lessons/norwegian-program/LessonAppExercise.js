@@ -137,7 +137,6 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
         <div className="gap-word-bank" aria-label="Cuvinte disponibile">{exercise.options.map((option) => <button type="button" disabled={checked || gapAnswers.includes(option)} className={checked && exercise.answer.includes(option) ? 'is-correct' : checked && gapAnswers.includes(option) ? 'is-wrong' : ''} key={option} onClick={() => placeGapAnswer(option)}>{option}</button>)}</div>
         {!checked && <p className="lapp-exercise__hint">{singleGap ? 'Atinge varianta potrivită. Se verifică imediat.' : 'Completează toate spațiile, apoi verifică răspunsul.'}</p>}
       </div>}
-      {!checked && exercise.type === 'choice' && <p className="lapp-exercise__hint">Poți schimba răspunsul înainte de verificare.</p>}
       {!checked && exercise.type === 'choice' && exercise.hint && <details className="nordic-choice__hint"><summary>Indiciu</summary><p>{exercise.hint}</p></details>}
       <dialog ref={feedback} className="lapp-exercise__feedback-dialog" aria-labelledby={feedbackTitleId} onCancel={() => setFeedbackOpen(false)} onClose={closeFeedback}>
       {checked && <div className={`lapp-exercise__feedback ${outcome ? 'is-correct' : 'is-wrong'}`}>
