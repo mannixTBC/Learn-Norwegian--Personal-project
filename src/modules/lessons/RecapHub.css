@@ -31,3 +31,9 @@ html body #root .App .exercise-screen.recap-page{box-sizing:border-box;width:min
 .recap-review-link{display:block;padding:18px 0;text-align:center;color:#007f83}
 @media(max-width:680px){html body #root .App .exercise-screen.recap-page{padding-bottom:calc(88px + env(safe-area-inset-bottom))}.recap-page>.mobile-app-nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:80;margin:0}}
 @media(max-width:360px){.recap-top{gap:8px}.recap-logo{max-width:140px}.recap-choice{gap:12px}.recap-choice p{font-size:14px}.recap-choice h2{font-size:23px}.recap-heading p{font-size:16px}}
+
+/* Center the three entry cards in the space between header and navigation. */
+html body #root .App .exercise-screen.recap-hub{display:flex;flex-direction:column;min-height:100dvh}
+.recap-hub>.recap-top{flex-shrink:0}
+.recap-hub>.recap-choices{width:100%;margin-block:auto;flex-shrink:0}
+.recap-hub>.mobile-app-nav{flex-shrink:0}

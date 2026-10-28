@@ -282,3 +282,13 @@ html body #root .studio-design .airy-message-copy>p,html body #root .studio-desi
 html body #root .App .studio-design .airy-message-copy>p,html body #root .App .studio-design .scenario-voice__caption,html body #root .App .studio-design .guided-objectives-heading{color:#102c41}
 .studio-eyebrow{font-family:'Segoe UI',Arial,sans-serif}
 .studio-free .conversation-hint,.studio-free .conversation-feedback{overflow-wrap:anywhere}
+
+/* Compact, centered practical catalog; content remains scrollable when needed. */
+html body #root .App .studio-design.practical-catalog{min-height:100dvh;justify-content:center;padding-top:max(12px,env(safe-area-inset-top));padding-bottom:max(12px,env(safe-area-inset-bottom))}
+.practical-catalog .studio-top{margin-bottom:16px;flex-shrink:0}
+.practical-catalog .sc-tabs{margin-bottom:10px;flex-shrink:0}
+.studio-design.practical-catalog .sc-browse{margin-bottom:10px;flex-shrink:0}
+.studio-design.practical-catalog .sc-grid{gap:10px 14px;flex-shrink:0}
+html body #root .App .practical-catalog .sc-card .sc-card-art{height:clamp(48px,calc((100dvh - 500px) / 3),140px);aspect-ratio:auto;object-fit:cover;flex-shrink:0}
+.practical-catalog .sc-pagination{flex-shrink:0;margin:6px 0 0}
+

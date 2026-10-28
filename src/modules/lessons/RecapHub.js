@@ -12,7 +12,7 @@ const choices=[
  {id:'words',title:'Descoperă cuvântul',description:'Amintește-ți cuvintele prin joc.',path:'/hangman'},
 ];
 function RecapHeader({level,summary=false}){
- return <><header className="recap-top"><Link className="recap-back" to={(summary?'/recapitulare-azi':'/jocuri')+'?nivel='+level} aria-label={summary?'Înapoi la recapitulare':'Înapoi la practică'}>‹</Link><Link className="recap-logo" to="/dashboard" aria-label="NordLingo - Acasă"><NorwegianFlagIcon/></Link><ExerciseLevelSelect level={level}/></header><div className="recap-heading"><h1>{summary?'Sumar lecții':'Recapitulare'}</h1><p>{summary?'Revezi ideile esențiale, în ritmul tău.':'Alege ce vrei să repeți astăzi.'}</p></div></>;
+ return <><header className="recap-top"><Link className="recap-back" to={(summary?'/recapitulare-azi':'/jocuri')+'?nivel='+level} aria-label={summary?'Înapoi la recapitulare':'Înapoi la practică'}>‹</Link><Link className="recap-logo" to="/dashboard" aria-label="NordLingo - Acasă"><NorwegianFlagIcon/></Link><ExerciseLevelSelect level={level}/></header>{summary && <div className="recap-heading"><h1>Sumar lecții</h1><p>Revezi ideile esențiale, în ritmul tău.</p></div>}</>;
 }
 export default function RecapHub(){
  const {search}=useLocation(),level=getLearningLevel(search);
