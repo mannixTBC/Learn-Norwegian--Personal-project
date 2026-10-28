@@ -167,3 +167,32 @@ html body #root .App .practical-catalog .sc-start{min-height:57px;margin:20px 4p
  .studio-home:not(.studio-free)>.mobile-app-nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:80;margin:0}
 }
 @media(max-width:380px){.studio-design .studio-heading-art,.studio-design .conversation-intro .studio-heading-art,.studio-design .studio-result-art{right:-15px}}
+
+/* Keep the home illustration beside the title and fit the two choices above navigation. */
+.studio-home .studio-heading{min-height:0;margin-bottom:12px}
+.studio-design.studio-home .studio-heading h1{max-width:72%;font-size:clamp(30px,8.4vw,42px);line-height:1.08}
+.studio-design.studio-home .studio-heading p{font-size:17px;line-height:1.35;margin-top:10px}
+.studio-design.studio-home .studio-heading-art{top:0;right:0;width:27%;height:90px;opacity:1;border-radius:12px;mask-image:linear-gradient(to right,transparent,#000 25%)}
+.studio-design.studio-home .studio-hero{width:100%;height:clamp(110px,18dvh,160px);aspect-ratio:auto;margin:0 0 12px;border-radius:14px}
+@media(max-width:680px){
+ .studio-home .studio-option{gap:6px 12px;padding:8px}
+ .studio-design.studio-home .studio-option>.studio-option-art{height:76px}
+ .studio-design.studio-home .studio-option h2{font-size:24px}
+ .studio-design.studio-home .studio-option p{font-size:15px}
+ .studio-home .studio-tags{gap:12px}
+ .studio-home .studio-tags span{padding:3px 14px}
+}
+@media(max-width:680px) and (max-height:740px){
+ html body #root .App .studio-design.studio-home{padding-top:10px}
+ .studio-home .studio-top{margin-bottom:6px;min-height:42px}
+ .studio-design.studio-home .studio-heading h1{font-size:30px}
+ .studio-design.studio-home .studio-heading p{font-size:15px;margin-top:6px}
+ .studio-design.studio-home .studio-heading-art{height:70px}
+ .studio-design.studio-home .studio-hero{height:96px;margin-bottom:8px}
+ .studio-home .studio-options{gap:8px}
+ .studio-design.studio-home .studio-option>.studio-option-art{height:56px}
+ .studio-design.studio-home .studio-option h2{font-size:21px;margin-bottom:3px}
+ .studio-design.studio-home .studio-option p{font-size:14px}
+ .studio-home .studio-tags{display:none}
+ html body #root .studio-home .studio-primary{min-height:44px;padding:8px 12px;font-size:16px}
+}

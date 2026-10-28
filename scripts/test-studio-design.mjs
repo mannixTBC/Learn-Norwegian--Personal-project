@@ -50,6 +50,16 @@ try{
    const nav=await page.locator('.mobile-app-nav').evaluate(el=>({radius:getComputedStyle(el).borderRadius,active:getComputedStyle(el.querySelector('.active')).backgroundImage,weight:getComputedStyle(el.querySelector('a')).fontWeight,position:getComputedStyle(el).position}));
    assert.equal(nav.radius,'18px');assert.match(nav.active,/linear-gradient/);assert.equal(nav.weight,'850');
    assert.equal(nav.position,width<=680?'fixed':'static');
+   const layout=await page.evaluate(()=>{
+    const rect=selector=>document.querySelector(selector).getBoundingClientRect();
+    return {height:document.documentElement.scrollHeight,viewport:innerHeight,
+     titleRight:rect('.studio-heading h1').right,artLeft:rect('.studio-heading-art').left,
+     actionBottom:[...document.querySelectorAll('.studio-options .studio-primary')].at(-1).getBoundingClientRect().bottom,
+     navTop:rect('.mobile-app-nav').top};
+   });
+   assert.ok(layout.height<=layout.viewport+1,'home fits viewport '+JSON.stringify({width,height,installed,layout}));
+   assert.ok(layout.titleRight<=layout.artLeft,'title and illustration remain separate');
+   assert.ok(layout.actionBottom<=layout.navTop,'home actions stay above navigation');
   }
   if(name==='catalog')assert.equal(await page.locator('.sc-card-art image[href="/images/studio/practical-reference.png"]').count(),4);
   const last=page.locator('button:visible,a:visible').last();await last.scrollIntoViewIfNeeded();assert.ok(await last.isVisible());
