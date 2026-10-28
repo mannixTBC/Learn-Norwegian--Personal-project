@@ -281,3 +281,4 @@ html body #root .App .studio-design .scenario-voice__mic{width:108px;height:108p
 html body #root .studio-design .airy-message-copy>p,html body #root .studio-design .scenario-voice__caption,html body #root .studio-design .guided-objectives-heading{color:var(--studio-ink)}
 html body #root .App .studio-design .airy-message-copy>p,html body #root .App .studio-design .scenario-voice__caption,html body #root .App .studio-design .guided-objectives-heading{color:#102c41}
 .studio-eyebrow{font-family:'Segoe UI',Arial,sans-serif}
+.studio-free .conversation-hint,.studio-free .conversation-feedback{overflow-wrap:anywhere}

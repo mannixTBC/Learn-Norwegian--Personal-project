@@ -91,7 +91,9 @@
 .practice-top .exercise-level-select{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
 .practice-top .exercise-level-select select{box-sizing:border-box;box-shadow:none;background-image:none}
 /* A text-free landscape crop never paints a second level selector. */
-.practice-fjord{inset:48px -16px auto auto;width:43%;height:85px;mask-image:linear-gradient(180deg,transparent,#000 18%,#000 75%,transparent)}
+.practice-fjord{inset:0 -16px auto auto;width:66%;height:100%;border-radius:0 0 0 70%;mask-image:radial-gradient(ellipse 100% 100% at 100% 0%,#000 36%,#000c 57%,transparent 94%)}
+.practice-top,.practice-heading{position:relative;z-index:1}
+.practice-top .exercise-level-select select{background:#fffcf5ed;border-color:#d9ddd1;border-radius:18px;box-shadow:0 2px 9px #153f4b10}
 @media(max-height:760px){
  .practice-overview{gap:6px}
  .practice-top{margin-bottom:2px}

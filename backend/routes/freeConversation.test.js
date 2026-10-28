@@ -3,9 +3,9 @@ test('free conversation: auth, signed ownership, real turns, translations, quota
  process.env.CHAT_SESSION_SECRET='free-conversation-test-secret';
  const auth=require('../middleware/authSupabaseUser'),ai=require('../openai'),usage=require('../chatUsage');
  auth.requireAuth=(req,res,next)=>{const id=req.headers.authorization;if(!id)return res.status(401).json({error:'Auth'});req.userId=id;next();};
- let calls=0,quotas=0,records=0,mode='ok';ai.isOpenAIConfigured=()=>true;
+ let calls=0,quotas=0,records=0,mode='ok',lastPrompt='';ai.isOpenAIConfigured=()=>true;
  usage.consumeChatQuota=async()=>{quotas++;if(mode==='quota')throw Object.assign(new Error('Quota'),{status:429});};usage.recordChatUsage=async()=>{records++;};
- ai.getOpenAI=()=>({chat:{completions:{create:async request=>{calls++;assert.equal(request.store,false);if(mode==='fail')throw new Error('Unavailable');return {choices:[{finish_reason:'stop',message:{content:request.response_format?JSON.stringify({reply:'Hva liker du å gjøre?',translation:'Ce îți place să faci?'}):'Bună!'}}]};}}}});
+ ai.getOpenAI=()=>({chat:{completions:{create:async request=>{calls++;lastPrompt=request.messages[0].content;assert.equal(request.store,false);if(mode==='fail')throw new Error('Unavailable');return {choices:[{finish_reason:'stop',message:{content:request.response_format?JSON.stringify({reply:'Hva liker du å gjøre?',translation:'Ce îți place să faci?',hint:'Spune ce îți place.',examples:[{answer:'Jeg liker kaffe.',translation:'Îmi place cafeaua.'}],correction:null,simplified:false}):'Bună!'}}]};}}}});
  const app=express();app.use(express.json());app.use('/api/chat',require('./chat'));const fetch=inProcessFetch(app);
  const post=(path,body,user='a')=>fetch('http://local/api/chat/'+path,{method:'POST',headers:{'Content-Type':'application/json',...(user?{Authorization:user}:{})},body:JSON.stringify(body)});
  assert.equal((await post('free/start',{level:'A2'},null)).status,401);
@@ -19,6 +19,11 @@ test('free conversation: auth, signed ownership, real turns, translations, quota
  assert.equal((await post('free/turn',{sessionToken:sign({...state,expires:0}),message:'Hei'})).status,401);
  assert.equal((await post('free/turn',{sessionToken:sign({...state,turn:30}),message:'Hei'})).status,409);
  assert.equal((await post('translate',{text:'Hei!'})).status,200);
+ for(const level of ['A1','A2','B1','B2','C1','C2']){
+ const start=await (await post('free/start',{level})).json();assert.equal(start.level,level);assert.ok(start.hint);assert.ok(start.examples.length);assert.equal(verify(start.sessionToken,'a').level,level);
+ const result=await (await post('free/turn',{sessionToken:start.sessionToken,message:'Kan du si det enklere?',level:'C2'})).json();assert.equal(result.level,level,'client cannot change the signed level');assert.ok(lastPrompt.includes('selected CEFR level is '+level));assert.ok(result.examples.length);
+ }
+ const beforeFailureRecords=records;
  mode='quota';assert.equal((await post('free/turn',{sessionToken:turn.sessionToken,message:'Hei'})).status,429);
- mode='fail';assert.equal((await post('free/turn',{sessionToken:turn.sessionToken,message:'Hei'})).status,502);assert.equal(records,3);
+ mode='fail';assert.equal((await post('free/turn',{sessionToken:turn.sessionToken,message:'Hei'})).status,502);assert.equal(records,beforeFailureRecords+1);
 });
