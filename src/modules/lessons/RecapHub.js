@@ -9,10 +9,10 @@ import './RecapHub.css';
 const choices=[
  {id:'lessons',title:'Sumar lecții',description:'Ideile esențiale din lecțiile tale.',path:'/sumar-lectii'},
  {id:'verbs',title:'Verbe',description:'Repetă formele și folosirea verbelor.',path:'/challenge30'},
- {id:'words',title:'Descoperă cuvântul',description:'Amintește-ți cuvintele prin joc.',path:'/hangman'},
+ {id:'grammar',title:'Gramatică',description:'Reguli și structuri ale limbii norvegiene.',path:'/gramatica'},
 ];
-function RecapHeader({level,summary=false}){
- return <><header className="recap-top"><Link className="recap-back" to={(summary?'/recapitulare-azi':'/jocuri')+'?nivel='+level} aria-label={summary?'Înapoi la recapitulare':'Înapoi la practică'}>‹</Link><Link className="recap-logo" to="/dashboard" aria-label="NordLingo - Acasă"><NorwegianFlagIcon/></Link><ExerciseLevelSelect level={level}/></header>{summary && <div className="recap-heading"><h1>Sumar lecții</h1><p>Revezi ideile esențiale, în ritmul tău.</p></div>}</>;
+function RecapHeader({level,summary=false,grammar=false}){
+ return <><header className="recap-top"><Link className="recap-back" to={((summary||grammar)?'/recapitulare-azi':'/jocuri')+'?nivel='+level} aria-label={(summary||grammar)?'Înapoi la recapitulare':'Înapoi la practică'}>‹</Link><Link className="recap-logo" to="/dashboard" aria-label="NordLingo - Acasă"><NorwegianFlagIcon/></Link><ExerciseLevelSelect level={level}/></header>{summary && <div className="recap-heading"><h1>Sumar lecții</h1><p>Revezi ideile esențiale, în ritmul tău.</p></div>}</>;
 }
 export default function RecapHub(){
  const {search}=useLocation(),level=getLearningLevel(search);
@@ -25,3 +25,5 @@ function SummaryContent({level}){
  return <><label className="recap-lesson-picker">Alege lecția<select value={selected} onChange={e=>setSelected(e.target.value)}>{lessons.map(item=><option value={item.id} key={item.id}>{item.id}. {item.title}</option>)}</select></label>{lesson?<article className="recap-lesson"><h2>{lesson.title}</h2>{lesson.objectives?.length>0&&<><h3>Idei esențiale</h3><ul>{lesson.objectives.map((text,i)=><li key={i}>{text}</li>)}</ul></>}{lesson.grammar?.rule&&<><h3>{lesson.grammar.title||'Gramatică'}</h3><p>{lesson.grammar.rule}</p></>}{lesson.vocabulary?.length>0&&<><h3>Vocabular</h3><dl>{lesson.vocabulary.map(([norwegian,translation],i)=><div key={i}><dt lang="nb">{norwegian}</dt><dd>{translation}</dd></div>)}</dl></>}</article>:<p role="status">Nu sunt lecții pentru acest nivel.</p>}<Link className="recap-review-link" to={'/recapitulare?nivel='+level}>Revezi expresiile de repetat</Link></>;
 }
 export function LessonSummary(){const {search}=useLocation(),level=getLearningLevel(search);return <section className="exercise-screen recap-page recap-summary"><RecapHeader level={level} summary/><SummaryContent key={level} level={level}/><MobileAppNav activeLevel={level} activeSection="games"/></section>;}
+
+export function GrammarPage(){const {search}=useLocation(),level=getLearningLevel(search);return <section className="exercise-screen recap-page recap-grammar"><RecapHeader level={level} grammar/><div className="recap-heading"><h1>Gramatică</h1></div><article className="recap-lesson"><p>Pregătim această pagină. Exercițiile de gramatică vor apărea aici.</p></article><MobileAppNav activeLevel={level} activeSection="games"/></section>;}
