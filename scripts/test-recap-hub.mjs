@@ -20,9 +20,13 @@ for(const level of ['A1','A2','B1','B2','C1','C2']){
  assert.equal(r.root.findAllByType('button').length,0,'cards have no separate arrow/button');
  await act(async()=>r.unmount());
  await act(async()=>{r=TestRenderer.create(wrap(LessonSummary,level));});
- const picker=r.root.findByProps({className:'recap-lesson-picker'}).findByType('select'),options=picker.findAllByType('option');assert.ok(options.length>1);
- await act(async()=>picker.props.onChange({target:{value:String(options[1].props.value)}}));
- assert.equal(picker.props.value,String(options[1].props.value));assert.ok(r.root.findByProps({className:'recap-lesson'}).findByType('h2').children.join(''));
+ assert.equal(r.root.findAllByProps({'aria-label':'Lecția anterioară'}).length,0);
+ assert.equal(r.root.findAllByProps({className:'summary-sound'}).length,4);
+ await act(async()=>r.root.findByProps({'aria-label':'Lecția următoare'}).props.onClick());
+ assert.equal(r.root.findByProps({className:'summary-grammar'}).props.to,'/gramatica?nivel='+level+'&lectie=2');
+ assert.equal(r.root.findByProps({className:'summary-restart'}).props.to,'/curs/'+level.toLowerCase()+'/2');
+ await act(async()=>r.root.findByProps({'aria-label':'Lecția anterioară'}).props.onClick());
+ assert.equal(r.root.findAllByProps({'aria-label':'Lecția anterioară'}).length,0);
  await act(async()=>r.unmount());
 }
 const css=(await Promise.all((await readdir(resolve(root,'dist/assets'))).filter(n=>n.endsWith('.css')).map(n=>readFile(resolve(root,'dist/assets',n),'utf8')))).join('\n');
@@ -45,7 +49,8 @@ try{
  if(width===390&&!installed){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:resolve(out,'hub.png'),fullPage:true});}
  // The illustration itself is an entry point, not just the title.
  await page.locator('.recap-choice').first().locator('svg').click();await page.waitForURL('http://recap.test/sumar-lectii?nivel=A2');
- }else{await page.locator('.recap-review-link').scrollIntoViewIfNeeded();assert.ok(await page.locator('.recap-review-link').isVisible());}
+ }else{await page.locator('.summary-restart').scrollIntoViewIfNeeded();assert.ok(await page.locator('.summary-restart').isVisible());}
+ if(name==='summary'&&width===390&&!installed){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:resolve(out,'summary.png'),fullPage:true});}
  if(name==='summary'){await page.evaluate(()=>document.querySelector('.App__main').innerHTML='<p>Acasă</p>');assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--exercise-canvas').trim()),'');}
  }
  console.log('PASS: all six levels, three direct card destinations, lesson selection, full-card clicks, original navigation and 12 web/app layouts.');

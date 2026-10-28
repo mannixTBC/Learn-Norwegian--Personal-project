@@ -1,0 +1,37 @@
+html:has(.App__main .verb-notebook){--exercise-canvas:#fefcf7}
+html body #root .App .exercise-screen.verb-notebook{display:block;box-sizing:border-box;width:100%;max-width:480px;height:auto;min-height:0;margin:0 auto;padding:18px 20px 24px;border:0;box-shadow:none;background:#fefcf7;color:#102c41;font:16px/1.4 'Segoe UI',sans-serif}
+.verb-notebook *{box-sizing:border-box}.App:has(.verb-notebook)>.navbar{display:none}
+.vn-header{display:flex;align-items:center;gap:12px;min-height:44px;margin-bottom:22px}.vn-back{display:grid;place-items:center;color:#102c41;width:32px;min-height:44px;font:32px Georgia,serif;text-decoration:none}.vn-brand{flex:1;min-width:0}.vn-brand>span,.vn-brand img{display:block;width:145px;height:44px;object-fit:contain}.vn-header .exercise-level-select{position:static;transform:none;margin:0;background:none;border:0;padding:0}.vn-header .exercise-level-select>span{display:none}.vn-header select{max-width:76px;min-height:44px;border:1px solid #e3e4dc;border-radius:22px;background:#f6f6ef;color:#102c41;padding:6px;font-size:14px}
+.vn-step{display:flex;align-items:center;gap:14px;font-size:13px;margin-bottom:16px}.vn-step progress{flex:1;width:60px;height:5px;appearance:none;border:0;border-radius:8px;overflow:hidden;background:#e2e5df}.vn-step progress::-webkit-progress-bar{background:#e2e5df}.vn-step progress::-webkit-progress-value{background:#007f83}.vn-step progress::-moz-progress-bar{background:#007f83}
+.vn-title{display:flex;align-items:center;gap:14px}.vn-title h1{font:700 34px/1.15 Georgia,serif;color:#102c41;margin:0;overflow-wrap:anywhere}.vn-title p{margin:5px 0 0;font-size:16px}.vn-title h1:focus{outline:none}.vn-sound{display:grid;place-items:center;flex-shrink:0;width:44px;height:44px;border:1px solid #dacdbb;border-radius:50%;background:#fffefa;color:#007f83}.vn-sound svg{width:22px;height:22px}.vn-sound[aria-busy=true]{background:#dff0ed}
+.vn-tense{display:inline-block;margin:10px 0 16px;padding:4px 12px;border-radius:18px;background:#e1efeb;color:#006d73;font-size:13px}
+.vn-paper{position:relative;padding:20px 18px 18px 26px;border:1px solid #e5d8c5;border-radius:14px;background:linear-gradient(90deg,transparent 15px,#e0bfa34d 15px,#e0bfa34d 16px,transparent 16px),repeating-linear-gradient(#fffdf8 0,#fffdf8 31px,#e8e5dc 32px);box-shadow:0 4px 0 -1px #f7f0e3,0 6px 0 -1px #e5d8c5,0 9px 16px #72562512}
+.vn-conjugation{width:100%;border-collapse:collapse;font:16px/1.4 Georgia,serif}.vn-conjugation th,.vn-conjugation td{padding:7px 6px;text-align:left;border-bottom:1px solid #e3dccf}.vn-conjugation th{font-weight:400;width:58%}.vn-conjugation td{font-weight:700}.vn-rule{margin-top:20px;font-size:14px}.vn-rule h2{font:700 20px/1.3 Georgia,serif;color:#007f83;margin:0 0 8px}.vn-rule p{margin:5px 0}.vn-primary{display:block;width:100%;min-height:50px;margin-top:22px;border:0;border-radius:13px;padding:10px;background:#007f83;color:white;font:700 20px/1.3 Georgia,serif}.vn-primary:disabled{background:#b0cecd;cursor:default}
+.vn-instruction{font-size:13px;color:#526771;margin:0 0 15px}.vn-sentence{font:700 25px/1.4 Georgia,serif;margin:0;color:#102c41;overflow-wrap:anywhere}.vn-translation{margin:8px 0 22px;color:#536473;font-size:16px}.vn-options{display:grid;gap:12px}.vn-options button{width:100%;min-height:50px;border:1px solid #ddcfbc;border-radius:13px;background:#fffefa;color:#102c41;font:700 20px/1.3 Georgia,serif;padding:10px;overflow-wrap:anywhere}.vn-options button.is-selected{background:#e2f2ef;border:2px solid #007f83}.vn-options button.is-correct{background:#e3f0e5;border-color:#568b68}.vn-options button.is-wrong{background:#fae8de;border-color:#b86e51}.vn-hint{display:block;min-height:44px;margin:12px auto 0;border:0;background:none;color:#007f83;font:15px 'Segoe UI',sans-serif}.vn-feedback{padding-top:18px;font-size:15px}.vn-feedback p{margin:5px 0}.vn-feedback.is-wrong{color:#94462b}.vn-feedback.is-correct,.vn-ok{color:#237054}.vn-again{color:#94462b}.vn-error{color:#94462b;font-size:14px}.vn-result h2{font:700 25px/1.3 Georgia,serif}.vn-result>p{font-size:15px}.vn-result ol{list-style:none;padding:0;margin:18px 0 0}.vn-result li{display:flex;gap:10px;padding:12px 0;border-top:1px solid #e1d5c4}.vn-result li p{margin:5px 0;font-size:14px}.vn-finish{display:block;text-align:center;margin:14px 0;color:#007f83;font-size:14px}
+.verb-notebook button{cursor:pointer;touch-action:manipulation}.verb-notebook :is(button,a,select):focus-visible{outline:3px solid #168492;outline-offset:3px}.verb-notebook>.mobile-app-nav{display:grid;margin-top:24px}
+@media(max-width:680px){html body #root .App .exercise-screen.verb-notebook{padding-bottom:calc(94px + env(safe-area-inset-bottom))}.verb-notebook>.mobile-app-nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:80;margin:0}}
+@media(max-height:740px){html body #root .App .exercise-screen.verb-notebook{padding-top:10px}.vn-header{margin-bottom:12px}.vn-step{margin-bottom:10px}.vn-title h1{font-size:29px}.vn-tense{margin-bottom:12px}.vn-paper{padding-top:14px;padding-bottom:12px}.vn-conjugation th,.vn-conjugation td{padding:4px 6px}.vn-rule{margin-top:14px}.vn-primary{margin-top:17px}.vn-translation{margin-bottom:15px}}
+/* Compare three forms on the existing cream notebook; details expand naturally. */
+.vn-source{display:inline-block;margin-left:8px;font-size:12px;color:#526771}
+.vn-comparison{padding-top:6px;padding-bottom:12px}
+.vn-tense-card{padding:12px 0;border-bottom:1px solid #dfd3c2}
+.vn-form-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.vn-form-heading h2{margin:0;color:#007f83;font:700 17px/1.25 Georgia,serif}
+.vn-form{font:700 25px/1.3 Georgia,serif;color:#102c41;margin:4px 0 7px;overflow-wrap:anywhere}
+.vn-form-rule{font-size:13px;line-height:1.45;margin:0}
+.vn-persons{margin-top:7px;font-size:12px;color:#526771}
+.vn-persons summary{cursor:pointer;min-height:30px;display:flex;align-items:center;gap:6px}
+.vn-persons summary::before{content:'+';font-size:17px;color:#007f83}.vn-persons[open] summary::before{content:'−'}
+.vn-persons .vn-conjugation{font-size:14px;margin:8px 0;color:#102c41;table-layout:fixed}
+.vn-persons .vn-conjugation th{width:48%}.vn-persons .vn-conjugation td{overflow-wrap:anywhere}
+.vn-person-note{font-size:12px;color:#526771;line-height:1.4;margin:12px 0 0}
+.vn-result li strong,.vn-result li small{display:block;overflow-wrap:anywhere}
+.verb-notebook summary:focus-visible{outline:3px solid #168492;outline-offset:3px}
+@media(max-height:740px){.vn-tense-card{padding:8px 0}.vn-form{font-size:22px;margin:2px 0 5px}.vn-form-rule{font-size:12px}.vn-person-note{margin-top:8px}}
+/* Keep focused actions clear of the original fixed bottom navigation. */
+.verb-notebook .vn-primary,.verb-notebook .vn-persons summary{scroll-margin-block:90px}
+
+.vn-form-heading>div{min-width:0;flex:1}.vn-form-heading .vn-form{margin:5px 0 8px}.vn-tense-card{padding:8px 0}
+html body #root .App .verb-notebook .vn-feedback{display:block;position:static;min-height:0;margin-top:16px;padding:12px;border:1px solid #d6e4d7;border-radius:12px;background:#edf5ed;box-shadow:none;color:#237054;text-align:left}
+html body #root .App .verb-notebook .vn-feedback.is-wrong{background:#fff2e9;border-color:#e5c8b7;color:#94462b}
+html body #root .App .verb-notebook .vn-feedback :is(strong,p,small){display:block;width:auto;margin:4px 0;padding:0;border:0}

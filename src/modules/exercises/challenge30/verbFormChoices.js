@@ -1,6 +1,6 @@
 // Explicit Bokmål preterite forms; never infer irregular conjugations from spelling.
 // Multiword verbs retain their authored particles and complements.
-const pastForms = Object.fromEntries(`
+export const pastForms = Object.fromEntries(`
 være:var ha:hadde gjøre:gjorde si:sa gå:gikk komme:kom se:så vite:visste ville:ville
 bruke:brukte finne:fant spise:spiste drikke:drakk søke:søkte treffe:traff leve:levde
 arbeide:arbeidet betale:betalte lære:lærte forstå:forsto snakke:snakket lese:leste

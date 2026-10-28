@@ -37,3 +37,28 @@ html body #root .App .exercise-screen.recap-hub{display:flex;flex-direction:colu
 .recap-hub>.recap-top{flex-shrink:0}
 .recap-hub>.recap-choices{width:100%;margin-block:auto;flex-shrink:0}
 .recap-hub>.mobile-app-nav{flex-shrink:0}
+/* Compact lesson notebook, with the existing application navigation. */
+.recap-summary .recap-top{margin-bottom:20px}
+.summary-notebook{position:relative;isolation:isolate;padding:22px 18px 12px 26px;border:1px solid #e8decd;border-radius:16px;background:linear-gradient(90deg,transparent 16px,#e6cbb766 16px,#e6cbb766 17px,transparent 17px),repeating-linear-gradient(#fffdf8 0px,#fffdf8 31px,#ece7dd 32px);box-shadow:0 4px 12px #72562512}
+.summary-notebook:before{content:'';position:absolute;inset:8px -5px -6px;z-index:-1;border:1px solid #e8decd;border-radius:16px;background:linear-gradient(90deg,transparent 20px,#e6cbb766 20px,#e6cbb766 21px,transparent 21px),repeating-linear-gradient(#fffdf8 0px,#fffdf8 31px,#ece7dd 32px);box-shadow:0 3px 5px #7256250c}
+.summary-lesson-nav{display:flex;align-items:center;gap:10px;padding-bottom:18px;border-bottom:1px solid #ddd3c4}
+.summary-lesson-nav>div{flex:1;min-width:0}
+.summary-lesson-nav span{font-size:14px}
+.summary-lesson-nav h1{font:700 27px/1.2 Georgia,serif;margin:8px 0 0;color:#102c41;overflow-wrap:anywhere}
+.summary-arrow,.summary-sound{display:grid;place-items:center;flex-shrink:0;width:44px;height:44px;border:1px solid #d9cbb8;border-radius:50%;background:#fffdfa;color:#102c41;cursor:pointer}
+.summary-arrow{font:32px/1 Georgia,serif}
+.summary-notebook h2{font:700 25px/1.2 Georgia,serif;margin:20px 0 8px;color:#102c41}
+.summary-expressions{list-style:none;margin:0;padding:0}
+.summary-expressions li{display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid #ded4c5}
+.summary-expressions li:last-child{border-bottom:0}
+.summary-number{color:#007f83;font:700 18px Georgia,serif;padding-right:10px;border-right:1px solid #d9cbb8}
+.summary-expressions li>div{flex:1;min-width:0;overflow-wrap:anywhere}
+.summary-expressions strong{font:700 19px/1.3 Georgia,serif;color:#102c41}
+.summary-expressions p{font-size:15px;line-height:1.35;margin:3px 0 0}
+.summary-sound svg{width:22px;height:22px}.summary-sound[aria-busy=true]{background:#e0f1ee;color:#007f83}
+.summary-actions{display:grid;gap:10px;margin-top:24px}
+.summary-actions a{display:flex;justify-content:center;align-items:center;min-height:50px;padding:10px;border:1px solid #007f83;border-radius:14px;font:700 22px/1.2 Georgia,serif;text-decoration:none}
+.summary-grammar{background:#e1f2ef;color:#007f83}.summary-restart{background:#007f83;color:white}.summary-restart:hover{color:white;background:#006c70}
+.recap-page button:focus-visible{outline:3px solid #007f83;outline-offset:3px}
+.summary-audio-error{font-size:14px;color:#9a412a}
+@media(max-width:360px),(max-height:720px){.recap-summary .recap-top{margin-bottom:12px}.summary-notebook{padding:16px 12px 6px 22px}.summary-lesson-nav{padding-bottom:12px}.summary-lesson-nav h1{font-size:23px}.summary-notebook h2{font-size:22px;margin-top:14px}.summary-expressions li{gap:8px;padding:11px 0}.summary-expressions strong{font-size:17px}.summary-expressions p{font-size:14px}.summary-number{font-size:15px;padding-right:6px}.summary-actions{margin-top:18px}}
