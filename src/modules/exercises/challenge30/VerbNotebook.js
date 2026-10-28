@@ -18,7 +18,6 @@ export default function VerbNotebook({level,userId}){
  const audio=useRef(null),lock=useRef(false),saved=useRef(false),heading=useRef(null),started=useRef(Date.now());
  const {verb,tenses}=round,q=round.questions[index],correct=selected===q.answer,total=round.questions.length;
  const displayVerb=verb.id==='høre på musikk'?{...verb,infinitive:'å høre',translation:'a auzi',forms:Object.fromEntries(Object.entries(verb.forms).map(([tense,form])=>[tense,form.replace(/ på musikk$/u,'')]))}:verb;
- const comparisonRule=tense=>tense==='present'?displayVerb.infinitive+' → '+displayVerb.forms.present+'. Acțiuni prezente sau obișnuite.':tense==='past'?displayVerb.infinitive+' → '+displayVerb.forms.past+'. Acțiune trecută încheiată.':verb.rules[tense];
  const comparisonPersons=verb.impersonal?['det']:persons;
  useEffect(()=>{audio.current?.abort();setPlaying(null);setAudioError('');heading.current?.focus({preventScroll:true});window.scrollTo(0,0);return()=>audio.current?.abort();},[stage,index,verb.id]);
  useEffect(()=>{
@@ -36,9 +35,9 @@ export default function VerbNotebook({level,userId}){
  const verify=()=>{if(selected===null||checked||lock.current)return;lock.current=true;setChecked(true);setHint(false);setAnswers(old=>[...old,{tense:q.tense,correct:selected===q.answer,helped}]);};
  const advance=()=>{if(!checked||!lock.current)return;lock.current=false;if(index===total-1){setStage('result');return;}setIndex(i=>i+1);setSelected(null);setChecked(false);setHint(false);setHelped(false);};
  const another=()=>{setRound(nextRound(verb.id));setStage('learn');setIndex(0);setSelected(null);setChecked(false);setAnswers([]);setHint(false);setHelped(false);setSaveError('');lock.current=false;saved.current=false;started.current=Date.now();};
- return <section className="exercise-screen verb-notebook">
+ return <section className="exercise-screen verb-notebook" data-stage={stage}>
   <header className="vn-header"><Link className="vn-back" to={'/recapitulare-azi?nivel='+level} aria-label="Înapoi la recapitulare">‹</Link><Link className="vn-brand" to="/dashboard" aria-label="NordLingo - Acasă"><NorwegianFlagIcon/></Link><ExerciseLevelSelect level={level}/></header>
-  {stage!=='learn'&&<>
+  {(stage==='exercise'||stage==='result')&&<>
   <div className="vn-step"><span>{stage==='learn'?'1 · Învață':stage==='exercise'?'2 · Exersează':'Rundă încheiată'}</span>{stage==='exercise'&&<><progress aria-label="Progres" value={index+1} max={total}/><span>{index+1} / {total}</span></>}</div>
   <header className="vn-title"><div><h1 ref={heading} tabIndex={-1}>{stage==='result'?'Bravo, ai exersat!':verb.infinitive}</h1><p>{stage==='result'?verb.infinitive+' · '+verb.translation:verb.translation}</p></div></header>
   <span className="vn-tense">{stage==='exercise'?tenseLabels[q.tense]:stage==='result'?'3 forme exersate':'Compară 3 forme'}</span>
@@ -52,10 +51,22 @@ export default function VerbNotebook({level,userId}){
      <thead><tr><th scope="col">Persoană</th>{tenses.map(tense=><th scope="col" key={tense} data-tense={tense}>{shortTense(tense)}</th>)}</tr></thead>
      <tbody>{comparisonPersons.map(person=><tr key={person}><th scope="row" lang="nb">{person}</th>{tenses.map(tense=><td key={tense} lang="nb">{personForm(displayVerb,tense,person)}</td>)}</tr>)}</tbody>
     </table>
-    <div className="vn-rule vn-comparison-rules"><h2>Reguli</h2>{tenses.map(tense=><p key={tense}><strong>{shortTense(tense)}: </strong>{comparisonRule(tense)}</p>)}</div>
-    <p className="vn-person-note">{verb.reflexive?'Pronumele reflexiv se schimbă: meg, deg, seg, oss, dere, seg.':verb.impersonal?'Expresie folosită cu subiectul impersonal det.':'Aceeași formă pentru toate persoanele.'}</p>
    </article>
-   <button className="vn-primary" onClick={()=>setStage('exercise')}>Exersează</button>
+   <button className="vn-primary" onClick={()=>setStage('rules')}>Vezi regulile</button>
+  </>:stage==='rules'?<>
+   <article className="vn-paper vn-rules-page">
+    <header className="vn-title vn-rules-title"><div><h1 ref={heading} tabIndex={-1} lang="nb">{displayVerb.infinitive}</h1><p>{displayVerb.translation}</p></div></header>
+    <h2 className="vn-rules-heading">Reguli</h2>
+    <div className="vn-rule-sections">{tenses.map(tense=><section className="vn-rule-section" key={tense} data-tense={tense}>
+     <h3>{shortTense(tense)}</h3>
+     <p className="vn-rule-form" lang="nb">{['present','past'].includes(tense)?displayVerb.infinitive.replace(/^å /u,'')+' → ':''}{displayVerb.forms[tense]}</p>
+     <p>{verb.rules[tense]}</p>
+    </section>)}</div>
+    <p className="vn-person-note">{verb.reflexive?'Pronumele reflexiv se schimbă: meg, deg, seg, oss, dere, seg.':verb.impersonal?'Expresie folosită cu subiectul impersonal det.':'Aceeași formă pentru toate persoanele.'}</p>
+
+   </article>
+   <button className="vn-primary" onClick={()=>setStage('exercise')}>La exerciții <span aria-hidden="true">→</span></button>
+   <button className="vn-return" onClick={()=>setStage('learn')}>Înapoi la conjugare</button>
   </>:stage==='exercise'?<>
    <article className="vn-paper vn-exercise">
     <p className="vn-instruction">Completează la {tenseLabels[q.tense].toLocaleLowerCase('ro')}. {q.context}</p>

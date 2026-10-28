@@ -83,3 +83,38 @@ html body #root .App .verb-notebook:has(.vn-comparison){padding-top:12px}
 .vn-comparison-table thead th:first-child{white-space:nowrap;font-size:12px;letter-spacing:-.3px}
 .vn-comparison-table th,.vn-comparison-table td{padding-block:5px}
 .vn-comparison-rules p{line-height:1.35;margin:4px 0}
+
+/* Rules are a separate step; the original MobileAppNav remains shared. */
+.vn-rules-page{padding:16px 18px}
+.vn-rules-title{display:block;text-align:center;padding-bottom:12px;border-bottom:1px solid #e5d8c5}
+.vn-rules-title h1{font-size:29px}
+.vn-rules-title p{font-size:15px}
+.vn-rules-heading{margin:14px 0 4px;text-align:center;color:#007f83;font:700 24px/1.2 Georgia,serif}
+.vn-rule-section{padding:12px 0;border-bottom:1px solid #e5d8c5}
+.vn-rule-section h3{margin:0 0 5px;color:#007f83;font:700 18px/1.2 Georgia,serif}
+.vn-rule-section .vn-rule-form{margin:0 0 6px;color:#102c41;font:700 21px/1.25 Georgia,serif;overflow-wrap:anywhere}
+.vn-rule-section p{margin:0;font-size:13px;line-height:1.4}
+.vn-rules-page .vn-person-note{margin:10px 0 0;font-size:11px}
+.vn-return{display:block;width:100%;min-height:44px;margin:6px 0 0;padding:8px;border:0;background:transparent;color:#007f83;font:14px 'Segoe UI',sans-serif}
+html body #root .App .verb-notebook[data-stage="rules"]{padding-top:12px}
+.verb-notebook[data-stage="rules"] .vn-header{margin-bottom:16px}
+.verb-notebook[data-stage="rules"]>.vn-primary{margin-top:16px}
+@media(max-height:740px){
+ .verb-notebook[data-stage="rules"] .vn-header{margin-bottom:8px}
+ .vn-rules-page{padding:12px 14px}
+ .vn-rules-title{padding-bottom:8px}
+ .vn-rules-title h1{font-size:25px}
+ .vn-rules-title p{font-size:13px;margin-top:3px}
+ .vn-rules-heading{font-size:21px;margin:9px 0 0}
+ .vn-rule-section{padding:8px 0}
+ .vn-rule-section h3{font-size:16px;margin-bottom:3px}
+ .vn-rule-section .vn-rule-form{font-size:18px;margin-bottom:4px}
+ .vn-rule-section p{font-size:12px;line-height:1.3}
+ .verb-notebook[data-stage="rules"]>.vn-primary{margin-top:10px;min-height:44px}
+ .vn-return{margin-top:2px}
+}
+@media(max-height:650px){
+ .verb-notebook[data-stage="learn"] .vn-comparison-title h1{font-size:24px}
+ .verb-notebook[data-stage="learn"] .vn-comparison-title p{font-size:13px}
+ .vn-comparison-table th,.vn-comparison-table td{padding-block:3px;font-size:12px}
+}

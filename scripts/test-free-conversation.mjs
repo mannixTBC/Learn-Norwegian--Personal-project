@@ -16,21 +16,13 @@ let r;await act(async()=>{r=TestRenderer.create(React.createElement(MemoryRouter
 const text=n=>typeof n==='string'?n:n.children?.map(text).join('')||'';
 const button=label=>r.root.findAllByType('button').find(n=>text(n)===label);
 assert.match(text(r.root),/Hei!/);
-await act(async()=>button('Ai nevoie de o idee?⌄').props.onClick());
-assert.match(text(r.root),/Spune cum a fost ziua ta/);assert.match(text(r.root),/Jeg har vært på jobb/);
-assert.equal(button('Spune mai simplu').props.disabled,false);
+assert.equal(r.root.findAllByProps({className:'airy-help'}).length,0,'removed hint controls must not return');
 assert.equal(r.root.findAllByType('textarea').length,1,'unsupported speech has a text fallback');
 await act(async()=>r.root.findByType('textarea').props.onChange({target:{value:'Jeg liker kaffe.'}}));
-assert.equal(button('Spune mai simplu').props.disabled,true,'help cannot replace an unsent draft');
 fail=true;await act(async()=>r.root.findByType('form').props.onSubmit({preventDefault(){}}));assert.equal(r.root.findByType('textarea').props.value,'Jeg liker kaffe.');assert.match(text(r.root),/Offline/);
 fail=false;await act(async()=>button('Reîncearcă').props.onClick());assert.equal(calls,2);assert.equal(r.root.findByType('textarea').props.value,'');assert.match(text(r.root),/Hva liker du/);assert.match(text(r.root),/O mică corectare/);assert.equal(button('Spune mai simplu'),undefined,'hint closes for the new reply');
 await act(async()=>button('Încheie conversația').props.onClick());assert.match(text(r.root),/1 răspunsuri/);assert.equal(r.root.findAllByType('textarea').length,0);
 await act(async()=>button('Începe un dialog nou').props.onClick());assert.match(text(r.root),/Hei!/);
-await act(async()=>button('Ai nevoie de o idee?⌄').props.onClick());
-fail=true;await act(async()=>button('Spune mai simplu').props.onClick());
-assert.equal(r.root.findByType('textarea').props.value,'Kan du si det enklere?','failed help request is retained for retry');
-fail=false;await act(async()=>button('Reîncearcă').props.onClick());
-assert.match(text(r.root),/Nivelul tău rămâne A2/);
 await act(async()=>r.unmount());
 // Navigating away while loading cancels the pending request.
 globalThis.freeStart=(level,signal)=>{startSignal=signal;return new Promise(()=>{});};

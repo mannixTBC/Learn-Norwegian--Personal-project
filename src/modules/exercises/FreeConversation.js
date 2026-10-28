@@ -26,7 +26,7 @@ export default function FreeConversation({level}){
  <div className="airy-messages" role="log" aria-live="polite" aria-label="Conversație cu Nora">{messages.map((m,i)=><article key={i} className={'airy-message '+m.role}>{m.role==='assistant'&&<div className="airy-avatar"><StudioArtwork scene="avatar"/></div>}<div className="airy-message-copy">{m.role==='assistant'&&<small>Nora</small>}<p lang="nb">{m.text}{m.role==='assistant'&&<button className="airy-replay" aria-label="Ascultă Nora" disabled={busy} onClick={()=>playback.current?.(i)}><StudioIcon name="play"/></button>}</p>{m.role==='assistant'&&<StudioTranslation text={m.text} translation={m.translation}/>}{m.correction&&<details className="conversation-feedback"><summary>O mică corectare</summary><p><span lang="nb">{m.correction.original}</span> → <strong lang="nb">{m.correction.corrected}</strong></p><p>{m.correction.explanation}</p></details>}</div></article>)}</div>
  {busy&&<p role="status">Nora pregătește răspunsul…</p>}
  {session?.simplified&&<p className="conversation-notice" role="status">Nora a simplificat întrebarea. Nivelul tău rămâne {level}.</p>}
- {session&&<ScenarioVoiceControls flow={flow} reply={session.reply} onHelp={()=>setHint(!hint)} helpOpen={hint} playbackRef={playback} speak={speak} onFinish={()=>{pending.current?.abort();pending.current=null;setBusy(false);setEnded(true);}}/>}
+ {session&&<ScenarioVoiceControls flow={flow} reply={session.reply} playbackRef={playback} speak={speak} onFinish={()=>{pending.current?.abort();pending.current=null;setBusy(false);setEnded(true);}}/>}
  </>}
  {error&&<div className="conversation-error" role="alert"><p>{error}</p><button className="studio-primary" disabled={busy} onClick={()=>run(!session)}>Reîncearcă</button></div>}
  </section>;
