@@ -12,8 +12,7 @@ const dialogue=[['Anna','Hei','Salut'],['Lars','Hei igjen','Salut din nou'],['An
 let renderer;
 await act(async()=>{renderer=TestRenderer.create(React.createElement(Component,{dialogue},React.createElement('p',null,'Practice')));});
 const button = label => renderer.root.findAllByType('button').find(b=>b.props.children===label || b.props['aria-label']===label);
-assert.equal(calls.length,0);
-await act(async()=>button('Urmărește conversația').props.onClick());
+assert.equal(calls.length,1);
 assert.equal(calls[0].text,'Hei'); assert.equal(renderer.root.findAllByType('article').length,2);
 await act(async()=>button('Oprește sunetul').props.onClick());
 assert.equal(calls[0].options.signal.aborted,true); assert.equal(saved.get('nordlingo-dialogue-muted'),'true');
@@ -30,11 +29,17 @@ await act(async()=>renderer.unmount());
 assert.equal(calls[2].options.signal.aborted,true);
 // Pair playback stops after two lines, without advancing the scene.
 await act(async()=>{renderer=TestRenderer.create(React.createElement(Component,{dialogue}));});
-await act(async()=>button('Urmărește conversația').props.onClick());
 await act(async()=>{finishAudio({ok:true}); await new Promise(r=>setTimeout(r,500));});
 assert.equal(calls.at(-1).text,'Hei igjen');
 await act(async()=>finishAudio({ok:true}));
 assert.equal(renderer.root.findAllByType('article').length,2);
 assert.ok(button('Mai departe'));
 await act(async()=>renderer.unmount());
-console.log('PASS: explicit start, paired playback, manual advance, mute persistence, translation stop, replay and unmount cancellation.');
+// A saved mute preference keeps the dialogue visible without autoplay.
+saved.set('nordlingo-dialogue-muted', 'true');
+const beforeMutedMount = calls.length;
+await act(async()=>{renderer=TestRenderer.create(React.createElement(Component,{dialogue}));});
+assert.equal(calls.length, beforeMutedMount);
+assert.equal(renderer.root.findAllByType('article').length, 2);
+await act(async()=>renderer.unmount());
+console.log('PASS: automatic start, paired playback, manual advance, mute persistence, translation stop, replay and unmount cancellation.');

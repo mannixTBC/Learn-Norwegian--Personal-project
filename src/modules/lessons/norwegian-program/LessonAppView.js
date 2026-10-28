@@ -1,10 +1,11 @@
 import RecallFocus from './RecallFocus';
-import LessonDialogueOverview from './LessonDialogueOverview';
+import DialogueWalkthrough from './DialogueWalkthrough';
 import {lessonNextPractice} from './lessonNextPractice';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
 import PremiumGate from '../../premium/PremiumGate';
+import ChatAssistant from '../../chat/ChatAssistant';
 import VoiceLessonConversation from '../../chat/VoiceLessonConversation';
 import { LessonMetaIcon, HighlightedSentence } from './lessonParts';
 import LessonAppExercise from './LessonAppExercise';
@@ -193,7 +194,12 @@ const LessonAppView = (props) => {
 
         {step === LESSON_STAGE.DIALOGUE && (
           <section>
-            <LessonDialogueOverview key={lesson.uid} dialogue={lesson.dialogue} />
+            <StepHeading title="Conversație în context" sub="Ascultă dialogul și descoperă cum se leagă replicile." />
+            <DialogueWalkthrough key={lesson.uid} dialogue={lesson.dialogue}>
+              <PremiumGate feature="Asistentul virtual de conversație">
+                <ChatAssistant key={`${levelCode}-${lesson.id}-${careerPathId}-app`} level={levelCode} lessonId={lesson.id} pathId={careerPathId} lessonTitle={lesson.title} />
+              </PremiumGate>
+            </DialogueWalkthrough>
           </section>
         )}
 
