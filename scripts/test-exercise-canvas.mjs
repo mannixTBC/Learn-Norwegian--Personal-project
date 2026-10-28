@@ -13,6 +13,8 @@ const css=(await Promise.all(cssFiles.map(name=>readFile(resolve(assets,name),'u
 const {chromium}=await import(pathToFileURL(resolve(homedir(),'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs')));
 const browser=await chromium.launch({headless:true,...(process.platform==='win32'?{executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'}:{})});
 const fixtures=[
+ ['exercise-screen recap-page recap-hub','ivory practice hub'],
+ ['exercise-screen recap-page recap-summary','ivory practice hub'],
  ['conversation-studio studio-design studio-home','reference studio'],
  ['conversation-studio studio-design mobile-conversation mobile-conversation--catalog','reference studio'],
  ['conversation-studio studio-design airy-conversation natural-conversation','reference studio'],

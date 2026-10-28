@@ -1,0 +1,33 @@
+/* Recap entry uses the shared exercise canvas and the unchanged app navigation. */
+html body #root .App .exercise-screen.recap-page{box-sizing:border-box;width:min(100%,480px);max-width:480px;min-height:0;height:auto;margin:0 auto;padding:18px 18px 24px;background:transparent;color:#102c41;font:16px/1.45 'Segoe UI',Arial,sans-serif;display:block;border:0;box-shadow:none}
+.recap-page *{box-sizing:border-box}
+.App:has(.recap-page)>.navbar{display:none}
+.recap-top{display:flex;align-items:center;gap:14px;min-height:44px;margin-bottom:24px}
+.recap-back{display:grid;place-items:center;flex:none;width:26px;min-height:44px;color:#102c41;font:32px/1 Georgia,serif;text-decoration:none}
+.recap-logo{display:block;flex:1;max-width:174px;margin-right:auto}
+.recap-logo img{display:block;width:100%;height:auto}
+.recap-top .exercise-level-select{position:relative;display:block;transform:none;margin:0;padding:0;background:none;border:0;box-shadow:none;flex:none}
+.recap-top .exercise-level-select>span{display:none}
+.recap-top .exercise-level-select select{font:600 15px 'Segoe UI',sans-serif;color:#102c41;border:1px solid #e3e4dc;border-radius:24px;background:#faf9f4;min-height:44px;padding:8px 10px;max-width:80px}
+.recap-heading{margin-bottom:22px}
+.recap-heading h1{font:700 clamp(34px,10.5vw,46px)/1.12 Georgia,serif;letter-spacing:-1.3px;margin:0 0 10px;color:#102c41}
+.recap-heading p{font-size:17px;line-height:1.4;color:#596773;margin:0}
+.recap-choices{display:grid;gap:14px}
+.recap-choice{display:grid;grid-template-columns:46% minmax(0,1fr);gap:16px;align-items:center;padding:8px;border:1px solid #eae9e1;border-radius:18px;background:#fff;box-shadow:0 3px 12px #1a333a05;text-decoration:none;color:#102c41}
+.recap-art{display:block;width:100%;height:auto;aspect-ratio:1;border-radius:12px}
+.recap-choice-copy{min-width:0;padding:8px 6px 8px 0}
+.recap-choice h2{font:700 clamp(22px,6.7vw,29px)/1.08 Georgia,serif;letter-spacing:-.6px;color:#102c41;margin:0 0 12px;overflow-wrap:anywhere}
+.recap-choice p{font:16px/1.4 'Segoe UI',Arial,sans-serif;color:#596773;margin:0;overflow-wrap:anywhere}
+.recap-choice:hover{border-color:#b6d0c9;background:#fcfdf9}
+.recap-page :is(a,select):focus-visible{outline:3px solid #007f83;outline-offset:4px}
+.recap-page>.mobile-app-nav{display:grid;margin-top:24px}
+.recap-lesson-picker{display:grid;gap:8px;font-size:14px;margin:0 0 20px}
+.recap-lesson-picker select{min-width:0;width:100%;padding:12px;border:1px solid #dfe3d9;border-radius:12px;background:white;color:#102c41;font:16px 'Segoe UI',sans-serif}
+.recap-lesson{padding:20px;border:1px solid #eae9e1;border-radius:18px;background:#fff;overflow-wrap:anywhere}
+.recap-lesson h2{font:700 27px/1.2 Georgia,serif;margin:0 0 20px}
+.recap-lesson h3{font:700 20px/1.3 Georgia,serif;margin:22px 0 12px}
+.recap-lesson ul{padding-left:20px}.recap-lesson li{margin-bottom:8px}
+.recap-lesson dl{margin:0}.recap-lesson dl>div{padding:10px 0;border-bottom:1px solid #eeeee5}.recap-lesson dt{font-weight:600}.recap-lesson dd{margin:4px 0 0;color:#596773}
+.recap-review-link{display:block;padding:18px 0;text-align:center;color:#007f83}
+@media(max-width:680px){html body #root .App .exercise-screen.recap-page{padding-bottom:calc(88px + env(safe-area-inset-bottom))}.recap-page>.mobile-app-nav{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:80;margin:0}}
+@media(max-width:360px){.recap-top{gap:8px}.recap-logo{max-width:140px}.recap-choice{gap:12px}.recap-choice p{font-size:14px}.recap-choice h2{font-size:23px}.recap-heading p{font-size:16px}}
