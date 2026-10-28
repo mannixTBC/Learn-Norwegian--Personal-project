@@ -8,7 +8,7 @@ import {recordStudyActivity} from '../../../services/learningActivity';
 import {createNotebookRound,readNotebookMemory,readNotebookLearning,saveNotebookRound,tenseLabels,personForm} from './verbNotebookData';
 import './VerbNotebook.css';
 const storage=()=>{try{return window.localStorage;}catch{return null;}};
-const persons=['jeg','du','han / hun / den / det','vi','dere','de'];
+const persons=['jeg','du','han','hun','den','det','vi','dere','de'];
 function SoundIcon(){return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4V5ZM15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></svg>;}
 export default function VerbNotebook({level,userId}){
  const nextRound=previous=>createNotebookRound(level,readNotebookMemory(storage(),userId,level),previous,Math.random,readNotebookLearning(userId,level));
@@ -41,14 +41,14 @@ export default function VerbNotebook({level,userId}){
   {stage==='learn'&&round.source==='review'&&<span className="vn-source">Pentru consolidare</span>}
   {audioError&&<p role="alert" className="vn-error">{audioError}</p>}
   {stage==='learn'?<>
-   <article className="vn-paper vn-comparison">
-    {tenses.map(tense=><section className="vn-tense-card" key={tense} data-tense={tense}>
-     <div className="vn-form-heading"><div><h2>{tenseLabels[tense]}</h2><p className="vn-form" lang="nb">{verb.forms[tense]}</p></div><button className="vn-sound" aria-label={'Ascultă exemplul: '+tenseLabels[tense]} aria-busy={playing===tense} onClick={()=>listen(tense)}><SoundIcon/></button></div>
-     <p className="vn-form-rule">{verb.rules[tense]}</p>
-     <details className="vn-persons"><summary>{verb.impersonal?'Construcție impersonală':'Vezi toate persoanele'}</summary>{verb.impersonal?<p lang="nb">det {verb.forms[tense]}</p>:<table className="vn-conjugation" aria-label={'Persoanele la '+tenseLabels[tense]}><tbody>{persons.map(person=><tr key={person}><th scope="row" lang="nb">{person}</th><td lang="nb">{personForm(verb,tense,person)}</td></tr>)}</tbody></table>}</details>
+   <div className="vn-comparison">
+    {tenses.map(tense=><section className="vn-paper vn-tense-card" key={tense} data-tense={tense}>
+     <div className="vn-form-heading"><div><h2>{tenseLabels[tense]}</h2></div><button className="vn-sound" aria-label={'Ascultă exemplul: '+tenseLabels[tense]} aria-busy={playing===tense} onClick={()=>listen(tense)}><SoundIcon/></button></div>
+     <div className="vn-persons">{verb.impersonal?<p lang="nb">det {verb.forms[tense]}</p>:<table className="vn-conjugation" aria-label={'Persoanele la '+tenseLabels[tense]}><tbody>{persons.map(person=><tr key={person}><th scope="row" lang="nb">{person}</th><td lang="nb">{personForm(verb,tense,person)}</td></tr>)}</tbody></table>}</div>
+     <div className="vn-rule"><h3>Regula</h3><p className="vn-form-rule">{verb.rules[tense]}</p></div>
     </section>)}
     <p className="vn-person-note">{verb.reflexive?'Verbul are aceeași formă; pronumele reflexiv se schimbă: meg, deg, seg, oss, dere, seg.':verb.impersonal?'Această expresie se folosește aici cu subiectul impersonal det.':'Forma verbală rămâne aceeași pentru toate persoanele.'}</p>
-   </article>
+   </div>
    <button className="vn-primary" onClick={()=>setStage('exercise')}>Exersează</button>
   </>:stage==='exercise'?<>
    <article className="vn-paper vn-exercise">

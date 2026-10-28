@@ -35,14 +35,14 @@
 .practice-studio h2{margin:0;font:700 clamp(26px,9.18cqw,36px)/.91 'Times New Roman',serif;letter-spacing:-.9px;color:#092c47}
 .practice-studio p{margin:calc(11 * var(--u)) 0 0;font-size:clamp(9px,3.06cqw,12px);line-height:1.2;color:#254f57;white-space:nowrap}
 .practice-studio-actions{position:absolute;left:3.55%;right:18%;top:71.5%;height:22.2%;display:flex;gap:2.6%}
-.practice-hub .practice-studio-action{display:flex;align-items:center;justify-content:center;gap:calc(8 * var(--u));flex:1.2;min-width:0;border:1px solid #00616b;border-radius:13px;background:#006771;color:#fff;font:500 clamp(10px,3.32cqw,13px)/1.1 Arial,sans-serif;padding:4px;text-decoration:none;cursor:pointer}
-.practice-hub .practice-studio-action--free{flex:1;background:#fff;color:#00606b}
+.practice-studio .practice-studio-action{display:flex;align-items:center;justify-content:center;gap:calc(8 * var(--u));flex:1.2;min-width:0;border:1px solid #00616b;border-radius:13px;background:#006771;color:#fff;font:500 clamp(10px,3.32cqw,13px)/1.1 Arial,sans-serif;padding:4px;text-decoration:none;cursor:pointer}
+.practice-studio .practice-studio-action--free{flex:1;background:#fff;color:#00606b}
 .practice-studio-action svg{width:calc(24 * var(--u));height:calc(24 * var(--u));flex:none}
 .practice-hub :is(a,button,select):focus-visible{outline:3px solid #b58c3c;outline-offset:3px}
 .practice-hub .practice-row:hover{border-color:#b9d0cd}
 .practice-hub .practice-row:active{background:#f6f8f3}
-.practice-hub .practice-studio-action:hover{background:#00535d;color:#fff}
-.practice-hub .practice-studio-action--free:hover{background:#edf5f0;color:#00535d}
+.practice-studio .practice-studio-action:hover{background:#00535d;color:#fff}
+.practice-studio .practice-studio-action--free:hover{background:#edf5f0;color:#00535d}
 .App:has(.practice-hub)>.navbar{display:none}
 .practice-picker{width:min(92vw,420px);max-height:80dvh;overflow:auto;padding:20px;border:1px solid #d8dfd4;border-radius:20px;background:#fffcf4;color:#143b47;box-shadow:0 18px 70px #082b4440}
 .practice-picker::backdrop{background:#082b4466}

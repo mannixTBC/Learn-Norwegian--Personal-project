@@ -35,14 +35,16 @@ try {
    return route.abort();
   });
   await page.goto('http://onboarding.test/');
-  await page.waitForSelector('.dashboard-app-home__studio',{state:'attached'});
+  await page.waitForSelector('.dashboard-app-home .practice-studio-entry',{state:'attached'});
   await page.evaluate(()=>Promise.all([...document.images].map(i=>i.decode().catch(()=>{}))));
   if(width<681){
     const m=await page.evaluate(()=>({h:document.documentElement.scrollHeight,w:document.documentElement.scrollWidth}));
     assert.ok(m.h<=height+1,'Home fits '+width+'x'+height+' '+JSON.stringify(m));
     assert.ok(m.w<=width+1,'Home width');
-    assert.equal(await page.locator('.dashboard-app-home__shortcuts').count(),0);
-    assert.equal(await page.locator('.dashboard-app-home__studio').getAttribute('href'),'/scenarii?nivel=A1');
+    assert.equal(await page.locator('.dashboard-app-home__discover').count(),0);
+    assert.equal(await page.locator('.dashboard-app-home .practice-studio-action').first().getAttribute('href'),'/scenarii?nivel=A1');
+    assert.equal(await page.locator('.dashboard-app-home .practice-studio-action--free').getAttribute('href'),'/studio?nivel=A1&mod=liber');
+    assert.equal(await page.locator('.dashboard-app-home .practice-studio-entry').getAttribute('href'),'/studio?nivel=A1');
     if(width===390)await page.screenshot({path:resolve(output,'home.png'),fullPage:true});
   }
   assert.deepEqual(errors,[]);
