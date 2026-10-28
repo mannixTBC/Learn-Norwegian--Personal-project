@@ -50,6 +50,7 @@ body:has(.practice-hub),#root:has(.practice-hub),.App:has(.practice-hub),.App__m
 body:has(.practice-hub){overflow:visible}
 
 /* Approved studio surface, shared through short, empty and result states. */
+html:has(.App__main .listening-expedition){--exercise-canvas:#fefcf7}
 html:has(.App__main .conversation-studio.studio-design){--exercise-canvas:#fdfdf9}
 
 /* Recap hub and lesson summaries share the warm practice surface. */

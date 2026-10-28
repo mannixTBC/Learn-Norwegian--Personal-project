@@ -20,3 +20,17 @@ html body #root .App .word-discovery.word-spelling{box-sizing:border-box;width:m
 .ws-key-row button.is-found{background:#007f83;color:white;opacity:1;border-color:#007f83}
 .ws-key-row button.is-missed{background:#e7e4df;color:#9c9690;opacity:1}
 @media(max-height:720px){.ws-photo-image{height:clamp(120px,23dvh,170px)}}
+/* Match the Home logo and give the exercise the available screen space. */
+.ws-header>a:nth-child(2){width:145px;height:44px;flex:0 0 auto}
+.ws-logo,.ws-logo img{width:145px;height:44px;object-fit:contain}
+@media(max-height:720px){
+ html body #root .App .word-discovery.word-spelling{padding:8px 12px;gap:6px}
+ .ws-progress{margin:2px 0}
+ .ws-photo-image{height:clamp(70px,calc(100dvh - 510px),150px)}
+ .ws-answer{padding:6px 8px}
+ .ws-slot{min-height:34px}
+ .ws-answer p{font-size:12px;margin-top:4px}
+ .ws-keyboard{padding-top:0;gap:4px}
+ .ws-key-row button{min-height:34px}
+ .ws-footer small{margin-top:2px}
+}

@@ -4,7 +4,7 @@ import './ListeningExpedition.css';
 
 function Icon({ name, ...props }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
-    {name === 'back' ? <path d="m14 5-7 7 7 7M7 12h14" />
+    {name === 'speaker' ? <><path d="M11 5 6 9H3v6h3l5 4zM15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14" /></> : name === 'back' ? <path d="m14 5-7 7 7 7M7 12h14" />
       : name === 'play' ? <path fill="currentColor" stroke="none" d="M8 4.8v14.4a1 1 0 0 0 1.5.86l11-7.2a1 1 0 0 0 0-1.72l-11-7.2a1 1 0 0 0-1.5.86Z" />
         : name === 'stop' ? <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" stroke="none" />
           : name === 'slow' ? <><path d="M4 17a9 9 0 1 1 16 0M12 12l4-5M6 10l1 .5M18 10l-1 .5M12 4v1" /><circle cx="12" cy="12" r="1.5" /></>
@@ -44,17 +44,18 @@ export default function ListeningExpedition({ level, requestedLevel, question, c
   return <ListeningExpeditionLayout {...{ level, requestedLevel, onExit, checked }}>
     <div className="expedition-stage">{retry ? 'RECAPITULARE' : 'ETAPA'} {current + 1} / {total}</div>
     <progress className="expedition-progress" aria-label="Progresul sesiunii" value={current + 1} max={Math.max(1, total)} />
-    <h1 className="expedition-title">Ascultă și alege</h1>
+
 
     <div className="expedition-player-area">
+      <img className="expedition-art" src="/images/practice/listening-notebook.png" alt="" />
       <button type="button" className={'expedition-player' + (audioBusy ? ' is-playing' : '')} onClick={() => audioBusy ? stopAudio() : play()} aria-label={audioBusy ? 'Oprește redarea' : playbackLabel} aria-busy={audioStatus === 'loading'}>
-        <span className="expedition-play"><Icon name={audioBusy ? 'stop' : 'play'} /></span>
+        <span className="expedition-play"><Icon name={audioBusy ? 'stop' : 'speaker'} /></span>
         <span className="expedition-track"><span className="expedition-wave" aria-hidden="true">{Array.from({ length: 31 }, (_, i) => <i key={i} style={{ '--height': `${10 + ((i * 13 + 7) % 29)}px`, '--delay': `${i * -45}ms` }} />)}</span><span className="expedition-play-label">{playbackLabel}</span></span>
       </button>
-      <button type="button" className="expedition-slow" onClick={() => play(true)} disabled={audioBusy}><Icon name="slow" />Mai lent</button>
+      <div className="expedition-controls"><button type="button" className="expedition-replay" onClick={() => play()} disabled={audioBusy}><span aria-hidden="true">↻</span>Ascultă din nou</button><button type="button" className="expedition-slow" onClick={() => play(true)} disabled={audioBusy}><Icon name="slow" />Mai lent</button></div>
     </div>
     <div className="activity-question__meta expedition-meta"><span>{retry ? 'Repetă greșelile' : `Lecția ${question.lessonId} · ${question.topic}`}</span><span>{type}</span></div>
-    <h2 className="expedition-question" id="listening-instruction" ref={headingRef} tabIndex={-1}>{heard ? 'Alege sensul, apoi verifică' : 'Ascultă, apoi alege sensul'}</h2>
+    <h2 className="expedition-question" id="listening-instruction" ref={headingRef} tabIndex={-1}>Ce ai auzit?</h2>
     {audioStatus === 'error' && <div className="expedition-error" role="alert">Sunetul nu a putut fi redat. Verifică internetul și încearcă din nou.<button type="button" onClick={() => play()}>Reîncearcă redarea</button></div>}
     <div className="expedition-choices" role="group" aria-label="Alege răspunsul" aria-describedby="listening-instruction">{question.options.map((option, index) => {
       const state = checked ? option === question.answer ? 'correct' : option === selected ? 'wrong' : '' : selected === option ? 'selected' : '';
@@ -67,6 +68,6 @@ export default function ListeningExpedition({ level, requestedLevel, question, c
       {!correct && <><small>Greșeala este salvată pentru recapitulare.</small><button type="button" className="expedition-submit" onClick={repeatQuestion} autoFocus>Repetă întrebarea<Icon name="arrow" /></button></>}
       {correct && <><button type="button" className="expedition-submit" onClick={next} autoFocus>{current === total - 1 ? 'Vezi rezultatul' : 'Continuă'}<Icon name="arrow" /></button><span className="expedition-auto-next">Continuăm și automat…</span></>}
     </dialog>}
-    <button className="expedition-submit" type="button" style={{ visibility: checked ? 'hidden' : undefined }} disabled={checked || selected === null || !heard} onClick={verify}>Verifică<Icon name="arrow" /></button>
+    <button className="expedition-submit" type="button" style={{ visibility: checked ? 'hidden' : undefined }} disabled={checked || selected === null || !heard} onClick={verify}>Verifică</button>
   </ListeningExpeditionLayout>;
 }
