@@ -8,10 +8,10 @@ import { getLearningLevel } from '../lessons/learningLevel';
 import { getCareerPath, getCareerProfile } from '../../services/careerProfile';
 import { useAuth } from '../auth/AuthContext';
 import { isInstalledAppView } from '../../services/appExperience';
-import './ConversationStudio.css';
+
 import DesktopConversationStudio from './DesktopConversationStudio';
 import MobileConversationStudio from './MobileConversationStudio';
-import './GuidedMission.css';
+
 
 export default function ConversationStudio() {
   const { user } = useAuth();

@@ -80,7 +80,7 @@ for (const mode of [false, true]) {
       'illustrated desktop layout must not enter the installed app');
     assert.equal(classNodes(renderer, 'mobile-conversation').length, mode ? 1 : 0);
     if (mode) {
-      assert.equal(classNodes(renderer, 'mobile-app-nav').length, 0, 'catalog is full screen');
+      assert.equal(classNodes(renderer, 'mobile-app-nav').length, 1, 'catalog uses the approved bottom navigation');
     }
     await act(async () => renderer.root.find(n => typeof n.type === 'function' && n.props.flow && n.props.scenarios).props.flow.choose(source.id));
     const brief = classNodes(renderer, 'airy-conversation')[0];

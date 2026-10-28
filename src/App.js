@@ -23,7 +23,7 @@ import PageLoading from './modules/layout/PageLoading';
 export function AppContent() {
   const mainRef = useRef(null);
   const { pathname } = useLocation();
-  const isFocusedExercise = /^\/(?:drag|scenarii)(?:\/|$)/.test(pathname);
+  const isFocusedExercise = /^\/(?:drag|scenarii|studio)(?:\/|$)/.test(pathname);
   return (
     <AuthProvider>
       <SeoManager />

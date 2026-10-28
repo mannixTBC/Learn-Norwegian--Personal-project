@@ -39,11 +39,11 @@ try{
   const html=renderToStaticMarkup(React.createElement(MemoryRouter,null,React.createElement(installed?Mobile:Desktop,{level:'C2',path:{id:'transport'},scenarios:[selected],selected,flow})));
   delete globalThis.window;
   await page.setContent('<html class="'+(installed?'is-installed-app':'')+'"><head><style>'+css+'</style></head><body><div id="root"><div class="App"><main class="App__main">'+html+'</main></div></div></body></html>');
-  if(kind==='active')await page.locator('.guided-image img').evaluate(im=>im.decode());
+
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),JSON.stringify({installed,width,height,kind}));
   const background=await page.evaluate(()=>[document.documentElement,document.body,document.querySelector('#root'),document.querySelector('.App'),document.querySelector('.App__main')].map(e=>getComputedStyle(e).backgroundColor));
   assert.ok(background.every(c=>c===background[0]),'uniform outer canvas');
-  const image=page.locator('.guided-image>.scenario-illustration');
+  const image=page.locator(kind==='result'?'.studio-result-art':'.studio-heading-art');
   const box=await image.boundingBox();assert.ok(box.width>100&&box.height>100,'scene must not inherit icon size');
   const controls=kind==='result'?page.getByRole('link',{name:'Vezi recapitularea'}):page.locator('.scenario-voice__mic');
   await controls.scrollIntoViewIfNeeded();assert.ok(await controls.isVisible());

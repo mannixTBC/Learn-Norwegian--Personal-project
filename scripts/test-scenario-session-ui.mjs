@@ -234,7 +234,7 @@ for (const mode of [false, true]) {
   setup(); r = await start(); await write(r, 'Hei');
   gate = deferred(); handler = () => gate.promise;
   await send(r); const waiting = calls.at(-1);
-  await click(r, 'Scenarii practice');
+  await click(r, 'Înapoi la situații');
   assert.equal(waiting.signal.aborted, true);
   assert.equal(temporary.size, 0);
   await act(async () => { gate.resolve(normal('turn', waiting.body)); });
@@ -257,8 +257,13 @@ for (const mode of [false, true]) {
   handler = (op, body) => reply(200, baseResponse(turn(body, { done: true, endReason: 'success', achieved: [0, 1, 2], reply: 'Takk!', feedback: 'Misiune reușită.' })));
   await send(r);
   await act(async () => { await new Promise(resolve => setTimeout(resolve, 25)); });
-  assert.match(textOf(nodes(r, 'conversation-result')[0]), /Ai dus misiunea la capăt/);
+  assert.match(textOf(nodes(r, 'conversation-result')[0]), /Te-ai descurcat!/);
   assert.match(textOf(r.root), /Rezultatul este salvat pe acest dispozitiv/);
+  await click(r, 'Salvează pentru recapitulare');
+  const savedHint=JSON.parse(progress.get('norwegian_review_items'));
+  assert.equal(savedHint.length,1);
+  assert.equal(savedHint[0].norwegian,source.variants.A1.hint);
+  assert.equal(button(r,'Salvat pentru recapitulare').props.disabled,true);
   assert.equal([...progress.keys()].filter(k => k.startsWith('scenario_result_v1_')).length, 1);
   assert.equal(r.root.findAllByType('textarea').length, 0);
   await unmount(r); handler = normal; r = await render();
@@ -284,9 +289,9 @@ for (const mode of [false, true]) {
   handler = (op, body) => reply(200, baseResponse(turn(body, { done: true, endReason: 'turn_limit', reply: 'Takk for samtalen.' })));
   await send(r);
   const result = textOf(nodes(r, 'conversation-result')[0]);
-  assert.match(result, /Ai ajuns la finalul sesiunii/);
+  assert.match(result, /Ai vorbit în norvegiană!/);
   assert.match(result, /De exersat/);
-  assert.doesNotMatch(result, /Ai dus misiunea la capăt/);
+  assert.doesNotMatch(result, /Te-ai descurcat!/);
   await unmount(r); checks++;
 
   // Failed restoration can retry, then a cancelled turn restores only its last confirmed checkpoint.
@@ -307,6 +312,17 @@ for (const mode of [false, true]) {
   await act(async () => { gate.resolve(normal('turn', interrupted.body)); });
   assert.equal(nodes(r, 'airy-message').length, 1, 'abandoned response cannot alter a restored checkpoint');
   await unmount(r); checks++;
+
+  // Explicit finish clears the resumable session without inventing completed progress.
+  setup(); r=await start();
+  await click(r,'Încheie');
+  assert.equal(temporary.size,0);
+  assert.equal(nodes(r,'conversation-result').length,1);
+  assert.match(textOf(r.root),/înainte de evaluarea finală/);
+  assert.equal([...progress.keys()].filter(k=>k.startsWith('scenario_result_v1_')).length,0);
+  await click(r,'Exersează din nou');
+  assert.equal(nodes(r,'conversation-result').length,0);
+  await unmount(r);checks++;
 
   // Corrupt or unavailable storage cannot prevent a new conversation.
   setup();

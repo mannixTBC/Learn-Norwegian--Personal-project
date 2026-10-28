@@ -1,3 +1,4 @@
+import StudioHome from '../modules/exercises/StudioHome';
 import ConversationStudio from '../modules/exercises/ConversationStudio';
 import SectionFinalTest from '../modules/lessons/SectionFinalTest';
 /**
@@ -58,6 +59,7 @@ const WorkMissions = ConversationStudio;
 
 /** Rutele aplicației, ordonate după secțiune */
 const routes = [
+  { path: '/studio', exact: true, component: StudioHome, protected: true },
   { path: '/scenarii', exact: true, component: ConversationStudio, protected: true },
   { path: '/test-sectiune/:level/:sectionId', exact: true, component: SectionFinalTest },
   // ── Pagina principală ──────────────────────────────────────────────

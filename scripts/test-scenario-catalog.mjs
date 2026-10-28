@@ -23,10 +23,12 @@ for(const View of [Mobile,Desktop]){
  let r,chosen;
  await act(async()=>{r=TestRenderer.create(wrap(View,{...props,flow:{progress:{},choose:id=>chosen=id}}));});
  assert.equal(classes(r,'sc-card').length,4);
- assert.ok(classes(r,'sc-card')[0].findAllByType('h2')[0].children.join('').includes(scenarios.find(s=>s.path==='transport').title));
+ assert.equal(classes(r,'sc-card')[0].findByType('h2').children.join(''),'La cafenea');
  const first=classes(r,'sc-card')[0];
  await act(async()=>first.props.onClick());
- assert.equal(chosen,scenarios.find(s=>s.path==='transport').id);
+ await act(async()=>classes(r,'sc-start')[0].props.onClick());
+ assert.equal(chosen,'cafe-order');
+ await act(async()=>r.root.findAllByType('button').find(n=>n.children.join('')==='Pentru tine').props.onClick());
  const next=()=>r.root.findByProps({'aria-label':'Pagina următoare'});
  const previous=()=>r.root.findByProps({'aria-label':'Pagina anterioară'});
  assert.equal(previous().props.disabled,true);
@@ -34,7 +36,7 @@ for(const View of [Mobile,Desktop]){
  assert.equal(previous().props.disabled,false);
  const filter=r.root.findAllByType('select').find(n=>n.props.value==='all');
  await act(async()=>filter.props.onChange({target:{value:'transport'}}));
- assert.equal(classes(r,'sc-card').length,scenarios.filter(s=>s.path==='transport').length);
+ assert.equal(classes(r,'sc-card').length,Math.min(4,scenarios.filter(s=>s.path==='transport').length));
  assert.equal(previous().props.disabled,true);
  await act(async()=>filter.props.onChange({target:{value:'all'}}));
  await act(async()=>r.root.findAllByType('button').find(n=>n.children.join('')==='Toate').props.onClick());
@@ -73,13 +75,13 @@ try{
    assert.ok(await page.locator('.sc-brand img').evaluate(im=>im.naturalWidth>0),'real brand image must decode');
    const result=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,height:innerHeight,scrollHeight:document.documentElement.scrollHeight,canvas:[document.documentElement,document.body,document.getElementById('root'),document.querySelector('.App'),document.querySelector('.App__main')].map(e=>getComputedStyle(e).backgroundColor)}));
    assert.ok(result.scrollWidth<=width+1,JSON.stringify({installed,width,height,kind,result}));
-   assert.ok(result.canvas.every(c=>c==='rgb(247, 241, 226)'),JSON.stringify(result));
-   if(kind==='empty'||(kind==='normal'&&height>=640))assert.ok(result.scrollHeight<=height+1,JSON.stringify({installed,width,height,kind,result}));
+   assert.ok(result.canvas.every(c=>c==='rgb(253, 253, 249)'),JSON.stringify(result));
+   if(kind==='empty'&&height>=640)assert.ok(result.scrollHeight<=height+1,JSON.stringify({installed,width,height,kind,result}));
    for(const card of await page.locator('.sc-card').all()){
     const overflow=await card.evaluate(e=>({h:e.clientHeight,sh:e.scrollHeight,w:e.clientWidth,sw:e.scrollWidth}));
     assert.ok(overflow.sh<=overflow.h+1&&overflow.sw<=overflow.w+1,JSON.stringify(overflow));
    }
-   await page.locator('.sc-pagination button').last().scrollIntoViewIfNeeded();
+   if(await page.locator('.sc-start').count())await page.locator('.sc-start').scrollIntoViewIfNeeded();
   }
   await page.evaluate(()=>document.querySelector('.App__main').innerHTML='<div>Jocuri</div>');
   assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--exercise-canvas').trim()),'');

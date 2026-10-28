@@ -113,6 +113,7 @@ export default function useConversationSession({ userId, level, pathId, scenario
     update(next);
   }
   return { ...state, choose, setDraft,
+    finish: () => { cancel(); saveConversation(key, null); update(previous => ({ ...previous, busy: false, operation: null })); },
     start: () => run('start'), send: () => run('turn'), retry: () => run(current.current.operation || 'start'),
     restart: () => run('start'), again: () => choose(current.current.scenarioId), reset: () => choose(null),
   };
