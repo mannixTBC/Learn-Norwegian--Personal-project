@@ -1,124 +1,14 @@
-.sentence-workshop{box-sizing:border-box;width:100%;max-width:720px;min-height:100dvh;margin:0 auto;padding:16px 22px max(18px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:20px;background:radial-gradient(ellipse at top right,#eee2bf55,transparent 48%),#fffaf0;color:#143e4c;font-family:system-ui,sans-serif}
-.sentence-workshop *{box-sizing:border-box}.sentence-workshop button{font:inherit;cursor:pointer;color:inherit}.sentence-workshop button:focus-visible{outline:3px solid #26788b;outline-offset:3px}.sentence-workshop button:disabled{cursor:default}.sw-header{display:flex;align-items:center;justify-content:space-between;gap:20px}.sw-header>button{width:44px;height:44px;border:1px solid #dfc58c;border-radius:50%;background:#fffdf5;font-size:26px}.sw-logo{width:160px;height:42px}.sw-level{padding:8px 16px;border-radius:20px;background:#dcebed;border:1px solid #bdd7db;font-weight:650}.sw-title h1{margin:0;font:700 clamp(30px,7vw,42px)/1.15 Georgia,serif}.sw-title p{margin:8px 0 0;font-size:16px}.sw-progress{display:flex;align-items:center;gap:16px;font-size:14px}.sw-progress>div{flex:1;display:flex;gap:7px}.sw-progress i{flex:1;height:8px;border-radius:8px;background:#e2dfd4}.sw-progress i.done{background:#e7b64f}.sw-progress i.active{background:#143e4c}.sw-prompt{border:1px solid #d6b66d;border-radius:20px;padding:22px;position:relative;overflow:hidden;background:#fffdf6}.sw-prompt--illustrated{display:grid;grid-template-columns:minmax(0,1fr) 38%;align-items:center;padding-right:0;gap:12px}.sw-prompt small,.sw-label,.sw-bank h3{font-size:11px;font-weight:650;letter-spacing:1px}.sw-prompt h2{margin:14px 0 0;font:700 clamp(22px,5.5vw,30px)/1.25 Georgia,serif;overflow-wrap:anywhere}.sw-art{position:relative;overflow:hidden;width:100%;aspect-ratio:1;mix-blend-mode:multiply}.sw-art img{position:absolute;max-width:none;object-fit:fill}.sw-label{display:flex;justify-content:space-between;margin-bottom:10px}.sw-answer{display:flex;align-content:flex-start;flex-wrap:wrap;gap:8px;min-height:100px;padding:12px;border:1px solid #dfc58c;border-radius:16px}.sw-answer button{border:1px solid #204e5a;background:#184957;color:#fffdf5;padding:12px 16px;border-radius:12px;min-height:46px;font:700 19px/1.25 Georgia,serif;overflow-wrap:anywhere;max-width:100%}.sw-empty{align-self:center;color:#748183;font-size:14px}.sw-placeholder{align-self:center;color:#b8b09a;font-size:30px}.sw-reset{border:0;background:none;padding:10px 2px 0;min-height:44px}.sw-reset:disabled{opacity:.4}.sw-bank h3{margin:0 0 14px}.sw-bank>div{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}.sw-bank button{border:1px solid #d6b66d;background:#fffdf6;border-radius:12px;padding:12px 18px;min-height:46px;max-width:100%;overflow-wrap:anywhere;font:700 19px/1.25 Georgia,serif;box-shadow:0 3px 0 #d7c6a34d}.sw-bank button:disabled{opacity:.3;box-shadow:none;border-color:#a7a79f}.sw-bank p{font-size:13px;text-align:center;color:#697780;margin:16px 0 0}.sw-feedback{border:1px solid #8eae84;background:#eef6e8;border-radius:18px;padding:18px}.sw-feedback h3{font:700 25px/1.2 Georgia,serif;margin:0 0 14px}.sw-feedback p{font:700 20px/1.35 Georgia,serif;margin:12px 0;overflow-wrap:anywhere}.sw-feedback button{border:1px solid #d6b66d;background:#fffbef;border-radius:14px;padding:10px 14px;min-height:44px}.sw-feedback .sw-explanation{font:14px/1.5 system-ui,sans-serif}.sw-answer.is-correct{background:#eef6e8;border-color:#8eae84}.sw-answer.is-wrong,.sw-feedback.is-wrong{background:#fff0e6;border-color:#cf9e79}.sw-footer{margin-top:auto;padding-top:4px;text-align:center}.sw-footer>button{width:100%;min-height:52px;border:1px solid #e4bc5d;border-radius:16px;background:linear-gradient(110deg,#ffe292,#ffd367);font:700 23px/1.2 Georgia,serif;padding:12px}.sw-footer>button:disabled{background:#dedbd3;border-color:#dedbd3;color:#697170}.sw-footer small{display:block;margin-top:8px;font-size:12px;color:#697780}
-@media(min-width:760px){.sentence-workshop{min-height:calc(100dvh - 32px);margin:16px auto;border:1px solid #dfc58c;border-radius:24px;padding:24px 36px;gap:20px}.sw-prompt--illustrated{grid-template-columns:minmax(0,1fr) 150px}.sw-answer{min-height:88px}}
-@media(max-height:760px) and (max-width:759px){.sentence-workshop{gap:12px;padding:12px 16px}.sw-title h1{font-size:30px}.sw-title p{margin-top:4px;font-size:14px}.sw-prompt{padding:16px}.sw-prompt--illustrated{padding-right:0;grid-template-columns:minmax(0,1fr) 30%}.sw-prompt h2{font-size:23px;margin-top:10px}.sw-answer{min-height:80px;padding:9px}.sw-answer button,.sw-bank button{padding:10px 13px;font-size:17px}.sw-bank p{margin-top:10px}.sw-feedback{padding:13px}.sw-feedback h3{font-size:22px}.sw-feedback p{font-size:18px}}
-.sw-logo{display:flex;align-items:center;justify-content:center}.sw-logo img{display:block;max-width:100%;max-height:100%;object-fit:contain}
-/* Standalone sentence game: remove the space reserved for the site navigation. */
-body .App > .App__main:has(.sentence-workshop) {
-  min-height: 0;
-  margin: 0;
-  padding: 0 !important;
-}
-
-@media (max-height: 820px) {
-  .sentence-workshop {
-    gap: 10px;
-    padding: max(10px, env(safe-area-inset-top)) 16px max(10px, env(safe-area-inset-bottom));
-  }
-  .sentence-workshop .sw-header { gap: 12px; }
-  .sentence-workshop .sw-logo { width: 130px; height: 34px; }
-  .sentence-workshop .sw-title h1 { font-size: 28px; }
-  .sentence-workshop .sw-title p { margin-top: 4px; font-size: 14px; }
-  .sentence-workshop .sw-prompt { padding: 12px; }
-  .sentence-workshop .sw-prompt--illustrated { padding-right: 0; grid-template-columns: minmax(0, 1fr) 90px; }
-  .sentence-workshop .sw-prompt h2 { margin-top: 8px; font-size: 22px; }
-  .sentence-workshop .sw-answer { min-height: 68px; padding: 8px; }
-  .sentence-workshop .sw-answer button,
-  .sentence-workshop .sw-bank button { padding: 8px 12px; min-height: 44px; font-size: 16px; }
-  .sentence-workshop .sw-bank h3 { margin-bottom: 8px; }
-  .sentence-workshop .sw-bank p { margin-top: 8px; }
-  .sentence-workshop .sw-feedback { padding: 12px; }
-  .sentence-workshop .sw-feedback h3 { margin-bottom: 8px; font-size: 22px; }
-  .sentence-workshop .sw-feedback p { margin: 8px 0; font-size: 17px; }
-  .sentence-workshop .sw-footer > button { min-height: 46px; padding: 10px; font-size: 20px; }
-}
-
-/* Keep the sentence card at its content height, including after its last hint. */
-body:has(.sentence-workshop) {
-  background: #fffaf0;
-}
-body .App:has(.sentence-workshop) {
-  min-height: 0;
-}
-body .App > .App__main:has(.sentence-workshop) {
-  flex: 0 0 auto;
-  height: auto;
-}
-html body .App > .App__main > .sentence-workshop.sentence-workshop {
-  height: auto;
-  min-height: 0;
-  margin-block: 0;
-  padding-bottom: max(10px, env(safe-area-inset-bottom));
-}
-html body .App > .App__main > .sentence-workshop.sentence-workshop .sw-footer {
-  margin-top: 0;
-}
-html body .App > .App__main > .sentence-workshop.sentence-workshop .sw-footer small {
-  margin-bottom: 0;
-}
-html:not(.is-installed-app) body:has(.sentence-workshop) {
-  background: #f7f9fb;
-}
-
-/* Sentence workspace: balanced cards and a single, predictable vertical rhythm. */
-html body #root .App .sentence-workshop{
- width:100%;max-width:1040px;margin:0 auto;padding:12px 18px max(12px,env(safe-area-inset-bottom));
- display:flex;flex-direction:column;gap:14px;height:auto;min-height:0;border:0;border-radius:0;
-}
-html body #root .sentence-workshop .sw-header{flex:none;min-height:44px}
-html body #root .sentence-workshop .sw-title{text-align:center}
-html body #root .sentence-workshop .sw-title h1{font:700 32px/1.1 Georgia,serif;letter-spacing:-.8px;margin:0}
-html body #root .sentence-workshop .sw-title p{margin:5px 0 0;font-size:14px;color:#687a7d}
-html body #root .sentence-workshop .sw-progress{gap:12px;font-size:12px;color:#64767a}
-html body #root .sentence-workshop .sw-progress i{height:5px}
-html body #root .sentence-workshop .sw-prompt{padding:18px;border-radius:18px;border-color:#dfd2b5;background:linear-gradient(115deg,#fffdf6,#f7edd7);box-shadow:0 4px 14px #5c513808}
-html body #root .sentence-workshop .sw-prompt--illustrated{grid-template-columns:minmax(0,1fr) 100px;gap:16px;padding:14px 16px}
-html body #root .sentence-workshop .sw-prompt small{font-size:10px;line-height:1.4;letter-spacing:1px;color:#7f7156}
-html body #root .sentence-workshop .sw-prompt h2{margin:9px 0 0;font:700 25px/1.25 Georgia,serif;letter-spacing:-.4px}
-html body #root .sentence-workshop .sw-art{border-radius:14px;aspect-ratio:1;max-height:110px}
-html body #root .sentence-workshop .sw-compose{padding:14px;background:#fffdf780;border:1px solid #e5dcc9;border-radius:18px}
-html body #root .sentence-workshop .sw-label{align-items:center;gap:8px;margin-bottom:7px;font-size:10px;letter-spacing:.7px;color:#657579;min-height:30px}
-.sw-compose-tools{display:flex;align-items:center;gap:12px;flex:none}
-html body #root .sentence-workshop .sw-reset{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:50px;padding:0 5px;font-size:12px;letter-spacing:0;color:#46656a}
-html body #root .sentence-workshop .sw-answer{min-height:72px;gap:7px;padding:9px;border:1px dashed #c7cfc6;border-radius:12px;background:#f6f5ed;align-items:flex-start}
-html body #root .sentence-workshop .sw-empty{width:100%;margin:12px 0;text-align:center;font-size:13px;line-height:1.4;color:#89918a}
-html body #root .sentence-workshop .sw-answer button{background:#245a63;border-color:#245a63;border-radius:10px;color:#fffdf4;font:600 18px/1.2 Georgia,serif;padding:10px 13px;min-height:44px}
-html body #root .sentence-workshop .sw-bank{padding:4px 2px}
-html body #root .sentence-workshop .sw-bank h3{text-align:center;font-size:10px;letter-spacing:1px;color:#79817b;margin:0 0 10px}
-html body #root .sentence-workshop .sw-bank>div{gap:8px;align-items:center;justify-content:center}
-html body #root .sentence-workshop .sw-bank button{padding:10px 14px;min-height:44px;border:1px solid #ded0b2;background:#fffdf7;border-radius:10px;font:600 18px/1.2 Georgia,serif;box-shadow:0 2px 0 #c9b88b40}
-html body #root .sentence-workshop .sw-bank button:disabled{opacity:.28;box-shadow:none}
-html body #root .sentence-workshop .sw-bank p{margin:10px 0 0;font-size:12px;color:#81908a}
-html body #root .sentence-workshop .sw-footer{margin:0;padding:0}
-html body #root .sentence-workshop .sw-footer>button{min-height:48px;padding:12px 16px;border-radius:13px;background:#245a63;border:1px solid #245a63;color:#fffdf5;font:600 20px/1.2 Georgia,serif;box-shadow:0 3px 9px #245a6314}
-html body #root .sentence-workshop .sw-footer>button:disabled{background:#e2e4dc;border-color:#e2e4dc;color:#929b95;box-shadow:none}
-html body #root .sentence-workshop .sw-footer small{font-size:11px;margin:7px 0 0;color:#81908a}
-html body #root .sentence-workshop .sw-feedback{padding:16px;border-radius:16px}
-@media(min-width:861px){
- html:not(.is-installed-app) body #root .App .sentence-workshop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-areas:'header header' 'title title' 'progress progress' 'prompt compose' 'prompt bank' 'prompt footer';gap:18px 28px;padding:24px 32px 28px;align-items:start}
- html:not(.is-installed-app) body #root .sentence-workshop .sw-header{grid-area:header}
- html:not(.is-installed-app) body #root .sentence-workshop .sw-title{grid-area:title;margin:0 0 4px}
- html:not(.is-installed-app) body #root .sentence-workshop .sw-progress{grid-area:progress;margin:0 0 4px}
- html:not(.is-installed-app) body #root .sentence-workshop .sw-prompt{grid-area:prompt;align-self:stretch;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:22px;min-height:300px;padding:28px}
- html:not(.is-installed-app) body #root .sentence-workshop .sw-art{width:170px;max-height:170px;order:-1}
- html:not(.is-installed-app) body #root .sentence-workshop .sw-prompt h2{font-size:30px}
- html:not(.is-installed-app) body #root .sentence-workshop .sw-compose{grid-area:compose}
- html:not(.is-installed-app) body #root .sentence-workshop :is(.sw-bank,.sw-feedback){grid-area:bank}
- html:not(.is-installed-app) body #root .sentence-workshop .sw-footer{grid-area:footer}
-}
-@media(max-width:860px) and (min-height:780px){html body #root .App .sentence-workshop{gap:18px;padding-top:16px}.sentence-workshop .sw-bank{margin-top:4px}}
-@media(max-width:860px) and (max-height:740px){
- html body #root .App .sentence-workshop{gap:9px;padding:8px 14px max(9px,env(safe-area-inset-bottom))}
- html body #root .sentence-workshop .sw-title h1{font-size:28px}
- html body #root .sentence-workshop .sw-title p{margin-top:3px;font-size:12px}
- html body #root .sentence-workshop .sw-prompt{padding:12px}
- html body #root .sentence-workshop .sw-prompt--illustrated{grid-template-columns:minmax(0,1fr) 74px;gap:10px}
- html body #root .sentence-workshop .sw-prompt h2{font-size:21px;margin-top:6px}
- html body #root .sentence-workshop .sw-compose{padding:8px 11px}
- html body #root .sentence-workshop .sw-label{margin:0 0 4px}
- html body #root .sentence-workshop .sw-answer{min-height:60px;padding:7px}
- html body #root .sentence-workshop :is(.sw-answer button,.sw-bank button){font-size:16px;padding:8px 11px}
- html body #root .sentence-workshop .sw-bank h3{margin-bottom:7px}
- html body #root .sentence-workshop .sw-bank p{display:none}
-}
-html body #root .sentence-workshop .sw-prompt{min-height:0} @media(max-width:860px){html body #root .sentence-workshop .sw-prompt{align-self:stretch}}
+html:has(.App__main .sentence-workshop){--exercise-canvas:#fefcf7}
+.App:has(.sentence-workshop)>.navbar{display:none}
+html body #root .App .sentence-workshop{box-sizing:border-box;display:flex;flex-direction:column;gap:20px;width:min(100%,480px);max-width:480px;min-height:100dvh;height:auto;margin:0 auto;padding:20px 18px max(20px,env(safe-area-inset-bottom));background:transparent;color:#102c41;font:16px/1.45 'Segoe UI',sans-serif;border:0;box-shadow:none}
+.sentence-workshop *{box-sizing:border-box}.sentence-workshop button{font:inherit;cursor:pointer;color:inherit;touch-action:manipulation}.sentence-workshop :is(button,a):focus-visible{outline:3px solid #007f83;outline-offset:3px}.sentence-workshop button:disabled{cursor:default}
+.sw-header{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px}.sw-header>button{border:0;background:none;font:32px Georgia;min-width:28px;min-height:44px;padding:0}.sw-logo{display:block;width:170px;height:auto;max-width:52%;object-fit:contain}.sw-level{padding:8px 14px;border-radius:22px;background:#e2eae2;font-size:15px;font-weight:650}
+.sw-progress{display:flex;align-items:center;gap:16px;color:#526b7a;font-size:14px}.sw-progress>span{white-space:nowrap}.sw-progress progress{appearance:none;flex:1;min-width:0;height:8px;border:0;border-radius:8px;background:#e6e7e3;color:#007f83}.sw-progress progress::-webkit-progress-bar{background:#e6e7e3;border-radius:8px}.sw-progress progress::-webkit-progress-value{background:#007f83;border-radius:8px}.sw-progress progress::-moz-progress-bar{background:#007f83;border-radius:8px}
+.sw-prompt{padding:20px;border:1px solid #efeee7;border-radius:20px;background:#fff;box-shadow:0 3px 12px #1733430b}.sw-prompt small,.sw-label{font-size:11px;letter-spacing:1px;color:#526b7a}.sw-prompt>div{display:flex;align-items:center;gap:8px;margin-top:14px}.sw-prompt h2{flex:1;min-width:0;margin:0;font:700 clamp(25px,7vw,33px)/1.2 Georgia,serif;letter-spacing:-.5px;overflow-wrap:anywhere}.sw-prompt img{width:34%;max-width:130px;height:auto;flex-shrink:0}
+.sw-compose{background:#ebeee2;border-radius:18px;padding:14px 16px 18px}.sw-label{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;min-height:32px}.sw-reset{border:0;background:none;min-width:44px;min-height:36px;font-size:28px!important;padding:0;color:#647680!important}.sw-reset:disabled{opacity:.35}
+.sw-answer,.sw-bank>div{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.sw-answer{min-height:58px}.sw-answer button,.sw-bank button{max-width:100%;overflow-wrap:anywhere;min-height:48px;padding:10px 14px;border:1px solid #ccd1cd;border-radius:11px;background:#fff;color:#102c41;font:700 20px/1.25 Georgia,serif;box-shadow:0 2px 5px #1733430a}.sw-answer button.needs-attention{border-color:#d58b16;background:#fff7e5}.sw-answer.is-correct button{border-color:#80a58e}.sw-answer.is-wrong button{border-color:#cba78a}.sw-placeholder{width:58px;height:48px;border:1px dashed #b6c2b6;border-radius:11px}.sw-empty{font-size:13px;color:#647680}.sw-bank{padding:0 4px}.sw-bank button:disabled{color:#9aa8af;background:#e8e9e8;border-color:#e0e3e1;box-shadow:none}
+.sw-hint{display:flex;align-items:center;gap:12px;padding:16px;border-radius:18px;background:#fff5e2;color:#102c41}.sw-hint>span{color:#c88616;font-size:30px}.sw-hint h3{font:700 21px/1.2 Georgia,serif;margin:0 0 6px}.sw-hint p{font-size:15px;line-height:1.4;margin:0}
+.sw-feedback{background:#eef3e7;border:1px solid #dae3d2;border-radius:18px;padding:18px}.sw-feedback.is-wrong{background:#fff5e8}.sw-feedback h3{font:700 24px/1.2 Georgia,serif;margin:0 0 10px}.sw-feedback p{font:700 21px/1.3 Georgia,serif;overflow-wrap:anywhere;margin:0 0 14px}.sw-feedback button{min-height:44px;padding:8px 14px;background:white;color:#007f83;border:1px solid #007f83;border-radius:18px}.sw-feedback small{display:block;margin-top:12px;color:#526b7a}.sw-feedback .sw-explanation{font:14px/1.5 'Segoe UI',sans-serif;margin:12px 0 0}
+.sw-footer{margin-top:auto;padding-top:12px;text-align:center}.sw-footer>button{width:100%;min-height:50px;padding:12px;border:0;border-radius:14px;background:#007f83;color:#fff;font:600 19px/1.2 'Segoe UI',sans-serif}.sw-footer>button:disabled{background:#8fb6b8;color:#fff}.sw-footer small{display:block;margin-top:10px;font-size:13px;line-height:1.4;color:#526b7a}
+@media(max-height:720px){html body #root .App .sentence-workshop{gap:14px;padding:12px 16px}.sw-prompt{padding:16px}.sw-prompt>div{margin-top:10px}.sw-prompt h2{font-size:25px}.sw-prompt img{max-width:100px}.sw-compose{padding:10px 12px 14px}.sw-label{margin-bottom:8px}.sw-answer button,.sw-bank button{font-size:18px;padding:9px 12px;min-height:44px}.sw-hint{padding:12px}.sw-footer{padding-top:6px}}
+.sw-logo img{display:block;width:100%;height:auto;object-fit:contain}.sw-prompt h2:focus{outline:none}

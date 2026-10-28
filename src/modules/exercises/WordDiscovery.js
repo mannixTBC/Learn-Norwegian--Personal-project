@@ -1,78 +1,30 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React,{useEffect,useReducer,useRef} from 'react';
+import {Link} from 'react-router-dom';
 import NorwegianFlagIcon from '../layout/Navbar/NorwegianFlagIcon';
-import { isInstalledAppView } from '../../services/appExperience';
-import './WordDiscovery.css';
-import './WordDiscoveryIvory.css';
-
-const rows = ['QWERTYUIOP', 'ASDFGHJKLÅ', 'ZXCVBNMÆØ'];
-const lettersOf = text => Array.from(text.normalize('NFC').toLocaleUpperCase('nb-NO')).filter(char => /\p{L}/u.test(char));
-const Icon = ({ name }) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{name === 'bulb' ? <><path d="M9 18h6m-5 3h4M8.5 14.5a6 6 0 1 1 7 0C14.6 15.2 15 17 15 18H9c0-1 .4-2.8-.5-3.5Z"/></> : name === 'menu' ? <path d="M4 5h16M4 12h16M4 19h16"/> : name === 'back' ? <path d="m10 5-7 7 7 7M3 12h18"/> : <path fill="currentColor" stroke="none" d="M13 1c1 6-4 6-2 11 2-1 3-3 3-5 5 4 7 8 4 12-2 4-10 5-13 0-3-5 1-10 4-13-1 4 0 5 1 5-1-4 3-6 3-10Z"/>}</svg>;
-
-export default function WordDiscovery({ question, current, total, level, checked, onResolve, onNext, onSpeak }) {
-  const installedApp = isInstalledAppView();
-  const [guessed, setGuessed] = useState([]);
-  const [last, setLast] = useState('');
-  const resolved = useRef(false);
-  const guessedRef = useRef([]);
-  const letters = lettersOf(question.answer);
-  const wrong = guessed.filter(letter => !letters.includes(letter)).length;
-  const remaining = Math.max(0, 3 - wrong);
-  const won = letters.every(char => guessed.includes(char));
-  const words = question.answer.normalize('NFC').split(/\s+/);
-  const longest = Math.max(...words.map(word => Array.from(word).length));
-  const choose = letter => {
-    if (!letter || checked || resolved.current || guessedRef.current.includes(letter)) return;
-    const next = [...guessedRef.current, letter];
-    guessedRef.current = next;
-    setGuessed(next); setLast(letter);
-    const complete = letters.every(char => next.includes(char));
-    const exhausted = next.filter(char => !letters.includes(char)).length >= 3;
-    if (complete || exhausted) { resolved.current = true; onResolve(complete, next.join(' ')); }
-  };
-  useEffect(() => {
-    const keydown = event => {
-      if (event.ctrlKey || event.metaKey || event.altKey || event.target?.closest?.('input,textarea,select')) return;
-      const letter = event.key.toLocaleUpperCase('nb-NO').normalize('NFC');
-      if (letter.length === 1 && /\p{L}/u.test(letter)) { event.preventDefault(); choose(letter); }
-    };
-    window.addEventListener('keydown', keydown);
-    return () => window.removeEventListener('keydown', keydown);
-  });
-  const tile = Number.isInteger(question.tile) ? question.tile : 0;
-  return <section className={'word-discovery' + (installedApp ? ' word-discovery--ivory' : ' word-discovery--web') + (checked ? ' word-discovery--checked' : '')} aria-label="Descoperă cuvântul">
-    {installedApp && <header className="wd-brand wd-brand--game">
-      <Link className="wd-back" to={'/jocuri?nivel=' + level}><Icon name="back"/><span>Jocuri</span></Link>
-      <Link to="/dashboard" aria-label="NordLingo — Acasă"><NorwegianFlagIcon className="wd-logo"/></Link>
-      <span className="wd-level" aria-label={'Nivel ' + level}>{level}</span>
-    </header>}
-    {!installedApp && <Link className="wd-back" to={'/jocuri?nivel=' + level}><Icon name="back"/><span>Înapoi la exerciții</span></Link>}
-    <div className="wd-heading"><h1>Descoperă cuvântul</h1><p>Găsește cuvântul norvegian</p></div>
-    {installedApp ? <div className="wd-progress"><span className="wd-counter">Cuvântul {current + 1} din {total}</span><span className="wd-hearts" aria-label={remaining + ' greșeli permise'}>{[0,1,2].map(i => <span aria-hidden="true" key={i} className={i >= remaining ? 'empty' : ''}>♥</span>)}</span><progress className="wd-progress-accessible" aria-label={'Cuvântul ' + (current + 1) + ' din ' + total} value={current + 1} max={total}/><div className="wd-progress-track" aria-hidden="true">{Array.from({length:total},(_,index) => <span className={index < current ? 'is-done' : index === current ? 'is-current' : ''} key={index}/>)}</div></div>
-      : <div className="wd-progress"><span className="wd-hearts" aria-label={remaining + ' încercări rămase'}>{[0,1,2].map(i => <span aria-hidden="true" key={i} className={i >= remaining ? 'empty' : ''}>♥</span>)}</span><progress aria-label={'Cuvântul ' + (current + 1) + ' din ' + total} value={current + 1} max={total}/><span>{remaining} {remaining === 1 ? 'încercare' : 'încercări'}</span></div>}
-    <article className="wd-card" style={{ '--wd-letter-count': longest, '--wd-word-length': Array.from(question.answer).length }}>
-      <div className="wd-art" aria-hidden="true"><div className="wd-art__painting" style={{backgroundImage:`url("${question.image || '/images/word-discovery/home.webp'}")`, backgroundPosition:`${tile % 3 * 50}% ${Math.floor(tile / 3) * 100 / 3}%`}}/></div>
-      <span className="wd-category">{question.category || 'VOCABULAR'}</span>
-      <h2>{question.prompt}</h2>
-      <div className={'wd-words' + (longest > 8 ? ' wd-words--long' : '')} aria-label="Cuvântul de descoperit" lang="nb">{words.map((word,i) => <span className="wd-word" key={i}>{Array.from(word).map((char,j) => {
-        const letter = char.toLocaleUpperCase('nb-NO');
-        const visible = !/\p{L}/u.test(char) || checked || guessed.includes(letter);
-        return <span className={'wd-slot' + (!visible ? ' wd-slot--hidden' : '') + (checked && !guessed.includes(letter) ? ' revealed' : '')} key={j}>{visible ? char.toLocaleUpperCase('nb-NO') : <span className="wd-slot__line" aria-label="literă ascunsă"/>}</span>;
-      })}</span>)}</div>
-    </article>
-    <div className="wd-controls" aria-live="polite">{checked ? installedApp ? <div className="wd-feedback"><div><strong>{won ? '✓ Cuvânt descoperit!' : 'Reține: ' + question.answer}</strong><button className="wd-listen" type="button" onClick={onSpeak}>Ascultă</button></div><button className="wd-next" type="button" onClick={onNext}>{current === total - 1 ? 'Vezi rezultatul' : 'Continuă'} <span aria-hidden="true">→</span></button></div>
-      : <><strong>{won ? '✓ Ai descoperit cuvântul!' : 'Reține: ' + question.answer}</strong><div><button type="button" onClick={onSpeak}>Ascultă</button><button type="button" onClick={onNext}>{current === total - 1 ? 'Vezi rezultatul' : 'Continuă'} →</button></div></> : <button type="button" className="wd-hint" onClick={() => choose(letters.find(char => !guessed.includes(char)))}><Icon name="bulb"/><span>Indiciu</span></button>}</div>
-    <div className="wd-keyboard" role="group" aria-label="Tastatură norvegiană">{rows.map(row => <div className="wd-key-row" key={row}>{Array.from(row).map(letter => <button type="button" key={letter} aria-label={letter} disabled={checked || guessed.includes(letter)} className={(guessed.includes(letter) ? letters.includes(letter) ? 'found' : 'missed' : '') + (last === letter ? ' last' : '')} onClick={() => choose(letter)}>{letter}</button>)}</div>)}</div>
-  </section>;
+import {initialGuessing,spellingLetters,guessingReducer} from './wordSpelling';
+import './WordSpelling.css';
+const rows=['QWERTYUIOP','ASDFGHJKL','ZXCVBNM','ÆØÅ'];
+function Header({level}){return <header className="ws-header"><Link to={'/jocuri?nivel='+level} aria-label="Înapoi la practică">‹</Link><Link to="/dashboard" aria-label="NordLingo - Acasă"><NorwegianFlagIcon className="ws-logo"/></Link><span className="ws-level">{level}</span></header>;}
+export default function WordDiscovery({question,current,total,level,checked,onResolve,onNext,onSpeak}){
+ const [state,dispatch]=useReducer(guessingReducer,undefined,initialGuessing);
+ const sent=useRef(false);
+ const send=(type,letter)=>{if(checked)return;dispatch({type,letter,answer:question.answer});};
+ const helped=state.revealed.length>0;
+ useEffect(()=>{if(!state.done||sent.current)return;sent.current=true;onResolve(state.correct,state.guessed.join(' '),helped);},[state.done]);
+ useEffect(()=>{const keydown=event=>{if(event.ctrlKey||event.metaKey||event.altKey||event.target?.closest?.('input,textarea,select'))return;if(/^\p{L}$/u.test(event.key)){event.preventDefault();send('GUESS',event.key);}};window.addEventListener('keydown',keydown);return()=>window.removeEventListener('keydown',keydown);});
+ const done=state.done||checked,target=spellingLetters(question.answer);
+ let offset=0;const tile=Number.isInteger(question.tile)?question.tile:0;
+ return <section className="word-discovery word-spelling" aria-label="Descoperă cuvântul">
+  <Header level={level}/><div className="ws-progress"><span>{current+1} din {total}</span><progress value={current+1} max={total} aria-label="Progresul sesiunii"/></div>
+  <h1 className="ws-title">Descoperă cuvântul</h1>
+  <figure className="ws-photo"><div role="img" aria-label={question.translation||question.prompt} className="ws-photo-image" style={{backgroundImage:`url("${question.image||'/images/word-discovery/home.webp'}")`,backgroundPosition:`${tile%3*50}% ${Math.floor(tile/3)*100/3}%`}}/></figure>
+  <div className="ws-answer"><div className="ws-slots" lang="nb" aria-label="Cuvântul tău">{question.answer.normalize('NFC').split(/\s+/u).map((word,wordIndex)=><span className="ws-word" key={wordIndex}>{Array.from(word).map((char,index)=>{if(!/\p{L}/u.test(char))return <span key={index}>{char}</span>;const position=offset++,letter=done||state.guessed.includes(target[position])?target[position]:'';return <span className={'ws-slot'+(!letter?' is-hidden':'')+(state.revealed.includes(target[position])?' is-hint':'')} key={index} aria-label={letter||'Literă necompletată'}>{letter||'\u00a0'}</span>;})}</span>)}</div><p>{done?state.correct?helped?'Corect, cu ajutor!':'Cuvânt descoperit!':'Reține forma corectă.':'Alege literele și descoperă cuvântul.'}</p></div>
+  {!done?<button type="button" className="ws-hint" disabled={done} onClick={()=>send('HINT')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M9 18h6m-5 3h4M9 18c0-5-4-5-4-10a7 7 0 0 1 14 0c0 5-4 5-4 10Z"/></svg> Dezvăluie o literă</button>:<div className="ws-feedback" role="status"><button type="button" onClick={onSpeak}>Ascultă cuvântul</button>{(!state.correct||helped)&&<small>Îl vei revedea la recapitulare.</small>}</div>}
+  <div className="ws-keyboard" role="group" aria-label="Tastatura norvegiană">{rows.map(row=><div className="ws-key-row" key={row}>{Array.from(row).map(letter=><button type="button" aria-label={letter} key={letter} disabled={done||state.guessed.includes(letter)} className={state.guessed.includes(letter)?target.includes(letter)?'is-found':'is-missed':''} onClick={()=>send('GUESS',letter)}>{letter}</button>)}</div>)}</div>
+  <footer className="ws-footer">{done?<button type="button" onClick={onNext}>{current===total-1?'Vezi rezultatul':'Continuă'}</button>:<small role="status">{3-state.wrong} {3-state.wrong===1?'greșeală permisă':'greșeli permise'}</small>}</footer>
+ </section>;
 }
-
-
-export function WordDiscoveryResult({ level, score, results, onRestart, onRetry }) {
-  const installedApp = isInstalledAppView();
-  const mistakes = results.filter(result => !result.correct);
-  return <section className={'word-discovery word-discovery--result' + (installedApp ? ' word-discovery--ivory' : ' word-discovery--web')}>
-    {installedApp ? <header className="wd-brand"><Link className="wd-back" to={'/jocuri?nivel=' + level}><Icon name="back"/><span>Jocuri</span></Link><Link to="/dashboard"><NorwegianFlagIcon className="wd-logo"/></Link><span className="wd-level" aria-label={'Nivel ' + level}>{level}</span></header> : <Link className="wd-back" to={'/jocuri?nivel=' + level}><Icon name="back"/><span>Înapoi la exerciții</span></Link>}
-    <div className="wd-heading"><h1>Sesiune încheiată</h1><p>{mistakes.length ? 'Fiecare cuvânt contează' : 'Le-ai descoperit pe toate!'}</p></div>
-    <article className="wd-result-card"><span className="wd-result-star" aria-hidden="true">✦</span><h2>{score} din {results.length}</h2><p>Cuvinte descoperite</p><div className="wd-result-words">{results.map(result => <span lang="nb" key={result.question.id} className={result.correct ? 'correct' : 'wrong'}>{result.correct ? '✓' : '↻'} {result.question.answer}</span>)}</div><div className="wd-result-actions">{mistakes.length > 0 && <button type="button" onClick={onRetry}>Repetă greșelile ({mistakes.length})</button>}<button type="button" onClick={onRestart}>Sesiune nouă →</button><Link to={'/jocuri?nivel=' + level}>Înapoi la jocuri</Link></div></article>
-  </section>;
+export function WordDiscoveryResult({level,score,results,onRestart,onRetry}){
+ const review=results.filter(item=>!item.correct||item.helped);
+ return <section className="word-discovery word-spelling ws-results"><Header level={level}/><h1 className="ws-title">Sesiune încheiată</h1><article className="ws-result"><h2>{score} din {results.length}</h2><p>Cuvinte descoperite</p><div>{results.map(item=><p key={item.question.id}><strong lang="nb">{item.question.answer}</strong><span>{item.correct?item.helped?'Cu ajutor':'Corect':'De repetat'}</span></p>)}</div>{review.length>0&&<button type="button" onClick={onRetry}>Repetă cuvintele ({review.length})</button>}<button type="button" onClick={onRestart}>Sesiune nouă</button><Link to={'/jocuri?nivel='+level}>Înapoi la practică</Link></article></section>;
 }

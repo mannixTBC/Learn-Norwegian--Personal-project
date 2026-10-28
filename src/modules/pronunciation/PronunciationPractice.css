@@ -54,3 +54,30 @@ html body #root .App .exercise-screen.pronunciation-practice{box-sizing:border-b
 .pronunciation-practice .cathedral-score{display:grid;place-items:center;flex-shrink:0;width:58px;height:58px;border:1px solid #8caba1;border-radius:50%;font:700 25px Georgia,serif;color:#007f83;background:#edf3e9}
 .pronunciation-practice .cathedral-result__heading strong{font:700 22px/1.2 Georgia,serif}.pronunciation-practice .cathedral-result__heading small{margin-top:6px;color:#007f83}
 .pronunciation-practice .cathedral-focus-words{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}.pronunciation-practice .cathedral-focus-words>span{padding:6px 10px;border:1px solid #d6decb;border-radius:14px;background:#f9faf3;color:#496552;font-size:13px}
+/* Keep the exercise itself prominent after removing the introductory copy. */
+.pronunciation-practice .practice-voice-top{margin-bottom:8px}
+.pronunciation-practice .practice-voice-progress{padding:12px 0 16px}
+@media(max-height:720px){
+ html body #root .App .exercise-screen.pronunciation-practice{padding:12px 16px max(12px,env(safe-area-inset-bottom))}
+ .pronunciation-practice .cathedral-lab{gap:10px}
+ .pronunciation-practice .cathedral-quote{padding:14px}
+ .pronunciation-practice .cathedral-quote__label{margin-bottom:8px}
+ .pronunciation-practice .cathedral-quote__text{min-height:80px}
+ .pronunciation-practice .cathedral-quote blockquote{font-size:24px;margin-bottom:8px}
+ .pronunciation-practice .practice-voice-cup{max-width:100px;margin-top:0}
+ .pronunciation-practice .cathedral-model-actions{padding-top:10px}
+ .pronunciation-practice .cathedral-workspace{min-height:190px;padding:14px 12px}
+ .pronunciation-practice .cathedral-recorder{gap:10px}
+ .pronunciation-practice .cathedral-recorder__copy{gap:5px}
+ .pronunciation-practice .cathedral-record{width:72px;height:72px}
+ .pronunciation-practice .cathedral-wave{top:63px}
+}
+@media(max-height:590px){
+ .pronunciation-practice .cathedral-quote__text{min-height:64px}
+ .pronunciation-practice .cathedral-quote blockquote{font-size:22px}
+ .pronunciation-practice .cathedral-workspace{min-height:170px;padding:10px}
+ .pronunciation-practice .cathedral-record{width:64px;height:64px}
+ .pronunciation-practice .cathedral-recorder__copy>span{font-size:12px}
+ .pronunciation-practice .practice-voice-cup{max-width:80px}
+ .pronunciation-practice .practice-voice-progress{padding:8px 0 12px}
+}

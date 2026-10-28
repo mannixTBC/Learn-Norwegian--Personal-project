@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+import {build} from 'vite';
+import {resolve} from 'node:path';
+import {homedir} from 'node:os';
+import {pathToFileURL} from 'node:url';
+import {mkdir,readFile,writeFile,readdir} from 'node:fs/promises';
+const root=resolve(import.meta.dirname,'..'),out=resolve(root,'node_modules/.cache/word-spelling');await mkdir(out,{recursive:true});
+await build({configFile:resolve(root,'vite.config.js'),logLevel:'error',build:{ssr:true,outDir:out,emptyOutDir:false,rollupOptions:{input:{data:resolve(root,'src/modules/exercises/wordSpelling.js'),course:resolve(root,'src/modules/lessons/norwegian-program/lessonContent.js')},output:{entryFileNames:'[name].mjs'}}}});
+const {createWordSpellingSession,initialGuessing,guessingReducer}=await import(pathToFileURL(resolve(out,'data.mjs')));
+const {courseCatalog}=await import(pathToFileURL(resolve(out,'course.mjs')));
+for(const course of Object.values(courseCatalog)){const plan=createWordSpellingSession(course.lessons,{unlocked:1,completed:[]},()=>.2);assert.equal(plan.length,5);assert.equal(new Set(plan.map(q=>q.id)).size,5);}
+let state=initialGuessing();const action=(type,letter)=>state=guessingReducer(state,{type,letter,answer:'kaffe'});
+action('GUESS','F');assert.equal(state.guessed.length,1);action('GUESS','F');assert.equal(state.guessed.length,1);action('HINT');assert.equal(state.revealed.length,1);action('GUESS','A');action('GUESS','E');assert.equal(state.done,true);assert.equal(state.correct,true);
+state=initialGuessing();for(const letter of 'XYZ')action('GUESS',letter);assert.equal(state.done,true);assert.equal(state.correct,false);assert.equal(state.wrong,3);
+const abs=p=>JSON.stringify(resolve(root,p).replaceAll('\\','/'));
+await writeFile(resolve(out,'entry.jsx'),`
+import React from 'react';import {createRoot} from 'react-dom/client';import {MemoryRouter} from 'react-router-dom';
+import ${abs('node_modules/bootstrap/dist/css/bootstrap.min.css')};import ${abs('src/App.css')};import ${abs('src/modules/exercises/ExerciseCanvas.css')};
+import Game from ${abs('src/modules/exercises/PracticeGame.js')};import {courseCatalog} from ${abs('src/modules/lessons/norwegian-program/lessonContent.js')};import {createWordSpellingSession} from ${abs('src/modules/exercises/wordSpelling.js')};
+Math.random=()=>.2;const root=createRoot(document.getElementById('root'));let run=0;window.wordQa={mount(level='A1'){root.render(<MemoryRouter key={++run} initialEntries={['/drag?nivel='+level]}><div className="App"><main className="App__main"><Game game="word"/></main></div></MemoryRouter>);},plan(level='A1'){return createWordSpellingSession(courseCatalog[level].lessons,{unlocked:1,completed:[]},()=>.2)},};window.wordQa.mount();
+`);
+await build({configFile:resolve(root,'vite.config.js'),publicDir:false,logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify('production')},plugins:[{name:'sentence-test-boundaries',enforce:'pre',resolveId(id){if(id.endsWith('/AuthContext'))return '\0auth';if(id.endsWith('/learningActivity'))return '\0activity';if(id.endsWith('/spacedReview'))return '\0review';if(id.endsWith('/norwegianSpeech'))return '\0speech';},load(id){if(id==='\0auth')return 'export const useAuth=()=>({user:{id:"sentence-test"}})';if(id==='\0activity')return 'export const recordStudyActivity=(v)=>{window.activities=(window.activities||[]).concat(v)}';if(id==='\0review')return 'export const saveReviewItem=(v)=>{window.reviews=(window.reviews||[]).concat(v)}';if(id==='\0speech')return 'export const speakNorwegian=async()=>({ok:true})';}}],build:{outDir:out,emptyOutDir:false,lib:{entry:resolve(out,'entry.jsx'),formats:['iife'],name:'SentenceQA',fileName:()=> 'client.js'}}});
+const js=await readFile(resolve(out,'client.js'),'utf8'),css=(await Promise.all((await readdir(out)).filter(n=>n.endsWith('.css')).map(n=>readFile(resolve(out,n),'utf8')))).join('\n');
+const {chromium}=await import(pathToFileURL(resolve(homedir(),'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs')));const browser=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'});
+try{
+ const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.route('http://word.test/**',async route=>{const path=new URL(route.request().url()).pathname;if(path.startsWith('/images/')||path.startsWith('/branding/'))return route.fulfill({contentType:'image/webp',body:await readFile(resolve(root,'public','.'+path))});return route.fulfill({contentType:'text/html',body:'<!doctype html><html><head><meta charset="utf-8"><style>'+css+'</style></head><body><div id="root"></div><script>'+js.replaceAll('</script','<\\/script')+'</script></body></html>'});});await page.goto('http://word.test');await page.waitForFunction(()=>!!window.wordQa);
+ for(const installed of [false,true])for(const [width,height]of [[320,568],[390,844],[1366,900]]){await page.setViewportSize({width,height});await page.evaluate(installed=>{document.documentElement.classList.toggle('is-installed-app',installed);window.wordQa.mount();},installed);await page.waitForSelector('.ws-keyboard');assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));assert.equal(await page.locator('.ws-keyboard button').count(),29);assert.equal(await page.locator('.mobile-app-nav,.wd-hearts').count(),0);if(width===390&&!installed)await page.screenshot({path:resolve(out,'ready.png'),fullPage:true});}
+ await page.setViewportSize({width:390,height:844});await page.evaluate(()=>window.wordQa.mount());await page.waitForSelector('.ws-keyboard');const plan=await page.evaluate(()=>window.wordQa.plan());
+ for(let i=0;i<plan.length;i++){const answer=[...new Set(Array.from(plan[i].answer.toUpperCase()).filter(l=>/\p{L}/u.test(l)))];assert.equal(await page.locator('.ws-footer>button').count(),0);assert.equal(await page.locator('figcaption,.ws-delete').count(),0);
+  if(i===0){await page.locator('.ws-hint').click();assert.ok(await page.locator('.ws-slot.is-hint').count()>0);}
+  for(const letter of answer.slice(i===0?1:0))await page.getByRole('button',{name:letter,exact:true}).click();
+  await page.waitForSelector('.ws-feedback');if(i===0)assert.equal(await page.evaluate(()=>window.reviews.length),1);await page.locator('.ws-footer>button').click();
+ }
+ await page.waitForSelector('.ws-results');assert.equal(await page.evaluate(()=>window.activities.length),1);assert.ok(await page.getByRole('button',{name:'Repetă cuvintele (1)',exact:true}).isVisible());
+ for(const level of ['A1','A2','B1','B2','C1','C2']){await page.evaluate(level=>window.wordQa.mount(level),level);await page.waitForSelector('.ws-keyboard');assert.equal(await page.getByRole('button',{name:'Æ',exact:true}).count(),1);}
+ await page.evaluate(()=>window.wordQa.mount());await page.waitForSelector('.ws-keyboard');const wrong=await page.evaluate(()=>Array.from('QWXYZ').filter(letter=>!window.wordQa.plan()[0].answer.toUpperCase().includes(letter)).slice(0,3).join(''));await page.keyboard.type(wrong);await page.waitForSelector('.ws-feedback');assert.match(await page.locator('.ws-answer p').innerText(),/Reține/);assert.deepEqual(errors,[]);
+ console.log('PASS: repeated-letter guessing, Norwegian keyboard, hints, automatic resolution, three mistakes, review, six levels and six web/app layouts.');
+}catch(e){const page=browser.contexts()[0]?.pages()[0];if(page)await page.screenshot({path:resolve(out,'failure.png'),fullPage:true});throw e;}finally{await browser.close();}

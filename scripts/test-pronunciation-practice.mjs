@@ -85,14 +85,17 @@ try{
  await page.goto('http://pronunciation.test/');await page.waitForSelector('.cathedral-record');
  const mount=async(level='A1')=>{await page.evaluate(level=>window.voiceQa.mount(level),level);await page.waitForSelector('.cathedral-record');};
  const check=async()=>{assert.equal(await page.locator('.mobile-app-nav,.warm-voice-icon,.nordic-pronunciation-art').count(),0);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));assert.equal(await page.locator('.practice-voice-cup').evaluate(el=>el.complete&&el.naturalWidth>0),true);};
- for(const installed of [false,true])for(const [width,height] of [[320,568],[390,844],[1366,900]]){
+ for(const installed of [false,true])for(const [width,height] of [[320,568],[360,640],[390,844],[1366,900]]){
   await page.evaluate(installed=>document.documentElement.classList.toggle('is-installed-app',installed),installed);
   await page.setViewportSize({width,height});await mount();await check();
+  assert.equal(await page.locator('.practice-voice-heading').count(),0);
+  if(height>=640)assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+1),'No scroll for initial phrase at '+width+'x'+height);
   assert.equal(await page.getByRole('button',{name:'Continuă',exact:true}).isDisabled(),true);
   await page.getByRole('button',{name:'Ascultă modelul',exact:true}).click();await page.getByRole('button',{name:'Ascultă mai lent',exact:true}).click();
   assert.equal(await page.evaluate(()=>window.voiceModels.at(-1).slow),true);
   if(width===390&&!installed){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:resolve(output,'ready.png'),fullPage:true});}
   await page.locator('.cathedral-record').scrollIntoViewIfNeeded();const box=await page.locator('.cathedral-record').boundingBox();await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();await page.waitForSelector('.is-recording');await page.mouse.up();await page.waitForSelector('.cathedral-result');
+  assert.equal(await page.getByRole('button',{name:'Vocea mea',exact:true}).count(),0);
   assert.equal(await page.getByRole('button',{name:'Continuă',exact:true}).isEnabled(),true);
   if(width===390&&!installed)await page.screenshot({path:resolve(output,'result.png'),fullPage:true});
   await page.locator('.cathedral-result__heading').click();await page.waitForSelector('dialog[open]');await page.keyboard.press('Escape');
@@ -103,7 +106,7 @@ try{
  for(const level of ['A1','A2','B1','B2','C1','C2']){await mount(level);await page.locator('.practice-voice-progress').click();await page.waitForSelector('dialog[open]');await page.locator('dialog select').selectOption('2');await page.waitForSelector('.cathedral-record');await check();}
  for(const sample of await page.evaluate(()=>window.voiceQa.samples)){await mount(sample.level);await page.locator('.practice-voice-progress').click();await page.locator('dialog select').selectOption(String(sample.id));await page.waitForSelector('.cathedral-record');await page.locator('.practice-voice-progress').click();const index=await page.locator('.practice-voice-library button strong').evaluateAll(nodes=>nodes.reduce((best,node,i)=>node.textContent.length>nodes[best].textContent.length?i:best,0));await page.locator('.practice-voice-library button').nth(index).click();await check();await page.locator('.cathedral-record').scrollIntoViewIfNeeded();assert.ok(await page.locator('.cathedral-record').isVisible());}
  await mount();await page.evaluate(()=>window.voiceQa.hardware.permission='pending');await page.locator('.cathedral-record').scrollIntoViewIfNeeded();let box=await page.locator('.cathedral-record').boundingBox();await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();await page.waitForFunction(()=>!!window.voiceQa.hardware.release);await page.mouse.up();await page.evaluate(()=>window.voiceQa.hardware.release());await page.waitForSelector('.cathedral-result');assert.equal(await page.locator('.is-recording').count(),0,'Releasing during permission request stops late recording');
- await page.evaluate(()=>window.voiceQa.hardware.permission='deny');await mount();await page.locator('.cathedral-record').focus();await page.keyboard.press('Enter');await page.waitForSelector('.cathedral-lab--error');
+ await page.evaluate(()=>window.voiceQa.hardware.permission='deny');await mount();await page.locator('.cathedral-record').focus();await page.keyboard.press('Enter');await page.waitForSelector('.cathedral-lab--error');assert.equal(await page.locator('.cathedral-text-button').count(),0);assert.ok(await page.locator('.cathedral-recorder [role=alert]').isVisible());
  await page.evaluate(()=>window.voiceQa.hardware.permission='allow');await mount();await page.locator('.cathedral-record').focus();await page.keyboard.down('Space');await page.waitForSelector('.is-recording');await page.keyboard.up('Space');await page.waitForSelector('.cathedral-result');
  await mount();await page.evaluate(()=>window.voiceQa.unmount());assert.equal(await page.locator('.pronunciation-practice').count(),0);assert.deepEqual(report.browserErrors,[]);
  console.log('PASS: six web/app layouts, six levels, normal/slow audio, hold-to-record, permission race, denied microphone, keyboard, feedback and navigation.');
