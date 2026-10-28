@@ -22,13 +22,13 @@ const classes=(r,c)=>r.root.findAll(n=>typeof n.type==='string'&&n.props.classNa
 for(const View of [Mobile,Desktop]){
  let r,chosen;
  await act(async()=>{r=TestRenderer.create(wrap(View,{...props,flow:{progress:{},choose:id=>chosen=id}}));});
- assert.equal(classes(r,'sc-card').length,4);
- assert.equal(classes(r,'sc-card')[0].findByType('h2').children.join(''),'La cafenea');
+ assert.equal(classes(r,'sc-card').length,6);
+ assert.equal(classes(r,'sc-card')[0].findByType('h2').children[0],'La cafenea');
  const first=classes(r,'sc-card')[0];
  await act(async()=>first.props.onClick());
- await act(async()=>classes(r,'sc-start')[0].props.onClick());
+ assert.equal(classes(r,'sc-start').length,0,'direct entry needs no second click');
  assert.equal(chosen,'cafe-order');
- await act(async()=>r.root.findAllByType('button').find(n=>n.children.join('')==='Pentru tine').props.onClick());
+
  const next=()=>r.root.findByProps({'aria-label':'Pagina următoare'});
  const previous=()=>r.root.findByProps({'aria-label':'Pagina anterioară'});
  assert.equal(previous().props.disabled,true);
@@ -36,13 +36,13 @@ for(const View of [Mobile,Desktop]){
  assert.equal(previous().props.disabled,false);
  const filter=r.root.findAllByType('select').find(n=>n.props.value==='all');
  await act(async()=>filter.props.onChange({target:{value:'transport'}}));
- assert.equal(classes(r,'sc-card').length,Math.min(4,scenarios.filter(s=>s.path==='transport').length));
+ assert.equal(classes(r,'sc-card').length,Math.min(6,scenarios.filter(s=>s.path==='transport').length));
  assert.equal(previous().props.disabled,true);
  await act(async()=>filter.props.onChange({target:{value:'all'}}));
  await act(async()=>r.root.findAllByType('button').find(n=>n.children.join('')==='Toate').props.onClick());
- assert.equal(classes(r,'sc-card')[0].findByType('h2').children.join(''),[...scenarios].sort((a,b)=>a.title.localeCompare(b.title,'ro'))[0].title);
+ assert.equal(classes(r,'sc-card')[0].findByType('h2').children[0],'La cafenea');
  while(!next().props.disabled)await act(async()=>next().props.onClick());
- assert.ok(classes(r,'sc-card').length<=4);
+ assert.ok(classes(r,'sc-card').length<=6);
  await act(async()=>r.update(wrap(View,{...props,level:'B1'})));
  assert.equal(previous().props.disabled,true);
  await act(async()=>r.update(wrap(View,{...props,scenarios:[]})));
@@ -71,8 +71,6 @@ try{
    const data=kind==='empty'?[]:kind==='long'?scenarios.map(s=>({...s,title:s.title+' — o situație cu mai multe detalii de discutat',place:s.place+' și detalii suplimentare pentru această conversație'})):scenarios;
    const html=renderToStaticMarkup(wrap(installed?Mobile:Desktop,{...props,scenarios:data}));
    await page.setContent('<html class="'+(installed?'is-installed-app':'')+'"><head><base href="http://scenario.test/"><style>'+css+'</style></head><body><div id="root"><div class="App"><main class="App__main">'+html+'</main></div></div></body></html>');
-   await page.locator('.sc-brand svg image').evaluate(async el=>{const img=new Image();img.src=el.getAttribute('href');await img.decode();});
-   assert.equal(await page.locator('.sc-brand svg image').getAttribute('href'),'/images/studio/practical-reference.png','brand uses the supplied mockup');
    const result=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,height:innerHeight,scrollHeight:document.documentElement.scrollHeight,canvas:[document.documentElement,document.body,document.getElementById('root'),document.querySelector('.App'),document.querySelector('.App__main')].map(e=>getComputedStyle(e).backgroundColor)}));
    assert.ok(result.scrollWidth<=width+1,JSON.stringify({installed,width,height,kind,result}));
    assert.ok(result.canvas.every(c=>c==='rgb(253, 253, 249)'),JSON.stringify(result));

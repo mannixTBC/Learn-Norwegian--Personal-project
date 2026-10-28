@@ -80,6 +80,8 @@ router.use((req, res, next) => {
   return requireAuth(req, res, next);
 });
 
+router.use(require('./freeConversation'));
+
 /** Starts a signed, short-lived lesson conversation without contacting OpenAI. */
 router.post('/start', wrap(async (req, res) => {
   validateKeys(req.body, ['level', 'lessonId', 'pathId'], ['level', 'lessonId']);

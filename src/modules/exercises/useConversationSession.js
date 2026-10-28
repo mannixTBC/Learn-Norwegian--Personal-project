@@ -101,10 +101,12 @@ export default function useConversationSession({ userId, level, pathId, scenario
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
-  function choose(scenarioId) {
+  function choose(scenarioId, autoStart = false) {
+    if (autoStart && current.current.scenarioId === scenarioId && pending.current) return;
     cancel();
     saveConversation(key, null);
     update({ ...empty(), progress: readProgress(), scenarioId });
+    if (scenarioId && autoStart) void run('start');
   }
   function setDraft(draft) {
     if (pending.current) return;

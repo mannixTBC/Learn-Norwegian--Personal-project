@@ -51,22 +51,12 @@ try{
    const nav=await page.locator('.mobile-app-nav').evaluate(el=>({radius:getComputedStyle(el).borderRadius,active:getComputedStyle(el.querySelector('.active')).backgroundImage,weight:getComputedStyle(el.querySelector('a')).fontWeight,position:getComputedStyle(el).position}));
    assert.equal(nav.radius,'18px');assert.match(nav.active,/linear-gradient/);assert.equal(nav.weight,'850');
    assert.equal(nav.position,width<=680?'fixed':'static');
-   const layout=await page.evaluate(()=>{
-    const rect=selector=>document.querySelector(selector).getBoundingClientRect();
-    return {height:document.documentElement.scrollHeight,viewport:innerHeight,
-     titleRight:rect('.studio-heading h1').right,artLeft:rect('.studio-heading-art').left,
-     artTop:rect('.studio-heading-art').top,titleTop:rect('.studio-heading h1').top,
-     levelBottom:rect('.exercise-level-select').bottom,
-     actionBottom:[...document.querySelectorAll('.studio-options .studio-primary')].at(-1).getBoundingClientRect().bottom,
-     navTop:rect('.mobile-app-nav').top};
-   });
-   assert.ok(layout.height<=layout.viewport+1,'home fits viewport '+JSON.stringify({width,height,installed,layout}));
-   assert.ok(layout.titleRight<=layout.artLeft,'title and illustration remain separate');
-   assert.ok(layout.artTop>=layout.levelBottom,'illustration stays below level control');
-   assert.ok(layout.artTop<layout.titleTop,'landscape rises beside title');
-   assert.ok(layout.actionBottom<=layout.navTop,'home actions stay above navigation');
+   assert.equal(await page.locator('.studio-heading-art').count(),0,'plain home background');
+   assert.equal(await page.locator('.studio-option').count(),2);
+   const sizes=await page.locator('.studio-option').evaluateAll(nodes=>nodes.map(n=>n.getBoundingClientRect().height));
+   assert.ok(Math.abs(sizes[0]-sizes[1])<2,'matching cards');
   }
-  if(name==='catalog')assert.equal(await page.locator('.sc-card-art image[href="/images/studio/practical-reference.png"]').count(),4);
+  if(name==='catalog'){assert.equal(await page.locator('.sc-card').count(),6);assert.equal(await page.locator('.sc-start').count(),0);}
   const last=page.locator('button:visible,a:visible').last();await last.scrollIntoViewIfNeeded();assert.ok(await last.isVisible());
   if(name==='long')assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight),'long conversation remains scrollable');
   if(width===390&&!installed&&name!=='long'){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:resolve(out,name+'.png'),fullPage:true});}

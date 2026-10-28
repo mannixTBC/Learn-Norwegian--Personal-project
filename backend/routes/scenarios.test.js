@@ -214,7 +214,10 @@ test('scenario speech uses Cartesia for the signed reply and rejects another use
   assert.equal(response.headers.get('x-audio-provider'), 'cartesia');
   assert.match(response.headers.get('content-type'), /audio\/mpeg/);
   assert.deepEqual(calls, [{ text: session.reply, options: { speed: 0.65 } }]);
+  assert.equal((await post('speech', { sessionToken: session.sessionToken, messageIndex: 0 })).status, 200);
+  for (const messageIndex of [-1, 1, 999, '0']) assert.equal((await post('speech', { sessionToken: session.sessionToken, messageIndex })).status, 400);
+  assert.equal(calls[1].text, session.reply);
   userId = 'other-learner';
   assert.equal((await post('speech', { sessionToken: session.sessionToken })).status, 401);
-  assert.equal(calls.length, 1);
+  assert.equal(calls.length, 2);
 });

@@ -38,3 +38,7 @@ export const startChatSession = ({ level, lessonId, pathId }, signal) => (
 export const sendChatTurn = ({ sessionToken, message }, signal) => (
   chatRequest('turn', { sessionToken, message }, signal)
 );
+
+export const startFreeConversation = (level, signal) => chatRequest("free/start", {level}, signal);
+export const sendFreeConversation = (payload, signal) => chatRequest("free/turn", payload, signal);
+export const translateConversation = (text, signal) => chatRequest("translate", {text}, signal);

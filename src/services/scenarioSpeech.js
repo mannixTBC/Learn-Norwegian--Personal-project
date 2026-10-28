@@ -2,13 +2,13 @@ import { supabase } from './supabaseClient';
 import { apiUrl } from './api';
 
 // The server resolves the spoken line from the signed scenario checkpoint.
-export async function speakScenario(sessionToken, { slow = false, signal, onPlaybackStart } = {}) {
+export async function speakScenario(sessionToken, { slow = false, messageIndex, signal, onPlaybackStart } = {}) {
   const auth = supabase ? await supabase.auth.getSession() : null;
   const token = auth?.data?.session?.access_token;
   const response = await fetch(apiUrl('/api/scenarios/speech'), {
     method: 'POST', signal,
     headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-    body: JSON.stringify({ sessionToken, slow }),
+    body: JSON.stringify({ sessionToken, slow, ...(messageIndex === undefined ? {} : { messageIndex }) }),
   });
   if (!response.ok) throw new Error('Vocea Cartesia nu este disponibilă momentan.');
   const blob = await response.blob();

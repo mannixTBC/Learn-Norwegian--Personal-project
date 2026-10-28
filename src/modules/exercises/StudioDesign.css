@@ -194,3 +194,90 @@ html body #root .App .practical-catalog .sc-start{min-height:57px;margin:20px 4p
  .studio-home .studio-tags{display:none}
  html body #root .studio-home .studio-primary{min-height:44px;padding:8px 12px;font-size:16px}
 }
+/* Approved October studio: plain canvas, matching cards and direct-entry catalog. */
+html body #root .App .conversation-studio.studio-design{--studio-ink:#102c41;--studio-teal:#007f83;--studio-blue:#526b7a;width:min(100%,460px);max-width:460px;padding:20px 18px max(24px,env(safe-area-inset-bottom));font:16px/1.45 'Segoe UI',Arial,sans-serif;gap:0}
+.studio-design h1,.studio-design h2{color:var(--studio-ink)}
+.studio-top{margin-bottom:24px;gap:14px}
+.studio-header-title{flex:1;text-align:center;font:700 18px Georgia,serif}
+.studio-design .studio-level,.studio-design .exercise-level-select select{border-radius:28px;background:#f7f7f0;border-color:#dfe3da;box-shadow:none;font-size:15px;min-height:40px}
+.studio-design .studio-back{font:28px 'Segoe UI',sans-serif}
+.studio-eyebrow{display:block;text-transform:uppercase;letter-spacing:2px;font-size:11px;color:#655c4f;margin-bottom:8px}
+.studio-design.studio-home .studio-heading{padding:0;min-height:0;margin:0 0 20px}
+.studio-design.studio-home .studio-heading h1{max-width:none;font-size:42px;line-height:1.08;margin:0 0 8px;letter-spacing:-1.2px}
+.studio-design.studio-home .studio-heading p{margin:0;font:17px/1.4 'Segoe UI',sans-serif;color:var(--studio-ink)}
+.studio-home .studio-options{display:grid;grid-template-columns:1fr;gap:12px}
+.studio-home .studio-option{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;padding:10px;background:#fff;border:1px solid #f0f0e9;border-radius:18px;box-shadow:0 4px 14px #17334305}
+.studio-design.studio-home .studio-option>.studio-option-art{display:block;width:100%;height:auto;aspect-ratio:2.45;border-radius:11px}
+.studio-design.studio-home .studio-option>div{padding:0 8px}
+.studio-design.studio-home .studio-option h2{font:700 29px/1.12 Georgia,serif;letter-spacing:-.7px;margin:0 0 5px}
+.studio-design.studio-home .studio-option p{font:15px/1.4 'Segoe UI',sans-serif;color:var(--studio-ink);margin:0}
+html body #root .studio-design .studio-primary,html body #root .studio-design .conversation-primary{background:#00838a;border-radius:13px;font:600 16px/1.3 'Segoe UI',sans-serif;min-height:47px;padding:12px 16px}
+.studio-design .studio-primary>span{margin-left:6px;font-size:23px}
+.studio-home:not(.studio-free)>.mobile-app-nav{margin-top:24px}
+html body #root .App .studio-design.practical-catalog{width:min(100%,460px);max-width:460px;padding:20px 18px 24px}
+.practical-catalog .studio-top{margin:0 0 24px;padding:0}
+.practical-catalog .sc-title{padding:0;margin:0 0 18px;min-height:0}
+.studio-design.practical-catalog .sc-title h1{font:700 36px/1.1 Georgia,serif;max-width:none;letter-spacing:-1px;margin:0 0 8px}
+.studio-design.practical-catalog .sc-title p{font:17px/1.4 'Segoe UI',sans-serif;white-space:normal;letter-spacing:0;margin:0 0 6px}
+.sc-title small{font-size:13px;color:#526b7a}
+.studio-design .sc-tabs{display:flex;gap:7px;border:0;padding:0;background:transparent;margin:0 0 18px}
+.studio-design .sc-tabs button{flex:1;border-radius:30px;padding:10px 8px;background:#f0f1e9;font-size:13px;min-height:40px}
+.studio-design .sc-tabs button[aria-pressed=true]{background:#00838a;color:#fff}
+.studio-design.practical-catalog .sc-browse{order:0;margin:0 0 14px;color:#526b7a}
+.practical-catalog .sc-grid{gap:14px}
+html body #root .App .studio-design .sc-card{text-align:left;border:1px solid #efefe8;border-radius:13px;box-shadow:0 3px 10px #17334306}
+html body #root .App .practical-catalog .sc-card .sc-card-art{aspect-ratio:1.3;height:auto;border-radius:12px 12px 0 0}
+html body #root .App .practical-catalog .sc-card .sc-card-copy{padding:10px!important}
+html body #root .App .practical-catalog .sc-card h2{display:flex;justify-content:space-between;gap:7px;font:700 18px/1.15 Georgia,serif;letter-spacing:-.3px}
+.sc-card h2>span{font:22px/1 'Segoe UI',sans-serif}
+.studio-design .sc-card p{font-size:12px;color:#526b7a;margin:5px 0 0}
+.studio-design .sc-card-status{font-size:11px}
+html body #root .App .conversation-studio.studio-design.natural-conversation{gap:18px}
+.studio-design .conversation-intro{min-height:0}
+.studio-design .conversation-intro h1{font:700 38px/1.12 Georgia,serif;max-width:none;margin:4px 0 8px;letter-spacing:-1px}
+.studio-design .conversation-intro p{font:17px/1.5 'Segoe UI',sans-serif;max-width:none;margin:0}
+.studio-progress{display:grid;gap:10px;font-size:13px;color:#526b7a}
+.studio-progress progress{appearance:none;width:100%;height:7px;border:0;border-radius:10px;background:#dfe3e1;accent-color:#00838a}
+.studio-progress progress::-webkit-progress-bar{background:#dfe3e1;border-radius:10px}
+.studio-progress progress::-webkit-progress-value{background:#00838a;border-radius:10px}
+.studio-design .guided-objectives{background:#f0f1e9;border:0;border-radius:12px}
+.studio-design .guided-objectives-heading{min-height:48px;font-size:14px;padding:12px}
+html body #root .App .studio-design .airy-messages{min-height:0;gap:26px;padding:12px 0;margin:0;overflow:visible;max-height:none}
+.studio-design .airy-message{gap:10px}
+.studio-design .airy-avatar{width:42px;height:42px;flex-basis:42px}
+.studio-design .airy-message.user{max-width:86%;margin-left:auto}
+.studio-design .airy-message.user>.airy-avatar{display:none}
+.studio-design .airy-message-copy{min-width:0;flex:1}
+.studio-design .airy-message-copy>small{font-size:12px;color:#526b7a;display:block;margin:0 0 4px 2px}
+.studio-design .airy-message-copy>p{position:relative;background:#f1f1ec;border-radius:18px;padding:14px;margin:0;font:16px/1.5 'Segoe UI',sans-serif;overflow-wrap:anywhere}
+.studio-design .airy-message-copy>p:has(.airy-replay){padding-right:48px}
+.studio-design .airy-message.user .airy-message-copy>p{background:#e5ede2}
+.studio-design .airy-replay{position:absolute;right:8px;top:10px;float:none;width:32px;height:32px;border:1px solid #dce1d9;color:#00838a;background:#fff;border-radius:50%;padding:6px;margin:0}
+.studio-design .airy-replay svg{width:100%;height:100%}
+.studio-translation>button{border:0;background:none;padding:8px 0;color:#007f83;font-size:13px;min-height:36px}
+.studio-translation>p{font-size:14px;color:#526b7a;margin:0 0 8px}
+.studio-design .studio-hint-trigger{justify-content:flex-start;gap:12px;border:0;background:#f0f1e9;font-size:14px;min-height:48px}
+.studio-hint-trigger>svg{width:23px;height:23px;flex:none;color:#e4a339}
+.studio-design .studio-hint-trigger>span:last-child{margin-left:auto;border:0}
+.studio-design .airy-actions{grid-template-columns:1fr 116px 1fr;gap:10px;margin-top:8px}
+html body #root .App .studio-design .scenario-voice__mic{width:108px;height:108px;border:5px solid #dcecea;outline:0;background:#00838a;padding:26px;box-shadow:none}
+.studio-design .airy-help>span,.studio-design .airy-end>span{width:54px;height:54px;background:#f6f6ef;border:1px solid #e3e5dc;box-shadow:none;color:var(--studio-ink);padding:15px}
+.studio-design .airy-help>span svg,.studio-design .airy-end>span svg{width:100%;height:100%}
+.studio-design .airy-help,.studio-design .airy-end{font-size:13px;color:var(--studio-ink)}
+.studio-design .scenario-voice__caption{color:var(--studio-ink);font-size:14px;margin:12px 0}
+.studio-finish{display:flex;align-items:center;justify-content:center;gap:9px;border:0;background:none;color:#526b7a;font-size:13px;padding:18px;margin:12px auto 0;min-height:44px}
+.studio-finish svg{width:21px;height:21px}
+.studio-compose{display:grid;gap:10px;text-align:left;margin:16px 0}
+.studio-compose textarea{resize:vertical;min-height:85px;width:100%;border:1px solid #d3dfd8;border-radius:12px;background:#fff;color:var(--studio-ink);padding:12px;font:16px/1.4 'Segoe UI',sans-serif}
+.studio-compose label{font-size:13px}
+.studio-design .studio-nora-intro{gap:12px}
+.studio-design .studio-nora-intro>.studio-art{width:52px;height:52px}
+.studio-design .studio-nora-intro p{font-size:14px;margin:0}
+.studio-design .studio-nora-intro strong{font:700 18px Georgia,serif}
+@media(min-width:900px){html body #root .App .studio-design.studio-home{width:760px;max-width:760px}.studio-home .studio-options{grid-template-columns:1fr 1fr}.studio-home .studio-option{align-content:start}.studio-home .studio-option>.studio-primary{align-self:end}.studio-home .mobile-app-nav{max-width:460px;align-self:center;width:100%}}
+@media(max-width:680px){html body #root .App .studio-home:not(.studio-free){padding-bottom:calc(92px + env(safe-area-inset-bottom))}}
+@media(max-width:380px){.studio-design.studio-home .studio-heading h1{font-size:36px}.studio-design.studio-home .studio-option h2{font-size:26px}.studio-design.practical-catalog .sc-title h1{font-size:32px}.studio-design .conversation-intro h1{font-size:34px}}
+.studio-design .studio-result-art{right:0}
+html body #root .studio-design .airy-message-copy>p,html body #root .studio-design .scenario-voice__caption,html body #root .studio-design .guided-objectives-heading{color:var(--studio-ink)}
+html body #root .App .studio-design .airy-message-copy>p,html body #root .App .studio-design .scenario-voice__caption,html body #root .App .studio-design .guided-objectives-heading{color:#102c41}
+.studio-eyebrow{font-family:'Segoe UI',Arial,sans-serif}

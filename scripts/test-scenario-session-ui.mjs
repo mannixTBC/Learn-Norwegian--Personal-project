@@ -32,6 +32,7 @@ const temporary = new Map(), progress = new Map(), server = new Map();
 const storage = map => ({ getItem: key => map.get(key) ?? null, setItem: (key, value) => map.set(key, String(value)), removeItem: key => map.delete(key), key: i => [...map.keys()][i], get length() { return map.size; } });
 globalThis.sessionStorage = storage(temporary);
 globalThis.localStorage = storage(progress);
+globalThis.window = {SpeechRecognition:class{},addEventListener(){},removeEventListener(){},localStorage:globalThis.localStorage};
 globalThis.scenarioTestUser = { id: 'flow-test-user' };
 let installed = false, history, handler, calls, nextToken = 0;
 globalThis.document = { documentElement: { classList: { contains: name => installed && name === 'is-installed-app' } } };
@@ -101,6 +102,13 @@ let checks = 0;
 for (const mode of [false, true]) {
   installed = mode;
 
+  setup();
+  const direct=await render();
+  const directFlow=direct.root.find(n=>typeof n.type==='function'&&n.props.flow&&n.props.scenarios).props.flow;
+  await act(async()=>{directFlow.choose(source.id,true);directFlow.choose(source.id,true);});
+  assert.equal(calls.length,1,'direct entry starts once after a double click');
+  assert.equal(nodes(direct,'conversation-messages').length,1);
+  await unmount(direct);
   setup();
   let linked = await render('/scenarii?nivel=A1&scenariu=hotel-booking');
   assert.equal(linked.root.findByProps({id:'guided-scenario-title'}).children.join(''),catalog.scenarios.find(s=>s.id==='hotel-booking').title);
@@ -315,7 +323,7 @@ for (const mode of [false, true]) {
 
   // Explicit finish clears the resumable session without inventing completed progress.
   setup(); r=await start();
-  await click(r,'Încheie');
+  await click(r,'Încheie conversația');
   assert.equal(temporary.size,0);
   assert.equal(nodes(r,'conversation-result').length,1);
   assert.match(textOf(r.root),/înainte de evaluarea finală/);

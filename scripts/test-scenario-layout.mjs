@@ -43,8 +43,8 @@ try{
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),JSON.stringify({installed,width,height,kind}));
   const background=await page.evaluate(()=>[document.documentElement,document.body,document.querySelector('#root'),document.querySelector('.App'),document.querySelector('.App__main')].map(e=>getComputedStyle(e).backgroundColor));
   assert.ok(background.every(c=>c===background[0]),'uniform outer canvas');
-  const image=page.locator(kind==='result'?'.studio-result-art':'.studio-heading-art');
-  const box=await image.boundingBox();assert.ok(box.width>100&&box.height>100,'scene must not inherit icon size');
+  const image=page.locator(kind==='result'?'.studio-result-art':'.conversation-intro');
+  const box=await image.boundingBox();assert.ok(box.width>100&&box.height>0,'heading and result remain visible');
   const controls=kind==='result'?page.getByRole('link',{name:'Vezi recapitularea'}):page.locator('.scenario-voice__mic');
   await controls.scrollIntoViewIfNeeded();assert.ok(await controls.isVisible());
   if(kind==='result')assert.equal(await controls.getAttribute('href'),'/recapitulare?nivel=C2');

@@ -1,0 +1,24 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const express=require('express');const {inProcessFetch}=require('../testSupport');
+test('free conversation: auth, signed ownership, real turns, translations, quotas and expiry',async()=>{
+ process.env.CHAT_SESSION_SECRET='free-conversation-test-secret';
+ const auth=require('../middleware/authSupabaseUser'),ai=require('../openai'),usage=require('../chatUsage');
+ auth.requireAuth=(req,res,next)=>{const id=req.headers.authorization;if(!id)return res.status(401).json({error:'Auth'});req.userId=id;next();};
+ let calls=0,quotas=0,records=0,mode='ok';ai.isOpenAIConfigured=()=>true;
+ usage.consumeChatQuota=async()=>{quotas++;if(mode==='quota')throw Object.assign(new Error('Quota'),{status:429});};usage.recordChatUsage=async()=>{records++;};
+ ai.getOpenAI=()=>({chat:{completions:{create:async request=>{calls++;assert.equal(request.store,false);if(mode==='fail')throw new Error('Unavailable');return {choices:[{finish_reason:'stop',message:{content:request.response_format?JSON.stringify({reply:'Hva liker du å gjøre?',translation:'Ce îți place să faci?'}):'Bună!'}}]};}}}});
+ const app=express();app.use(express.json());app.use('/api/chat',require('./chat'));const fetch=inProcessFetch(app);
+ const post=(path,body,user='a')=>fetch('http://local/api/chat/'+path,{method:'POST',headers:{'Content-Type':'application/json',...(user?{Authorization:user}:{})},body:JSON.stringify(body)});
+ assert.equal((await post('free/start',{level:'A2'},null)).status,401);
+ assert.equal((await post('free/start',{level:'invalid'})).status,400);
+ const opening=await (await post('free/start',{level:'A2'})).json();assert.equal(calls,0);assert.equal(opening.turn,0);
+ assert.equal((await post('free/turn',{sessionToken:opening.sessionToken,message:'Hei'},'b')).status,401);
+ assert.equal((await post('free/turn',{sessionToken:opening.sessionToken+'x',message:'Hei'})).status,401);
+ assert.equal((await post('free/turn',{sessionToken:opening.sessionToken,message:''})).status,400);
+ const turn=await (await post('free/turn',{sessionToken:opening.sessionToken,message:'Jeg liker kaffe.'})).json();assert.equal(turn.turn,1);assert.ok(turn.translation);assert.equal(calls,1);assert.equal(quotas,1);assert.equal(records,1);
+ const {verify,sign}=require('../freeConversation');const state=verify(turn.sessionToken,'a');assert.equal(state.history[1].content,'Jeg liker kaffe.');
+ assert.equal((await post('free/turn',{sessionToken:sign({...state,expires:0}),message:'Hei'})).status,401);
+ assert.equal((await post('free/turn',{sessionToken:sign({...state,turn:30}),message:'Hei'})).status,409);
+ assert.equal((await post('translate',{text:'Hei!'})).status,200);
+ mode='quota';assert.equal((await post('free/turn',{sessionToken:turn.sessionToken,message:'Hei'})).status,429);
+ mode='fail';assert.equal((await post('free/turn',{sessionToken:turn.sessionToken,message:'Hei'})).status,502);assert.equal(records,3);
+});

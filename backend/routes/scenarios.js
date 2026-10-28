@@ -55,7 +55,11 @@ router.post('/resume', wrap(async (req, res) => {
 // Read only the server-signed reply; callers cannot submit arbitrary TTS text.
 router.post('/speech', wrap(async (req, res) => {
   const { session } = currentSession(req.body?.sessionToken, req.userId);
-  const text = session.history.at(-1).content;
+  const index = req.body?.messageIndex ?? session.history.length - 1;
+  if (!Number.isInteger(index) || index < 0 || session.history[index]?.role !== 'assistant') {
+    throw fail('Replica nu este disponibilă.', 400, 'SCENARIO_MESSAGE_INVALID');
+  }
+  const text = session.history[index].content;
   const audio = await cartesiaSpeechBuffer(text, undefined,
     req.body?.slow === true ? { speed: 0.65 } : {});
   res.set('Content-Type', 'audio/mpeg');
