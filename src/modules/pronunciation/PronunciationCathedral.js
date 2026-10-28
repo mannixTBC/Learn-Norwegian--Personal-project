@@ -55,7 +55,7 @@ function WordFeedback({ words }) {
   </span>)}</div>;
 }
 
-export default function PronunciationCathedral({ phrase, level, lessonId, status, elapsed, result, error, audioUrl, bestScore, attempts, onRecord, onStop, onRetry }) {
+export default function PronunciationCathedral({ phrase, level, lessonId, status, elapsed, result, error, audioUrl, bestScore, attempts, onRecord, onStop, onRetry, practice=false, phraseIndex=0, lessonTitle, onPrevious, onNext, lastPhrase }) {
   const artwork = getLessonVisual(level, lessonId);
   const [panel, setPanel] = useState(null);
   const [tab, setTab] = useState('score');
@@ -63,6 +63,9 @@ export default function PronunciationCathedral({ phrase, level, lessonId, status
   const [playing, setPlaying] = useState(false);
   const [playbackError, setPlaybackError] = useState('');
   const audioRef = useRef(null);
+  const held=useRef(false);
+  const beginHold=async()=>{if(held.current||busy||recording)return;held.current=true;stopPlayback();await onRecord();if(!held.current)onStop();};
+  const endHold=()=>{held.current=false;onStop();};
   const short = useShortVoiceScreen();
   const busy = ['requesting', 'processing', 'analyzing'].includes(status);
   const recording = status === 'recording';
@@ -88,12 +91,13 @@ export default function PronunciationCathedral({ phrase, level, lessonId, status
   useEffect(() => { setPage(0); }, [short]);
 
   return <section className={`cathedral-lab cathedral-lab--${status}${phrase.example.length > 120 ? ' cathedral-lab--long' : ''}`} aria-labelledby="cathedral-phrase">
-    <img className="nordic-pronunciation-art" data-theme={artwork.theme} src={artwork.theme === 'cafe' ? '/images/lessons/pronunciation-warm-cafe.webp' : artwork.src} alt={artwork.alt} />
+    {!practice && <img className="nordic-pronunciation-art" data-theme={artwork.theme} src={artwork.theme === 'cafe' ? '/images/lessons/pronunciation-warm-cafe.webp' : artwork.src} alt={artwork.alt} />}
     <article className="cathedral-quote">
-      <div className="cathedral-quote__label"><span>1 · Ascultă modelul</span><button type="button" onClick={() => open('about')} aria-label="Despre exercițiu și cel mai bun scor">i</button></div>
+      <div className="cathedral-quote__label"><span>{practice?lessonTitle:'1 · Ascultă modelul'}</span><button type="button" onClick={() => open('about')} aria-label="Despre exercițiu și cel mai bun scor">i</button></div>
+      {practice&&<img className="practice-voice-cup" src="/images/practice/pronunciation-cup.png" alt="" aria-hidden="true"/>}
       <div className="cathedral-quote__text"><blockquote id="cathedral-phrase" lang="nb">{phrase.example}</blockquote><p lang="ro">{phrase.translation}</p></div>
       <div className="cathedral-model-actions">
-        <button type="button" disabled={recording || busy} onClick={() => model(false)} aria-label="Ascultă modelul"><CathedralIcon name="listen" />Ascultă modelul</button>
+        <button type="button" disabled={recording || busy} onClick={() => model(false)} aria-label="Ascultă modelul"><CathedralIcon name="listen" />{practice?'Ascultă':'Ascultă modelul'}</button>
         <button type="button" disabled={recording || busy} onClick={() => model(true)} aria-label="Ascultă mai lent"><CathedralIcon name="slow" />Mai lent</button>
         <button type="button" className="cathedral-translation" onClick={() => open('translation')} aria-label="Vezi traducerea">RO</button>
       </div>
@@ -105,13 +109,14 @@ export default function PronunciationCathedral({ phrase, level, lessonId, status
         <div className="cathedral-focus-words" aria-label="Cuvinte de repetat">{result.focusWords.length ? result.focusWords.slice(0, 3).map((item, index) => <span key={index} lang="nb">{item.expected}</span>) : <span className="is-clear">Fraza este clară</span>}</div>
         <div className="cathedral-result__actions"><button type="button" onClick={() => { stopPlayback(); onRetry(); }}><CathedralIcon name="retry" />Repetă</button>{audioUrl && <button type="button" onClick={playback} aria-pressed={playing}><CathedralIcon name="headphones" />{playing ? 'Pauză' : 'Vocea mea'}</button>}</div>
       </div> : <div className="cathedral-recorder">
-        <p className="nordic-recorder-instruction">Repetă propoziția după model.</p>
+        <p className="nordic-recorder-instruction">Ascultă modelul, apoi repetă propoziția.</p>
         <div className="cathedral-wave" aria-hidden="true">{[8,14,23,12,19,27,12,20,9].map((height,index) => <span key={index} style={{ '--bar': index, '--height': `${height}px` }} />)}</div>
-        <button type="button" className={`cathedral-record${recording ? ' is-recording' : ''}${busy ? ' is-busy' : ''}`} onClick={() => { if (recording) onStop(); else { stopPlayback(); onRecord(); } }} disabled={busy} aria-label={label} aria-pressed={recording}>{recording ? <span className="cathedral-stop" /> : <CathedralIcon name="mic" />}</button>
-        <div className="cathedral-recorder__copy" aria-live="polite"><strong>{recording ? `Înregistrare · 0:${String(elapsed).padStart(2,'0')}` : busy ? label : error ? 'Înregistrarea nu a putut fi finalizată' : 'Înregistrează'}</strong><span>{recording ? 'Apasă pentru a opri · max. 0:30' : status === 'requesting' ? 'Permite accesul la microfon.' : busy ? 'Îți pregătim feedbackul.' : error ? <button type="button" onClick={() => open('error')} className="cathedral-text-button">Detalii și ajutor →</button> : 'Spune fraza, apoi oprește înregistrarea.'}</span></div>
+        <button type="button" className={`cathedral-record${recording ? ' is-recording' : ''}${busy ? ' is-busy' : ''}`} onPointerDown={practice?event=>{if(event.button!==0)return;event.currentTarget.setPointerCapture(event.pointerId);void beginHold();}:undefined} onPointerUp={practice?endHold:undefined} onPointerCancel={practice?endHold:undefined} onLostPointerCapture={practice?()=>{if(held.current)endHold();}:undefined} onKeyDown={practice?event=>{if(event.key===' '){event.preventDefault();if(!event.repeat)void beginHold();}}:undefined} onKeyUp={practice?event=>{if(event.key===' '){event.preventDefault();endHold();}}:undefined} onBlur={practice?()=>{if(held.current)endHold();}:undefined} onClick={event=>{if(practice&&event.detail!==0)return;if(recording)onStop();else{stopPlayback();onRecord();}}} disabled={busy&&!held.current} aria-label={label} aria-pressed={recording}>{recording ? <span className="cathedral-stop" /> : <CathedralIcon name="mic" />}</button>
+        <div className="cathedral-recorder__copy" aria-live="polite"><strong>{recording ? `Înregistrare · 0:${String(elapsed).padStart(2,'0')}` : busy ? label : error ? 'Înregistrarea nu a putut fi finalizată' : practice?'Ține apăsat ca să vorbești':'Înregistrează'}</strong><span>{recording ? (practice?'Eliberează pentru a opri · max. 0:30':'Apasă pentru a opri · max. 0:30') : status === 'requesting' ? 'Permite accesul la microfon.' : busy ? 'Îți pregătim feedbackul.' : error ? <button type="button" onClick={() => open('error')} className="cathedral-text-button">Detalii și ajutor →</button> : practice?'Te ascult când apeși microfonul.':'Spune fraza, apoi oprește înregistrarea.'}</span></div>
         {audioUrl && status === 'error' && <button type="button" className="cathedral-voice-replay" onClick={playback}><CathedralIcon name="headphones" />{playing ? 'Pauză' : 'Vocea mea'}</button>}
       </div>}
     </div>
+    {practice&&<footer className="practice-voice-navigation"><button type="button" onClick={onPrevious} disabled={!phraseIndex||busy||recording}>Înapoi</button>{lastPhrase?<a className={!result?'is-disabled':''} aria-disabled={!result} href={result?'/jocuri?nivel='+level:undefined}>Încheie</a>:<button type="button" onClick={onNext} disabled={!result||busy||recording}>Continuă</button>}</footer>}
     {panel && <CathedralDialog title={panel === 'result' ? 'Rezultatul pronunției' : panel === 'translation' ? 'Traducerea frazei' : panel === 'error' || panel === 'playback' ? 'Ajutor audio' : 'Exersează cu vocea ta'} onClose={() => setPanel(null)} footer={panel === 'result' && pages > 1 ? <CathedralPager page={page} pages={pages} onChange={setPage} /> : null}>
       {panel === 'translation' && <><blockquote lang="nb">{phrase.example}</blockquote><p>{phrase.translation}</p></>}
       {panel === 'about' && <><p>Ascultă modelul normal sau lent, apoi înregistrează aceeași frază. Poți înregistra cel mult 30 de secunde.</p><div className="cathedral-about-score"><strong>{bestScore ? `${bestScore}%` : '—'}</strong><span>Cel mai bun scor · {level}<small>{attempts.length} încercări salvate local</small></span></div><p>Scorul este orientativ și nu influențează progresul lecțiilor.</p><p>Înregistrarea este folosită pentru evaluare și nu este păstrată în aplicație.</p>{audioUrl && <button type="button" onClick={playback}>{playing ? 'Pauză' : 'Ascultă ultima înregistrare'}</button>}</>}

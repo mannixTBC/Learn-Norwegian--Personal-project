@@ -117,7 +117,7 @@ const sendForEvaluation = async (blob, referenceText) => {
 
 const formatTime = (seconds) => `0:${String(seconds).padStart(2, '0')}`;
 
-const PronunciationLab = ({ phrase, phraseIndex, level, lessonId, rewardAttemptsRef, appearance }) => {
+const PronunciationLab = ({ phrase, phraseIndex, level, lessonId, rewardAttemptsRef, appearance, lessonTitle, onPrevious, onNext, lastPhrase }) => {
   const { user } = useAuth();
   const [status, setStatus] = useState('ready');
   const [elapsed, setElapsed] = useState(0);
@@ -356,7 +356,7 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId, rewardAttempts
     };
   }, []);
 
-  if (appearance === 'cathedral') return <PronunciationCathedral {...{ phrase, phraseIndex, level, lessonId, status, elapsed, result, error, audioUrl, bestScore, attempts }} onRecord={startRecording} onStop={stopRecording} onRetry={resetAttempt} />;
+  if (appearance === 'cathedral' || appearance === 'practice') return <PronunciationCathedral practice={appearance === 'practice'} {...{lessonTitle,onPrevious,onNext,lastPhrase}} {...{ phrase, phraseIndex, level, lessonId, status, elapsed, result, error, audioUrl, bestScore, attempts }} onRecord={startRecording} onStop={stopRecording} onRetry={resetAttempt} />;
 
   return (
     <section className="pronunciation-lab" aria-labelledby="pronunciation-lab-title">

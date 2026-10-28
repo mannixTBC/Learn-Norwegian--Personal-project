@@ -1,0 +1,56 @@
+html:has(.App__main .pronunciation-practice){--exercise-canvas:#fefcf7}
+.App:has(.pronunciation-practice)>.navbar{display:none}
+html body #root .App .exercise-screen.pronunciation-practice{box-sizing:border-box;width:min(100%,480px);max-width:480px;min-height:100dvh;height:auto;display:flex;flex-direction:column;gap:0;margin:0 auto;padding:20px 18px max(20px,env(safe-area-inset-bottom));background:transparent;border:0;box-shadow:none;color:#102c41;font:16px/1.45 'Segoe UI',sans-serif}
+.pronunciation-practice,.pronunciation-practice .cathedral-dialog{--voice-bg:#fefcf7;--voice-paper:#fff;--voice-ink:#102c41;--voice-sub:#596773;--voice-line:#dce2d8;--voice-gold:#007f83;--voice-soft:#edf1e4}
+.pronunciation-practice *{box-sizing:border-box}
+.practice-voice-top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:28px;min-height:44px}
+.practice-voice-top>a:first-child{font:32px Georgia;color:#102c41;text-decoration:none;min-width:28px}
+.practice-voice-top>a:nth-child(2){width:170px;max-width:50%}
+.practice-voice-top img{display:block;width:100%;height:auto}
+.practice-voice-top .exercise-level-select{position:static;transform:none;margin:0;padding:0;border:0;background:none;box-shadow:none}
+.practice-voice-top .exercise-level-select>span{display:none}
+.practice-voice-top select{min-height:44px;max-width:80px;border:1px solid #dce2d8;border-radius:24px;padding:8px 12px;background:#f8f8f0;color:#102c41}
+.practice-voice-heading h1{font:700 clamp(27px,7.5vw,35px)/1.12 Georgia,serif;letter-spacing:-1px;margin:0 0 9px;color:#102c41}
+.practice-voice-heading p{margin:0;color:#596773;font-size:17px}
+.practice-voice-progress{display:flex;align-items:center;gap:16px;width:100%;border:0;background:none;padding:24px 0 18px;color:#596773;font:14px 'Segoe UI',sans-serif;text-align:left;cursor:pointer}
+.practice-voice-progress span{white-space:nowrap}.practice-voice-progress progress{appearance:none;border:0;border-radius:8px;height:8px;flex:1;width:100%;background:#e8e7e0;color:#007f83}
+.practice-voice-progress progress::-webkit-progress-bar{background:#e8e7e0;border-radius:8px}.practice-voice-progress progress::-webkit-progress-value{background:#007f83;border-radius:8px}.practice-voice-progress progress::-moz-progress-bar{background:#007f83;border-radius:8px}
+.pronunciation-practice .cathedral-lab{display:flex;flex-direction:column;gap:12px;flex:1;min-height:0}
+.pronunciation-practice .cathedral-quote{display:block;position:relative;padding:20px;border:1px solid #efeee7;border-radius:20px;background:#fff;box-shadow:0 3px 12px #1733430b;min-height:0}
+.pronunciation-practice .cathedral-quote:before,.pronunciation-practice .cathedral-quote:after{display:none}
+.pronunciation-practice .cathedral-quote__label{font-size:11px;font-weight:700;color:#586d5e;letter-spacing:1px;min-height:22px;padding-right:0;margin-bottom:12px}
+.pronunciation-practice .cathedral-quote__label button{display:none}
+.pronunciation-practice .practice-voice-cup{float:right;width:35%;max-width:145px;margin:4px -8px 8px 10px;pointer-events:none}
+.pronunciation-practice .cathedral-quote__text{display:block;min-height:125px}
+.pronunciation-practice .cathedral-quote blockquote{font:700 clamp(24px,6.8vw,31px)/1.22 Georgia,serif;margin:0 0 12px;color:#102c41}
+.pronunciation-practice .cathedral-quote__text>p{font-size:16px;line-height:1.4;color:#596773}
+.pronunciation-practice .cathedral-model-actions{clear:both;display:flex;gap:8px;padding-top:18px}
+.pronunciation-practice button,.pronunciation-practice a{touch-action:manipulation}
+.pronunciation-practice .cathedral-model-actions button,.pronunciation-practice .cathedral-result__actions button{min-height:46px;border:1px solid #007f83;border-radius:22px;background:#fff;color:#007f83;font:600 16px 'Segoe UI',sans-serif;cursor:pointer}
+.pronunciation-practice .cathedral-model-actions button:nth-child(2){border-color:#dedfd9;color:#596773}
+.pronunciation-practice svg{width:24px;height:24px;flex-shrink:0}
+.pronunciation-practice .cathedral-model-actions .cathedral-translation{display:none}
+.pronunciation-practice .cathedral-workspace{display:flex;align-items:center;justify-content:center;background:#ebeedf;border-radius:18px;padding:20px 16px;flex:1;min-height:245px}
+.pronunciation-practice .cathedral-recorder{position:relative;display:flex;flex-direction:column;gap:16px;text-align:center;height:auto}
+.pronunciation-practice .nordic-recorder-instruction{margin:0 0 4px;font-size:14px;color:#102c41}
+.pronunciation-practice .cathedral-wave{position:absolute;top:75px;left:0;right:0;justify-content:space-between;color:#a9b69b;pointer-events:none}
+.pronunciation-practice .cathedral-wave>span{width:4px}
+.pronunciation-practice .cathedral-record{position:relative;display:grid;place-items:center;width:100px;height:100px;flex-shrink:0;border:2px solid #fff;border-radius:50%;padding:0;background:linear-gradient(135deg,#168b8f,#00666c);color:white;box-shadow:0 3px 8px #154a4930;cursor:pointer;touch-action:none;user-select:none}
+.pronunciation-practice .cathedral-record svg{width:43px;height:43px}
+.pronunciation-practice .cathedral-record.is-recording{background:#a74743}
+.pronunciation-practice .cathedral-recorder__copy{gap:9px}
+.pronunciation-practice .cathedral-recorder__copy strong{font-weight:650;font-size:16px}.pronunciation-practice .cathedral-recorder__copy>span{font-size:14px}
+.pronunciation-practice .cathedral-result{border:0;background:transparent;padding:0;color:#102c41}
+.pronunciation-practice .cathedral-result__heading{color:#102c41}.pronunciation-practice .cathedral-result__actions{margin-top:16px}
+.practice-voice-navigation{display:flex;gap:12px;margin-top:0}
+.practice-voice-navigation>*{display:flex;justify-content:center;align-items:center;flex:1;min-height:48px;border:1px solid #d9dcd3;border-radius:13px;background:transparent;color:#102c41;text-decoration:none;font:600 16px 'Segoe UI',sans-serif;cursor:pointer}
+.practice-voice-navigation>:last-child{background:#007f83;color:#fff;border-color:#007f83}
+.practice-voice-navigation>:disabled,.practice-voice-navigation>.is-disabled{opacity:.35;cursor:default}
+.pronunciation-practice :is(button,a,select):focus-visible{outline:3px solid #007f83;outline-offset:3px}
+.practice-voice-library{display:grid;gap:8px;margin-top:16px}.practice-voice-library button{display:grid;gap:6px;text-align:left;padding:12px;border:1px solid #dce2d8;border-radius:12px;background:#fff;color:#102c41}
+.pronunciation-practice .cathedral-dialog{background:#fefcf7;color:#102c41;border-color:#dce2d8;border-radius:18px}
+@media(max-height:720px){html body #root .App .exercise-screen.pronunciation-practice{padding-top:12px}.practice-voice-top{margin-bottom:16px}.practice-voice-progress{padding-top:16px;padding-bottom:14px}.pronunciation-practice .cathedral-quote{padding:16px}.pronunciation-practice .cathedral-workspace{min-height:220px;padding:16px 12px}.pronunciation-practice .cathedral-record{width:84px;height:84px}.pronunciation-practice .cathedral-quote__text{min-height:100px}}
+.pronunciation-practice .cathedral-result__heading{display:flex;align-items:center;gap:14px;width:100%;padding:16px;border:1px solid #d9e0cf;border-radius:16px;background:#fffdf5;text-align:left;cursor:pointer}
+.pronunciation-practice .cathedral-score{display:grid;place-items:center;flex-shrink:0;width:58px;height:58px;border:1px solid #8caba1;border-radius:50%;font:700 25px Georgia,serif;color:#007f83;background:#edf3e9}
+.pronunciation-practice .cathedral-result__heading strong{font:700 22px/1.2 Georgia,serif}.pronunciation-practice .cathedral-result__heading small{margin-top:6px;color:#007f83}
+.pronunciation-practice .cathedral-focus-words{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}.pronunciation-practice .cathedral-focus-words>span{padding:6px 10px;border:1px solid #d6decb;border-radius:14px;background:#f9faf3;color:#496552;font-size:13px}

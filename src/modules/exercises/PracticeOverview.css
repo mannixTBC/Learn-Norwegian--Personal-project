@@ -134,8 +134,8 @@
 .practice-studio-actions{z-index:2}
 .practice-studio-entry:focus-visible{outline:3px solid #007f8d;outline-offset:4px}
 
-.practice-header{min-height:clamp(160px,49cqw,192px)}
-.practice-heading{padding-top:12px}
+.practice-header{min-height:clamp(136px,40cqw,156px)}
+.practice-heading{padding-top:6px}
 .practice-heading h1{max-width:52%}
 .practice-heading h1 br{display:initial}
-.practice-header-art{position:absolute;right:-8px;bottom:0;z-index:0;width:56%;height:calc(100% - 24px);object-fit:contain;object-position:right bottom;pointer-events:none}
+.practice-header-art{position:absolute;right:8px;top:-10px;z-index:0;width:56%;height:clamp(145px,48cqw,180px);object-fit:contain;object-position:right top;pointer-events:none}
