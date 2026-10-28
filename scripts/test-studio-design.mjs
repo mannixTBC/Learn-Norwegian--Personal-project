@@ -9,8 +9,9 @@ import {MemoryRouter} from 'react-router-dom';
 import assert from 'node:assert/strict';
 const root=resolve(import.meta.dirname,'..'),out=resolve(root,'node_modules/.cache/studio-design-check');
 await mkdir(out,{recursive:true});
-await build({configFile:resolve(root,'vite.config.js'),logLevel:'error',build:{ssr:true,outDir:out,emptyOutDir:false,rollupOptions:{input:{home:resolve(root,'src/modules/exercises/StudioHome.js'),catalog:resolve(root,'src/modules/exercises/DesktopConversationStudio.js')},output:{entryFileNames:'[name].mjs'}}}});
+await build({configFile:resolve(root,'vite.config.js'),logLevel:'error',build:{ssr:true,outDir:out,emptyOutDir:false,rollupOptions:{input:{home:resolve(root,'src/modules/exercises/StudioHome.js'),catalog:resolve(root,'src/modules/exercises/DesktopConversationStudio.js'),practice:resolve(root,'src/modules/exercises/PracticeOverview.js')},output:{entryFileNames:'[name].mjs'}}}});
 const {default:Home}=await import(pathToFileURL(resolve(out,'home.mjs')));
+const {default:Practice}=await import(pathToFileURL(resolve(out,'practice.mjs')));
 const {default:Catalog}=await import(pathToFileURL(resolve(out,'catalog.mjs')));
 const {resolvePublicScenario}=await import('../src/modules/exercises/scenarioDifficulty.mjs');
 const data=JSON.parse(await readFile(resolve(root,'src/modules/exercises/conversationScenarios.json'),'utf8'));
@@ -44,12 +45,36 @@ try{
   const dimensions=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,canvas:[document.documentElement,document.body,document.querySelector('.App'),document.querySelector('.App__main')].map(el=>getComputedStyle(el).backgroundColor)}));
   assert.ok(dimensions.scroll<=width+1,name+' overflows horizontally '+JSON.stringify(dimensions));
   assert.ok(dimensions.canvas.every(c=>c==='rgb(253, 253, 249)'),name+' canvas');
+  assert.equal(await page.locator('.mobile-app-nav').count(),name==='home'?1:0,name+' navigation scope');
+  if(name==='home'){
+   const nav=await page.locator('.mobile-app-nav').evaluate(el=>({radius:getComputedStyle(el).borderRadius,active:getComputedStyle(el.querySelector('.active')).backgroundImage,weight:getComputedStyle(el.querySelector('a')).fontWeight,position:getComputedStyle(el).position}));
+   assert.equal(nav.radius,'18px');assert.match(nav.active,/linear-gradient/);assert.equal(nav.weight,'850');
+   assert.equal(nav.position,width<=680?'fixed':'static');
+  }
+  if(name==='catalog')assert.equal(await page.locator('.sc-card-art image[href="/images/studio/practical-reference.png"]').count(),4);
   const last=page.locator('button:visible,a:visible').last();await last.scrollIntoViewIfNeeded();assert.ok(await last.isVisible());
   if(name==='long')assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight),'long conversation remains scrollable');
   if(width===390&&!installed&&name!=='long'){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:resolve(out,name+'.png'),fullPage:true});}
   await page.evaluate(()=>document.querySelector('.App__main').innerHTML='<p>Home</p>');
   assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--exercise-canvas').trim()),'');
   count++;
+ }
+
+ for(const installed of [false,true])for(const [width,height] of [[390,844],[360,640],[1366,900]]){
+  await page.setViewportSize({width,height});
+  const markup=renderToStaticMarkup(React.createElement(MemoryRouter,null,React.createElement(Practice,{level:'B1'})));
+  for(const [selector,destination,artClick] of [
+   ['.practice-studio-entry','/studio?nivel=B1',true],
+   ['.practice-studio-action:not(.practice-studio-action--free)','/scenarii?nivel=B1',false],
+   ['.practice-studio-action--free','/studio?nivel=B1&mod=liber',false]
+  ]){
+   await page.goto('http://studio.test/');
+   await page.setContent('<html class="'+(installed?'is-installed-app':'')+'"><head><base href="http://studio.test/"><style>'+css+'</style></head><body><div id="root"><div class="App"><main class="App__main"><div class="practice-hub">'+markup+'</div></main></div></div></body></html>');
+   const link=page.locator(selector);await link.scrollIntoViewIfNeeded();
+   if(artClick){const box=await link.boundingBox();await page.mouse.click(box.x+box.width*.85,box.y+box.height*.25);}
+   else await link.click();
+   await page.waitForURL('http://studio.test'+destination);count++;
+  }
  }
  console.log('PASS: '+count+' studio layouts, short/long content, controls, canvas and navigation cleanup. Screenshots: '+out);
 }finally{await browser.close()}

@@ -131,3 +131,8 @@
  .practice-studio p,.practice-eyebrow{display:none}
  .practice-studio-actions{bottom:6px}
 }
+
+/* The card opens Studio; its two independent links remain above the card link. */
+.practice-studio-entry{position:absolute;inset:0;z-index:1;border-radius:inherit}
+.practice-studio-actions{z-index:2}
+.practice-studio-entry:focus-visible{outline:3px solid #007f8d;outline-offset:4px}

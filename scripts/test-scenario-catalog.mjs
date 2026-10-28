@@ -71,8 +71,8 @@ try{
    const data=kind==='empty'?[]:kind==='long'?scenarios.map(s=>({...s,title:s.title+' — o situație cu mai multe detalii de discutat',place:s.place+' și detalii suplimentare pentru această conversație'})):scenarios;
    const html=renderToStaticMarkup(wrap(installed?Mobile:Desktop,{...props,scenarios:data}));
    await page.setContent('<html class="'+(installed?'is-installed-app':'')+'"><head><base href="http://scenario.test/"><style>'+css+'</style></head><body><div id="root"><div class="App"><main class="App__main">'+html+'</main></div></div></body></html>');
-   await page.locator('.sc-brand img').evaluate(im=>im.decode());
-   assert.ok(await page.locator('.sc-brand img').evaluate(im=>im.naturalWidth>0),'real brand image must decode');
+   await page.locator('.sc-brand svg image').evaluate(async el=>{const img=new Image();img.src=el.getAttribute('href');await img.decode();});
+   assert.equal(await page.locator('.sc-brand svg image').getAttribute('href'),'/images/studio/practical-reference.png','brand uses the supplied mockup');
    const result=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,height:innerHeight,scrollHeight:document.documentElement.scrollHeight,canvas:[document.documentElement,document.body,document.getElementById('root'),document.querySelector('.App'),document.querySelector('.App__main')].map(e=>getComputedStyle(e).backgroundColor)}));
    assert.ok(result.scrollWidth<=width+1,JSON.stringify({installed,width,height,kind,result}));
    assert.ok(result.canvas.every(c=>c==='rgb(253, 253, 249)'),JSON.stringify(result));

@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { careerPaths, getCareerPath } from '../../services/careerProfile';
-import ScenarioIllustration from './ScenarioIllustration';
+import StudioSceneArtwork from './StudioSceneArtwork';
+import PracticalStudioArtwork, { hasPracticalArtwork } from './PracticalStudioArtwork';
 const featured=['cafe-order','shop-exchange','team-plan','care-comfort'];
 const names={'cafe-order':'La cafenea','shop-exchange':'La magazin','team-plan':'La serviciu','care-comfort':'În îngrijire'};
-const artwork={transport:'bus-delay',hospitality:'hotel-booking',office:'team-plan',general:'cafe-order',construction:'site-materials',care:'care-comfort',healthcare:'care-comfort',cleaning:'cleaning-plan',retail:'shop-exchange',education:'study-meeting',childcare:'kindergarten-plan'};
 export default function ScenarioCatalog({scenarios,path,flow}) {
  const [tab,setTab]=useState('featured'),[category,setCategory]=useState('all'),[page,setPage]=useState(0),[selection,setSelection]=useState(null);
  const filtered=useMemo(()=>{
@@ -20,8 +20,8 @@ export default function ScenarioCatalog({scenarios,path,flow}) {
    <label className="sc-filter"><span className="sc-sr-only">Filtrează situațiile</span><select value={category} onChange={event=>{setCategory(event.target.value);setPage(0);setSelection(null);if(tab==='featured')setTab('recommended');}}><option value="all">Toate situațiile</option>{careerPaths.filter(p=>scenarios.some(s=>s.path===p.id)).map(p=><option key={p.id} value={p.id}>{p.shortTitle}</option>)}</select></label>
   </div></details>
   <div className="sc-grid" aria-label="Scenarii disponibile">
-   {visible.map(s=><button type="button" key={s.id} className="sc-card conversation-card" aria-pressed={chosen?.id===s.id} onClick={()=>setSelection(s.id)}>
-    <ScenarioIllustration scenarioId={featured.includes(s.id)?s.id:artwork[s.path]||'studio'} className="sc-card-art"/>
+   {visible.map(s=><button type="button" key={s.id} className={'sc-card conversation-card'+(tab==='featured'?' sc-card--featured':'')} aria-pressed={chosen?.id===s.id} onClick={()=>setSelection(s.id)}>
+    {hasPracticalArtwork(s.id)?<PracticalStudioArtwork scene={s.id} className="sc-card-art"/>:<StudioSceneArtwork scenarioId={s.id} pathId={s.path} className="sc-card-art"/>}
     <div className="sc-card-copy"><h2>{tab==='featured'?names[s.id]||s.title:s.title}</h2>{tab!=='featured'&&<p>{s.place}</p>}<span className="sc-card-status">{flow.progress?.[s.id]?.latest?.endReason==='success'?'✓ Reușit':flow.progress?.[s.id]?'De reluat':tab==='featured'?'Norvegiană în viața reală':getCareerPath(s.path).shortTitle}</span></div>
    </button>)}
   </div>
