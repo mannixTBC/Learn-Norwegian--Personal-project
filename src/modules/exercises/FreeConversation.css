@@ -1,0 +1,60 @@
+/* Free voice conversation: approved airy bubbles, using the Practice palette. */
+html body #root .App .studio-design.studio-free-airy {
+  width: min(100%, 520px);
+  max-width: 520px;
+  min-height: 100dvh;
+  padding: max(14px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: #fdfdf9;
+  color: #102c41;
+}
+.studio-free-airy .studio-top { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; margin: 0 0 8px; }
+html body #root .studio-free-airy .studio-brand { justify-self: center; width: 154px; max-width: 100%; margin: 0; }
+.studio-free-airy .studio-back { width: 40px; min-height: 44px; }
+html body #root .App .studio-design.studio-free-airy .airy-messages {
+  display: flex; flex-direction: column; gap: 23px; min-height: 0;
+  max-height: 52dvh; overflow-y: auto; overscroll-behavior: contain;
+  padding: 4px 3px 12px; margin: 0; scrollbar-width: thin;
+}
+.studio-free-airy .airy-messages:empty { display: none; }
+html body #root .App .studio-design.studio-free-airy .airy-message { display: flex; align-items: flex-start; gap: 11px; width: 100%; margin: 0; }
+html body #root .App .studio-design.studio-free-airy .airy-avatar { width: 46px; height: 46px; flex: 0 0 46px; border-radius: 50%; margin-top: 6px; overflow: hidden; }
+html body #root .App .studio-design.studio-free-airy .airy-message-copy {
+  flex: 1; min-width: 0; background: #fff; border: 1px solid #efeee7;
+  border-radius: 6px 19px 19px 19px; padding: 13px 15px;
+  box-shadow: 0 4px 18px #263d3410;
+}
+.studio-free-airy .airy-message-copy > small { display: block; font: 700 15px/1.3 Georgia, serif; color: #007681; margin-bottom: 7px; }
+html body #root .App .studio-design.studio-free-airy .airy-message-copy > p {
+  background: none; padding: 0; margin: 0; border-radius: 0; border: 0; box-shadow: none;
+  font: 18px/1.5 Georgia, serif; color: #102c41; overflow-wrap: anywhere;
+}
+html body #root .App .studio-design.studio-free-airy .airy-message-copy > p:has(.airy-replay) { padding-right: 28px; }
+html body #root .App .studio-design.studio-free-airy .airy-replay { width: 25px; height: 25px; top: 0; right: -4px; padding: 5px; border: 0; background: transparent; }
+html body #root .App .studio-design.studio-free-airy .airy-message.user { justify-content: flex-end; padding-left: 58px; }
+html body #root .App .studio-design.studio-free-airy .airy-message.user .airy-message-copy { flex: 0 1 auto; background: #eaf1e9; box-shadow: none; border: 0; border-radius: 18px 18px 5px 18px; }
+html body #root .App .studio-design.studio-free-airy .airy-message.user .airy-message-copy > p { font: 16px/1.5 'Segoe UI', sans-serif; background: transparent; }
+.studio-free-airy .studio-translation > button { color: #007681; padding-bottom: 0; text-decoration: underline; text-underline-offset: 3px; }
+.studio-free-airy .studio-translation > p { margin: 8px 0 0; }
+html body #root .App .studio-design.studio-free-airy .scenario-voice { flex-shrink: 0; margin-top: auto; padding: 4px 0 0; background: transparent; border: 0; box-shadow: none; }
+.studio-free-airy .scenario-voice__status { font: 20px/1.4 Georgia, serif; color: #102c41; margin: 0 0 10px; }
+html body #root .App .studio-design.studio-free-airy .scenario-voice__wave { display: flex; align-items: center; justify-content: center; height: 42px; margin: 10px auto 18px; gap: 5px; color: #007681; }
+html body #root .App .studio-design.studio-free-airy .scenario-voice__wave i { width: 4px; border-radius: 4px; background: currentColor; }
+html body #root .App .studio-design.studio-free-airy .airy-actions { display: grid; grid-template-columns: 1fr 96px 1fr; align-items: center; gap: 12px; margin: 0; }
+html body #root .App .studio-design.studio-free-airy .scenario-voice__mic { grid-column: 2; width: 96px; height: 96px; margin: 0; padding: 27px; background: #007681; color: #fff; border: 0; border-radius: 50%; box-shadow: none; }
+.studio-free-airy .scenario-voice__mic svg { width: 42px; height: 42px; }
+.studio-free-airy .free-pause { grid-column: 3; justify-self: center; display: grid; justify-items: center; gap: 7px; padding: 8px; border: 0; background: none; color: #102c41; font: 14px Georgia, serif; }
+.studio-free-airy .free-pause > span { display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid #ccdad6; border-radius: 50%; background: #f0f4ef; }
+.studio-free-airy .free-pause svg { width: 21px; height: 21px; fill: currentColor; }
+html body #root .App .studio-design.studio-free-airy .scenario-voice__caption { margin: 16px 0; font: 13px/1.5 'Segoe UI', sans-serif; color: #58737a; }
+.studio-free-airy .studio-finish { width: 100%; min-height: 46px; margin: 0; padding: 11px; border: 1px solid #007681; border-radius: 14px; color: #007681; background: transparent; font: 17px/1.3 Georgia, serif; }
+.studio-free-airy .studio-finish svg { display: none; }
+@media(max-height:700px) {
+  html body #root .App .studio-design.studio-free-airy { gap: 12px; }
+  html body #root .App .studio-design.studio-free-airy .airy-messages { max-height: 42dvh; gap: 16px; }
+  html body #root .App .studio-design.studio-free-airy .scenario-voice__mic { width: 78px; height: 78px; padding: 18px; justify-self: center; }
+  html body #root .App .studio-design.studio-free-airy .scenario-voice__wave { margin: 5px auto 10px; height: 30px; }
+}
+@media(prefers-reduced-motion:reduce) { html body #root .App .studio-design.studio-free-airy .scenario-voice__wave i { animation: none; } }

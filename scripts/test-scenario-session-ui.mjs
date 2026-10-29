@@ -96,7 +96,7 @@ const send = async renderer => {
   await act(async () => { button(renderer, 'Trimite răspunsul vocal').props.onClick(); });
 };
 const unmount = async renderer => { await act(async () => renderer.unmount()); };
-const setup = () => { temporary.clear(); progress.clear(); server.clear(); calls = []; handler = normal; globalThis.scenarioTestUser = { id: 'flow-test-user' }; };
+const setup = () => { temporary.clear(); progress.clear(); progress.set('norwegian_career_profile_flow-test-user', JSON.stringify({pathId:'transport'})); server.clear(); calls = []; handler = normal; globalThis.scenarioTestUser = { id: 'flow-test-user' }; };
 const start = async () => { const r = await render(); await choose(r); await click(r, 'Începe conversația'); return r; };
 let checks = 0;
 for (const mode of [false, true]) {
@@ -117,8 +117,8 @@ for (const mode of [false, true]) {
   assert.equal(nodes(direct,'conversation-messages').length,1);
   await unmount(direct);
   setup();
-  let linked = await render('/scenarii?nivel=A1&scenariu=hotel-booking');
-  assert.equal(linked.root.findByProps({id:'guided-scenario-title'}).children.join(''),catalog.scenarios.find(s=>s.id==='hotel-booking').title);
+  let linked = await render('/scenarii?nivel=A1&scenariu=bus-ticket');
+  assert.equal(linked.root.findByProps({id:'guided-scenario-title'}).children.join(''),catalog.scenarios.find(s=>s.id==='bus-ticket').title);
   assert.equal(calls.length,0,'a recap link selects preparation without starting AI');
   await unmount(linked);
   linked = await render('/scenarii?nivel=A1&scenariu=unknown');
@@ -127,7 +127,7 @@ for (const mode of [false, true]) {
   setup();
   linked = await start();
   await unmount(linked);
-  linked = await render('/scenarii?nivel=A1&scenariu=hotel-booking');
+  linked = await render('/scenarii?nivel=A1&scenariu=bus-ticket');
   assert.equal(linked.root.findByProps({id:'guided-scenario-title'}).children.join(''),source.title,'recap link must not discard an existing checkpoint');
   await unmount(linked); checks++;
 

@@ -292,3 +292,25 @@ html body #root .App .studio-design.practical-catalog{min-height:100dvh;justify-
 html body #root .App .practical-catalog .sc-card .sc-card-art{height:clamp(48px,calc((100dvh - 500px) / 3),140px);aspect-ratio:auto;object-fit:cover;flex-shrink:0}
 .practical-catalog .sc-pagination{flex-shrink:0;margin:6px 0 0}
 
+/* Keep the learner oriented within the selected career path. */
+.studio-design .sc-path{margin:0 0 16px;color:#526b7a;font-size:14px;line-height:1.5}.studio-design .sc-path strong{color:#103d4b}
+
+/* Center the two Studio choices in the space between the header and navigation.
+   Only the visible fixed navigation needs a bottom inset; long text can still grow. */
+html body #root .App .studio-design.studio-home{min-height:100dvh}
+.studio-home>.studio-top,.studio-home>.mobile-app-nav{flex-shrink:0}
+.studio-home>.studio-options{flex-shrink:0;margin-block:auto;width:100%}
+.studio-design.studio-home .studio-option>.studio-option-art{height:clamp(48px,calc((100dvh - 500px) / 2),140px);aspect-ratio:auto}
+@media(max-width:680px){
+ .studio-home:not(.studio-free)>.mobile-app-nav{margin:0}
+}
+@media(max-width:680px) and (max-height:740px){
+ html body #root .App .studio-design.studio-home{padding-top:max(10px,env(safe-area-inset-top))}
+ .studio-home>.studio-top{margin-bottom:12px}
+ .studio-home>.studio-options{gap:10px}
+ .studio-home .studio-option{gap:8px;padding:9px}
+ .studio-design.studio-home .studio-option>.studio-option-art{height:clamp(40px,calc((100dvh - 470px) / 2),100px)}
+ .studio-design.studio-home .studio-option h2{font-size:25px}
+ .studio-design.studio-home .studio-option p{font-size:14px}
+ html body #root .studio-home .studio-primary{min-height:44px;padding:9px 12px}
+}

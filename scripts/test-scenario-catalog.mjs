@@ -20,35 +20,43 @@ const props={level:'A1',path:{id:'transport'},scenarios,flow:{progress:{},choose
 const wrap=(View,p=props)=>React.createElement(MemoryRouter,null,React.createElement(View,p));
 const classes=(r,c)=>r.root.findAll(n=>typeof n.type==='string'&&n.props.className?.split(' ').includes(c));
 for(const View of [Mobile,Desktop]){
- let r,chosen;
- await act(async()=>{r=TestRenderer.create(wrap(View,{...props,flow:{progress:{},choose:id=>chosen=id}}));});
- assert.equal(classes(r,'sc-card').length,6);
- assert.equal(classes(r,'sc-card')[0].findByType('h2').children[0],'La cafenea');
- const first=classes(r,'sc-card')[0];
- await act(async()=>first.props.onClick());
- assert.equal(classes(r,'sc-start').length,0,'direct entry needs no second click');
- assert.equal(chosen,'cafe-order');
-
- const next=()=>r.root.findByProps({'aria-label':'Pagina următoare'});
- const previous=()=>r.root.findByProps({'aria-label':'Pagina anterioară'});
- assert.equal(previous().props.disabled,true);
- await act(async()=>next().props.onClick());
- assert.equal(previous().props.disabled,false);
- const filter=r.root.findAllByType('select').find(n=>n.props.value==='all');
- await act(async()=>filter.props.onChange({target:{value:'transport'}}));
- assert.equal(classes(r,'sc-card').length,Math.min(6,scenarios.filter(s=>s.path==='transport').length));
- assert.equal(previous().props.disabled,true);
- await act(async()=>filter.props.onChange({target:{value:'all'}}));
- await act(async()=>r.root.findAllByType('button').find(n=>n.children.join('')==='Toate').props.onClick());
- assert.equal(classes(r,'sc-card')[0].findByType('h2').children[0],'La cafenea');
- while(!next().props.disabled)await act(async()=>next().props.onClick());
- assert.ok(classes(r,'sc-card').length<=6);
- await act(async()=>r.update(wrap(View,{...props,level:'B1'})));
- assert.equal(previous().props.disabled,true);
- await act(async()=>r.update(wrap(View,{...props,scenarios:[]})));
- assert.equal(classes(r,'sc-card').length,0);
- assert.ok(r.root.findByProps({role:'status'}));
- await act(async()=>r.unmount());
+ for(const pathId of new Set(scenarios.map(s=>s.path))){
+  let r,chosen;
+  const pathProps={...props,path:{id:pathId},flow:{progress:{},choose:id=>chosen=id}};
+  await act(async()=>{r=TestRenderer.create(wrap(View,pathProps));});
+  const expected=scenarios.filter(s=>s.path===pathId);
+  const expectedIds=new Set(expected.map(s=>s.id)),seen=new Set();
+  const next=()=>r.root.findByProps({'aria-label':'Pagina urmatoare'});
+  const previous=()=>r.root.findByProps({'aria-label':'Pagina anterioara'});
+  assert.equal(classes(r,'sc-card').length,Math.min(6,expected.length));
+  assert.equal(previous().props.disabled,true);
+  assert.equal(classes(r,'sc-tabs').length,0,'no global category tabs');
+  assert.equal(classes(r,'sc-browse').length,0,'no switch to unrelated career paths');
+  assert.ok(classes(r,'sc-path')[0].findByType('strong').children.length,'active path is visible');
+  do{
+   for(const card of classes(r,'sc-card')){
+    await act(async()=>card.props.onClick());
+    assert.ok(expectedIds.has(chosen),'all pages contain only the selected career path');
+    assert.ok(!seen.has(chosen),'no repeated scenario between pages');
+    seen.add(chosen);
+   }
+   if(next().props.disabled)break;
+   await act(async()=>next().props.onClick());
+   assert.equal(previous().props.disabled,false);
+  }while(true);
+  assert.equal(seen.size,expectedIds.size,'every scenario in the selected path remains available');
+  await act(async()=>r.update(wrap(View,{...pathProps,level:'B1'})));
+  assert.equal(previous().props.disabled,true,'level change resets pagination');
+  await act(async()=>r.update(wrap(View,{...pathProps,path:{id:'general'}})));
+  for(const card of classes(r,'sc-card')){
+   await act(async()=>card.props.onClick());
+   assert.equal(scenarios.find(s=>s.id===chosen).path,'general','path switch replaces the scenario list');
+  }
+  await act(async()=>r.update(wrap(View,{...pathProps,scenarios:scenarios.filter(s=>s.path!==pathId)})));
+  assert.equal(classes(r,'sc-card').length,0,'an empty path never falls back to unrelated scenarios');
+  assert.ok(r.root.findByProps({role:'status'}));
+  await act(async()=>r.unmount());
+ }
 }
 const assets=resolve(root,'dist/assets');
 const css=(await Promise.all((await readdir(assets)).filter(n=>n.endsWith('.css')).map(n=>readFile(resolve(assets,n),'utf8')))).join('\n');
@@ -71,6 +79,7 @@ try{
    const data=kind==='empty'?[]:kind==='long'?scenarios.map(s=>({...s,title:s.title+' — o situație cu mai multe detalii de discutat',place:s.place+' și detalii suplimentare pentru această conversație'})):scenarios;
    const html=renderToStaticMarkup(wrap(installed?Mobile:Desktop,{...props,scenarios:data}));
    await page.setContent('<html class="'+(installed?'is-installed-app':'')+'"><head><base href="http://scenario.test/"><style>'+css+'</style></head><body><div id="root"><div class="App"><main class="App__main">'+html+'</main></div></div></body></html>');
+   if(!installed&&width===390&&kind==='normal')await page.screenshot({path:resolve(outDir,'selected-path.png'),fullPage:true});
    const result=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,height:innerHeight,scrollHeight:document.documentElement.scrollHeight,canvas:[document.documentElement,document.body,document.getElementById('root'),document.querySelector('.App'),document.querySelector('.App__main')].map(e=>getComputedStyle(e).backgroundColor)}));
    assert.ok(result.scrollWidth<=width+1,JSON.stringify({installed,width,height,kind,result}));
    assert.ok(result.canvas.every(c=>c==='rgb(253, 253, 249)'),JSON.stringify(result));

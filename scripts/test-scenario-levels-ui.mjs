@@ -59,17 +59,18 @@ function Harness() {
 const classNodes = (renderer, name) => renderer.root.findAll(node =>
   typeof node.type === 'string' && node.props.className?.split(' ').includes(name));
 const textOf = node => typeof node === 'string' ? node : node.children.map(textOf).join('');
-const render = async level => {
+const render = async (level, search = '') => {
   let renderer;
   answerFocusCount = 0;
   await act(async () => {
     renderer = TestRenderer.create(
-      React.createElement(MemoryRouter, { initialEntries: ['/scenarii?nivel=' + level] }, React.createElement(Harness)),
+      React.createElement(MemoryRouter, { initialEntries: ['/scenarii?nivel=' + level + search] }, React.createElement(Harness)),
       { createNodeMock: node => ({ focus() { if (node.type === 'textarea') answerFocusCount++; }, scrollIntoView() {} }) },
     );
   });
   return renderer;
 };
+storage.set('norwegian_career_profile_scenario-ui-test', JSON.stringify({pathId:'transport'}));
 const source = catalog.scenarios.find(s => s.id === 'bus-delay');
 for (const mode of [false, true]) {
   installed = mode;
@@ -138,3 +139,33 @@ for (const mode of [false, true]) {
 }
 assert.equal(calls.length, 12);
 console.log('Scenario UI: all six levels on web and installed app; goals, briefs, hints, openings, budgets and level reset passed.');
+
+
+
+// The actual controller must enforce scope for direct links as well as list browsing.
+for (const mode of [false, true]) {
+ installed = mode;
+ for (const pathId of new Set(catalog.scenarios.map(s => s.path))) {
+  storage.set('norwegian_career_profile_scenario-ui-test', JSON.stringify({pathId}));
+  const foreign = catalog.scenarios.find(s => s.path !== pathId);
+  const beforeCalls = calls.length;
+  const renderer = await render('A2', '&scenariu=' + foreign.id + '&porneste=1');
+  const view = () => renderer.root.find(n => typeof n.type === 'function' && n.props.flow && n.props.scenarios);
+  assert.ok(view().props.scenarios.length > 0);
+  assert.ok(view().props.scenarios.every(s => s.path === pathId), 'controller supplies only the saved career path');
+  assert.equal(view().props.selected, undefined, 'a foreign deep link does not select a scenario');
+  assert.equal(calls.length, beforeCalls, 'a foreign deep link does not auto-start a request');
+  await act(async () => view().props.flow.choose(foreign.id, true));
+  assert.equal(view().props.selected, undefined, 'foreign choices are ignored');
+  assert.equal(calls.length, beforeCalls);
+  await act(async () => view().props.flow.choose(view().props.scenarios[0].id));
+  assert.equal(view().props.selected.path, pathId);
+  const nextPath = pathId === 'general' ? 'transport' : 'general';
+  storage.set('norwegian_career_profile_scenario-ui-test', JSON.stringify({pathId:nextPath}));
+  await act(async () => history.push('/scenarii?nivel=A2'));
+  assert.equal(view().props.selected, undefined, 'changing career path clears the previous scenario');
+  assert.ok(view().props.scenarios.every(s => s.path === nextPath));
+  await act(async () => renderer.unmount());
+ }
+}
+console.log('Scenario paths: web/app catalogs, foreign deep links, invalid choices and path changes passed.');

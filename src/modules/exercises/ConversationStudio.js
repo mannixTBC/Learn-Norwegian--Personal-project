@@ -26,10 +26,10 @@ export default function ConversationStudio() {
   const level = getLearningLevel(location.search);
   const learning = readStudioLearning(level, user);
   const path = getCareerPath(getCareerProfile(user)?.pathId);
-  const scenarios = useMemo(() => catalog.scenarios.map(source => {
+  const scenarios = useMemo(() => catalog.scenarios.filter(source => source.path === path.id).map(source => {
     const resolved = resolvePublicScenario(source, catalog.levels, level);
     return { ...resolved.scenario, difficulty: resolved.difficulty };
-  }).sort((a, b) => Number(b.path === path.id) - Number(a.path === path.id)), [level, path.id]);
+  }), [level, path.id]);
   const flow = useConversationSession({ userId: user?.id, level, pathId: path.id, scenarios, initialScenarioId: new URLSearchParams(location.search).get('scenariu'), autoStart: new URLSearchParams(location.search).get('porneste') === '1' });
   const { session, messages, busy, error } = flow;
   const selected = scenarios.find(s => s.id === flow.scenarioId);

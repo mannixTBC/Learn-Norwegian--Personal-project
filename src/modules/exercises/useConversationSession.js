@@ -104,6 +104,7 @@ export default function useConversationSession({ userId, level, pathId, scenario
   }, [key, initialScenarioId, autoStart]);
 
   function choose(scenarioId, autoStart = false) {
+    if (scenarioId && !options.current.some(scenario => scenario.id === scenarioId)) return;
     if (autoStart && current.current.scenarioId === scenarioId && pending.current) return;
     cancel();
     saveConversation(key, null);

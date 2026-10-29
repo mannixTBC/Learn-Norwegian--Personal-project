@@ -34,7 +34,7 @@ try{
  await page.goto('http://studio.test/');
  const fixtures=[['home',Home,{}],['free',Home,{}],['catalog',Catalog,props],['active',Catalog,{...props,selected,flow:active}],['result',Catalog,{...props,selected,flow:done}],['long',Catalog,{...props,selected,flow:{...active,messages:[...active.messages,{role:'assistant',text:'Et lengre svar. '.repeat(120)}]}}]];
  let count=0;
- for(const installed of [false,true])for(const [width,height] of [[390,844],[360,640],[1366,900]])for(const [name,View,p] of fixtures){
+ for(const installed of [false,true])for(const [width,height] of [[320,568],[390,844],[360,640],[1366,900]])for(const [name,View,p] of fixtures){
   globalThis.localStorage={getItem(){return null}};
   globalThis.window={SpeechRecognition:class{},localStorage:globalThis.localStorage};
   const markup=renderToStaticMarkup(React.createElement(MemoryRouter,{initialEntries:['/studio?nivel=A2'+(name==='free'?'&mod=liber':'')]},React.createElement(View,p)));
@@ -51,7 +51,17 @@ try{
    const nav=await page.locator('.mobile-app-nav').evaluate(el=>({radius:getComputedStyle(el).borderRadius,active:getComputedStyle(el.querySelector('.active')).backgroundImage,weight:getComputedStyle(el.querySelector('a')).fontWeight,position:getComputedStyle(el).position}));
    assert.equal(nav.radius,'18px');assert.match(nav.active,/linear-gradient/);assert.equal(nav.weight,'850');
    assert.equal(nav.position,width<=680?'fixed':'static');
-   assert.equal(await page.locator('.studio-heading-art').count(),0,'plain home background');
+   assert.equal(await page.locator('.studio-heading').count(),0,'no introductory heading above the two choices');
+   const homeLayout=await page.evaluate(()=>{
+    const rect=selector=>document.querySelector(selector).getBoundingClientRect();
+    const choices=rect('.studio-options'),header=rect('.studio-top'),nav=rect('.mobile-app-nav');
+    const actions=[...document.querySelectorAll('.studio-options .studio-primary')].map(el=>el.getBoundingClientRect());
+    return {scrollHeight:document.documentElement.scrollHeight,height:innerHeight,headerBottom:header.bottom,navTop:nav.top,choiceTop:choices.top,choiceBottom:choices.bottom,center:(choices.top+choices.bottom)/2,availableCenter:(header.bottom+nav.top)/2,actionBottom:Math.max(...actions.map(r=>r.bottom))};
+   });
+   assert.ok(homeLayout.scrollHeight<=height+1,'Studio fits without document scroll '+JSON.stringify({width,height,installed,homeLayout}));
+   assert.ok(homeLayout.choiceTop>=homeLayout.headerBottom,'cards clear the header');
+   assert.ok(homeLayout.actionBottom<=homeLayout.navTop,'both card actions stay above navigation');
+   assert.ok(Math.abs(homeLayout.center-homeLayout.availableCenter)<=30,'choices centered in available space '+JSON.stringify(homeLayout));
    assert.equal(await page.locator('.studio-option').count(),2);
    const sizes=await page.locator('.studio-option').evaluateAll(nodes=>nodes.map(n=>n.getBoundingClientRect().height));
    assert.ok(Math.abs(sizes[0]-sizes[1])<2,'matching cards');
@@ -60,12 +70,19 @@ try{
   const last=page.locator('button:visible,a:visible').last();await last.scrollIntoViewIfNeeded();assert.ok(await last.isVisible());
   if(name==='long')assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight),'long conversation remains scrollable');
   if(width===390&&!installed&&name!=='long'){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:resolve(out,name+'.png'),fullPage:true});}
+  if(name==='home'){
+   await page.locator('.studio-option p').evaluateAll(nodes=>nodes.forEach(n=>n.textContent+=' Detalii suplimentare pentru conversație.'.repeat(30)));
+   assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight),'long card content grows naturally');
+   const action=page.locator('.studio-options .studio-primary').last();
+   await action.evaluate(el=>el.scrollIntoView({block:'center'}));
+   assert.ok(await action.evaluate(el=>{const r=el.getBoundingClientRect();return el.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2))}),'last action remains reachable with long content');
+  }
   await page.evaluate(()=>document.querySelector('.App__main').innerHTML='<p>Home</p>');
   assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--exercise-canvas').trim()),'');
   count++;
  }
 
- for(const installed of [false,true])for(const [width,height] of [[390,844],[360,640],[1366,900]]){
+ for(const installed of [false,true])for(const [width,height] of [[320,568],[390,844],[360,640],[1366,900]]){
   await page.setViewportSize({width,height});
   const markup=renderToStaticMarkup(React.createElement(MemoryRouter,null,React.createElement(Practice,{level:'B1'})));
   for(const [selector,destination,artClick] of [
