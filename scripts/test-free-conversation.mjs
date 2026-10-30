@@ -31,12 +31,14 @@ const button=label=>r.root.findAllByType('button').find(n=>text(n)===label||n.pr
 const click=async label=>act(async()=>{await button(label).props.onClick();});
 await mount();
 assert.equal(starts,0,'no chat before user click');
+assert.equal(r.root.findAllByProps({className:'airy-message assistant free-opening'}).length,1,'opening card is visible before starting');
 assert.equal(stoppedTracks,0,'no microphone before user click');
 assert.equal(r.root.findAllByType('textarea').length,0);
 assert.equal(r.root.findAllByType('form').length,0);
 assert.equal(r.root.findAllByProps({className:'studio-nora-intro'}).length,0);
 assert.doesNotMatch(text(r.root),/Despre microfon/);
 await click('Pornește dialogul');
+assert.equal(r.root.findAllByProps({className:'airy-message assistant free-opening'}).length,0,'real reply replaces the opening card');
 assert.equal(starts,1);assert.equal(stoppedTracks,1);assert.equal(audio.text,'Hei!');
 assert.equal(recorder,undefined,'do not record Nora');
 await act(async()=>audio.finish());

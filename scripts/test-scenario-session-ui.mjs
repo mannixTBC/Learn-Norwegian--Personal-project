@@ -213,7 +213,7 @@ for (const mode of [false, true]) {
   assert.equal(calls.at(-1).operation, 'resume');
   assert.equal(nodes(r, 'airy-message').length, 3);
   assert.equal(voiceFlow(r).draft, 'Det er mye trafikk.');
-  assert.match(textOf(r.root), /Conversația a fost reluată/);
+  assert.doesNotMatch(textOf(r.root), /Conversația a fost reluată/);
   await unmount(r); checks++;
 
   // Expiry offers a new session, preserving the learner draft until they deliberately send it.
@@ -328,17 +328,22 @@ for (const mode of [false, true]) {
   assert.equal(nodes(r, 'airy-message').length, 1, 'abandoned response cannot alter a restored checkpoint');
   await unmount(r); checks++;
 
-  // Explicit finish clears the resumable session without inventing completed progress.
+  // Leaving from the header clears the session without showing an end-conversation control.
   setup(); r=await start();
-  await click(r,'Încheie conversația');
+  assert.equal(nodes(r,'studio-finish').length,0);
+  await click(r,'Înapoi la situații');
   assert.equal(temporary.size,0);
-  assert.equal(nodes(r,'conversation-result').length,1);
-  assert.match(textOf(r.root),/înainte de evaluarea finală/);
+  assert.equal(nodes(r,'sc-grid').length,1);
   assert.equal([...progress.keys()].filter(k=>k.startsWith('scenario_result_v1_')).length,0);
-  await click(r,'Exersează din nou');
-  assert.equal(nodes(r,'conversation-result').length,0);
   await unmount(r);checks++;
 
+  // The bottom write action starts the session and opens its text composer.
+  setup(); r=await render(); await choose(r);
+  await click(r,'Scrie răspunsul');
+  assert.equal(calls.length,1);
+  assert.equal(nodes(r,'studio-compose').length,1);
+  assert.equal(nodes(r,'studio-finish').length,0);
+  await unmount(r);checks++;
   // Corrupt or unavailable storage cannot prevent a new conversation.
   setup();
   globalThis.sessionStorage = { getItem() { throw new Error('blocked'); }, setItem() { throw new Error('blocked'); }, removeItem() { throw new Error('blocked'); } };

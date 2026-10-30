@@ -20,6 +20,8 @@ const props={level:'A1',path:{id:'transport'},scenarios,flow:{progress:{},choose
 const wrap=(View,p=props)=>React.createElement(MemoryRouter,null,React.createElement(View,p));
 const classes=(r,c)=>r.root.findAll(n=>typeof n.type==='string'&&n.props.className?.split(' ').includes(c));
 for(const View of [Mobile,Desktop]){
+ const artworkSeen=new Set();
+ const artworkFiles=new Set();
  for(const pathId of new Set(scenarios.map(s=>s.path))){
   let r,chosen;
   const pathProps={...props,path:{id:pathId},flow:{progress:{},choose:id=>chosen=id}};
@@ -39,6 +41,16 @@ for(const View of [Mobile,Desktop]){
     assert.ok(expectedIds.has(chosen),'all pages contain only the selected career path');
     assert.ok(!seen.has(chosen),'no repeated scenario between pages');
     seen.add(chosen);
+    const art=card.findByType('svg');
+    const image=art.findByType('image');
+    const crop=art.props.viewBox.split(' ').map(Number);
+    const signature=image.props.href+':'+art.props.viewBox;
+    assert.ok(!artworkSeen.has(signature),chosen+' must have a distinct scene, not the shared path image');
+    assert.match(image.props.href,/^\/images\/studio\/scenarios\/[a-z]+\.webp$/);
+    assert.ok(crop.every(Number.isFinite)&&crop[0]>=0&&crop[1]>=0&&crop[2]>0&&crop[3]>0,'valid artwork crop');
+    assert.ok(crop[0]+crop[2]<=image.props.width&&crop[1]+crop[3]<=image.props.height,'crop stays inside asset');
+    artworkSeen.add(signature);
+    artworkFiles.add(image.props.href);
    }
    if(next().props.disabled)break;
    await act(async()=>next().props.onClick());
@@ -56,6 +68,12 @@ for(const View of [Mobile,Desktop]){
   assert.equal(classes(r,'sc-card').length,0,'an empty path never falls back to unrelated scenarios');
   assert.ok(r.root.findByProps({role:'status'}));
   await act(async()=>r.unmount());
+ }
+ assert.equal(artworkSeen.size,scenarios.length,'every scenario renders its own scene on web and mobile');
+ for(const src of artworkFiles){
+  const bytes=await readFile(resolve(root,'public','.'+src));
+  assert.equal(bytes.toString('ascii',0,4),'RIFF','artwork exists as a WebP asset');
+  assert.equal(bytes.toString('ascii',8,12),'WEBP');
  }
 }
 const assets=resolve(root,'dist/assets');

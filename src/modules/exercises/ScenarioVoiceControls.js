@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import StudioIcon from './StudioIcon';
 import { speakScenario } from '../../services/scenarioSpeech';
 
-export default function ScenarioVoiceControls({ flow, blocked, reply, onFinish, onHelp, helpOpen, playbackRef, speak = speakScenario }) {
-  const [typing,setTyping]=useState(false);
+export default function ScenarioVoiceControls({ flow, blocked, reply, onFinish, onHelp, helpOpen, playbackRef, initialTyping = false, speak = speakScenario }) {
+  const [typing,setTyping]=useState(initialTyping);
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
   const recognition = useRef(null);

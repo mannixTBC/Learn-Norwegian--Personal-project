@@ -1,8 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { getCareerPath } from '../../services/careerProfile';
-import NordicStudioArtwork, { hasNordicArtwork } from './NordicStudioArtwork';
 import StudioSceneArtwork from './StudioSceneArtwork';
-import PracticalStudioArtwork, { hasPracticalArtwork } from './PracticalStudioArtwork';
 
 const featured = ['cafe-order', 'shop-exchange', 'team-plan', 'bus-delay', 'care-comfort'];
 const names = { 'cafe-order': 'La cafenea', 'shop-exchange': 'La magazin', 'team-plan': 'La serviciu', 'bus-delay': 'În autobuz', 'care-comfort': 'În îngrijire' };
@@ -22,7 +20,7 @@ export default function ScenarioCatalog({ scenarios, flow, level, path }) {
     <p className="sc-path">Traseul tău: <strong>{activePath.shortTitle}</strong></p>
     <div className="sc-grid" aria-label="Scenarii disponibile">{visible.map(s =>
       <button type="button" key={s.id} className="sc-card conversation-card" onClick={() => flow.choose(s.id, true)}>
-        {hasNordicArtwork(s.id) ? <NordicStudioArtwork scene={s.id} className="sc-card-art" /> : hasPracticalArtwork(s.id) ? <PracticalStudioArtwork scene={s.id} className="sc-card-art" /> : <StudioSceneArtwork scenarioId={s.id} pathId={s.path} className="sc-card-art" />}
+        <StudioSceneArtwork scenarioId={s.id} pathId={s.path} className="sc-card-art" />
         <div className="sc-card-copy"><h2>{names[s.id] || s.title}<span aria-hidden="true">›</span></h2><p>{level} · {s.difficulty?.turns <= 5 ? '3' : '5'} min</p>{flow.progress?.[s.id] && <span className="sc-card-status">{flow.progress[s.id].latest?.endReason === 'success' ? '✓ Reușit' : 'De reluat'}</span>}</div>
       </button>
     )}</div>

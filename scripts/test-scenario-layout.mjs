@@ -28,13 +28,13 @@ try{
    }catch{return route.fulfill({status:404,body:''});}
   });
  await page.goto('http://scenario.test/');
- for(const installed of [false,true])for(const [width,height] of [[360,640],[390,844],[1366,900],[740,360]])for(const kind of ['ready','long','active','result']){
+ for(const installed of [false,true])for(const [width,height] of [[360,640],[390,844],[1366,900],[740,360]])for(const kind of ['ready','long','active','active-long','result']){
   await page.setViewportSize({width,height});
   const r=resolvePublicScenario(catalog.scenarios.find(s=>s.id==='cafe-order'),catalog.levels,'C2');
   const selected={...r.scenario,difficulty:r.difficulty};
   if(kind==='long')selected.brief+=' '+selected.brief.repeat(4);
-  const session=kind==='result'?{done:true,achieved:[0],turn:10,maxTurns:10,endReason:'turn_limit',feedback:'Mai ai de exersat. '.repeat(30)}:kind==='active'?{done:false,achieved:[0],turn:1,maxTurns:10,sessionToken:'fixture'}:null;
-  const flow={session,messages:kind==='active'?[{role:'assistant',text:'Hei! Hva vil du bestille?'},{role:'user',text:'En kaffe, takk.'},{role:'assistant',text:'Vil du ha en liten eller stor kaffe?'}]:[],draft:'',busy:false,progress:{},reset(){},start(){},again(){}};
+  const session=kind==='result'?{done:true,achieved:[0],turn:10,maxTurns:10,endReason:'turn_limit',feedback:'Mai ai de exersat. '.repeat(30)}:kind.startsWith('active')?{done:false,achieved:[0],turn:1,maxTurns:10,sessionToken:'fixture'}:null;
+  const flow={session,messages:kind.startsWith('active')?[{role:'assistant',text:'Hei! Hva vil du bestille?'},{role:'user',text:'En kaffe, takk.'},{role:'assistant',text:kind==='active-long'?'Et lengre svar. '.repeat(200):'Vil du ha en liten eller stor kaffe?'}]:[],draft:'',busy:false,progress:{},reset(){},start(){},again(){}};
   globalThis.window={SpeechRecognition:class {}};
   const html=renderToStaticMarkup(React.createElement(MemoryRouter,null,React.createElement(installed?Mobile:Desktop,{level:'C2',path:{id:'transport'},scenarios:[selected],selected,flow})));
   delete globalThis.window;
@@ -43,12 +43,38 @@ try{
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),JSON.stringify({installed,width,height,kind}));
   const background=await page.evaluate(()=>[document.documentElement,document.body,document.querySelector('#root'),document.querySelector('.App'),document.querySelector('.App__main')].map(e=>getComputedStyle(e).backgroundColor));
   assert.ok(background.every(c=>c===background[0]),'uniform outer canvas');
-  const image=page.locator(kind==='result'?'.studio-result-art':'.conversation-intro');
+  const image=page.locator(kind==='result'?'.studio-result-art':'.studio-header-title');
   const box=await image.boundingBox();assert.ok(box.width>100&&box.height>0,'heading and result remain visible');
+  assert.equal(await page.locator('.conversation-intro').count(),0,'no duplicate large scenario title');
+  assert.equal(await page.locator('.studio-top #guided-scenario-title').count(),1,'scenario title remains in the top bar');
+  if(kind!=='result')assert.equal(await page.locator('h1').count(),1,'one scenario heading');
+  if(kind==='ready'&&height>=640){
+   const layout=await page.evaluate(()=>{
+    const header=document.querySelector('.studio-top').getBoundingClientRect();
+    const top=document.querySelector('.studio-progress').getBoundingClientRect().top;
+    const bottom=document.querySelector('.guided-dialogue').getBoundingClientRect().bottom;
+    const content=document.querySelector('.practical-dialogue-content').getBoundingClientRect();
+    const dock=document.querySelector('.practical-dialogue-dock').getBoundingClientRect();
+    return {height:document.documentElement.scrollHeight,viewport:innerHeight,top,bottom,headerBottom:header.bottom,dockBottom:dock.bottom,contentBottom:content.bottom,center:(top+bottom)/2,availableCenter:(content.top+content.bottom)/2};
+   });
+   assert.ok(layout.height<=height+1,'short scenario fits viewport '+JSON.stringify(layout));
+   assert.ok(layout.top>=layout.headerBottom,'dialogue clears its top title');
+   assert.ok(Math.abs(layout.dockBottom-layout.contentBottom)<=1,'controls stay at the bottom '+JSON.stringify(layout));
+  }
+  if(kind!=='result'){
+   assert.equal(await page.locator('.studio-finish').count(),0,'no end-conversation button');
+   assert.equal(await page.locator('.practical-dialogue-dock .studio-hint-trigger').count(),1,'hint sits with the bottom controls');
+   const row=await page.locator('.practical-dialogue-dock .airy-actions').evaluate(el=>{
+    const mid=selector=>{const r=el.querySelector(selector).getBoundingClientRect();return r.x+r.width/2};
+    return {hint:mid('.airy-help'),mic:mid('.scenario-voice__mic'),write:mid('.airy-end')};
+   });
+   assert.ok(row.hint<row.mic&&row.mic<row.write,'hint, microphone and write appear in order');
+  }
+  if(kind==='active-long')assert.ok(await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight),'long transcript stays scrollable');
   const controls=kind==='result'?page.getByRole('link',{name:'Vezi recapitularea'}):page.locator('.scenario-voice__mic');
   await controls.scrollIntoViewIfNeeded();assert.ok(await controls.isVisible());
   if(kind==='result')assert.equal(await controls.getAttribute('href'),'/recapitulare?nivel=C2');
-  if(kind==='active'&&width===390&&installed){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:resolve(root,'node_modules/.cache/scenario-active.png'),fullPage:true});}
+  if((kind==='active'||kind==='ready')&&width===390&&installed){await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:resolve(root,'node_modules/.cache/scenario-'+kind+'.png'),fullPage:true});}
   await page.evaluate(()=>document.querySelector('.App__main').innerHTML='<p>Jocuri</p>');
   assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--exercise-canvas').trim()),'');
   assert.equal(await page.locator('textarea,input[type=text]').count(),0);
