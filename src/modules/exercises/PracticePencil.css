@@ -3,9 +3,11 @@
 .practice-overview--pencil{flex:1;grid-template-rows:auto minmax(min-content,1fr) auto;gap:8px}
 .practice-overview--pencil .practice-header{min-height:0;padding-top:max(6px,env(safe-area-inset-top))}
 .practice-overview--pencil .practice-top{margin-bottom:0}
+.practice-overview--pencil .practice-heading{padding:8px 4px 2px}
+.practice-overview--pencil .practice-heading h1{max-width:none;font-size:clamp(25px,7.6cqw,30px);line-height:1.1}
 .practice-overview--pencil .practice-rows{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(min-content,1fr));gap:7px}
 .practice-overview--pencil .practice-row{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;min-width:0;min-height:0;padding:6px 10px 7px;border-radius:14px;background:#fff;box-shadow:0 2px 8px #183c4505}
-.practice-overview--pencil .practice-art{width:100%;max-width:none;height:clamp(62px,10dvh,102px);aspect-ratio:auto;border-radius:0;flex:none;overflow:hidden}
+.practice-overview--pencil .practice-art{width:100%;max-width:none;height:clamp(50px,calc(10dvh - 12px),90px);aspect-ratio:auto;border-radius:0;flex:none;overflow:hidden}
 .practice-overview--pencil .practice-row-copy{flex:0;min-width:0;margin-top:2px}
 .practice-overview--pencil .practice-row strong{font-size:clamp(14px,4.05cqw,16px);line-height:1.15;white-space:normal;letter-spacing:-.35px}
 .practice-overview--pencil .practice-row small{margin-top:4px;font-size:clamp(11px,3.2cqw,13px);line-height:1.2;white-space:normal}
@@ -17,7 +19,7 @@
 html body .practice-hub:has(.practice-overview--pencil)>.mobile-app-nav{position:static;inset:auto;display:grid;flex:none;margin-top:8px}
 @media(max-height:760px){
  .practice-overview--pencil{gap:6px}
- .practice-overview--pencil .practice-art{height:clamp(42px,7.4dvh,58px)}
+ .practice-overview--pencil .practice-art{height:clamp(30px,calc(7.4dvh - 12px),46px)}
  .practice-overview--pencil .practice-row{padding:4px 8px 5px}
  .practice-overview--pencil .practice-rows{gap:5px}
  .practice-card-footer{padding-top:4px}

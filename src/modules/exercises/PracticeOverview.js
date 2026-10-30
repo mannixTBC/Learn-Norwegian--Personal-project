@@ -35,6 +35,7 @@ export default function PracticeOverview({ level, cards = [], activities = [] })
   return <div className="practice-overview practice-overview--pencil">
     <header className="practice-header">
       <div className="practice-top"><Link to="/dashboard" className="practice-brand" aria-label="NordLingo - Acasă"><NorwegianFlagIcon/></Link><ExerciseLevelSelect level={level}/></div>
+      <div className="practice-heading"><h1>Ce vrei să exersezi?</h1></div>
     </header>
     <section className="practice-quick" aria-label="Exerciții de practică"><div className="practice-rows">{rows.map(row => <Link className="practice-row" key={row.id} data-game={row.id} to={row.to}>
       <Artwork type={row.id}/>
