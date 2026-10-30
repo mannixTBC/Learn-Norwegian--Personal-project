@@ -19,7 +19,7 @@ export default function ScenarioCatalog({ scenarios, flow, level, path }) {
   return <>
     <p className="sc-path">Traseul tău: <strong>{activePath.shortTitle}</strong></p>
     <div className="sc-grid" aria-label="Scenarii disponibile">{visible.map(s =>
-      <button type="button" key={s.id} className="sc-card conversation-card" onClick={() => flow.choose(s.id, true)}>
+      <button type="button" key={s.id} className="sc-card conversation-card" onClick={() => flow.choose(s.id)}>
         <StudioSceneArtwork scenarioId={s.id} pathId={s.path} className="sc-card-art" />
         <div className="sc-card-copy"><h2>{names[s.id] || s.title}<span aria-hidden="true">›</span></h2><p>{level} · {s.difficulty?.turns <= 5 ? '3' : '5'} min</p>{flow.progress?.[s.id] && <span className="sc-card-status">{flow.progress[s.id].latest?.endReason === 'success' ? '✓ Reușit' : 'De reluat'}</span>}</div>
       </button>

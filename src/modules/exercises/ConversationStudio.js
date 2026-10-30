@@ -30,7 +30,7 @@ export default function ConversationStudio() {
     const resolved = resolvePublicScenario(source, catalog.levels, level);
     return { ...resolved.scenario, difficulty: resolved.difficulty };
   }), [level, path.id]);
-  const flow = useConversationSession({ userId: user?.id, level, pathId: path.id, scenarios, initialScenarioId: new URLSearchParams(location.search).get('scenariu'), autoStart: new URLSearchParams(location.search).get('porneste') === '1' });
+  const flow = useConversationSession({ userId: user?.id, level, pathId: path.id, scenarios, initialScenarioId: new URLSearchParams(location.search).get('scenariu') });
   const { session, messages, busy, error } = flow;
   const selected = scenarios.find(s => s.id === flow.scenarioId);
   const [hint, setHint] = useState(false);

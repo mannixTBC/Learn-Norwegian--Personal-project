@@ -24,7 +24,7 @@ for(const View of [Mobile,Desktop]){
  const artworkFiles=new Set();
  for(const pathId of new Set(scenarios.map(s=>s.path))){
   let r,chosen;
-  const pathProps={...props,path:{id:pathId},flow:{progress:{},choose:id=>chosen=id}};
+  const pathProps={...props,path:{id:pathId},flow:{progress:{},choose:(id,autoStart)=>{assert.ok(!autoStart,'selecting a card shows the brief without starting AI');chosen=id;}}};
   await act(async()=>{r=TestRenderer.create(wrap(View,pathProps));});
   const expected=scenarios.filter(s=>s.path===pathId);
   const expectedIds=new Set(expected.map(s=>s.id)),seen=new Set();

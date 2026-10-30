@@ -1,8 +1,8 @@
 import React from 'react';
-import NordicStudioArtwork from './NordicStudioArtwork';
 // Illustration regions from the approved reference. Interface content is real HTML.
 const crops = { studioHeader:[350,213,127,140], hero:[53,358,425,195], avatar:[554,283,85,80], situations:[77,578,126,100], microphone:[80,798,122,90], fjord:[826,219,117,130], result:[1240,202,184,164] };
 export default function StudioArtwork({scene='hero',className=''}) {
-  if(scene==='avatar')return <NordicStudioArtwork scene="avatar" className={className}/>;
+  // Use Nora from the conversation studio card on the Practice page.
+  if(scene==='avatar')return <svg className={'studio-art '+className} viewBox="291 724 125 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="/images/practice/ivory-reference.png" width="1461" height="1076"/></svg>;
   return <svg className={'studio-art '+className} viewBox={crops[scene].join(' ')} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="/images/studio/reference.png" width="1476" height="1066"/></svg>;
 }

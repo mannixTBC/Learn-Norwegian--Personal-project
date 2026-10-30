@@ -104,10 +104,24 @@ for (const mode of [false, true]) {
 
   setup();
   const fromLesson=await render('/scenarii?nivel=A1&scenariu=bus-delay&porneste=1');
-  assert.equal(calls.length,1,'lesson recommendation starts once');
-  assert.equal(calls[0].operation,'start');
-  assert.equal(calls[0].body.scenarioId,'bus-delay');
+  assert.equal(calls.length,0,'lesson recommendation shows preparation until the user starts');
+  assert.equal(nodes(fromLesson,'airy-brief').length,1);
+  assert.equal(nodes(fromLesson,'conversation-messages').length,0);
   await unmount(fromLesson);
+  checks++;
+  setup();
+  const preparation=await render();
+  await act(async()=>nodes(preparation,'sc-card')[0].props.onClick());
+  assert.equal(calls.length,0,'opening a catalog card does not request an opening reply');
+  assert.equal(nodes(preparation,'airy-brief').length,1,'scenario is visible before starting');
+  assert.equal(nodes(preparation,'conversation-messages').length,0,'no reply before starting');
+  await act(async()=>nodes(preparation,'scenario-voice__mic')[0].props.onClick());
+  assert.equal(calls.length,1);
+  assert.equal(calls[0].operation,'start');
+  assert.equal(nodes(preparation,'airy-brief').length,0);
+  assert.equal(nodes(preparation,'conversation-messages').length,1,'reply appears after starting');
+  assert.equal(nodes(preparation,'airy-avatar')[0].findByType('image').props.href,'/images/practice/ivory-reference.png','Nora matches the Practice studio card');
+  await unmount(preparation);
   checks++;
   setup();
   const direct=await render();
