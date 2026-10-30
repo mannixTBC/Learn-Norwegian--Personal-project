@@ -44,7 +44,7 @@ export default function FreeConversation({ level }) {
           <div className="airy-message-copy">
             {m.role === 'assistant' && <small>Nora</small>}
             <p lang="nb">{m.text}{m.role === 'assistant' && <button className="airy-replay" aria-label="Ascultă Nora"
-              disabled={!running || status === 'thinking' || status === 'connecting'} onClick={() => voice.replay(m.text)}><StudioIcon name="play"/></button>}</p>
+              disabled={!running || status === 'thinking' || status === 'connecting'} onClick={() => voice.replay(m.text, m.sessionToken)}><StudioIcon name="play"/></button>}</p>
             {m.role === 'assistant' && <StudioTranslation text={m.text} translation={m.translation}/>}
             {m.correction && <details className="conversation-feedback"><summary>O mică corectare</summary>
               <p><span lang="nb">{m.correction.original}</span> → <strong lang="nb">{m.correction.corrected}</strong></p>

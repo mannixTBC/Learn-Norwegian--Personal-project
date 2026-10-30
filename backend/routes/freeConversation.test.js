@@ -6,11 +6,20 @@ test('free conversation: auth, signed ownership, real turns, translations, quota
  let calls=0,quotas=0,records=0,mode='ok',lastPrompt='';ai.isOpenAIConfigured=()=>true;
  usage.consumeChatQuota=async()=>{quotas++;if(mode==='quota')throw Object.assign(new Error('Quota'),{status:429});};usage.recordChatUsage=async()=>{records++;};
  ai.getOpenAI=()=>({chat:{completions:{create:async request=>{calls++;lastPrompt=request.messages[0].content;assert.equal(request.store,false);if(mode==='fail')throw new Error('Unavailable');return {choices:[{finish_reason:'stop',message:{content:request.response_format?JSON.stringify({reply:'Hva liker du å gjøre?',translation:'Ce îți place să faci?',hint:'Spune ce îți place.',examples:[{answer:'Jeg liker kaffe.',translation:'Îmi place cafeaua.'}],correction:null,simplified:false}):'Bună!'}}]};}}}});
+ const speech=require('../cartesiaSpeech');let spoken=[];
+ speech.cartesiaSpeechBuffer=async(text,signal,options)=>{spoken.push({text,options});return Buffer.from('audio');};
  const app=express();app.use(express.json());app.use('/api/chat',require('./chat'));const fetch=inProcessFetch(app);
  const post=(path,body,user='a')=>fetch('http://local/api/chat/'+path,{method:'POST',headers:{'Content-Type':'application/json',...(user?{Authorization:user}:{})},body:JSON.stringify(body)});
  assert.equal((await post('free/start',{level:'A2'},null)).status,401);
  assert.equal((await post('free/start',{level:'invalid'})).status,400);
  const opening=await (await post('free/start',{level:'A2'})).json();assert.equal(calls,0);assert.equal(opening.turn,0);
+ const audio=await post('free/speech',{sessionToken:opening.sessionToken,text:'Untrusted text'});
+ assert.equal(audio.status,200);assert.equal(audio.headers.get('x-audio-provider'),'cartesia');
+ assert.equal(spoken[0].text,opening.reply);
+ assert.equal((await post('free/speech',{sessionToken:opening.sessionToken},null)).status,401);
+ assert.equal((await post('free/speech',{sessionToken:opening.sessionToken},'b')).status,401);
+ assert.equal((await post('free/speech',{sessionToken:opening.sessionToken+'x'})).status,401);
+ assert.equal(spoken.length,1);
  assert.equal((await post('free/turn',{sessionToken:opening.sessionToken,message:'Hei'},'b')).status,401);
  assert.equal((await post('free/turn',{sessionToken:opening.sessionToken+'x',message:'Hei'})).status,401);
  assert.equal((await post('free/turn',{sessionToken:opening.sessionToken,message:''})).status,400);
@@ -23,6 +32,9 @@ test('free conversation: auth, signed ownership, real turns, translations, quota
  const start=await (await post('free/start',{level})).json();assert.equal(start.level,level);assert.ok(start.hint);assert.ok(start.examples.length);assert.equal(verify(start.sessionToken,'a').level,level);
  const result=await (await post('free/turn',{sessionToken:start.sessionToken,message:'Kan du si det enklere?',level:'C2'})).json();assert.equal(result.level,level,'client cannot change the signed level');assert.ok(lastPrompt.includes('selected CEFR level is '+level));assert.ok(result.examples.length);
  }
+ assert.equal((await post('free/speech',{sessionToken:sign({...state,expires:0})})).status,401);
+ assert.equal((await post('free/speech',{sessionToken:turn.sessionToken,slow:true})).status,200);
+ assert.equal(spoken.at(-1).text,turn.reply);assert.equal(spoken.at(-1).options.speed,0.65);
  const beforeFailureRecords=records;
  mode='quota';assert.equal((await post('free/turn',{sessionToken:turn.sessionToken,message:'Hei'})).status,429);
  mode='fail';assert.equal((await post('free/turn',{sessionToken:turn.sessionToken,message:'Hei'})).status,502);assert.equal(records,beforeFailureRecords+1);

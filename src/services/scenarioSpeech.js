@@ -2,10 +2,13 @@ import { supabase } from './supabaseClient';
 import { apiUrl } from './api';
 
 // The server resolves the spoken line from the signed scenario checkpoint.
-export async function speakScenario(sessionToken, { slow = false, messageIndex, signal, onPlaybackStart } = {}) {
+export const speakScenario = (sessionToken, options) => speakSignedReply('/api/scenarios/speech', sessionToken, options);
+export const speakFreeConversation = (sessionToken, options) => speakSignedReply('/api/chat/free/speech', sessionToken, options);
+
+async function speakSignedReply(endpoint, sessionToken, { slow = false, messageIndex, signal, onPlaybackStart } = {}) {
   const auth = supabase ? await supabase.auth.getSession() : null;
   const token = auth?.data?.session?.access_token;
-  const response = await fetch(apiUrl('/api/scenarios/speech'), {
+  const response = await fetch(apiUrl(endpoint), {
     method: 'POST', signal,
     headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
     body: JSON.stringify({ sessionToken, slow, ...(messageIndex === undefined ? {} : { messageIndex }) }),

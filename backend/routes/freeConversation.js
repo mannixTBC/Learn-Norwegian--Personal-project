@@ -3,6 +3,7 @@ const {getOpenAI,isOpenAIConfigured}=require('../openai');
 const {consumeChatQuota,recordChatUsage}=require('../chatUsage');
 const {levels,sign,verify}=require('../freeConversation');
 const {openingFor,promptFor,parseReply}=require('../freeConversationLevels');
+const {cartesiaSpeechBuffer}=require('../cartesiaSpeech');
 const router=express.Router();
 const fail=(message,status=400)=>Object.assign(new Error(message),{status});
 const wrap=fn=>async(req,res)=>{try{await fn(req,res);}catch(e){const status=e.status||502;res.status(status).json({error:status<500?e.message:'Nora nu poate răspunde momentan. Încearcă din nou.'});}};
@@ -18,6 +19,15 @@ router.post('/free/start',wrap(async(req,res)=>{
  const opening=openingFor(level),reply=opening.reply;
  const session={owner:req.userId,level,turn:0,expires:Date.now()+3600000,history:[{role:'assistant',content:reply}]};
  res.json({sessionToken:sign(session),...opening,level,turn:0,done:false});
+}));
+router.post('/free/speech',wrap(async(req,res)=>{
+ const session=verify(req.body?.sessionToken,req.userId);
+ const reply=session.history.at(-1);
+ if(reply?.role!=='assistant')throw fail('Replica nu este disponibila.');
+ const audio=await cartesiaSpeechBuffer(reply.content,undefined,req.body?.slow===true?{speed:0.65}:{});
+ res.set('Content-Type','audio/mpeg');
+ res.set('X-Audio-Provider','cartesia');
+ res.send(audio);
 }));
 router.post('/free/turn',wrap(async(req,res)=>{
  const s=verify(req.body?.sessionToken,req.userId),message=req.body?.message;

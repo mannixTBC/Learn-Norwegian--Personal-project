@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { startFreeConversation, sendFreeConversation } from '../../services/chat';
-import { speakNorwegian } from '../../services/norwegianSpeech';
+import { speakFreeConversation } from '../../services/scenarioSpeech';
 
 export default function useFreeVoiceConversation(level) {
   const [session, setSession] = useState(null);
@@ -73,14 +73,14 @@ export default function useFreeVoiceConversation(level) {
     try { recorder.start(); setStatus('listening'); }
     catch { fail('Microfonul nu a putut porni. Verifică permisiunea și încearcă din nou.'); }
   }
-  async function speak(text = current.current?.reply) {
+  async function speak(text = current.current?.reply, sessionToken = current.current?.sessionToken) {
     if (!active.current || !text) return;
     stopMedia();
     const controller = new AbortController();
     audio.current = controller;
     setStatus('speaking');
     try {
-      const result = await speakNorwegian(text, { voice: 'female', waitForEnd: true,
+      const result = await speakFreeConversation(sessionToken, {
         signal: controller.signal });
       if (controller.signal.aborted) return;
       if (!result.ok) return fail('Vocea nu a putut porni. Apasă Reîncearcă pentru a o asculta pe Nora.');
@@ -104,7 +104,7 @@ export default function useFreeVoiceConversation(level) {
         : await startFreeConversation(level, controller.signal);
       if (controller.signal.aborted) return;
       setMessages(old => [...old, ...(text ? [{ role: 'user', text }] : []),
-        { role: 'assistant', text: result.reply, translation: result.translation, correction: result.correction }]);
+        { role: 'assistant', text: result.reply, sessionToken: result.sessionToken, translation: result.translation, correction: result.correction }]);
       pendingText.current = null;
       current.current = result; setSession(result);
       request.current = null;
@@ -143,5 +143,5 @@ export default function useFreeVoiceConversation(level) {
     void start();
   }
   return { session, messages, status, error, ended, supported, start, pause, finish, restart,
-    replay: text => { if (active.current && !request.current) void speak(text); } };
+    replay: (text, sessionToken) => { if (active.current && !request.current) void speak(text, sessionToken); } };
 }
