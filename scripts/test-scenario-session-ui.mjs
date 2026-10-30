@@ -14,10 +14,12 @@ const outDir = resolve(root, 'node_modules/.cache/scenario-session-ui-tests');
 await build({ configFile: resolve(root, 'vite.config.js'), logLevel: 'error',
   plugins: [{ name: 'scenario-session-services', enforce: 'pre',
     resolveId(id) {
+      if (id.endsWith('/scenarioSpeech')) return 'virtual:session-speech';
       if (id.endsWith('/AuthContext')) return 'virtual:session-auth';
       if (id.endsWith('/supabaseClient')) return 'virtual:session-token';
     },
     load(id) {
+      if (id === 'virtual:session-speech') return 'export const speakScenario = (...args) => globalThis.scenarioTestSpeech(...args);';
       if (id === 'virtual:session-auth') return 'export const useAuth = () => ({ user: globalThis.scenarioTestUser });';
       if (id === 'virtual:session-token') return 'export const supabase = null;';
     },
@@ -34,6 +36,7 @@ globalThis.sessionStorage = storage(temporary);
 globalThis.localStorage = storage(progress);
 globalThis.window = {SpeechRecognition:class{},addEventListener(){},removeEventListener(){},localStorage:globalThis.localStorage};
 globalThis.scenarioTestUser = { id: 'flow-test-user' };
+globalThis.scenarioTestSpeech = async (token, options) => { options.onPlaybackStart(); return {ok:true}; };
 let installed = false, history, handler, calls, nextToken = 0;
 globalThis.document = { documentElement: { classList: { contains: name => installed && name === 'is-installed-app' } } };
 const reply = (status, body) => ({ ok: status >= 200 && status < 300, status, json: async () => body });
@@ -111,6 +114,8 @@ for (const mode of [false, true]) {
   checks++;
   setup();
   const preparation=await render();
+  let beginAudio;
+  globalThis.scenarioTestSpeech = async (token, options) => { beginAudio = options.onPlaybackStart; return {ok:true}; };
   await act(async()=>nodes(preparation,'sc-card')[0].props.onClick());
   assert.equal(calls.length,0,'opening a catalog card does not request an opening reply');
   assert.equal(nodes(preparation,'airy-brief').length,1,'scenario is visible before starting');
@@ -118,10 +123,21 @@ for (const mode of [false, true]) {
   await act(async()=>nodes(preparation,'scenario-voice__mic')[0].props.onClick());
   assert.equal(calls.length,1);
   assert.equal(calls[0].operation,'start');
+  assert.equal(nodes(preparation,'airy-brief').length,1,'brief stays visible while audio loads');
+  assert.equal(nodes(preparation,'conversation-messages').length,0,'server response alone cannot reveal the opening');
+  await act(async()=>beginAudio());
   assert.equal(nodes(preparation,'airy-brief').length,0);
   assert.equal(nodes(preparation,'conversation-messages').length,1,'reply appears after starting');
   assert.equal(nodes(preparation,'airy-avatar')[0].findByType('image').props.href,'/images/practice/ivory-reference.png','Nora matches the Practice studio card');
   await unmount(preparation);
+  const restoredOpening=await render();
+  assert.equal(nodes(restoredOpening,'conversation-messages').length,0,'restoring an opening does not reveal it before playback');
+  assert.equal(nodes(restoredOpening,'airy-brief').length,1);
+  await act(async()=>nodes(restoredOpening,'scenario-voice__mic')[0].props.onClick());
+  await act(async()=>beginAudio());
+  assert.equal(nodes(restoredOpening,'conversation-messages').length,1);
+  await unmount(restoredOpening);
+  globalThis.scenarioTestSpeech = async (token, options) => { options.onPlaybackStart(); return {ok:true}; };
   checks++;
   setup();
   const direct=await render();
@@ -336,6 +352,8 @@ for (const mode of [false, true]) {
   await unmount(r);
   assert.equal(interrupted.signal.aborted, true);
   handler = normal; r = await render();
+  assert.equal(nodes(r, 'airy-message').length, 0, 'restored opening waits for user playback');
+  await act(async()=>nodes(r,'scenario-voice__mic')[0].props.onClick());
   assert.equal(nodes(r, 'airy-message').length, 1);
   assert.equal(voiceFlow(r).draft, 'Et utkast.');
   await act(async () => { gate.resolve(normal('turn', interrupted.body)); });
