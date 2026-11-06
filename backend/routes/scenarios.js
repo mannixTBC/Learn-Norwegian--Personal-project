@@ -13,6 +13,7 @@ router.use(requireAuth);
 const fail = (message, status, code) => Object.assign(new Error(message), { status, code });
 const wrap = fn => async (req, res) => {
   try { await fn(req, res); } catch (error) {
+    console.warn('scenario-request-failed', {route:req.path, status:error.status || 502, code:error.code, name:error.name});
     const status = error.status || 502;
     res.status(status).json({
       error: status < 500 ? error.message : 'Conversația nu este disponibilă momentan. Încearcă din nou.',
@@ -88,7 +89,9 @@ router.post('/turn', wrap(async (req, res) => {
         reference: scenario.definition ? await referenceMessage(req,session,message.trim()) : null,
         onUsage: value => { usage = addUsage(usage, value); },
       });
-    } catch (_) {
+    } catch (error) {
+      console.warn('scenario-turn-failed', {status:error.status, code:error.code, name:error.name,
+        stack:error.stack?.split('\n').slice(1,4).join('\n')});
       // A provider 401/429 is a service error, not a learner authentication/quota error.
       throw fail('Răspunsul nu a putut fi pregătit.', 502, 'SCENARIO_UNAVAILABLE');
     }
