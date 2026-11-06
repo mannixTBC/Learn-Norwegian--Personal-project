@@ -1,5 +1,6 @@
 const {voiceLanguage,currentLanguages,pairId} = require('../languageContext');
 const express = require('express');
+const {lessonSpeech} = require('../lessonSpeech');
 
 const router = express.Router();
 const fetch = typeof globalThis.fetch === 'function' ? globalThis.fetch : require('node-fetch');
@@ -32,6 +33,13 @@ const handleSpeech = async (req, res, next) => {
   const slow = input.slow === true || input.slow === 'true' || input.slow === '1';
   const voice = input.voice === 'female' ? 'female' : 'male';
   const voiceId = voice === 'female' ? ELEVENLABS_FEMALE_VOICE_ID : ELEVENLABS_VOICE_ID;
+
+  if (input.provider === 'cartesia') {
+    try {
+      const result = await lessonSpeech({text, voice, slow, locale: voiceLanguage().speechLocale});
+      return res.set(result.headers).send(result.audio);
+    } catch (error) { return next(error); }
+  }
 
   if (!text || typeof text !== 'string') {
     return res.status(400).json({ error: 'Lipsește textul pentru pronunție.' });

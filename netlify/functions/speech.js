@@ -1,3 +1,5 @@
+const {lessonSpeech} = require('../../backend/lessonSpeech');
+const {catalog, fallback, parsePair, assertReleased} = require('../../backend/languageContext');
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const ELEVENLABS_VOICE_ID = process.env.ELEVENLABS_VOICE_ID;
 // Alice is a premade ElevenLabs voice available through the free API tier.
@@ -35,7 +37,7 @@ const readInput = (event) => {
   if (!event.body) return {};
 
   try {
-    return JSON.parse(event.body);
+    return JSON.parse(event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString('utf8') : event.body);
   } catch (_error) {
     return null;
   }
@@ -47,7 +49,7 @@ exports.handler = async (event) => {
   }
 
   const input = readInput(event);
-  if (!input) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) {
     return jsonResponse(400, { error: 'Cererea nu conține JSON valid.' });
   }
 
@@ -55,6 +57,23 @@ exports.handler = async (event) => {
   const slow = input.slow === true || input.slow === 'true' || input.slow === '1';
   const voice = input.voice === 'female' ? 'female' : 'male';
   const voiceId = voice === 'female' ? ELEVENLABS_FEMALE_VOICE_ID : ELEVENLABS_VOICE_ID;
+
+  if (input.provider === 'cartesia') {
+    try {
+      const headers = Object.fromEntries(Object.entries(event.headers || {}).map(([k, v]) => [k.toLowerCase(), v]));
+      const learningLanguage = headers['x-nordlingo-learning-language'] ?? input.learningLanguage;
+      const supportLanguage = headers['x-nordlingo-support-language'] ?? input.supportLanguage;
+      const version = headers['x-nordlingo-language-version'];
+      if (version && version !== '1') return jsonResponse(400, {error: 'Versiunea configurării limbilor nu este acceptată.'});
+      const pair = assertReleased(learningLanguage !== undefined || supportLanguage !== undefined
+        ? parsePair({learningLanguage, supportLanguage}) : fallback);
+      const result = await lessonSpeech({text, voice, slow, locale: catalog.learning[pair.learningLanguage].speechLocale});
+      return {statusCode: 200, headers: {...result.headers, 'X-NordLingo-Language-Version': '1'},
+        body: result.audio.toString('base64'), isBase64Encoded: true};
+    } catch (error) {
+      return jsonResponse(error.status || 502, {error: error.status ? error.message : 'Replica nu a putut fi generată momentan.'});
+    }
+  }
 
   if (!text || typeof text !== 'string' || !text.trim()) {
     return jsonResponse(400, { error: 'Lipsește textul pentru pronunție.' });
