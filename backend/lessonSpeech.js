@@ -18,7 +18,7 @@ async function lessonSpeech({text, voice = 'male', slow = false, locale = 'no-NO
   if (!key || !voiceId) throw fail('Vocile Cartesia pentru lecții nu sunt configurate.', 503);
   const model = process.env.CARTESIA_LESSON_MODEL_ID || 'sonic-3.6-2026-08-27';
   const version = process.env.CARTESIA_API_VERSION || '2026-08-14';
-  const speed = slow ? 0.75 : 0.94;
+  const speed = slow ? 0.75 : (role === 'female' ? 0.85 : 0.94);
   const transcript = text.trim();
   const cacheKey = JSON.stringify([voiceId, model, version, locale, speed, transcript]);
   let audio = audioCache.get(cacheKey);

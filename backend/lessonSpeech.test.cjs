@@ -10,11 +10,13 @@ test('lesson audio selects roles, caches audio, validates input and preserves pr
     const a=await request({provider:'cartesia',text:'Hei!',voice:'female'});
     assert.equal(a.statusCode,200);assert.equal(a.headers['X-Audio-Provider'],'cartesia');
     assert.equal(calls[0].voice,'anna-test');assert.equal(calls[0].locale,'no-NO');
+    assert.equal(calls[0].generation_config.speed,0.85);
     assert.equal(Buffer.from(a.body,'base64').toString(),'audio');
     const cached=await request({provider:'cartesia',text:'Hei!',voice:'female'});
     assert.equal(cached.headers['X-Audio-Provider'],'cartesia-cache');assert.equal(calls.length,1);
     await request({provider:'cartesia',text:'Hei!',voice:'male'});
     assert.notEqual(calls[1].voice,calls[0].voice);
+    assert.equal(calls[1].generation_config.speed,0.94);
     assert.equal((await request({provider:'cartesia',text:' '})).statusCode,400);
     assert.equal((await request({provider:'cartesia',text:'x'.repeat(3001)})).statusCode,413);
     assert.equal((await request({provider:'cartesia',text:'Hei',learningLanguage:'xx',supportLanguage:'ro'})).statusCode,400);
