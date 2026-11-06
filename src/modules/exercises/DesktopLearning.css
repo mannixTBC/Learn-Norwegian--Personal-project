@@ -1,0 +1,49 @@
+/* Browser layouts use the website's full content width. Installed-app layouts remain separate. */
+html:not(.is-installed-app) body #root .App:has(.desktop-games-hub)>.navbar,
+html:not(.is-installed-app) body #root .App:has(.recap-page)>.navbar{display:block!important}
+html:not(.is-installed-app) body #root .App .desktop-games-hub .exercise-level-select{position:static;transform:none;background:transparent;display:flex;align-items:center;gap:10px}
+html:not(.is-installed-app) body #root .App .recap-page>.mobile-app-nav,
+html:not(.is-installed-app) body #root .App .verb-notebook>.mobile-app-nav{display:none!important}
+html:not(.is-installed-app) body #root .App .recap-page .recap-logo{display:none}
+html:not(.is-installed-app) body #root .App .recap-page .recap-top{justify-content:space-between}
+html:not(.is-installed-app) body #root .App .exercise-screen.recap-page{max-width:1120px;width:calc(100% - 48px);padding:30px 0 48px;min-height:0;height:auto;margin:0 auto}
+html:not(.is-installed-app) body #root .App .recap-hub>.recap-choices{margin-block:24px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.active-recall textarea{display:block;width:100%;min-height:100px;padding:14px;border:1px solid #b9cec7;border-radius:12px;margin:16px 0;background:white;font:inherit}
+.active-recall-workspace aside{padding:20px;border:1px solid #d9e0d5;background:#f1f4eb;border-radius:16px}
+.active-recall-workspace aside ol{padding-left:22px;line-height:2.5}
+.active-recall-workspace [aria-current=step]{font-weight:700;color:#08767b}
+.recall-wordbank{display:flex;flex-wrap:wrap;gap:8px;min-height:60px;padding:12px;margin:14px 0;border:1px dashed #b9cec7;border-radius:12px}
+.active-recall-workspace{display:grid;gap:24px}.active-recall .grammar-paper>div[role=status]{display:grid;gap:16px}
+@media(min-width:861px){
+ html:not(.is-installed-app) body #root .App .conversation-studio.studio-design.natural-conversation{width:calc(100% - 64px);max-width:960px;margin:28px auto;padding:28px 32px}
+ html:not(.is-installed-app) body #root .App .conversation-studio.studio-design.natural-conversation.airy-conversation{min-height:0;height:auto}
+ html:not(.is-installed-app) body #root .App .conversation-studio.studio-design.studio-home,
+ html:not(.is-installed-app) body #root .App .studio-design.practical-catalog.desktop-conversation--catalog{width:calc(100% - 64px);max-width:1120px;height:auto;min-height:0;padding:30px 0 48px;margin:auto;justify-content:flex-start}
+ html:not(.is-installed-app) body #root .App .studio-home>.mobile-app-nav{display:none!important}
+ html:not(.is-installed-app) body #root .App .studio-home .studio-options{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+ html:not(.is-installed-app) body #root .App .studio-home .studio-option{padding:24px;gap:20px}
+ html:not(.is-installed-app) body #root .App .studio-home .studio-option>.studio-option-art{height:230px;aspect-ratio:auto}
+ html:not(.is-installed-app) body #root .App .studio-design.practical-catalog .studio-top{margin-bottom:24px}
+ html:not(.is-installed-app) body #root .App .studio-design.practical-catalog .practical-picker{width:100%;max-width:none;margin:0}
+ html:not(.is-installed-app) .practical-picker{max-width:none}
+ html:not(.is-installed-app) .grammar-menu{grid-template-columns:repeat(3,minmax(0,1fr))}
+ html:not(.is-installed-app) .grammar-guide:not(.active-recall)>.grammar-paper{display:grid;grid-template-columns:1fr 1fr;gap:8px 28px}
+ html:not(.is-installed-app) .grammar-guide:not(.active-recall)>.grammar-paper>:not(.grammar-block){grid-column:1/-1}
+ html:not(.is-installed-app) .grammar-guide .grammar-picker{max-width:440px}
+ html:not(.is-installed-app) .grammar-pager{max-width:540px;margin:24px auto}
+ html:not(.is-installed-app) .summary-complete{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 36px;padding:28px 32px}
+ html:not(.is-installed-app) .summary-complete>.summary-lesson-nav,
+ html:not(.is-installed-app) .summary-complete>.summary-objective{grid-column:1/-1}
+ html:not(.is-installed-app) .summary-complete>.summary-columns{grid-column:1;grid-row:3/5;display:block}
+ html:not(.is-installed-app) .summary-complete>.summary-columns>section{margin-bottom:24px}
+ html:not(.is-installed-app) .summary-complete>.summary-rule,
+ html:not(.is-installed-app) .summary-complete>.summary-dialogue{grid-column:2}
+ html:not(.is-installed-app) .summary-actions{max-width:420px;margin-left:auto}
+ html:not(.is-installed-app) .active-recall-workspace{grid-template-columns:280px minmax(0,1fr);align-items:start}
+ html:not(.is-installed-app) body #root .App .exercise-screen.verb-notebook{width:calc(100% - 48px);max-width:1100px;height:auto;min-height:0;margin:28px auto;padding:28px 32px}
+ html:not(.is-installed-app) body #root .App .word-discovery.word-spelling{width:calc(100% - 48px);max-width:1000px;height:auto;min-height:0;margin:28px auto;padding:28px 32px}
+ html:not(.is-installed-app) .word-spelling .ws-photo{max-width:580px;margin:16px auto}
+ html:not(.is-installed-app) .word-spelling .ws-photo-image{height:240px}
+ html:not(.is-installed-app) .word-spelling .ws-keyboard{max-width:650px;margin-inline:auto}
+}
+@media(max-width:600px){html:not(.is-installed-app) body #root .App .recap-hub>.recap-choices{grid-template-columns:1fr}}

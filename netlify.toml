@@ -44,6 +44,11 @@
   status = 301
 
 [[redirects]]
+  from = "/recapitulare-activa"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
   from = "/invata-limba"
   to = "/invata"
   status = 301

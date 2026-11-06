@@ -30,13 +30,16 @@ export function spellingReducer(state, action) {
 }
 export function createWordSpellingSession(lessons,progress={},random=Math.random){
  const pool=createIllustratedWordQuestions(lessons);
+ const lengths=new Map(pool.map(item=>[item.answer,spellingLetters(item.answer).length]));
+ const byLength=(a,b)=>lengths.get(a.answer)-lengths.get(b.answer);
  const completed=new Set(progress.completed||[]);
  const current=lessons[(progress.unlocked||1)-1]?.id;
  const known=pool.filter(item=>completed.has(item.lessonId)||item.lessonId===current);
+ const knownItems=new Set(known);
  const primary=shufflePractice(known,random);
  // The finite picture bank may not cover five studied words; fill only missing places.
- const remaining=shufflePractice(pool.filter(item=>!known.includes(item)),random).sort((a,b)=>spellingLetters(a.answer).length-spellingLetters(b.answer).length);
- return [...primary,...remaining].slice(0,5).sort((a,b)=>spellingLetters(a.answer).length-spellingLetters(b.answer).length);
+ const remaining=shufflePractice(pool.filter(item=>!knownItems.has(item)),random).sort(byLength);
+ return [...primary,...remaining].slice(0,5).sort(byLength);
 }
 export const initialGuessing = () => ({guessed:[],revealed:[],done:false,correct:false,wrong:0});
 export function guessingReducer(state,action){

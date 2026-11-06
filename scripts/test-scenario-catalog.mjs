@@ -1,115 +1,108 @@
-import { build } from 'vite';
-import { resolve } from 'node:path';
-import { homedir } from 'node:os';
-import { pathToFileURL } from 'node:url';
-import { readFile, readdir } from 'node:fs/promises';
+import {build} from 'vite';
+import {resolve} from 'node:path';
+import {homedir} from 'node:os';
+import {pathToFileURL} from 'node:url';
+import {readFile,readdir} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
-import TestRenderer, { act } from 'react-test-renderer';
-import { MemoryRouter } from 'react-router-dom';
-import { resolvePublicScenario } from '../src/modules/exercises/scenarioDifficulty.mjs';
-const root = resolve(import.meta.dirname, '..');
-const catalog = JSON.parse(await readFile(resolve(root, 'src/modules/exercises/conversationScenarios.json'), 'utf8'));
-const scenarios = catalog.scenarios.map(s => { const r=resolvePublicScenario(s,catalog.levels,'A1'); return {...r.scenario,difficulty:r.difficulty}; });
-const outDir=resolve(root,'node_modules/.cache/scenario-catalog-tests');
-await build({configFile:resolve(root,'vite.config.js'),logLevel:'error',build:{ssr:true,outDir,emptyOutDir:true,rollupOptions:{input:{mobile:resolve(root,'src/modules/exercises/MobileConversationStudio.js'),desktop:resolve(root,'src/modules/exercises/DesktopConversationStudio.js')},output:{entryFileNames:'[name].mjs'}}}});
-const {default:Mobile}=await import(pathToFileURL(resolve(outDir,'mobile.mjs')));
-const {default:Desktop}=await import(pathToFileURL(resolve(outDir,'desktop.mjs')));
-const props={level:'A1',path:{id:'transport'},scenarios,flow:{progress:{},choose(){}}};
-const wrap=(View,p=props)=>React.createElement(MemoryRouter,null,React.createElement(View,p));
-const classes=(r,c)=>r.root.findAll(n=>typeof n.type==='string'&&n.props.className?.split(' ').includes(c));
-for(const View of [Mobile,Desktop]){
- const artworkSeen=new Set();
- const artworkFiles=new Set();
- for(const pathId of new Set(scenarios.map(s=>s.path))){
-  let r,chosen;
-  const pathProps={...props,path:{id:pathId},flow:{progress:{},choose:(id,autoStart)=>{assert.ok(!autoStart,'selecting a card shows the brief without starting AI');chosen=id;}}};
-  await act(async()=>{r=TestRenderer.create(wrap(View,pathProps));});
-  const expected=scenarios.filter(s=>s.path===pathId);
-  const expectedIds=new Set(expected.map(s=>s.id)),seen=new Set();
-  const next=()=>r.root.findByProps({'aria-label':'Pagina urmatoare'});
-  const previous=()=>r.root.findByProps({'aria-label':'Pagina anterioara'});
-  assert.equal(classes(r,'sc-card').length,Math.min(6,expected.length));
-  assert.equal(previous().props.disabled,true);
-  assert.equal(classes(r,'sc-tabs').length,0,'no global category tabs');
-  assert.equal(classes(r,'sc-browse').length,0,'no switch to unrelated career paths');
-  assert.ok(classes(r,'sc-path')[0].findByType('strong').children.length,'active path is visible');
-  do{
-   for(const card of classes(r,'sc-card')){
-    await act(async()=>card.props.onClick());
-    assert.ok(expectedIds.has(chosen),'all pages contain only the selected career path');
-    assert.ok(!seen.has(chosen),'no repeated scenario between pages');
-    seen.add(chosen);
-    const art=card.findByType('svg');
-    const image=art.findByType('image');
-    const crop=art.props.viewBox.split(' ').map(Number);
-    const signature=image.props.href+':'+art.props.viewBox;
-    assert.ok(!artworkSeen.has(signature),chosen+' must have a distinct scene, not the shared path image');
-    assert.match(image.props.href,/^\/images\/studio\/scenarios\/[a-z]+\.webp$/);
-    assert.ok(crop.every(Number.isFinite)&&crop[0]>=0&&crop[1]>=0&&crop[2]>0&&crop[3]>0,'valid artwork crop');
-    assert.ok(crop[0]+crop[2]<=image.props.width&&crop[1]+crop[3]<=image.props.height,'crop stays inside asset');
-    artworkSeen.add(signature);
-    artworkFiles.add(image.props.href);
-   }
-   if(next().props.disabled)break;
-   await act(async()=>next().props.onClick());
-   assert.equal(previous().props.disabled,false);
-  }while(true);
-  assert.equal(seen.size,expectedIds.size,'every scenario in the selected path remains available');
-  await act(async()=>r.update(wrap(View,{...pathProps,level:'B1'})));
-  assert.equal(previous().props.disabled,true,'level change resets pagination');
-  await act(async()=>r.update(wrap(View,{...pathProps,path:{id:'general'}})));
-  for(const card of classes(r,'sc-card')){
-   await act(async()=>card.props.onClick());
-   assert.equal(scenarios.find(s=>s.id===chosen).path,'general','path switch replaces the scenario list');
-  }
-  await act(async()=>r.update(wrap(View,{...pathProps,scenarios:scenarios.filter(s=>s.path!==pathId)})));
-  assert.equal(classes(r,'sc-card').length,0,'an empty path never falls back to unrelated scenarios');
-  assert.ok(r.root.findByProps({role:'status'}));
-  await act(async()=>r.unmount());
- }
- assert.equal(artworkSeen.size,scenarios.length,'every scenario renders its own scene on web and mobile');
- for(const src of artworkFiles){
-  const bytes=await readFile(resolve(root,'public','.'+src));
-  assert.equal(bytes.toString('ascii',0,4),'RIFF','artwork exists as a WebP asset');
-  assert.equal(bytes.toString('ascii',8,12),'WEBP');
- }
+import {renderToStaticMarkup} from 'react-dom/server';
+import TestRenderer,{act} from 'react-test-renderer';
+import {MemoryRouter} from 'react-router-dom';
+import {resolvePublicScenario} from '../src/modules/exercises/scenarioDifficulty.mjs';
+const root=resolve(import.meta.dirname,'..'),out=resolve(root,'node_modules/.cache/android-port');
+await build({logLevel:'error',plugins:[{name:'port-test-auth',enforce:'pre',resolveId(id){if(id.endsWith('/auth/AuthContext'))return 'virtual:port-auth';if(id.endsWith('/norwegianSpeech'))return 'virtual:port-speech';},load(id){if(id==='virtual:port-auth')return 'export const useAuth=()=>({user:{id:"test-user"}})';if(id==='virtual:port-speech')return 'export const speakNorwegian=async()=>({ok:true})';}}],build:{ssr:true,outDir:out,emptyOutDir:true,rollupOptions:{input:{catalog:resolve(root,'src/modules/exercises/StudioCatalogView.js'),grammar:resolve(root,'src/modules/lessons/grammar/GrammarGuide.js'),summary:resolve(root,'src/modules/lessons/SummaryNotebook.js'),studio:resolve(root,'src/modules/exercises/StudioHome.js'),hub:resolve(root,'src/modules/exercises/DesktopGamesHub.js'),recall:resolve(root,'src/modules/lessons/ActiveRecallPage.js'),data:resolve(root,'src/modules/lessons/norwegian-program/lessonContent.js')},output:{entryFileNames:'[name].mjs'}}}});
+const {default:Catalog}=await import(pathToFileURL(resolve(out,'catalog.mjs')));
+const {default:Grammar}=await import(pathToFileURL(resolve(out,'grammar.mjs')));
+const {default:Summary}=await import(pathToFileURL(resolve(out,'summary.mjs')));
+const {default:Studio}=await import(pathToFileURL(resolve(out,'studio.mjs')));
+const {default:Hub}=await import(pathToFileURL(resolve(out,'hub.mjs')));
+const {default:Recall}=await import(pathToFileURL(resolve(out,'recall.mjs')));
+const {courseCatalog}=await import(pathToFileURL(resolve(out,'data.mjs')));
+const {buildActiveRecall,checkRecallOrder,checkRecallResponse}=await import('../src/modules/lessons/activeRecall.js');
+for(const course of Object.values(courseCatalog))for(const lesson of course.lessons){
+ const plan=buildActiveRecall(lesson);
+ assert.ok(checkRecallOrder(plan,plan.order.answerText.split(/\s+/)));
+ assert.equal(checkRecallResponse(plan,plan.response.model),'matched');
+ assert.equal(checkRecallResponse(plan,'Un raspuns diferit'),'compare');
 }
-const assets=resolve(root,'dist/assets');
-const css=(await Promise.all((await readdir(assets)).filter(n=>n.endsWith('.css')).map(n=>readFile(resolve(assets,n),'utf8')))).join('\n');
+const catalog=JSON.parse(await readFile(resolve(root,'src/modules/exercises/conversationScenarios.json'),'utf8'));
+const scenarios=catalog.scenarios.map(s=>{const r=resolvePublicScenario(s,catalog.levels,'A1');return {...r.scenario,difficulty:r.difficulty};});
+const store=new Map();globalThis.localStorage={getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)};
+const wrap=(Component,props={},url='/')=>React.createElement(MemoryRouter,{initialEntries:[url]},React.createElement(Component,props));
+const text=n=>n.children.map(c=>typeof c==='string'?c:text(c)).join('');
+const button=(view,label)=>view.root.findAllByType('button').find(b=>text(b).includes(label));
+let chosen,started;
+const props={level:'A1',path:{id:'transport',shortTitle:'Transport'},scenarios,learning:{stage:1,completed:[]},flow:{progress:{},choose:(id,auto)=>{chosen=id;started=auto;}}};
+let view;await act(async()=>{view=TestRenderer.create(wrap(Catalog,props));});
+assert.ok(JSON.stringify(view.toJSON()).includes('noul vecin'),'daily life is the default');
+assert.equal(chosen,undefined,'preview never starts a conversation');
+await act(async()=>button(view,'Începe conversația').props.onClick());
+assert.equal(chosen,'general-introduction');assert.equal(started,true);
+await act(async()=>button(view,'Transport').props.onClick());
+await act(async()=>button(view,'Începe conversația').props.onClick());assert.equal(chosen,'transport-introduction');
+const seen=new Set();
+for(let i=0;i<20;i++){
+ const row=view.root.findByProps({className:'practical-alternatives'});
+ for(const b of row.findAllByType('button'))seen.add(text(b));
+ await act(async()=>button(view,'Alte situații').props.onClick());
+}
+assert.equal(seen.size,scenarios.filter(s=>s.path==='transport').length-1,'rotation reaches every alternative');
+await act(async()=>view.unmount());
+await act(async()=>{view=TestRenderer.create(wrap(Grammar,{level:'A1'},'/gramatica?nivel=A1&capitol=sentences'));});
+assert.ok(JSON.stringify(view.toJSON()).includes('Unde stă verbul?'));
+await act(async()=>button(view,'Exersează regula').props.onClick());
+for(let i=0;i<3;i++){
+ const choices=view.root.findByProps({className:'grammar-options'}).findAllByType('button');
+ await act(async()=>choices[0].props.onClick());
+ await act(async()=>button(view,'Continuă').props.onClick());
+}
+assert.equal(store.size,1,'only a completed session is persisted');
+assert.ok([...store.keys()][0].includes('test-user:nb:sentences:word-order'));
+await act(async()=>view.unmount());
+await act(async()=>{view=TestRenderer.create(wrap(Recall,{},'/recapitulare-activa?nivel=A1&lectie=1'));});
+const plan=buildActiveRecall(courseCatalog.A1.lessons[0]);
+await act(async()=>view.root.findByType('textarea').props.onChange({target:{value:plan.expression.answer}}));
+await act(async()=>button(view,'Verific').props.onClick());
+await act(async()=>button(view,'Continu').props.onClick());
+await act(async()=>view.root.findByProps({className:'grammar-options'}).findAllByType('button')[plan.rule.answer].props.onClick());
+await act(async()=>button(view,'Verific').props.onClick());
+await act(async()=>button(view,'Continu').props.onClick());
+for(const word of plan.order.answerText.split(/\s+/)){
+ const bank=view.root.findAllByProps({className:'recall-wordbank'})[1];
+ const token=bank.findAllByType('button').find(b=>!b.props.disabled&&b.children.join('')===word);
+ assert.ok(token,`answer token ${word} is available`);
+ await act(async()=>token.props.onClick());
+}
+await act(async()=>button(view,'Verific').props.onClick());
+await act(async()=>button(view,'Continu').props.onClick());
+await act(async()=>view.root.findByType('textarea').props.onChange({target:{value:plan.response.model}}));
+await act(async()=>button(view,'Verific').props.onClick());
+await act(async()=>button(view,'Continu').props.onClick());
+assert.ok(view.root.findAllByType('a').some(a=>a.props.href.includes('/sumar-lectii')),'completion links back to the lesson summary');
+await act(async()=>view.unmount());
+const assets=resolve(root,'dist/assets'),css=(await Promise.all((await readdir(assets)).filter(n=>n.endsWith('.css')).map(n=>readFile(resolve(assets,n),'utf8')))).join('\n');
 const {chromium}=await import(pathToFileURL(resolve(homedir(),'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs')));
 const browser=await chromium.launch({headless:true,...(process.platform==='win32'?{executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'}:{})});
+let checks=0;
 try{
  const page=await browser.newPage();
- await page.route('http://scenario.test/**',async route=>{
-   try {
-    const pathname=new URL(route.request().url()).pathname;
-    if(!pathname.startsWith('/branding/')&&!pathname.startsWith('/images/'))return route.fulfill({contentType:'text/html',body:'<html></html>'});
-    const body=await readFile(resolve(root,'public','.'+pathname));
-    return route.fulfill({contentType:pathname.endsWith('.webp')?'image/webp':'image/png',body});
-   }catch{return route.fulfill({status:404,body:''});}
-  });
- await page.goto('http://scenario.test/');
- for(const installed of [false,true]) for(const [width,height] of [[360,640],[390,844],[1366,900],[740,360]]){
+ await page.route('http://port.test/**',async route=>{
+  const url=new URL(route.request().url());
+  try{await route.fulfill({body:await readFile(resolve(root,'public','.'+url.pathname))});}catch{await route.abort();}
+ });
+ const fixtures=[['studio',()=>wrap(Studio,{},'/studio?nivel=A1')],['hub',()=>wrap(Hub,{level:'A1',reviewStats:{due:4}})],['recall',()=>wrap(Recall,{},'/recapitulare-activa?nivel=A1&lectie=1')],['catalog',()=>wrap(Catalog,props)],['grammar',()=>wrap(Grammar,{level:'A1'},'/gramatica?nivel=A1&capitol=sentences')],['nouns',()=>wrap(Grammar,{level:'A1'},'/gramatica?nivel=A1&capitol=nouns')],['summary',()=>React.createElement('section',{className:'exercise-screen recap-page recap-summary'},wrap(Summary,{level:'A1'},'/sumar-lectii?nivel=A1&lectie=1'))]];
+ for(const installed of [false,true])for(const [width,height] of [[360,640],[390,844],[1366,900]])for(const [name,render] of fixtures){
   await page.setViewportSize({width,height});
-  for(const kind of ['normal','long','empty']){
-   const data=kind==='empty'?[]:kind==='long'?scenarios.map(s=>({...s,title:s.title+' — o situație cu mai multe detalii de discutat',place:s.place+' și detalii suplimentare pentru această conversație'})):scenarios;
-   const html=renderToStaticMarkup(wrap(installed?Mobile:Desktop,{...props,scenarios:data}));
-   await page.setContent('<html class="'+(installed?'is-installed-app':'')+'"><head><base href="http://scenario.test/"><style>'+css+'</style></head><body><div id="root"><div class="App"><main class="App__main">'+html+'</main></div></div></body></html>');
-   if(!installed&&width===390&&kind==='normal')await page.screenshot({path:resolve(outDir,'selected-path.png'),fullPage:true});
-   const result=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,height:innerHeight,scrollHeight:document.documentElement.scrollHeight,canvas:[document.documentElement,document.body,document.getElementById('root'),document.querySelector('.App'),document.querySelector('.App__main')].map(e=>getComputedStyle(e).backgroundColor)}));
-   assert.ok(result.scrollWidth<=width+1,JSON.stringify({installed,width,height,kind,result}));
-   assert.ok(result.canvas.every(c=>c==='rgb(253, 253, 249)'),JSON.stringify(result));
-   if(kind==='empty'&&height>=640)assert.ok(result.scrollHeight<=height+1,JSON.stringify({installed,width,height,kind,result}));
-   for(const card of await page.locator('.sc-card').all()){
-    const overflow=await card.evaluate(e=>({h:e.clientHeight,sh:e.scrollHeight,w:e.clientWidth,sw:e.scrollWidth}));
-    assert.ok(overflow.sh<=overflow.h+1&&overflow.sw<=overflow.w+1,JSON.stringify(overflow));
-   }
-   if(await page.locator('.sc-start').count())await page.locator('.sc-start').scrollIntoViewIfNeeded();
+  await page.setContent(`<html class="${installed?'is-installed-app':''}"><head><base href="http://port.test/"><style>${css}</style></head><body><div id="root"><div class="App"><main class="App__main">${renderToStaticMarkup(render())}</main></div></div></body></html>`);
+  const actual=await page.evaluate(()=>document.documentElement.scrollWidth);
+  assert.ok(actual<=width+2,`${name}: horizontal overflow ${actual} at ${width}, installed=${installed}`);
+  if((width===390||width===1366)&&!installed)await page.screenshot({path:resolve(out,`nordlingo-port-${name}-${width}.png`),fullPage:true});
+  if(['catalog','studio'].includes(name)&&width===1366&&!installed)assert.ok(await page.locator('.conversation-studio').evaluate(e=>e.getBoundingClientRect().width)>1000,'studio uses desktop width');
+  if(name==='hub'&&width===1366&&!installed){
+   assert.ok(await page.locator('.desktop-games-hub').evaluate(e=>e.getBoundingClientRect().width)>1000,'desktop hub uses website width');
+   assert.equal(await page.locator('.desktop-games-hub__grid').evaluate(e=>getComputedStyle(e).gridTemplateColumns.split(' ').length),3);
   }
-  await page.evaluate(()=>document.querySelector('.App__main').innerHTML='<div>Jocuri</div>');
-  assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--exercise-canvas').trim()),'');
+  checks++;
  }
 }finally{await browser.close();}
-console.log('PASS: catalog filtering, ordering, paging, selection, context reset, empty states; responsive web/app layouts, long content and navigation cleanup.');
+console.log(`PASS: scenario selection/rotation, grammar completion/persistence, ${checks} web/installed layout checks.`);

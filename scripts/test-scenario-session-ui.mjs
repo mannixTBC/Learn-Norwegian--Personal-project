@@ -116,7 +116,7 @@ for (const mode of [false, true]) {
   const preparation=await render();
   let beginAudio;
   globalThis.scenarioTestSpeech = async (token, options) => { beginAudio = options.onPlaybackStart; return {ok:true}; };
-  await act(async()=>nodes(preparation,'sc-card')[0].props.onClick());
+  await act(async()=>preparation.root.find(n=>typeof n.type==='function'&&n.props.flow&&n.props.scenarios).props.flow.choose('bus-delay'));
   assert.equal(calls.length,0,'opening a catalog card does not request an opening reply');
   assert.equal(nodes(preparation,'airy-brief').length,1,'scenario is visible before starting');
   assert.equal(nodes(preparation,'conversation-messages').length,0,'no reply before starting');
@@ -152,7 +152,7 @@ for (const mode of [false, true]) {
   assert.equal(calls.length,0,'a recap link selects preparation without starting AI');
   await unmount(linked);
   linked = await render('/scenarii?nivel=A1&scenariu=unknown');
-  assert.ok(nodes(linked,'conversation-card').length);
+  assert.ok(nodes(linked,'practical-picker').length);
   await unmount(linked);
   setup();
   linked = await start();
@@ -283,7 +283,7 @@ for (const mode of [false, true]) {
   assert.equal(waiting.signal.aborted, true);
   assert.equal(temporary.size, 0);
   await act(async () => { gate.resolve(normal('turn', waiting.body)); });
-  assert.equal(nodes(r, 'sc-grid').length, 1);
+  assert.equal(nodes(r, 'practical-picker').length, 1);
   assert.equal(nodes(r, 'conversation-messages').length, 0);
   handler = normal; await choose(r); await click(r, 'Începe conversația');
   await write(r, 'Hei'); gate = deferred(); handler = () => gate.promise; await send(r);
@@ -291,7 +291,7 @@ for (const mode of [false, true]) {
   await act(async () => history.push('/scenarii?nivel=C2'));
   assert.equal(levelPending.signal.aborted, true);
   await act(async () => { gate.resolve(normal('turn', levelPending.body)); });
-  assert.equal(nodes(r, 'sc-grid').length, 1);
+  assert.equal(nodes(r, 'practical-picker').length, 1);
   globalThis.scenarioTestUser = { id: 'different-user' };
   await act(async () => history.push('/scenarii?nivel=A1'));
   assert.equal(nodes(r, 'conversation-messages').length, 0);
@@ -365,7 +365,7 @@ for (const mode of [false, true]) {
   assert.equal(nodes(r,'studio-finish').length,0);
   await click(r,'Înapoi la situații');
   assert.equal(temporary.size,0);
-  assert.equal(nodes(r,'sc-grid').length,1);
+  assert.equal(nodes(r,'practical-picker').length,1);
   assert.equal([...progress.keys()].filter(k=>k.startsWith('scenario_result_v1_')).length,0);
   await unmount(r);checks++;
 

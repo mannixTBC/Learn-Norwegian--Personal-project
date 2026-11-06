@@ -1202,11 +1202,25 @@ export const wordDiscoveryCatalog = [
   }
 ];
 
+const illustratedPools = new WeakMap();
+const normalizeWord = value => value.toLocaleLowerCase('nb-NO').replace(/^(en|ei|et|å)\s+/u, '').trim();
 export const createIllustratedWordQuestions = (lessons) => {
-  const normalize = value => value.toLocaleLowerCase('nb-NO').replace(/^(en|ei|et|å)\s+/u, '').trim();
-  const vocabulary = lessons.flatMap(lesson => lesson.vocabulary.map(([word, translation, example]) => ({ word: normalize(word), lessonId: lesson.id, example })));
-  return wordDiscoveryCatalog.map(item => {
-    const source = vocabulary.find(entry => entry.word === item.answer);
-    return { ...item, type: 'word', lessonId: source?.lessonId || null, example: source?.example || item.answer };
-  });
+  // Curriculum arrays are immutable for the lifetime of their loaded level.
+  // Cache content only: progress and random selection are applied per session.
+  let pool = illustratedPools.get(lessons);
+  if (!pool) {
+    const vocabulary = new Map();
+    for (const lesson of lessons) for (const [word, , example] of lesson.vocabulary) {
+      const normalized = normalizeWord(word);
+      // Preserve the first authored occurrence, matching the former find().
+      if (!vocabulary.has(normalized)) vocabulary.set(normalized, {lessonId: lesson.id, example});
+    }
+    pool = wordDiscoveryCatalog.map(item => {
+      const source = vocabulary.get(item.answer);
+      return {...item, type:'word', lessonId:source?.lessonId || null, example:source?.example || item.answer};
+    });
+    illustratedPools.set(lessons, pool);
+  }
+  // Session consumers receive independent records; no answer state is shared.
+  return pool.map(item => ({...item}));
 };

@@ -4,6 +4,7 @@ import './App.css';
 import './modules/exercises/GameBrand.css';
 import './modules/exercises/DesktopPractice.css';
 import './modules/exercises/ExerciseCanvas.css';
+import './modules/exercises/DesktopLearning.css';
 
 import Navbar from './modules/layout/Navbar/Navbar';
 import Footer from './modules/layout/Footer/Footer';

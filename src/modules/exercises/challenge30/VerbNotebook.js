@@ -36,7 +36,7 @@ export default function VerbNotebook({level,userId,requested}){
  const advance=()=>{if(!checked||!lock.current)return;lock.current=false;if(index===total-1){setStage('result');return;}setIndex(i=>i+1);setSelected(null);setChecked(false);setHint(false);setHelped(false);};
  const another=()=>{setRound(nextRound(verb.id));setStage('learn');setIndex(0);setSelected(null);setChecked(false);setAnswers([]);setHint(false);setHelped(false);setSaveError('');lock.current=false;saved.current=false;started.current=Date.now();};
  return <section className="exercise-screen verb-notebook" data-stage={stage}>
-  <header className="vn-header"><Link className="vn-back" to={'/recapitulare-azi?nivel='+level} aria-label="Înapoi la recapitulare">‹</Link><Link className="vn-brand" to="/dashboard" aria-label="NordLingo - Acasă"><NorwegianFlagIcon/></Link><ExerciseLevelSelect level={level}/></header>
+  <header className="vn-header"><Link className="vn-back" to={'/gramatica?nivel='+level} aria-label="Înapoi la gramatică">‹</Link><Link className="vn-brand" to="/dashboard" aria-label="NordLingo - Acasă"><NorwegianFlagIcon/></Link><ExerciseLevelSelect level={level}/></header>
   {(stage==='exercise'||stage==='result')&&<>
   <div className="vn-step"><span>{stage==='learn'?'1 · Învață':stage==='exercise'?'2 · Exersează':'Rundă încheiată'}</span>{stage==='exercise'&&<><progress aria-label="Progres" value={index+1} max={total}/><span>{index+1} / {total}</span></>}</div>
   <header className="vn-title"><div><h1 ref={heading} tabIndex={-1}>{stage==='result'?'Bravo, ai exersat!':verb.infinitive}</h1><p>{stage==='result'?verb.infinitive+' · '+verb.translation:verb.translation}</p></div></header>

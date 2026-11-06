@@ -26,7 +26,7 @@ export default function ConversationStudio() {
   const level = getLearningLevel(location.search);
   const learning = readStudioLearning(level, user);
   const path = getCareerPath(getCareerProfile(user)?.pathId);
-  const scenarios = useMemo(() => catalog.scenarios.filter(source => source.path === path.id).map(source => {
+  const scenarios = useMemo(() => catalog.scenarios.filter(source => source.path === path.id || source.path === 'general').map(source => {
     const resolved = resolvePublicScenario(source, catalog.levels, level);
     return { ...resolved.scenario, difficulty: resolved.difficulty };
   }), [level, path.id]);

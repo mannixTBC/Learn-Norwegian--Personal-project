@@ -8,6 +8,7 @@ const { MAX_TURNS, verifySession: verifyChatSession, commandFor } = require('../
 const { createVoiceStreamTicket } = require('../voiceStreamTicket');
 const { cartesiaConfigured, cartesiaSpeechBuffer } = require('../cartesiaSpeech');
 const { decidePrimaryTranscript, decideAmbiguousTranscript, questionKind, normalizeTranscriptForQuestion } = require('../voiceTranscriptDecision');
+const { deepgramEnabled, transcribeDeepgram } = require('../deepgramTranscription');
 const router = express.Router();
 const starts = new Map();
 const operations = new Map();
@@ -142,6 +143,7 @@ const transcriptionContext = (question) => {
 };
 
 const transcribeAudio = async ({ bytes, mimeType, extension, languages = [], prompt = '', keywords = [] }) => {
+  if (deepgramEnabled()) return transcribeDeepgram({ audio: bytes, mimeType, detectLanguages: languages });
   const form = new FormData();
   form.append('file', new Blob([bytes], { type: mimeType }), `answer.${extension}`);
   form.append('model', process.env.OPENAI_VOICE_STT_MODEL || 'gpt-transcribe');

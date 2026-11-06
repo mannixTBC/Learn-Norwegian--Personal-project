@@ -95,6 +95,8 @@ for (const mode of [false, true]) {
       assert.equal(renderer.root.findByProps({ id: 'mc-objective-list' }).props.hidden, true);
     }
     await act(async () => classNodes(renderer, 'conversation-primary')[0].props.onClick());
+    // Audio is mocked here: expose the opening only when playback reports it audible.
+    await act(async () => renderer.root.find(n => typeof n.type === 'function' && n.props.onOpeningVisible).props.onOpeningVisible());
     assert.deepEqual(calls.at(-1), { scenarioId: 'bus-delay', level });
     assert.equal(answerFocusCount, 0, 'voice-first practice does not focus the hidden text composer');
     if (mode) {
@@ -147,24 +149,24 @@ for (const mode of [false, true]) {
  installed = mode;
  for (const pathId of new Set(catalog.scenarios.map(s => s.path))) {
   storage.set('norwegian_career_profile_scenario-ui-test', JSON.stringify({pathId}));
-  const foreign = catalog.scenarios.find(s => s.path !== pathId);
+  const foreign = catalog.scenarios.find(s => s.path !== pathId && s.path !== 'general');
   const beforeCalls = calls.length;
   const renderer = await render('A2', '&scenariu=' + foreign.id + '&porneste=1');
   const view = () => renderer.root.find(n => typeof n.type === 'function' && n.props.flow && n.props.scenarios);
   assert.ok(view().props.scenarios.length > 0);
-  assert.ok(view().props.scenarios.every(s => s.path === pathId), 'controller supplies only the saved career path');
+  assert.ok(view().props.scenarios.every(s => s.path === pathId || s.path === 'general'), 'controller supplies daily life and the saved career path');
   assert.equal(view().props.selected, undefined, 'a foreign deep link does not select a scenario');
   assert.equal(calls.length, beforeCalls, 'a foreign deep link does not auto-start a request');
   await act(async () => view().props.flow.choose(foreign.id, true));
   assert.equal(view().props.selected, undefined, 'foreign choices are ignored');
   assert.equal(calls.length, beforeCalls);
-  await act(async () => view().props.flow.choose(view().props.scenarios[0].id));
+  await act(async () => view().props.flow.choose(view().props.scenarios.find(s=>s.path===pathId).id));
   assert.equal(view().props.selected.path, pathId);
   const nextPath = pathId === 'general' ? 'transport' : 'general';
   storage.set('norwegian_career_profile_scenario-ui-test', JSON.stringify({pathId:nextPath}));
   await act(async () => history.push('/scenarii?nivel=A2'));
   assert.equal(view().props.selected, undefined, 'changing career path clears the previous scenario');
-  assert.ok(view().props.scenarios.every(s => s.path === nextPath));
+  assert.ok(view().props.scenarios.every(s => s.path === nextPath || s.path === 'general'));
   await act(async () => renderer.unmount());
  }
 }

@@ -1,4 +1,5 @@
 import RecapHub, {LessonSummary, GrammarPage} from '../modules/lessons/RecapHub';
+import ActiveRecall from '../modules/lessons/ActiveRecallPage';
 import StudioHome from '../modules/exercises/StudioHome';
 import ConversationStudio from '../modules/exercises/ConversationStudio';
 import SectionFinalTest from '../modules/lessons/SectionFinalTest';
@@ -60,6 +61,7 @@ const WorkMissions = ConversationStudio;
 
 /** Rutele aplicației, ordonate după secțiune */
 const routes = [
+  { path: '/recapitulare-activa', exact: true, component: ActiveRecall, protected: true },
   { path: '/gramatica', exact: true, component: GrammarPage, protected: true },
   { path: '/recapitulare-azi', exact: true, component: RecapHub, protected: true },
   { path: '/sumar-lectii', exact: true, component: LessonSummary, protected: true },

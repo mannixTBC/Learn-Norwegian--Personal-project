@@ -1,0 +1,18 @@
+html body #root .App .exercise-screen.grammar-guide{padding-bottom:max(24px,env(safe-area-inset-bottom));max-width:800px}
+.grammar-heading,.grammar-pager{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:12px 0 20px}
+.grammar-picture{display:block;width:100%;max-width:280px;height:180px;object-fit:contain;margin:10px auto}
+.grammar-heading a{color:#17666a;min-height:44px;display:flex;align-items:center}
+.grammar-paper{background:#fffdf6;border:1px solid #ded8c8;border-radius:20px;padding:clamp(16px,4vw,30px);box-shadow:0 4px 16px #30484108}
+.grammar-paper h1{font:700 clamp(26px,5vw,36px) Georgia,serif}
+.grammar-paper h3{font:600 18px Georgia,serif}.grammar-paper p{line-height:1.5}
+.grammar-guide button{min-height:44px;border:1px solid #b9cec7;border-radius:12px;padding:10px 14px;color:#16474c;background:#f4f6ed;cursor:pointer}
+.grammar-guide button:disabled{cursor:default;opacity:.6}
+.grammar-guide button[aria-pressed=true],.grammar-guide .grammar-primary{background:#08767b;color:white}
+.grammar-guide button:focus-visible,.grammar-guide select:focus-visible{outline:3px solid #08767b;outline-offset:3px}
+.grammar-picker{display:grid;gap:6px;margin:12px 0}.grammar-picker select{min-height:44px;max-width:100%;padding:10px;border:1px solid #b9cec7;border-radius:12px;background:white}
+.grammar-tabs,.grammar-options{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.grammar-block{margin:20px 0}.grammar-block small,.grammar-tokens small{display:block;color:#536a6b;margin-top:5px}
+.grammar-table-wrap{overflow-x:auto}.grammar-block table{border-collapse:collapse;width:100%}.grammar-block td,.grammar-block th{padding:12px;text-align:left;border-bottom:1px solid #dfdfd2}
+.grammar-tokens{display:flex;flex-wrap:wrap;gap:8px}.grammar-tokens>span{padding:12px;background:#f0ece1;border-radius:12px;text-align:center}
+.grammar-tokens .verb,.grammar-block .sage{background:#e0ecdf}.grammar-tokens .focus,.grammar-block .sand{background:#f1e2c2}
+.grammar-reminder{background:#eef1e7;padding:14px;border-radius:12px}.grammar-menu{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}.grammar-menu a{padding:18px;border:1px solid #d6ded1;border-radius:16px;background:#fffdf6;color:#18474a}.grammar-menu strong,.grammar-menu small{display:block}.grammar-menu small{margin-top:8px}

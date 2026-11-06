@@ -18,11 +18,13 @@ export function readScenarioProgress(storage, userId, level, scenarios) {
   const outdated = new Set();
   try {
     const prefix = resultPrefix(userId, level);
+    const scenariosById = new Map(scenarios.map(scenario => [scenario.id, scenario]));
     for (let i = 0; i < storage.length; i++) {
       const key = storage.key(i);
       if (!key?.startsWith(prefix)) continue;
       const suffix = key.slice(prefix.length);
-      const scenario = scenarios.find(s => suffix.startsWith(s.id + '_') && /^[a-f0-9]{64}$/.test(suffix.slice(s.id.length + 1)));
+      if (suffix.at(-65) !== '_' || !/^[a-f0-9]{64}$/.test(suffix.slice(-64))) continue;
+      const scenario = scenariosById.get(suffix.slice(0, -65));
       if (!scenario) continue;
       const value = parse(storage.getItem(key));
       if (!valid(value, scenario)) {

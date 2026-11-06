@@ -22,6 +22,7 @@ app.use(cors({ origin: true }));
 // rejected before they consume memory or reach the OpenAI integration.
 app.use('/api/scenarios', express.json({ limit: '300kb' }), require('./routes/scenarios'));
 app.use('/api/chat', express.json({ limit: '56kb' }), chatRouter);
+app.use('/api/transcription', express.json({ limit: '1400kb' }), require('./routes/transcription'));
 app.use(express.json({ limit: '6mb' }));
 
 app.get('/api/health', (req, res) => {

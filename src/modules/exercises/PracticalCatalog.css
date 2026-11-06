@@ -1,0 +1,23 @@
+.practical-picker{width:min(100%,740px);margin:auto;color:#163841;display:grid;gap:12px}
+.practical-picker h1{font:700 30px Georgia,serif;margin:0}
+.practical-picker h2{font:700 25px Georgia,serif;margin:8px 0}
+.practical-tabs{display:flex;gap:4px;padding:4px;background:#e9f1ed;border:1px solid #c5d4cd;border-radius:16px}
+.practical-tabs button{flex:1;border:0;border-radius:12px;padding:10px;background:transparent;color:inherit;min-height:44px}
+.practical-tabs button[aria-pressed=true],.practical-start{background:#08767b;color:white}
+.practical-featured{padding:18px;border:1px solid #c5d4cd;background:#fffefd;border-radius:20px}
+.practical-status{font-size:12px;padding:5px 9px;background:#e4ebd8;border-radius:9px}
+.practical-featured .practical-art{height:150px;max-width:100%;margin:5px auto}
+.practical-featured p{margin:8px 0;line-height:1.45}
+.practical-featured summary{cursor:pointer;padding:10px 0;min-height:44px}
+.practical-featured li{margin:8px 0}
+.practical-start{width:100%;min-height:48px;border:0;border-radius:13px;font-weight:700;margin-top:10px}
+.practical-alternative-heading{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.practical-alternative-heading h2{font:600 16px 'Segoe UI',sans-serif}
+.practical-alternative-heading button{background:none;border:0;color:#08767b;min-height:44px}
+.practical-alternatives{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.practical-alternatives>button{display:grid;gap:6px;text-align:left;color:inherit;background:#fffefd;border:1px solid #c5d4cd;border-radius:16px;padding:10px;min-width:0}
+.practical-alternatives>button>.studio-scene-art{height:75px;max-width:100%;width:100%}
+.practical-alternatives small{color:#53686c}
+.practical-picker button:focus-visible,.practical-picker summary:focus-visible{outline:3px solid #08767b;outline-offset:3px}
+.practical-picker button:disabled{opacity:.45}
+@media(min-width:900px){.practical-picker{max-width:950px;grid-template-columns:2fr 1fr}.practical-picker>h1,.practical-tabs{grid-column:1/-1}.practical-featured{grid-column:1;grid-row:3/6}.practical-alternative-heading{grid-column:2;flex-wrap:wrap}.practical-alternatives{grid-column:2;grid-template-columns:1fr}.practical-featured .practical-art{height:220px}}

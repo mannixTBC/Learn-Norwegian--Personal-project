@@ -31,6 +31,7 @@
     "weather-icons": "git+https://github.com/erikflowers/weather-icons.git"
   },
   "scripts": {
+    "test:transcription": "node --test backend/deepgramTranscription.test.cjs backend/routes/transcription.test.cjs backend/routes/voicePractice.test.js backend/voiceTranscriptDecision.test.js",
     "start": "concurrently -k -n API,WEB -c yellow,cyan \"npm:dev:backend\" \"npm:dev:frontend\"",
     "dev": "npm run start",
     "dev:frontend": "vite --host 0.0.0.0 --port 4173",

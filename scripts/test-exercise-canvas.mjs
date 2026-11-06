@@ -16,6 +16,8 @@ const fixtures=[
  ['exercise-screen verb-notebook','verb notebook'],
  ['exercise-screen recap-page recap-hub','ivory practice hub'],
  ['exercise-screen recap-page recap-summary','ivory practice hub'],
+ ['exercise-screen recap-page grammar-guide','ivory practice hub'],
+ ['exercise-screen recap-page grammar-guide active-recall','ivory practice hub'],
  ['conversation-studio studio-design studio-home','reference studio'],
  ['conversation-studio studio-design mobile-conversation mobile-conversation--catalog','reference studio'],
  ['conversation-studio studio-design airy-conversation natural-conversation','reference studio'],
