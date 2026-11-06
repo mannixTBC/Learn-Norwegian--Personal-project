@@ -1,3 +1,5 @@
+import {ui} from '../../languages/messages.js';
+import {courseLocalStorage as localStorage} from '../../languages/storage.js';
 import React from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { learningLevels } from '../lessons/learningLevel';
@@ -29,13 +31,13 @@ export const ExerciseLevelSelect = ({ level, levels = learningLevels, onChange }
     localStorage.setItem('norwegian_active_level', value);
     history.replace({ pathname: location.pathname, search: query.toString() });
   };
-  return <label className="exercise-level-select"><span>Nivel</span><select aria-label="Nivel de practică" value={level} onChange={(event) => change(event.target.value)}>{levels.map((code) => <option value={code} key={code}>{code}</option>)}</select></label>;
+  return <label className="exercise-level-select"><span>{ui('web_ee50666c457d9d5f')}</span><select aria-label={ui('web_f315a4168d3fd613')} value={level} onChange={(event) => change(event.target.value)}>{levels.map((code) => <option value={code} key={code}>{code}</option>)}</select></label>;
 };
 
 const CourseExerciseLayout = ({ title, description, icon, level, className = '', compact = false, allowLevelChange = false, onExit, backTo, backLabel, children }) => (
   <div className={'exercise-screen ' + className}>
     <header className="exercise-topbar">
-      {onExit ? <button type="button" className="exercise-back" onClick={onExit} aria-label="Închide sesiunea"><span aria-hidden="true">×</span><strong>{title}</strong></button> : <Link className="exercise-back" to={backTo || '/jocuri?nivel=' + level}><span aria-hidden="true">←</span><strong>{backLabel || (compact ? title : 'Jocuri și exerciții')}</strong></Link>}
+      {onExit ? <button type="button" className="exercise-back" onClick={onExit} aria-label={ui('web_e2f5cf878208dc21')}><span aria-hidden="true">×</span><strong>{title}</strong></button> : <Link className="exercise-back" to={backTo || '/jocuri?nivel=' + level}><span aria-hidden="true">←</span><strong>{backLabel || (compact ? title : ui('web_4ff8c30397e8a3a2'))}</strong></Link>}
       {allowLevelChange ? <ExerciseLevelSelect level={level} /> : <span className="exercise-level-badge">{level}</span>}
     </header>
     {!compact && <div className="exercise-intro"><span className="exercise-intro__icon"><ExerciseIcon name={icon} /></span><div><h1>{title}</h1>{description && <p>{description}</p>}</div></div>}
@@ -50,4 +52,4 @@ export const ExerciseLayout = ({ title, description, icon, level, className = ''
   </div>
 );
 
-export const ExerciseLessonSelect = ({ course, value, onChange, label = 'Conținutul sesiunii', all = true }) => <label className="exercise-field"><span>{label}</span><select value={value} onChange={(event) => onChange(event.target.value)}>{all && <option value="all">Toate lecțiile · {course.code}</option>}{course.sections.map((section) => <optgroup key={section.id} label={'Secțiunea ' + section.number + ' · ' + section.title}>{section.lessons.map((lesson) => <option key={lesson.uid} value={lesson.id}>{lesson.id + '. ' + lesson.title}</option>)}</optgroup>)}</select></label>;
+export const ExerciseLessonSelect = ({ course, value, onChange, label = 'Conținutul sesiunii', all = true }) => <label className="exercise-field"><span>{label}</span><select value={value} onChange={(event) => onChange(event.target.value)}>{all && <option value="all">{ui('web_2f6aaccab877ab90')}{course.code}</option>}{course.sections.map((section) => <optgroup key={section.id} label={ui('ui_2bea68454a614bc7') + section.number + ' · ' + section.title}>{section.lessons.map((lesson) => <option key={lesson.uid} value={lesson.id}>{lesson.id + '. ' + lesson.title}</option>)}</optgroup>)}</select></label>;

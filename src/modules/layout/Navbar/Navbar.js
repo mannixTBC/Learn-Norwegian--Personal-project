@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import NorwegianFlagIcon from './NorwegianFlagIcon';
@@ -9,7 +10,7 @@ import { isInstalledAppView } from '../../../services/appExperience';
 const navigation = [
   { to: '/invata', label: 'Învață' },
   { to: '/descopera', label: 'Descoperă', appSecondary: true },
-  { to: '/viata-in-norvegia', label: 'Viața în Norvegia', appSecondary: true },
+  { to: '/viata-in-norvegia', label: ui('ui_cea9aa1d0028ee59'), appSecondary: true },
 ];
 
 const UserAvatar = ({ user, menu = false }) => {
@@ -35,7 +36,7 @@ const UserAvatar = ({ user, menu = false }) => {
 
   if (user && user.isGuest) {
     return (
-      <span className={`navbar__avatar navbar__avatar--guest${variantClass}`} aria-label="Profil de vizitator">
+      <span className={`navbar__avatar navbar__avatar--guest${variantClass}`} aria-label={ui('web_62217e0fc4c20e02')}>
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="8" r="3.25" />
           <path d="M5.5 20c.5-4.1 2.7-6.2 6.5-6.2s6 2.1 6.5 6.2" />
@@ -101,10 +102,10 @@ export default function Navbar() {
         <nav
           id="main-navigation"
           className={`navbar__nav ${menuOpen ? 'navbar__nav--open' : ''}`}
-          aria-label="Navigație principală"
+          aria-label={ui('web_717eced41cb95309')}
         >
-          <span className="navbar__app-menu-title">Explorează Norvegia</span>
-          {navigation.flatMap((item, index) => index === 0 && !isInstalledAppView() ? [item, { to: '/jocuri', label: 'Practică' }] : [item]).map((item) => (
+          <span className="navbar__app-menu-title">{ui('web_73d57b04ef28a3e1')}</span>
+          {navigation.flatMap((item, index) => index === 0 && !isInstalledAppView() ? [item, { to: '/jocuri', label: ui('web_c3b769b17a3333f5') }] : [item]).map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -119,35 +120,35 @@ export default function Navbar() {
           <div className="navbar__mobile-account">
             {user ? (
               <>
-                <Link className="navbar__mobile-user" to="/dashboard" onClick={closeMenu} aria-label="Deschide profilul">
+                <Link className="navbar__mobile-user" to="/dashboard" onClick={closeMenu} aria-label={ui('web_397d284f025888c2')}>
                   <UserAvatar user={user} menu />
                   <div>
-                    <small>{user.isGuest ? 'Mod vizitator' : 'Contul tău'}</small>
+                    <small>{user.isGuest ? 'Mod vizitator' : ui('web_a7bbb75ad1ee8dfd')}</small>
                     <strong>{user.name}</strong>
                   </div>
                 </Link>
-                <Link className="navbar__mobile-settings" to="/cont" onClick={closeMenu}>Setări cont</Link>
+                <Link className="navbar__mobile-settings" to="/cont" onClick={closeMenu}>{ui('web_5c932643e2998f15')}</Link>
                 <button type="button" className="navbar__mobile-logout" onClick={() => { logout(); closeMenu(); }}>
                   <LogoutIcon />
-                  <span>Deconectare</span>
+                  <span>{ui('web_da3fc3c543362c72')}</span>
                 </button>
               </>
             ) : (
-              <Link className="navbar__mobile-login" to="/autentificare" onClick={closeMenu}>Conectare</Link>
+              <Link className="navbar__mobile-login" to="/autentificare" onClick={closeMenu}>{ui('ui_2a8874f48f3cd1d4')}</Link>
             )}
           </div>
         </nav>
 
         <div className="navbar__account">
           {user ? <div className="navbar__account-menu">
-            <Link className="navbar__user" to="/dashboard" onClick={closeMenu} aria-label="Deschide profilul"><UserAvatar user={user} /><div><small>{user.isGuest ? 'Mod anonim' : 'Conectat'}</small><strong>{user.name}</strong></div></Link>
+            <Link className="navbar__user" to="/dashboard" onClick={closeMenu} aria-label={ui('web_397d284f025888c2')}><UserAvatar user={user} /><div><small>{user.isGuest ? 'Mod anonim' : 'Conectat'}</small><strong>{user.name}</strong></div></Link>
             <button ref={accountToggleRef} type="button" className={`navbar__account-toggle ${accountOpen ? 'navbar__account-toggle--open' : ''}`} onClick={() => setAccountOpen((open) => !open)} aria-label={accountOpen ? 'Închide meniul contului' : 'Deschide meniul contului'} aria-expanded={accountOpen} aria-controls="account-navigation"><span /><span /><span /></button>
             {accountOpen && <div id="account-navigation" className="navbar__account-dropdown">
-              <span className="navbar__account-dropdown-title">Cont</span>
-              <Link to="/cont" onClick={closeMenu}><AccountIcon /><span><strong>Setările contului</strong><small>Profil, abonament și confidențialitate</small></span></Link>
-              <button type="button" onClick={() => { logout(); closeMenu(); }}><LogoutIcon /><span>Deconectare</span></button>
+              <span className="navbar__account-dropdown-title">{ui('web_7729bbc1b40a60c0')}</span>
+              <Link to="/cont" onClick={closeMenu}><AccountIcon /><span><strong>{ui('web_47bc960820b07686')}</strong><small>{ui('web_82fc89e435e41d70')}</small></span></Link>
+              <button type="button" onClick={() => { logout(); closeMenu(); }}><LogoutIcon /><span>{ui('web_da3fc3c543362c72')}</span></button>
             </div>}
-          </div> : <Link className="navbar__login" to="/autentificare" onClick={closeMenu}>Conectare</Link>}
+          </div> : <Link className="navbar__login" to="/autentificare" onClick={closeMenu}>{ui('ui_2a8874f48f3cd1d4')}</Link>}
         </div>
 
         <button

@@ -1,0 +1,612 @@
+{
+  "formatVersion": 1,
+  "courses": [
+    {
+      "courseId": "nb-general",
+      "version": "2026.2",
+      "learningLanguage": "nb",
+      "levels": {
+        "A1": {
+          "lessons": [
+            {
+              "id": 1,
+              "uid": "a1-greetings"
+            },
+            {
+              "id": 2,
+              "uid": "a1-origin-languages"
+            },
+            {
+              "id": 3,
+              "uid": "a1-contact-details"
+            },
+            {
+              "id": 4,
+              "uid": "a1-a1-contact-identity-mission"
+            },
+            {
+              "id": 5,
+              "uid": "a1-family"
+            },
+            {
+              "id": 6,
+              "uid": "a1-home-rooms"
+            },
+            {
+              "id": 7,
+              "uid": "a1-neighbours-description"
+            },
+            {
+              "id": 8,
+              "uid": "a1-a1-home-people-mission"
+            },
+            {
+              "id": 9,
+              "uid": "a1-daily-routine"
+            },
+            {
+              "id": 10,
+              "uid": "a1-time-meetings"
+            },
+            {
+              "id": 11,
+              "uid": "a1-free-time-frequency"
+            },
+            {
+              "id": 12,
+              "uid": "a1-a1-time-routine-mission"
+            },
+            {
+              "id": 13,
+              "uid": "a1-cafe"
+            },
+            {
+              "id": 14,
+              "uid": "a1-store-payment"
+            },
+            {
+              "id": 15,
+              "uid": "a1-groceries-quantities"
+            },
+            {
+              "id": 16,
+              "uid": "a1-a1-food-shopping-mission"
+            },
+            {
+              "id": 17,
+              "uid": "a1-city-places"
+            },
+            {
+              "id": 18,
+              "uid": "a1-transport-directions"
+            },
+            {
+              "id": 19,
+              "uid": "a1-weather-clothes"
+            },
+            {
+              "id": 20,
+              "uid": "a1-a1-city-travel-mission"
+            },
+            {
+              "id": 21,
+              "uid": "a1-first-workday"
+            },
+            {
+              "id": 22,
+              "uid": "a1-clarification-instructions"
+            },
+            {
+              "id": 23,
+              "uid": "a1-colleague-break"
+            },
+            {
+              "id": 24,
+              "uid": "a1-a1-work-social-mission"
+            }
+          ]
+        },
+        "A2": {
+          "lessons": [
+            {
+              "id": 1,
+              "uid": "a2-plans-invitations"
+            },
+            {
+              "id": 2,
+              "uid": "a2-friendship-preferences"
+            },
+            {
+              "id": 3,
+              "uid": "a2-family-comparisons"
+            },
+            {
+              "id": 4,
+              "uid": "a2-a2-relationships-plans-mission"
+            },
+            {
+              "id": 5,
+              "uid": "a2-shopping-returns"
+            },
+            {
+              "id": 6,
+              "uid": "a2-housing-repairs"
+            },
+            {
+              "id": 7,
+              "uid": "a2-budget-offers"
+            },
+            {
+              "id": 8,
+              "uid": "a2-a2-shopping-housing-mission"
+            },
+            {
+              "id": 9,
+              "uid": "a2-health-pharmacy"
+            },
+            {
+              "id": 10,
+              "uid": "a2-reschedule-appointment"
+            },
+            {
+              "id": 11,
+              "uid": "a2-understand-appointment-instructions"
+            },
+            {
+              "id": 12,
+              "uid": "a2-a2-health-appointments-mission"
+            },
+            {
+              "id": 13,
+              "uid": "a2-yesterday"
+            },
+            {
+              "id": 14,
+              "uid": "a2-life-experiences"
+            },
+            {
+              "id": 15,
+              "uid": "a2-story-sequence"
+            },
+            {
+              "id": 16,
+              "uid": "a2-a2-past-experiences-mission"
+            },
+            {
+              "id": 17,
+              "uid": "a2-work-cooperation"
+            },
+            {
+              "id": 18,
+              "uid": "a2-work-instruction-check"
+            },
+            {
+              "id": 19,
+              "uid": "a2-work-status-updates"
+            },
+            {
+              "id": 20,
+              "uid": "a2-a2-work-collaboration-mission"
+            },
+            {
+              "id": 21,
+              "uid": "a2-digital-services"
+            },
+            {
+              "id": 22,
+              "uid": "a2-forms-confirmation"
+            },
+            {
+              "id": 23,
+              "uid": "a2-transport-delays"
+            },
+            {
+              "id": 24,
+              "uid": "a2-a2-services-autonomy-mission"
+            }
+          ]
+        },
+        "B1": {
+          "lessons": [
+            {
+              "id": 1,
+              "uid": "b1-experiente-povestire"
+            },
+            {
+              "id": 2,
+              "uid": "b1-experiente-reactii"
+            },
+            {
+              "id": 3,
+              "uid": "b1-relatare-clarificare"
+            },
+            {
+              "id": 4,
+              "uid": "b1-b1-povesti-mission"
+            },
+            {
+              "id": 5,
+              "uid": "b1-opinii-motive"
+            },
+            {
+              "id": 6,
+              "uid": "b1-comparare-alternative"
+            },
+            {
+              "id": 7,
+              "uid": "b1-dezacord-politicos"
+            },
+            {
+              "id": 8,
+              "uid": "b1-b1-opinii-mission"
+            },
+            {
+              "id": 9,
+              "uid": "b1-sanatate-clarificare"
+            },
+            {
+              "id": 10,
+              "uid": "b1-locuinta-reclamatie"
+            },
+            {
+              "id": 11,
+              "uid": "b1-probleme-plan"
+            },
+            {
+              "id": 12,
+              "uid": "b1-b1-probleme-mission"
+            },
+            {
+              "id": 13,
+              "uid": "b1-munca-responsabilitati"
+            },
+            {
+              "id": 14,
+              "uid": "b1-munca-candidatura"
+            },
+            {
+              "id": 15,
+              "uid": "b1-competente-dezvoltare"
+            },
+            {
+              "id": 16,
+              "uid": "b1-b1-munca-mission"
+            },
+            {
+              "id": 17,
+              "uid": "b1-stiri-surse"
+            },
+            {
+              "id": 18,
+              "uid": "b1-servicii-intrebari"
+            },
+            {
+              "id": 19,
+              "uid": "b1-comunitate-relatii"
+            },
+            {
+              "id": 20,
+              "uid": "b1-b1-societate-mission"
+            },
+            {
+              "id": 21,
+              "uid": "b1-prezentare-idee"
+            },
+            {
+              "id": 22,
+              "uid": "b1-proiect-comunitate"
+            },
+            {
+              "id": 23,
+              "uid": "b1-evaluare-plan-urmator"
+            },
+            {
+              "id": 24,
+              "uid": "b1-b1-proiect-mission"
+            }
+          ]
+        },
+        "B2": {
+          "lessons": [
+            {
+              "id": 1,
+              "uid": "b2-argumentare-nuante"
+            },
+            {
+              "id": 2,
+              "uid": "b2-argument-dovada"
+            },
+            {
+              "id": 3,
+              "uid": "b2-obiectii-raspuns"
+            },
+            {
+              "id": 4,
+              "uid": "b2-b2-argumente-mission"
+            },
+            {
+              "id": 5,
+              "uid": "b2-conflict-feedback"
+            },
+            {
+              "id": 6,
+              "uid": "b2-negociere-conditii"
+            },
+            {
+              "id": 7,
+              "uid": "b2-mediere-rezumat"
+            },
+            {
+              "id": 8,
+              "uid": "b2-b2-negociere-mission"
+            },
+            {
+              "id": 9,
+              "uid": "b2-media-credibilitate"
+            },
+            {
+              "id": 10,
+              "uid": "b2-date-interpretare"
+            },
+            {
+              "id": 11,
+              "uid": "b2-comparare-surse"
+            },
+            {
+              "id": 12,
+              "uid": "b2-b2-surse-mission"
+            },
+            {
+              "id": 13,
+              "uid": "b2-decizii-sustenabilitate"
+            },
+            {
+              "id": 14,
+              "uid": "b2-decizii-costuri"
+            },
+            {
+              "id": 15,
+              "uid": "b2-decizii-tehnologie"
+            },
+            {
+              "id": 16,
+              "uid": "b2-b2-decizii-mission"
+            },
+            {
+              "id": 17,
+              "uid": "b2-comunicare-profesionala"
+            },
+            {
+              "id": 18,
+              "uid": "b2-raport-structurat"
+            },
+            {
+              "id": 19,
+              "uid": "b2-perspective-identitate"
+            },
+            {
+              "id": 20,
+              "uid": "b2-b2-comunicare-mission"
+            },
+            {
+              "id": 21,
+              "uid": "b2-proiect-delimitare"
+            },
+            {
+              "id": 22,
+              "uid": "b2-proiect-dezbatere"
+            },
+            {
+              "id": 23,
+              "uid": "b2-proiect-revizuire"
+            },
+            {
+              "id": 24,
+              "uid": "b2-b2-proiect-mission"
+            }
+          ]
+        },
+        "C1": {
+          "lessons": [
+            {
+              "id": 1,
+              "uid": "c1-register-formalitet"
+            },
+            {
+              "id": 2,
+              "uid": "c1-undertekst-innvending"
+            },
+            {
+              "id": 3,
+              "uid": "c1-perspektiv-bibliotek"
+            },
+            {
+              "id": 4,
+              "uid": "c1-c1-register-og-undertekst-mission"
+            },
+            {
+              "id": 5,
+              "uid": "c1-pastand-belegg"
+            },
+            {
+              "id": 6,
+              "uid": "c1-data-usikkerhet"
+            },
+            {
+              "id": 7,
+              "uid": "c1-sammenstille-kilder"
+            },
+            {
+              "id": 8,
+              "uid": "c1-c1-kilder-og-syntese-mission"
+            },
+            {
+              "id": 9,
+              "uid": "c1-prosjekt-avgrensning"
+            },
+            {
+              "id": 10,
+              "uid": "c1-forhandling-forbehold"
+            },
+            {
+              "id": 11,
+              "uid": "c1-formell-redegjorelse"
+            },
+            {
+              "id": 12,
+              "uid": "c1-c1-profesjonell-samhandling-mission"
+            },
+            {
+              "id": 13,
+              "uid": "c1-arsak-sammenheng"
+            },
+            {
+              "id": 14,
+              "uid": "c1-konsesjon-vilkar"
+            },
+            {
+              "id": 15,
+              "uid": "c1-droftende-tekst"
+            },
+            {
+              "id": 16,
+              "uid": "c1-c1-drofting-og-argumentasjon-mission"
+            },
+            {
+              "id": 17,
+              "uid": "c1-forventninger-intensjon"
+            },
+            {
+              "id": 18,
+              "uid": "c1-megling-fellesgrunnlag"
+            },
+            {
+              "id": 19,
+              "uid": "c1-sprakvariasjon"
+            },
+            {
+              "id": 20,
+              "uid": "c1-c1-interkulturell-mediering-mission"
+            },
+            {
+              "id": 21,
+              "uid": "c1-muntlig-rodtrad"
+            },
+            {
+              "id": 22,
+              "uid": "c1-redigering-presisjon"
+            },
+            {
+              "id": 23,
+              "uid": "c1-prosjekt-beslutningsgrunnlag"
+            },
+            {
+              "id": 24,
+              "uid": "c1-c1-selvstendig-formidling-mission"
+            }
+          ]
+        },
+        "C2": {
+          "lessons": [
+            {
+              "id": 1,
+              "uid": "c2-premiss-implikasjon"
+            },
+            {
+              "id": 2,
+              "uid": "c2-modalitet-forpliktelse"
+            },
+            {
+              "id": 3,
+              "uid": "c2-reformulering-meningsinnhold"
+            },
+            {
+              "id": 4,
+              "uid": "c2-c2-presisjon-og-implikasjon-mission"
+            },
+            {
+              "id": 5,
+              "uid": "c2-retorisk-innramming"
+            },
+            {
+              "id": 6,
+              "uid": "c2-ironi-satire"
+            },
+            {
+              "id": 7,
+              "uid": "c2-forteller-perspektiv"
+            },
+            {
+              "id": 8,
+              "uid": "c2-c2-retorikk-og-undertekst-mission"
+            },
+            {
+              "id": 9,
+              "uid": "c2-kilder-sammenlignbarhet"
+            },
+            {
+              "id": 10,
+              "uid": "c2-begreper-perspektiv"
+            },
+            {
+              "id": 11,
+              "uid": "c2-syntese-motstrid"
+            },
+            {
+              "id": 12,
+              "uid": "c2-c2-kritisk-kildesyntese-mission"
+            },
+            {
+              "id": 13,
+              "uid": "c2-mediering-asymmetri"
+            },
+            {
+              "id": 14,
+              "uid": "c2-fagspraak-formidling"
+            },
+            {
+              "id": 15,
+              "uid": "c2-etisk-avveining"
+            },
+            {
+              "id": 16,
+              "uid": "c2-c2-kompleks-mediering-mission"
+            },
+            {
+              "id": 17,
+              "uid": "c2-stil-kollokasjon"
+            },
+            {
+              "id": 18,
+              "uid": "c2-oversettelse-pragmatikk"
+            },
+            {
+              "id": 19,
+              "uid": "c2-stilistisk-redigering"
+            },
+            {
+              "id": 20,
+              "uid": "c2-c2-stil-og-sprakvalg-mission"
+            },
+            {
+              "id": 21,
+              "uid": "c2-muntlig-motstand"
+            },
+            {
+              "id": 22,
+              "uid": "c2-kritikk-revisjon"
+            },
+            {
+              "id": 23,
+              "uid": "c2-portefolje-dommekraft"
+            },
+            {
+              "id": 24,
+              "uid": "c2-c2-selvstendig-portefolje-mission"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

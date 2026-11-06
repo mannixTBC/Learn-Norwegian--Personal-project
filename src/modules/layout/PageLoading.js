@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { imageReady, visiblePageImages } from './pageImageReadiness';
@@ -62,6 +63,6 @@ export default function PageLoading({ contentRef }) {
   if (!isInstalledAppView() || !theme || loadingPath !== pathname) return null;
   return <div className={`page-loading page-loading--${theme}`} role="status" aria-live="polite">
     <span className="page-loading__ring" aria-hidden="true" />
-    <span className="page-loading__label">Se încarcă pagina…</span>
+    <span className="page-loading__label">{ui('web_19d5434552aa33aa')}</span>
   </div>;
 }

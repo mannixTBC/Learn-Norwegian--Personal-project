@@ -1,3 +1,5 @@
+import {ui} from '../../languages/messages.js';
+import {courseLocalStorage as localStorage} from '../../languages/storage.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
@@ -13,27 +15,27 @@ const supportLanguages = [
   { code: 'uk', title: 'Українська', flag: 'ua' },
 ];
 const learningLanguages = [
-  { code: 'nb', title: 'Norvegiană', flag: 'no' },
-  { code: 'de', title: 'Germană', flag: 'de' },
-  { code: 'fr', title: 'Franceză', flag: 'fr' },
-  { code: 'en', title: 'Engleză', flag: 'gb' },
+  { code: 'nb', title: ui('ui_e031b264893791c5'), flag: 'no' },
+  { code: 'de', title: ui('ui_a9e6cb6f4ad7816d'), flag: 'de' },
+  { code: 'fr', title: ui('ui_9d36bfde5f91918a'), flag: 'fr' },
+  { code: 'en', title: ui('ui_390c2077ff5303ef'), flag: 'gb' },
 ];
 const steps = [
-  { id: 'support', label: 'Explicații', title: 'În ce limbă vrei explicațiile?' },
-  { id: 'language', label: 'Limba învățată', title: 'Ce limbă vrei să înveți?' },
-  { id: 'paths', label: 'Traseu', title: 'Alege traseul tău' },
-  { id: 'levels', label: 'Nivel', title: 'De unde începem?' },
+  { id: 'support', label: 'Explicații', title: ui('ui_999926d7e83b9885') },
+  { id: 'language', label: 'Limba învățată', title: ui('ui_f52dee762c5204d5') },
+  { id: 'paths', label: 'Traseu', title: ui('ui_7d0e56c0f936db7b') },
+  { id: 'levels', label: ui('web_ee50666c457d9d5f'), title: ui('ui_410338729c8b3835') },
 ];
 const levels = [
-  { code: 'A1', badge: 'A1', title: 'Începător', description: 'Încep de la zero' },
-  { code: 'A2', badge: 'A2', title: 'De bază', description: 'Înțeleg expresii uzuale' },
-  { code: 'B1', badge: 'B1–B2', title: 'Intermediar', description: 'Pot purta conversații' },
-  { code: 'C1', badge: 'C1–C2', title: 'Avansat', description: 'Mă exprim fluent' },
+  { code: ui('ui_16a36e86f6fed5d4'), badge: ui('ui_16a36e86f6fed5d4'), title: ui('ui_1399cf4e8e48e8d7'), description: ui('ui_a6cc92351af843b4') },
+  { code: 'A2', badge: 'A2', title: ui('ui_20c1e0367d732363'), description: ui('ui_7e5cbde392dcc64e') },
+  { code: 'B1', badge: 'B1–B2', title: ui('ui_3232d3b47b8a1891'), description: ui('ui_4d6c9a8902d944fa') },
+  { code: 'C1', badge: 'C1–C2', title: ui('ui_9730636b56d5d4cd'), description: ui('ui_86ac7fdaeb6724f5') },
 ];
 const pathLabels = {
-  transport: 'Transport', hospitality: 'Hoteluri și restaurante', construction: 'Construcții',
-  healthcare: 'Sănătate', cleaning: 'Curățenie', retail: 'Comerț', office: 'Birou',
-  studies: 'Studii', family: 'Familie', general: 'Viața de zi cu zi',
+  transport: ui('ui_aaead4abf5d0fd5e'), hospitality: ui('ui_4a8cafb7b0fe8c3a'), construction: ui('ui_e98b8f11cf37fb63'),
+  healthcare: ui('ui_b9c3bea24d652a0a'), cleaning: ui('ui_095533b886d5f44f'), retail: ui('ui_9dfdb82124d4c5be'), office: ui('ui_857947b6deac65de'),
+  studies: ui('ui_46d7c1bb09cbf248'), family: ui('ui_47324fe12daaecf9'), general: ui('ui_930b114c552fb7ce'),
 };
 const safeDestination = location => {
   const requested = new URLSearchParams(location.search).get('redirect');
@@ -98,7 +100,7 @@ const CareerOnboarding = () => {
     <div className={`career-onboarding career-onboarding--${currentStep.id}`}>
       <header className="career-onboarding__header">
         <div className="career-onboarding__brand">
-          <img src="/branding/nordlingo-selected-color.png" alt="NordLingo" width="150" />
+          <img src="/branding/nordlingo-selected-color.png" alt={ui('ui_ee728f3245aed708')} width="150" />
           <ol className="career-onboarding__progress" aria-label={`Pasul ${step + 1} din ${steps.length}`}>
             {steps.map((item, index) => (
               <li key={item.id} className={index <= step ? 'is-reached' : ''} aria-current={index === step ? 'step' : undefined}>

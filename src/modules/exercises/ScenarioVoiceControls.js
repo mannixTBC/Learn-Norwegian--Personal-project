@@ -1,3 +1,5 @@
+import {getLearningLocale} from '../../languages/runtime';
+import {ui} from '../../languages/messages.js';
 import React, { useEffect, useRef, useState } from 'react';
 import StudioIcon from './StudioIcon';
 import { speakScenario } from '../../services/scenarioSpeech';
@@ -66,7 +68,7 @@ export default function ScenarioVoiceControls({ flow, blocked, reply, onFinish, 
     voiceEnabled.current = true;
     const recorder = new Recognition();
     recognition.current = recorder;
-    recorder.lang = 'nb-NO';
+    recorder.lang = getLearningLocale();
     recorder.continuous = false;
     recorder.interimResults = false;
     recorder.onresult = event => {
@@ -89,20 +91,20 @@ export default function ScenarioVoiceControls({ flow, blocked, reply, onFinish, 
     catch { stop(); setStatus('idle'); setError('Microfonul nu a putut porni. Verifică permisiunea din browser.'); }
   }
   const active = ['listening', 'speaking'].includes(status);
-  return <section className="scenario-voice" aria-label="Răspuns vocal">
-    <p className="scenario-voice__status" hidden={Boolean(onHelp) && status === 'idle' && !flow.busy} role="status">{flow.busy ? 'Nora pregătește răspunsul…' : status === 'listening' ? 'Te ascult…' : status === 'speaking' ? 'Nora vorbește…' : status === 'loading' ? 'Pregătim vocea…' : 'Rândul tău'}</p>
+  return <section className="scenario-voice" aria-label={ui('web_93229fd042186f70')}>
+    <p className="scenario-voice__status" hidden={Boolean(onHelp) && status === 'idle' && !flow.busy} role="status">{flow.busy ? ui('web_48ca648979c8783d') : status === 'listening' ? 'Te ascult…' : status === 'speaking' ? 'Nora vorbește…' : status === 'loading' ? 'Pregătim vocea…' : 'Rândul tău'}</p>
     <div className={'scenario-voice__wave' + (active ? ' is-active' : '')} aria-hidden="true">{Array.from({ length: 23 }, (_, i) => <i key={i} style={{ height: 8 + (i * 17 % 30), animationDelay: `${i * 45}ms` }}/>)}</div>
-    <div className="airy-actions"><button type="button" className="scenario-voice__mic" onClick={record} disabled={(!Recognition && !openingPending) || flow.busy || Boolean(blocked) || (openingPending && status === 'loading')} aria-label={openingPending ? 'Începe conversația' : status === 'listening' ? 'Încheie înregistrarea' : 'Înregistrează răspunsul'} aria-pressed={status === 'listening'}>
+    <div className="airy-actions"><button type="button" className="scenario-voice__mic" onClick={record} disabled={(!Recognition && !openingPending) || flow.busy || Boolean(blocked) || (openingPending && status === 'loading')} aria-label={openingPending ? ui('ui_2846f556ddcc4d25') : status === 'listening' ? ui('ui_e632bbeb4854d5d2') : ui('ui_903acaa2f4d3a74b')} aria-pressed={status === 'listening'}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"/></svg>
-    </button>{onHelp && <button type="button" className="airy-help" onClick={onHelp} aria-expanded={helpOpen} aria-controls="guided-hint"><span aria-hidden="true"><StudioIcon name="hint"/></span>Indiciu</button>}<button type="button" className="airy-end" aria-label="Scrie răspunsul" aria-expanded={typing} onClick={()=>{stop();setStatus('idle');setTyping(!typing);if(!typing)onOpeningVisible?.();}}><span><StudioIcon name="keyboard"/></span>Scrie</button></div>
-    <p className="scenario-voice__caption">{openingPending ? 'Apasă pentru a începe conversația' : status === 'listening' ? 'Apasă din nou când ai terminat.' : 'Apasă și vorbește'}</p>
-    {!Recognition && <p className="scenario-voice__notice">Browserul nu oferă recunoaștere vocală. Folosește un browser compatibil cu recunoaștere vocală.</p>}
+    </button>{onHelp && <button type="button" className="airy-help" onClick={onHelp} aria-expanded={helpOpen} aria-controls="guided-hint"><span aria-hidden="true"><StudioIcon name="hint"/></span>{ui('ui_d0a636af5808946e')}</button>}<button type="button" className="airy-end" aria-label={ui('ui_e52656e588302340')} aria-expanded={typing} onClick={()=>{stop();setStatus('idle');setTyping(!typing);if(!typing)onOpeningVisible?.();}}><span><StudioIcon name="keyboard"/></span>{ui('ui_50f526cd2a4f9621')}</button></div>
+    <p className="scenario-voice__caption">{openingPending ? 'Apasă pentru a începe conversația' : status === 'listening' ? 'Apasă din nou când ai terminat.' : ui('ui_3c29b08806f13593')}</p>
+    {!Recognition && <p className="scenario-voice__notice">{ui('web_0a6f14ff8d13cd6a')}</p>}
     {error && <p className="scenario-voice__notice" role="alert">{error}</p>}
-    {(typing || !Recognition) && <form className="studio-compose" onSubmit={e=>{e.preventDefault();stop();flow.send();}}><label htmlFor="studio-answer">Răspunsul tău</label><textarea id="studio-answer" value={flow.draft} maxLength={1200} disabled={flow.busy||Boolean(blocked)} onChange={e=>flow.setDraft(e.target.value)} placeholder="Scrie în norvegiană…"/><button className="studio-primary" disabled={!flow.draft.trim()||flow.busy||Boolean(blocked)}>Trimite răspunsul</button></form>}
-    {flow.draft && !typing && Recognition && <div className="scenario-voice__draft"><small>Am auzit</small><p lang="nb">{flow.draft}</p><button type="button" className="conversation-primary" disabled={flow.busy || Boolean(blocked) || status === 'listening'} onClick={() => { stop(); setStatus('idle'); flow.send(); }}>Trimite răspunsul vocal</button></div>}
-    <div className="scenario-voice__tools" hidden={Boolean(onHelp) && !helpOpen && !active}><button type="button" onClick={() => listen()} disabled={!reply || flow.busy} aria-label="Ascultă Nora">↻ Repetă</button><button type="button" onClick={() => listen(true)} disabled={!reply || flow.busy}>Mai lent</button>{active && <button type="button" onClick={() => { stop(); setStatus('idle'); }}>Oprește sunetul</button>}</div>
-    <details className="scenario-voice__extras" hidden={Boolean(onHelp) && !helpOpen}><summary>Despre microfon</summary>
-    <small className="scenario-voice__privacy">Recunoașterea vocală este oferită de browser și poate folosi serviciul său online.</small></details>
-    {onFinish&&<button type="button" className="studio-finish" onClick={()=>{stop();onFinish();}}><StudioIcon name="flag"/>Încheie conversația</button>}
+    {(typing || !Recognition) && <form className="studio-compose" onSubmit={e=>{e.preventDefault();stop();flow.send();}}><label htmlFor="studio-answer">{ui('ui_d6e45310ea716363')}</label><textarea id="studio-answer" value={flow.draft} maxLength={1200} disabled={flow.busy||Boolean(blocked)} onChange={e=>flow.setDraft(e.target.value)} placeholder={ui('web_24c9eea16260f4ef')}/><button className="studio-primary" disabled={!flow.draft.trim()||flow.busy||Boolean(blocked)}>{ui('ui_65fc1c4af57e109b')}</button></form>}
+    {flow.draft && !typing && Recognition && <div className="scenario-voice__draft"><small>{ui('web_0718844d9bfba18f')}</small><p lang="nb">{flow.draft}</p><button type="button" className="conversation-primary" disabled={flow.busy || Boolean(blocked) || status === 'listening'} onClick={() => { stop(); setStatus('idle'); flow.send(); }}>{ui('web_28dda2d2a63442ba')}</button></div>}
+    <div className="scenario-voice__tools" hidden={Boolean(onHelp) && !helpOpen && !active}><button type="button" onClick={() => listen()} disabled={!reply || flow.busy} aria-label={ui('web_5f29d84f0c459135')}>{ui('web_bf8d4e3760306056')}</button><button type="button" onClick={() => listen(true)} disabled={!reply || flow.busy}>{ui('ui_7e65a53eb92be733')}</button>{active && <button type="button" onClick={() => { stop(); setStatus('idle'); }}>{ui('ui_0b96ca6c1611e29f')}</button>}</div>
+    <details className="scenario-voice__extras" hidden={Boolean(onHelp) && !helpOpen}><summary>{ui('web_6c6b20294e092382')}</summary>
+    <small className="scenario-voice__privacy">{ui('web_f277c1530df57f33')}</small></details>
+    {onFinish&&<button type="button" className="studio-finish" onClick={()=>{stop();onFinish();}}><StudioIcon name="flag"/>{ui('web_12a4e73b8f18ca01')}</button>}
   </section>;
 }

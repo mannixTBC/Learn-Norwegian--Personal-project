@@ -1,6 +1,6 @@
-import catalog from '../../exercises/conversationScenarios.json';
+import catalog from '../../../content/features/scenarios.js';
 import map from '../../exercises/scenarioLessonMap.json';
-import {verbNotebookCatalog} from '../../exercises/challenge30/verbNotebookData';
+import {verbNotebookCatalog} from '../../../content/features/verbs.js';
 
 export function lessonNextPractice(level,lessonId){
  const matches=catalog.scenarios.filter(s=>map.links[s.id]?.[level]?.lessonIds.includes(lessonId));

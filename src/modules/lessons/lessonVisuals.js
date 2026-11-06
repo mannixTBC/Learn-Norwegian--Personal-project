@@ -1,4 +1,4 @@
-import { courseCatalog } from './norwegian-program/lessonContent';
+import { courseCatalog } from '../../content/activeContent.js';
 
 // Assets follow the scene; section IDs provide the default and stable lesson
 // UIDs select a different scene when its actual situation differs. Numeric

@@ -69,7 +69,7 @@ test('scenario API validates assessment before roleplay, records both calls, and
   });
   const decode = token => JSON.parse(Buffer.from(token.split('.')[0], 'base64url').toString('utf8'));
   const responseKeys = ['achieved', 'done', 'endReason', 'expiresAt', 'feedback', 'maxTurns', 'reply', 'sessionToken', 'turn'];
-  const sessionKeys = ['achieved', 'done', 'expires', 'feedback', 'history', 'level', 'scenarioId', 'scenarioRevision', 'turn', 'userId'];
+  const sessionKeys = ['achieved', 'course', 'done', 'expires', 'feedback', 'history', 'level', 'scenarioId', 'scenarioRevision', 'turn', 'userId'];
 
   for (const [index, level] of ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].entries()) {
     const startResponse = await post('start', { scenarioId: 'bus-delay', level });
@@ -78,6 +78,9 @@ test('scenario API validates assessment before roleplay, records both calls, and
     const start = await startResponse.json();
     assert.deepEqual(Object.keys(start).sort(), responseKeys);
     assert.deepEqual(Object.keys(decode(start.sessionToken)).sort(), sessionKeys);
+    assert.equal(decode(start.sessionToken).course.courseId,'nb-general');
+    assert.equal(decode(start.sessionToken).course.version,'2026.2');
+    assert.equal(decode(start.sessionToken).course.rules,undefined);
     assert.equal(start.maxTurns, catalog.scenarios[0].variants[level].turns);
     assert.equal(start.reply, catalog.scenarios[0].variants[level].opening);
     assert.equal(calls.length, index * 2, 'opening does not call the provider');

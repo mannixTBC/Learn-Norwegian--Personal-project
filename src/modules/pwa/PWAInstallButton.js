@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React, { useEffect, useState } from 'react';
 
 /**
@@ -44,8 +45,6 @@ export default function PWAInstallButton({ className = '' }) {
     <button type="button" className={className} onClick={installApp}>
       <svg className="pwa-install-icon" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" />
-      </svg>
-      Descarcă aplicația
-    </button>
+      </svg>{ui('web_542d4ecb31a08c00')}</button>
   );
 }

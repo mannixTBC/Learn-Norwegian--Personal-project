@@ -1,7 +1,8 @@
+// nordlingo-language-context-v1
 const express = require('express');
 const crypto = require('node:crypto');
 const { requireAuth } = require('../middleware/authSupabaseUser');
-const { getVoiceLesson, buildVoiceSession } = require('../voiceTutor');
+const { getVoiceLesson, buildVoiceSession } = require('../languageTutors').voice;
 const { isNetlifyRuntime } = require('../voiceAudioCache');
 const { cartesiaConfigured } = require('../cartesiaSpeech');
 const router = express.Router();

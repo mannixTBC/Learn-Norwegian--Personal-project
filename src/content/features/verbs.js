@@ -1,0 +1,16 @@
+import { getContent } from '../activeContent';
+import { contentValue } from '../contentValue';
+export const levelOrder = contentValue('verbs', 'levelOrder', true);
+export const tenseLabels = contentValue('verbs', 'tenseLabels', false);
+export const normalizeVerb = (...args)=>getContent('verbs').normalizeVerb(...args);
+export const verbNotebookCatalog = contentValue('verbs','verbNotebookCatalog',true);
+export const getVerbNotebookCatalog = ()=>getContent('verbs').verbNotebookCatalog;
+export const tensesForVerb = (...args)=>getContent('verbs').tensesForVerb(...args);
+export const notebookMemoryKey = (...args)=>getContent('verbs').notebookMemoryKey(...args);
+export const readNotebookMemory = (...args)=>getContent('verbs').readNotebookMemory(...args);
+export const readNotebookLearning = (...args)=>getContent('verbs').readNotebookLearning(...args);
+export const selectionPools = (...args)=>getContent('verbs').selectionPools(...args);
+export const createNotebookQuestion = (...args)=>getContent('verbs').createNotebookQuestion(...args);
+export const createNotebookRound = (...args)=>getContent('verbs').createNotebookRound(...args);
+export const saveNotebookRound = (...args)=>getContent('verbs').saveNotebookRound(...args);
+export const personForm = (...args)=>getContent('verbs').personForm(...args);

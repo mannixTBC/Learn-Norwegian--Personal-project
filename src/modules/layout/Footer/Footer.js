@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import React from 'react';
 import './Footer.css';
 
@@ -11,7 +12,7 @@ const Footer = () => {
         <div className="footer__meta">
           <span>© {currentYear}</span>
           <span className="footer__separator" aria-hidden="true">•</span>
-          <span>Creat de Mannix</span>
+          <span>{ui('web_7a1d913d26d2a393')}</span>
         </div>
       </div>
     </footer>

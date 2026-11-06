@@ -1,3 +1,5 @@
+// nordlingo-language-context-v1
+const {bindSessionLanguages,verifySessionLanguages} = require('./languageContext');
 const crypto = require('node:crypto');
 const { getScenarioDefinition } = require('./scenarioContract');
 const catalog = require('../src/modules/exercises/conversationScenarios.json');
@@ -11,7 +13,7 @@ function signature(data) {
   return crypto.createHmac('sha256', secret).update('scenario-v1:' + data).digest('base64url');
 }
 function sign(session) {
-  const data = Buffer.from(JSON.stringify(session)).toString('base64url');
+  const data = Buffer.from(JSON.stringify(bindSessionLanguages(session))).toString('base64url');
   return data + '.' + signature(data);
 }
 function verify(token, userId) {
@@ -36,7 +38,7 @@ function verify(token, userId) {
       && typeof entry.content === 'string' && entry.content.trim().length > 0
       && entry.content.length <= (index % 2 ? 1200 : 1800))) throw invalid();
   if (session.expires <= Date.now()) throw fail('Sesiunea a expirat. Începe o conversație nouă.', 410, 'SCENARIO_SESSION_EXPIRED');
-  return session;
+  return verifySessionLanguages(session);
 }
 function context(id, level) {
   const scenario = catalog.scenarios.find(s => s.id === id);

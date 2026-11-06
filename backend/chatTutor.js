@@ -1,3 +1,5 @@
+// nordlingo-language-context-v1
+const {bindSessionLanguages,verifySessionLanguages} = require('./languageContext');
 const crypto = require('node:crypto');
 
 const catalog = require('./voiceCatalog.json');
@@ -29,7 +31,7 @@ const signatureFor = (encoded) => {
 };
 
 const signSession = (session) => {
-  const encoded = Buffer.from(JSON.stringify(session)).toString('base64url');
+  const encoded = Buffer.from(JSON.stringify(bindSessionLanguages(session))).toString('base64url');
   return `${encoded}.${signatureFor(encoded)}`;
 };
 
@@ -193,6 +195,7 @@ const verifySession = (token, userId, now = Date.now()) => {
     throw fail('Sesiunea de conversație nu este validă.', 401);
   }
 
+  verifySessionLanguages(session || {});
   const context = lessonFor(session || {});
   if (session && context && session.askedQuestions === undefined) {
     // Sessions created shortly before this release remain usable until expiry.

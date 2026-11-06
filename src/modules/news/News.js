@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React, { useEffect, useState } from 'react';
 import { apiUrl } from '../../services/api';
 import './News.css';
@@ -61,8 +62,7 @@ const NewsCard = ({ item, featured = false }) => (
         <time className="news-card__date">{item.date}</time>
         <h3 className="news-card__title">{item.title}</h3>
         <p className="news-card__excerpt">{item.description}</p>
-        <span className="news-card__action">
-          Citește articolul <NewsArrow />
+        <span className="news-card__action">{ui('web_b115cdd2048c62a0')}<NewsArrow />
         </span>
       </div>
     </a>
@@ -75,10 +75,10 @@ const NewsState = ({ type, title, message, onRetry }) => (
       <span className="news-state__icon" aria-hidden="true">
         {type === 'loading' ? <i /> : '!'}
       </span>
-      <p className="news-eyebrow">Actualitate din Norvegia</p>
+      <p className="news-eyebrow">{ui('web_387a484825cf8777')}</p>
       <h1>{title}</h1>
       <p>{message}</p>
-      {onRetry && <button type="button" onClick={onRetry}>Încearcă din nou</button>}
+      {onRetry && <button type="button" onClick={onRetry}>{ui('web_a09d291920163176')}</button>}
     </section>
   </main>
 );
@@ -111,7 +111,7 @@ const News = () => {
           description: truncateExcerpt(article.description || article.title),
           image: article.image,
           url: article.url,
-          source: article.source?.name || 'Știri',
+          source: article.source?.name || ui('ui_739370da1ce6bf30'),
           date: formatDate(article.publishedAt),
         }));
 
@@ -144,14 +144,14 @@ const News = () => {
   }, [requestId]);
 
   if (loading) {
-    return <NewsState type="loading" title="Pregătim știrile zilei" message="Selectăm cele mai recente noutăți din Norvegia." />;
+    return <NewsState type="loading" title={ui('web_9596e6c8ec1470d1')} message="Selectăm cele mai recente noutăți din Norvegia." />;
   }
 
   if (error) {
     return (
       <NewsState
         type="error"
-        title="Știrile nu sunt disponibile momentan"
+        title={ui('web_99fd7df2cdc3d72b')}
         message={error}
         onRetry={() => setRequestId((value) => value + 1)}
       />
@@ -165,25 +165,25 @@ const News = () => {
       <div className="news-shell">
         <header className="news-hero">
           <div className="news-hero__copy">
-            <span className="news-eyebrow"><i /> Actualitate din Norvegia</span>
-            <h1>Știrile zilei,<br />pe scurt.</h1>
-            <p>Descoperă ce se întâmplă în Norvegia și continuă lectura în limba originală.</p>
+            <span className="news-eyebrow"><i />{ui('web_149f7426ce62d8bb')}</span>
+            <h1>{ui('web_a7bdd4c14136e607')}<br />{ui('web_3f62ed1b45c1080b')}</h1>
+            <p>{ui('web_596cbff1d384915f')}</p>
           </div>
           <div className="news-hero__summary">
-            <span>Selecția de astăzi</span>
+            <span>{ui('web_4596e15ab5641d5c')}</span>
             <strong>{articles.length}</strong>
-            <small>articole recente</small>
+            <small>{ui('web_e0ee959a79711ce5')}</small>
           </div>
         </header>
 
         <section className="news-content" aria-labelledby="news-latest-title">
           <div className="news-heading">
             <div>
-              <span>De citit acum</span>
-              <h2 id="news-latest-title">Cele mai recente noutăți</h2>
-              <p>O selecție actualizată din publicațiile norvegiene.</p>
+              <span>{ui('web_b79ec898f3585919')}</span>
+              <h2 id="news-latest-title">{ui('web_0ef9e08e535410f4')}</h2>
+              <p>{ui('web_498c82edf24e2d96')}</p>
             </div>
-            {translating && <span className="news-translation-status"><i /> Traducem în română</span>}
+            {translating && <span className="news-translation-status"><i />{ui('web_9d80b413d73a69ca')}</span>}
           </div>
 
           {featuredArticle && <NewsCard item={featuredArticle} featured />}
@@ -194,11 +194,11 @@ const News = () => {
         </section>
 
         <aside className="news-note">
-          <span className="news-note__icon" aria-hidden="true">N</span>
+          <span className="news-note__icon" aria-hidden="true">{ui('web_8ce86a6ae65d3692')}</span>
           <div>
-            <small>Norvegiana în context</small>
-            <h2>Învață din lucruri care se întâmplă acum</h2>
-            <p>Deschide articolul original și observă cuvintele pe care le recunoști înainte să folosești traducerea.</p>
+            <small>{ui('web_c4ba2c43b21497c8')}</small>
+            <h2>{ui('web_b902932b1a509ccf')}</h2>
+            <p>{ui('web_9757222ef6265ead')}</p>
           </div>
         </aside>
       </div>

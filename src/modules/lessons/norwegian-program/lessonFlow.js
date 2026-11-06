@@ -1,3 +1,4 @@
+import {courseLocalStorage as localStorage} from '../../../languages/storage.js';
 export const LESSON_STEPS = Object.freeze([
   'Introducere',
   'Înainte de ceva nou',
@@ -49,7 +50,7 @@ export const decodeLessonStep = (current, legacy = 0) => {
   return isNumber(current) ? withRecallStep(clampStep(current, 7)) : LESSON_STAGE.INTRO;
 };
 
-export const readLessonStep = (key, legacyKey, storage = globalThis.localStorage) => {
+export const readLessonStep = (key, legacyKey, storage = localStorage) => {
   const read = (storageKey) => {
     try { return JSON.parse(storage.getItem(storageKey)); } catch (_) { return null; }
   };

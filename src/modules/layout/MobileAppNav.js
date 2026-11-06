@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { learningLevels } from '../lessons/learningLevel';
@@ -13,16 +14,16 @@ const icons = {
 const MobileAppNav = ({ activeLevel, onNavigate, activeSection }) => {
   const location = useLocation();
   const storedLevel = typeof window !== 'undefined' ? window.localStorage.getItem('norwegian_active_level') : '';
-  const level = activeLevel || (learningLevels.includes(storedLevel) ? storedLevel : 'A1');
+  const level = activeLevel || (learningLevels.includes(storedLevel) ? storedLevel : ui('ui_16a36e86f6fed5d4'));
   const items = [
     { id: 'home', label: 'Acasă', to: '/dashboard', active: location.pathname === '/dashboard' },
     { id: 'lessons', label: 'Lecții', to: `/invata?nivel=${level}`, active: ['/invata', '/invata-limba'].includes(location.pathname) },
-    { id: 'games', label: 'Practică', to: `/jocuri?nivel=${level}`, active: location.pathname === '/jocuri' },
+    { id: 'games', label: ui('web_c3b769b17a3333f5'), to: `/jocuri?nivel=${level}`, active: location.pathname === '/jocuri' },
     { id: 'account', label: 'Cont', to: '/cont', active: location.pathname === '/cont' },
   ];
 
   return (
-    <nav className="mobile-app-nav" aria-label="Navigația aplicației">
+    <nav className="mobile-app-nav" aria-label={ui('web_5579837e6d2e901b')}>
       {items.map((item) => {
         const active = activeSection ? item.id === activeSection : item.active;
         return (

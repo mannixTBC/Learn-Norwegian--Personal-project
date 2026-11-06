@@ -4,6 +4,8 @@ import { fetchEntitlements, isDevBypassActive } from '../../services/entitlement
 import { clearLocalAccountData, deleteRemoteAccount } from '../../services/account';
 import { isNativeApp, webUrl } from '../../services/api';
 import { restoreLearningProgress, flushLearningProgress } from '../../services/supabaseLearning';
+import {installLanguageReader} from '../../languages/runtime';
+import {getCareerProfile} from '../../services/careerProfile';
 
 const SESSION_KEY = 'norwegiata_frontend_session';
 const GUEST_SESSION = '__norwegiata_guest__';
@@ -236,6 +238,7 @@ export const AuthProvider = ({ children }) => {
     refreshEntitlements,
   }), [entitlements, initializing, passwordRecovery, progressOwner, user]);
 
+  installLanguageReader(()=>getCareerProfile(user));
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 

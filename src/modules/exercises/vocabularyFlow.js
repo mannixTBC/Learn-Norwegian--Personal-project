@@ -1,4 +1,4 @@
-import { createPracticeQuestions, normalizePracticeAnswer, shufflePractice } from './practiceGameData';
+import { createPracticeQuestions, normalizePracticeAnswer, shufflePractice } from '../../content/features/games.js';
 
 const escape = text => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const stem = word => word.replace(/^(?:en|ei|et|å)\s+/i, '').trim();

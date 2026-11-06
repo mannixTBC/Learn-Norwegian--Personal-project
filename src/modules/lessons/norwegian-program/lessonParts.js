@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import React, { useState } from 'react';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
 import { lessonExerciseAnswer, lessonExerciseSentence } from './lessonExerciseContent';
@@ -8,7 +9,7 @@ import useLessonExercise from './useLessonExercise';
 
 export const AudioButton = ({ text, slow = false, voice = 'male', label }) => (
   <button className="audio-button" type="button" onClick={() => speakNorwegian(text, { slow, voice })} aria-label={`Ascultă ${slow ? 'lent ' : ''}: ${text}`}>
-    <span role="img" aria-hidden="true">🔊</span>{label || (slow ? 'Lent' : 'Ascultă')}
+    <span role="img" aria-hidden="true">🔊</span>{label || (slow ? 'Lent' : ui('ui_f1e65126c6a41e7b'))}
   </button>
 );
 
@@ -85,12 +86,12 @@ export const DialogueAudioButton = ({ dialogue }) => {
   };
 
   return (
-    <button className={`dialogue-play-button ${isPlaying ? 'is-playing' : ''}`} type="button" onClick={playDialogue} disabled={isPlaying} aria-label="Ascultă dialogul">
+    <button className={`dialogue-play-button ${isPlaying ? 'is-playing' : ''}`} type="button" onClick={playDialogue} disabled={isPlaying} aria-label={ui('web_b0caa2c071f2271c')}>
       <span className="dialogue-play-button__icon" aria-hidden="true">
         <DialoguePlayIcon />
       </span>
       <span className="dialogue-play-button__copy">
-        <strong>Ascultă dialogul</strong>
+        <strong>{ui('web_b0caa2c071f2271c')}</strong>
       </span>
     </button>
   );
@@ -99,7 +100,7 @@ export const DialogueAudioButton = ({ dialogue }) => {
 export const DialogueLineAudioButton = ({ text, voice }) => (
   <button className="dialogue-line-audio-button" type="button" onClick={() => speakNorwegian(text, { voice })} aria-label={`Ascultă replica: ${text}`}>
     <span className="dialogue-line-audio-button__icon" aria-hidden="true"><DialoguePlayIcon /></span>
-    <span>Ascultă</span>
+    <span>{ui('ui_f1e65126c6a41e7b')}</span>
   </button>
 );
 
@@ -125,11 +126,11 @@ export const LessonExercise = ({ exercise, index, onResult, isMobileActive, onDr
 
   return (
     <div className={`practice-card ${checked ? 'practice-card--checked' : ''} ${isMobileActive ? 'mobile-exercise-card--active' : ''}`}>
-      <div className="practice-card__counter">Întrebarea {index + 1}</div>
+      <div className="practice-card__counter">{ui('web_d3526d8dd6340992')}{index + 1}</div>
       <h3>{exercise.prompt}</h3>
       {exercise.instruction && <p>{exercise.instruction}</p>}
       {exercise.context && <div><strong>{exercise.context.title}</strong><p>{exercise.context.description}</p></div>}
-      {exercise.translation && exercise.type === 'gaps' && <p>Spune: „{exercise.translation}”</p>}
+      {exercise.translation && exercise.type === 'gaps' && <p>{ui('web_a716658ffeac31ba')}{exercise.translation}”</p>}
       {exercise.type === 'fill' && sentence && <p lang="nb">{sentence}</p>}
       {exercise.type === 'choice' && <div className="choice-list">{exercise.options.map((option, optionIndex) => {
         const selected = value !== '' && Number(value) === optionIndex;
@@ -137,10 +138,10 @@ export const LessonExercise = ({ exercise, index, onResult, isMobileActive, onDr
         return <button type="button" disabled={checked} aria-pressed={selected} className={`${selected ? 'selected' : ''} ${stateClass}`} onClick={() => submit(String(optionIndex))} key={`${optionIndex}-${option}`}>{option}</button>;
       })}</div>}
       {exercise.type === 'fill' && <input className="answer-input" value={value} disabled={checked} aria-label="Cuvântul lipsă" lang="nb" autoComplete="off" spellCheck={false} onChange={(event) => updateDraft({ value: event.target.value })} onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); submit(); } }} placeholder="Scrie răspunsul aici" />}
-      {exercise.type === 'order' && <><div className="sentence-builder">{words.length ? words.map((word, i) => <button type="button" disabled={checked} key={wordIndexes[i]} onClick={() => removeOrderWord(i)}>{word}</button>) : <span>Apasă cuvintele în ordinea corectă</span>}</div><div className="word-bank">{exercise.words.map((word, i) => <button type="button" disabled={checked || wordIndexes.includes(i)} onClick={() => addOrderWord(i)} key={i}>{word}</button>)}</div></>}
-      {exercise.type === 'gaps' && <div className="gap-exercise"><p className="gap-exercise__hint gap-exercise__hint--pointer">Trage cuvântul în spațiul liber.</p><p className="gap-exercise__hint gap-exercise__hint--touch">Atinge cuvântul pentru a completa propoziția.</p><div className="gap-sentence">{exercise.sentence.split('___').map((sentencePart, sentenceIndex, sentenceParts) => <React.Fragment key={`${sentencePart}-${sentenceIndex}`}><span>{sentencePart}</span>{sentenceIndex < sentenceParts.length - 1 && <button type="button" className={gapAnswers[sentenceIndex] ? 'gap-slot gap-slot--filled' : 'gap-slot'} disabled={checked} onClick={() => clearGapAnswer(sentenceIndex)} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); placeGapAnswer(event.dataTransfer.getData('text/plain'), sentenceIndex); }} aria-label={gapAnswers[sentenceIndex] ? `Cuvânt selectat: ${gapAnswers[sentenceIndex]}. Apasă pentru a-l elimina.` : `Spațiul liber ${sentenceIndex + 1}`}>{gapAnswers[sentenceIndex] || <span className="gap-slot__placeholder" aria-hidden="true"/>}</button>}</React.Fragment>)}</div><div className="gap-word-bank">{exercise.options.map((option) => { const used = gapAnswers.includes(option); return <button type="button" draggable={!checked && !used} disabled={checked || used} onClick={() => placeGapAnswer(option)} onDragStart={(event) => event.dataTransfer.setData('text/plain', option)} key={option}>{option}</button>; })}</div></div>}
-      {!checked && manualCheck && <button className="check-button" type="button" onClick={() => submit()} disabled={!complete}>Verifică răspunsul <span aria-hidden="true">→</span></button>}
-      {checked && <div className={`answer-feedback ${outcome ? 'answer-feedback--correct' : 'answer-feedback--wrong'}`} role="status"><strong>{outcome ? 'Corect! Foarte bine.' : 'Să reținem diferența.'}</strong><p>{exercise.explanation}</p>{(!outcome || exercise.type !== 'choice') && <p>{!outcome && 'Răspuns corect: '}<b>{lessonExerciseAnswer(exercise)}</b></p>}{!outcome && <p>Salvat la Recapitulare.</p>}</div>}
+      {exercise.type === 'order' && <><div className="sentence-builder">{words.length ? words.map((word, i) => <button type="button" disabled={checked} key={wordIndexes[i]} onClick={() => removeOrderWord(i)}>{word}</button>) : <span>{ui('web_c548c24505983482')}</span>}</div><div className="word-bank">{exercise.words.map((word, i) => <button type="button" disabled={checked || wordIndexes.includes(i)} onClick={() => addOrderWord(i)} key={i}>{word}</button>)}</div></>}
+      {exercise.type === 'gaps' && <div className="gap-exercise"><p className="gap-exercise__hint gap-exercise__hint--pointer">{ui('web_e330390238da6a1a')}</p><p className="gap-exercise__hint gap-exercise__hint--touch">{ui('web_bb54eb8906c05aec')}</p><div className="gap-sentence">{exercise.sentence.split('___').map((sentencePart, sentenceIndex, sentenceParts) => <React.Fragment key={`${sentencePart}-${sentenceIndex}`}><span>{sentencePart}</span>{sentenceIndex < sentenceParts.length - 1 && <button type="button" className={gapAnswers[sentenceIndex] ? 'gap-slot gap-slot--filled' : 'gap-slot'} disabled={checked} onClick={() => clearGapAnswer(sentenceIndex)} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); placeGapAnswer(event.dataTransfer.getData('text/plain'), sentenceIndex); }} aria-label={gapAnswers[sentenceIndex] ? `Cuvânt selectat: ${gapAnswers[sentenceIndex]}. Apasă pentru a-l elimina.` : `Spațiul liber ${sentenceIndex + 1}`}>{gapAnswers[sentenceIndex] || <span className="gap-slot__placeholder" aria-hidden="true"/>}</button>}</React.Fragment>)}</div><div className="gap-word-bank">{exercise.options.map((option) => { const used = gapAnswers.includes(option); return <button type="button" draggable={!checked && !used} disabled={checked || used} onClick={() => placeGapAnswer(option)} onDragStart={(event) => event.dataTransfer.setData('text/plain', option)} key={option}>{option}</button>; })}</div></div>}
+      {!checked && manualCheck && <button className="check-button" type="button" onClick={() => submit()} disabled={!complete}>{ui('web_63cb0bbfe8885963')}<span aria-hidden="true">→</span></button>}
+      {checked && <div className={`answer-feedback ${outcome ? 'answer-feedback--correct' : 'answer-feedback--wrong'}`} role="status"><strong>{outcome ? 'Corect! Foarte bine.' : 'Să reținem diferența.'}</strong><p>{exercise.explanation}</p>{(!outcome || exercise.type !== 'choice') && <p>{!outcome && ui('web_4926920a341d9eb7')}<b>{lessonExerciseAnswer(exercise)}</b></p>}{!outcome && <p>{ui('web_deafacd54de2d99d')}</p>}</div>}
     </div>
   );
 };

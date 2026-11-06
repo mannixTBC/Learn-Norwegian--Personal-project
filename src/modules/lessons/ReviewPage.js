@@ -1,10 +1,11 @@
+import {ui} from '../../languages/messages.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getDueReviewItems, getReviewItemsForLevel, readReviewItems, writeReviewItems } from '../../services/spacedReview';
 import { recordStudyActivity } from '../../services/learningActivity';
 import { speakNorwegian } from '../../services/norwegianSpeech';
 import { getLearningLevel } from './learningLevel';
-import { courseCatalog } from './norwegian-program/lessonContent';
+import { courseCatalog } from '../../content/activeContent.js';
 import NorwegianFlagIcon from '../layout/Navbar/NorwegianFlagIcon';
 import './ReviewPage.css';
 import ScenarioReview from '../exercises/ScenarioReview.js';
@@ -15,7 +16,7 @@ function content(item, lessons) {
   const answer = normalize(item.answer);
   for (const lesson of lessons.filter(value => !item.lessonId || String(value.id) === String(item.lessonId))) {
     for (const [word, translation] of lesson.vocabulary || []) {
-      if (answer === normalize(word) || (answer === normalize(translation) && normalize(item.prompt).includes(normalize(word)))) return { norwegian: word, translation, category: 'Vocabular', note: item.explanation || `${word} = ${translation}` };
+      if (answer === normalize(word) || (answer === normalize(translation) && normalize(item.prompt).includes(normalize(word)))) return { norwegian: word, translation, category: ui('web_a0f17cbedf66213a'), note: item.explanation || `${word} = ${translation}` };
     }
     for (const [, norwegian, translation] of lesson.dialogue || []) {
       if (answer === normalize(norwegian)) return { norwegian, translation, category: 'Propoziții', note: item.explanation };
@@ -56,9 +57,9 @@ function ReviewSession({ level }) {
     finally { if (!controller.signal.aborted) setPlaying(false); }
   };
   return <main className="review-page recall-sheet">
-    <header className="recall-brand"><Link to={`/jocuri?nivel=${level}`} aria-label="Înapoi la jocuri">←</Link><Link to="/dashboard" aria-label="NordLingo — Acasă"><NorwegianFlagIcon className="recall-logo" /></Link></header>
-    <div className="recall-heading"><h1>Recapitulare</h1><p>Reia expresiile care ți-au dat de gândit.</p>{current && <div className="recall-progress"><span>{index + 1} din {queue.length}</span><progress aria-label="Progresul sesiunii" value={index + 1} max={queue.length} /></div>}</div>
-    {card ? <><article className="recall-card" key={current.id} aria-live="polite"><span className="recall-category">♧ &nbsp; {card.category}</span><h2>{card.translation}</h2><div className="recall-divider" aria-hidden="true"><span>⌁</span></div><p className="recall-expression" lang={card.norwegian ? 'nb' : undefined}>{card.norwegian || current.answer}</p>{card.norwegian && <button type="button" className="recall-listen" onClick={listen}><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M11 4 5 9H2v6h3l6 5ZM15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" /></svg>{playing ? 'Oprește' : 'Ascultă'}</button>}{error && <small role="status">{error}</small>}{card.note && <aside className="recall-note"><span aria-hidden="true">♧</span><span>{card.note}</span></aside>}</article><div className="recall-actions"><button type="button" onClick={() => next(true)}><span aria-hidden="true">↻</span> Mai repet</button><button type="button" onClick={() => next(false)}>Continuă <span aria-hidden="true">→</span></button></div></> : <section className="recall-card recall-empty"><span className="recall-category">În ritmul tău</span><h2>{queue.length ? `Ai revăzut ${queue.length} expresii.` : 'Expresiile sunt la zi.'}</h2><p>{queue.length ? 'Expresiile marcate „Mai repet” vor reveni mai curând.' : 'Dificultățile din lecții și jocuri se adună aici, pentru a le revedea pe îndelete.'}</p><Link to={`/jocuri?nivel=${level}`}>Înapoi la jocuri →</Link>{remaining.length > 0 && <button type="button" onClick={() => { setQueue(remaining.slice(0, 6)); setIndex(0); started.current = Date.now(); }}>Mai reiau câteva</button>}</section>}
+    <header className="recall-brand"><Link to={`/jocuri?nivel=${level}`} aria-label={ui('web_4d841d600c45fb73')}>←</Link><Link to="/dashboard" aria-label={ui('web_5eea99318c403ce0')}><NorwegianFlagIcon className="recall-logo" /></Link></header>
+    <div className="recall-heading"><h1>{ui('ui_fe74dd05d0e5825f')}</h1><p>{ui('web_80184cde21a2aa44')}</p>{current && <div className="recall-progress"><span>{index + 1}{ui('ui_dbd8b6478643d623')}{queue.length}</span><progress aria-label={ui('web_845f7806fcc783e5')} value={index + 1} max={queue.length} /></div>}</div>
+    {card ? <><article className="recall-card" key={current.id} aria-live="polite"><span className="recall-category">♧ &nbsp; {card.category}</span><h2>{card.translation}</h2><div className="recall-divider" aria-hidden="true"><span>⌁</span></div><p className="recall-expression" lang={card.norwegian ? 'nb' : undefined}>{card.norwegian || current.answer}</p>{card.norwegian && <button type="button" className="recall-listen" onClick={listen}><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M11 4 5 9H2v6h3l6 5ZM15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" /></svg>{playing ? ui('ui_5a117569814756df') : ui('ui_f1e65126c6a41e7b')}</button>}{error && <small role="status">{error}</small>}{card.note && <aside className="recall-note"><span aria-hidden="true">♧</span><span>{card.note}</span></aside>}</article><div className="recall-actions"><button type="button" onClick={() => next(true)}><span aria-hidden="true">↻</span>{ui('web_34cbf6e6657cdd16')}</button><button type="button" onClick={() => next(false)}>{ui('web_c3876fa9e197861a')}<span aria-hidden="true">→</span></button></div></> : <section className="recall-card recall-empty"><span className="recall-category">{ui('web_bc1b65805ee9132d')}</span><h2>{queue.length ? `Ai revăzut ${queue.length} expresii.` : 'Expresiile sunt la zi.'}</h2><p>{queue.length ? 'Expresiile marcate „Mai repet” vor reveni mai curând.' : 'Dificultățile din lecții și jocuri se adună aici, pentru a le revedea pe îndelete.'}</p><Link to={`/jocuri?nivel=${level}`}>{ui('web_ff5c1816e558b768')}</Link>{remaining.length > 0 && <button type="button" onClick={() => { setQueue(remaining.slice(0, 6)); setIndex(0); started.current = Date.now(); }}>{ui('web_8fbcae8bddc66656')}</button>}</section>}
     <ScenarioReview level={level}/>
   </main>;
 }

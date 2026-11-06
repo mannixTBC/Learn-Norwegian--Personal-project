@@ -1,6 +1,7 @@
+import {ui} from '../../../languages/messages.js';
 import React, { useRef, useState } from 'react';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
-import { normalizePracticeAnswer, shufflePractice } from '../practiceGameData';
+import { normalizePracticeAnswer, shufflePractice } from '../../../content/features/games.js';
 import './Challenge30.css';
 
 const ChallengeFillIn = ({ verbs, onComplete }) => {
@@ -40,14 +41,12 @@ const ChallengeFillIn = ({ verbs, onComplete }) => {
   };
 
   if (verbs.length === 0) {
-    return <p className="challenge30__empty">Nu există verbe pentru această zi.</p>;
+    return <p className="challenge30__empty">{ui('web_ca7821d08cb345ae')}</p>;
   }
 
   return (
     <div className="challenge-fill">
-      <p className="challenge-fill__inst">
-        Scrie verbul în norvegiană pentru fiecare traducere în română.
-      </p>
+      <p className="challenge-fill__inst">{ui('web_c03dc9be8c5893a3')}</p>
       <ul className="challenge-fill__list">
         {items.map((item) => (
           <li key={item.id} className="challenge-fill__item">
@@ -81,16 +80,11 @@ const ChallengeFillIn = ({ verbs, onComplete }) => {
           className="challenge-fill__btn"
           onClick={handleCheck}
           disabled={checked || items.some((i) => !i.answer.trim())}
-        >
-          Verifică
-        </button>
-        <button type="button" className="challenge-fill__btn challenge-fill__btn--reset" onClick={handleReset}>
-          Resetează
-        </button>
+        >{ui('ui_b69a8da1603647a2')}</button>
+        <button type="button" className="challenge-fill__btn challenge-fill__btn--reset" onClick={handleReset}>{ui('web_ac95bc9c271af24d')}</button>
       </div>
       {checked && (
-        <div role="status" className={`challenge-fill__result ${score === verbs.length ? 'challenge-fill__result--win' : ''}`}>
-          Scor: {score} / {verbs.length}
+        <div role="status" className={`challenge-fill__result ${score === verbs.length ? 'challenge-fill__result--win' : ''}`}>{ui('web_5c69f37879487f8d')}{score} / {verbs.length}
         </div>
       )}
     </div>

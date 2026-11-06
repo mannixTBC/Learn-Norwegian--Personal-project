@@ -1,3 +1,4 @@
+import {getLanguages} from '../languages/runtime';
 import { apiUrl } from './api';
 
 let activeAudio = null;
@@ -31,7 +32,7 @@ const stopActiveAudio = () => {
 };
 
 const buildSpeechUrl = (text, slow, voice) => (
-  `${speechEndpoint}?text=${encodeURIComponent(text)}&slow=${slow ? '1' : '0'}&voice=${voice}&player=native-v3&voiceSet=${voiceSetVersion}${slow ? '&slowVersion=2' : ''}`
+  `${speechEndpoint}?text=${encodeURIComponent(text)}&slow=${slow ? '1' : '0'}&voice=${voice}&learningLanguage=${encodeURIComponent(getLanguages().learningLanguage)}&supportLanguage=${encodeURIComponent(getLanguages().supportLanguage)}&player=native-v3&voiceSet=${voiceSetVersion}${slow ? '&slowVersion=2' : ''}`
 );
 
 const mediaErrorMessage = (audio) => {

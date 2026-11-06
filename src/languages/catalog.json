@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "defaultPair": {"learningLanguage": "nb", "supportLanguage": "ro"},
+  "learning": {
+    "nb": {"name": "Norwegian Bokmål", "locale": "nb-NO", "transcription": "no", "speechLocale": "no-NO"},
+    "de": {"name": "German", "locale": "de-DE", "transcription": "de", "speechLocale": "de-DE"},
+    "fr": {"name": "French", "locale": "fr-FR", "transcription": "fr", "speechLocale": "fr-FR"},
+    "en": {"name": "English", "locale": "en-GB", "transcription": "en", "speechLocale": "en-GB"}
+  },
+  "support": {
+    "ro": {"name": "Romanian", "locale": "ro-RO"},
+    "en": {"name": "English", "locale": "en-GB"},
+    "pl": {"name": "Polish", "locale": "pl-PL"},
+    "uk": {"name": "Ukrainian", "locale": "uk-UA"}
+  },
+  "releasedPairs": ["nb:ro"]
+}

@@ -1,3 +1,4 @@
+import {getLearningLocale} from '../../languages/runtime';
 import { useEffect, useRef, useState } from 'react';
 import { startFreeConversation, sendFreeConversation } from '../../services/chat';
 import { speakFreeConversation } from '../../services/scenarioSpeech';
@@ -49,7 +50,7 @@ export default function useFreeVoiceConversation(level) {
     stopMedia();
     const recorder = new Recognition();
     recognition.current = recorder;
-    recorder.lang = 'nb-NO';
+    recorder.lang = getLearningLocale();
     recorder.continuous = false;
     recorder.interimResults = false;
     let transcript = '';

@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import RecallFocus from './RecallFocus';
 import DialogueWalkthrough from './DialogueWalkthrough';
 import {lessonNextPractice} from './lessonNextPractice';
@@ -29,13 +30,13 @@ const CheckIcon = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 
 const AppHeader = ({ title, step, totalSteps, lessonId, levelCode, onMenu }) => (
   <header className="lapp-header">
     <div className="lapp-header__row">
-      <strong className="lapp-header__title">{levelCode} · Lecția {lessonId}</strong>
-      <button type="button" className="lapp-header__menu" onClick={onMenu} aria-label="Meniu principal">Meniu</button>
+      <strong className="lapp-header__title">{levelCode}{ui('ui_a2ba73094f24b2ce')}{lessonId}</strong>
+      <button type="button" className="lapp-header__menu" onClick={onMenu} aria-label={ui('web_dd49a5e5e1cc47c0')}>{ui('web_bfc19840d73e2643')}</button>
     </div>
-    <div className="lapp-header__track" role="progressbar" aria-label="Progresul lecției" aria-valuetext={`${title}, pasul ${step + 1} din ${totalSteps}`} aria-valuenow={step + 1} aria-valuemin={1} aria-valuemax={totalSteps}>
+    <div className="lapp-header__track" role="progressbar" aria-label={ui('web_e3e1c3316ed109a5')} aria-valuetext={`${title}, pasul ${step + 1} din ${totalSteps}`} aria-valuenow={step + 1} aria-valuemin={1} aria-valuemax={totalSteps}>
       <span style={{ width: `${((step + 1) / totalSteps) * 100}%` }} />
     </div>
-    <p className="lapp-header__meta">Pasul {step + 1} din {totalSteps}</p>
+    <p className="lapp-header__meta">{ui('web_19ed038df30235c1')}{step + 1}{ui('ui_dbd8b6478643d623')}{totalSteps}</p>
   </header>
 );
 
@@ -75,18 +76,18 @@ const AppChip = ({ children }) => <span className="lapp-chip">{children}</span>;
 /* Bara fixă cu butoanele conturate + CTA, ca în referințe. */
 const AppBar = ({ onBack, backDisabled, primaryLabel, onPrimary, primaryDisabled, primarySolid }) => (
   <footer className="lapp-bar">
-    <button type="button" className="lapp-bar__back" onClick={onBack} disabled={backDisabled}>← Înapoi</button>
+    <button type="button" className="lapp-bar__back" onClick={onBack} disabled={backDisabled}>{ui('web_a354f4064be3dfef')}</button>
     <button type="button" className={`lapp-bar__primary ${primarySolid ? 'is-solid' : ''}`} onClick={onPrimary} disabled={primaryDisabled}>{primaryLabel} →</button>
   </footer>
 );
 
-const AppExpressionBar = ({ current, total, onBack, onNext, onComplete, nextLabel, nextDisabled = false, completeLabel = 'Continuă' }) => (<>
+const AppExpressionBar = ({ current, total, onBack, onNext, onComplete, nextLabel, nextDisabled = false, completeLabel = ui('ui_5fc4497d148a38a8') }) => (<>
   <div className="lapp-expression-progress" aria-live="polite">
-    <span>{current + 1} din {total}</span>
+    <span>{current + 1}{ui('ui_dbd8b6478643d623')}{total}</span>
     <div aria-hidden="true">{Array.from({ length: total }, (_, i) => <i className={i === current ? 'is-active' : ''} key={i} />)}</div>
   </div>
   <footer className="lapp-bar lapp-bar--dots">
-    <button type="button" className="lapp-bar__back" onClick={onBack} aria-label={current === 0 ? 'Etapa anterioară' : 'Elementul anterior'}>← Înapoi</button>
+    <button type="button" className="lapp-bar__back" onClick={onBack} aria-label={current === 0 ? 'Etapa anterioară' : 'Elementul anterior'}>{ui('web_a354f4064be3dfef')}</button>
     <button
       type="button"
       className="lapp-bar__next is-solid"
@@ -124,13 +125,13 @@ const LessonAppView = (props) => {
         {step === LESSON_STAGE.INTRO && (
           <section className="lapp-intro">
             <StepHeading large eyebrow="Descoperă și folosește" title={lesson.title} sub={`O lecție practică de aproximativ ${lesson.duration} minute.`} art={art} />
-            <div className="lapp-stats" aria-label="Detaliile lecției">
-              <article><span><LessonMetaIcon type="time" /></span><div><strong>{lesson.duration} min</strong><small>Durata lecției</small></div></article>
-              <article><span><LessonMetaIcon type="vocabulary" /></span><div><strong>{lesson.vocabulary.length} expresii</strong><small>Vocabular</small></div></article>
-              <article><span><LessonMetaIcon type="level" /></span><div><strong>Nivel {levelCode}</strong><small>{course.title}</small></div></article>
+            <div className="lapp-stats" aria-label={ui('web_b6102723876117b3')}>
+              <article><span><LessonMetaIcon type="time" /></span><div><strong>{lesson.duration}{ui('ui_2e75737a6b582974')}</strong><small>{ui('web_d9bfb853c2514b11')}</small></div></article>
+              <article><span><LessonMetaIcon type="vocabulary" /></span><div><strong>{lesson.vocabulary.length}{ui('ui_a6619ff79822addd')}</strong><small>{ui('web_a0f17cbedf66213a')}</small></div></article>
+              <article><span><LessonMetaIcon type="level" /></span><div><strong>{ui('ui_1450f9b5ea87b98c')}{levelCode}</strong><small>{course.title}</small></div></article>
             </div>
             <div className="lapp-objectives">
-              <h2>După această lecție vei putea:</h2>
+              <h2>{ui('ui_b4b20486c63ef174')}</h2>
               {lesson.objectives.map((objective) => <div key={objective}><span><CheckIcon /></span><p>{objective}</p></div>)}
             </div>
           </section>
@@ -144,11 +145,11 @@ const LessonAppView = (props) => {
 
         {step === LESSON_STAGE.VOCABULARY && (
           <section>
-            <StepHeading title="Cuvinte în context" sub="Ascultă, observă și reține." />
+            <StepHeading title={ui('ui_2fafa1921fabaa27')} sub="Ascultă, observă și reține." />
             {lesson.vocabulary.map(([word, wordTranslation, example, sentenceTranslation, highlight], index) => index !== vocabularyIndex ? null : (
               <article className="lapp-card lapp-vocab" key={word}>
                 <div className="lapp-card__top">
-                  <AppChip>{index + 1} din {lesson.vocabulary.length}</AppChip>
+                  <AppChip>{index + 1}{ui('ui_dbd8b6478643d623')}{lesson.vocabulary.length}</AppChip>
 
                 </div>
                 <h2 lang="no">{word}</h2>
@@ -169,13 +170,13 @@ const LessonAppView = (props) => {
 
         {step === LESSON_STAGE.CAREER && (
           <section>
-            <StepHeading title="Replici pe care le vei folosi" sub={careerModule.coaching} />
+            <StepHeading title={ui('ui_25b33dc32bbfc234')} sub={careerModule.coaching} />
             <div className="lapp-career">
               {careerModule.phrases.map(([norwegian, romanian, highlight], index) => {
                 const visible = index >= careerPhraseIndex * 2 && index < careerPhraseIndex * 2 + 2;
                 return visible ? (
                   <article className="lapp-card lapp-career__card" key={norwegian}>
-                    <div className="lapp-card__top"><AppChip>Personalizat</AppChip></div>
+                    <div className="lapp-card__top"><AppChip>{ui('web_686c54ce7647a12a')}</AppChip></div>
                     <h2 lang="no"><HighlightedSentence sentence={norwegian} word={highlight} highlight={highlight} /></h2>
                     <div className="lapp-career__row">
                       <p lang="ro">{romanian}</p>
@@ -194,7 +195,7 @@ const LessonAppView = (props) => {
 
         {step === LESSON_STAGE.DIALOGUE && (
           <section>
-            <StepHeading title="Conversație în context" sub="Ascultă dialogul și descoperă cum se leagă replicile." />
+            <StepHeading title={ui('ui_af2a38b0b1c6704a')} sub="Ascultă dialogul și descoperă cum se leagă replicile." />
             <DialogueWalkthrough key={lesson.uid} dialogue={lesson.dialogue}>
               <PremiumGate feature="Asistentul virtual de conversație">
                 <ChatAssistant key={`${levelCode}-${lesson.id}-${careerPathId}-app`} level={levelCode} lessonId={lesson.id} pathId={careerPathId} lessonTitle={lesson.title} />
@@ -213,10 +214,10 @@ const LessonAppView = (props) => {
         {step === LESSON_STAGE.EXERCISES && (
           <section className="lapp-practice">
             <header className="lapp-practice__intro">
-              <div><p className="lapp-practice__topic">Lecția {lesson.id} · {lesson.title}</p><h1>Hai să exersăm</h1></div>
+              <div><p className="lapp-practice__topic">{ui('ui_abf153365567efe1')}{lesson.id} · {lesson.title}</p><h1>{ui('web_e822cd57defdda7f')}</h1></div>
             </header>
-            <div className="lapp-practice__progress" role="progressbar" aria-label="Întrebări verificate" aria-valuemin={0} aria-valuemax={lessonExercises.length} aria-valuenow={answered}>
-              <span>Întrebarea {exerciseIndex + 1}/{lessonExercises.length}</span>
+            <div className="lapp-practice__progress" role="progressbar" aria-label={ui('web_df7d707446ecf152')} aria-valuemin={0} aria-valuemax={lessonExercises.length} aria-valuenow={answered}>
+              <span>{ui('web_d3526d8dd6340992')}{exerciseIndex + 1}/{lessonExercises.length}</span>
               <div aria-hidden="true">{lessonExercises.map((_, i) => <i className={answers[i] !== undefined ? 'is-done' : i === exerciseIndex ? 'is-current' : ''} key={i} />)}</div>
             </div>
             <LessonAppExercise
@@ -255,24 +256,24 @@ const LessonAppView = (props) => {
             <div className="lapp-result__hero">
               <img className="lapp-result__art" src={art} alt="" aria-hidden="true" />
               <div className="lapp-result__badge" aria-hidden="true"><CheckIcon /></div>
-              <h1>Bravo!</h1>
-              <p className="lapp-result__sub">Ai terminat „{lesson.title}”.</p>
+              <h1>{ui('web_eda3acf227afbb60')}</h1>
+              <p className="lapp-result__sub">{ui('web_e0e174f4b71ee252')}{lesson.title}”.</p>
             </div>
             <div className="lapp-statscard">
-              <div><span><LessonMetaIcon type="vocabulary" /></span><strong>{score} din {lessonExercises.length}<small>Exerciții corecte</small>{reviewCount > 0 && <small className="lapp-result__inline-review">{reviewCount} de repetat</small>}</strong><b>{percentage}%</b></div>
+              <div><span><LessonMetaIcon type="vocabulary" /></span><strong>{score}{ui('ui_dbd8b6478643d623')}{lessonExercises.length}<small>{ui('web_702671d980da1c42')}</small>{reviewCount > 0 && <small className="lapp-result__inline-review">{reviewCount}{ui('ui_6c402b7bd2698673')}</small>}</strong><b>{percentage}%</b></div>
               <div><span><LessonMetaIcon type="voice" /></span><strong>{voiceCompleted ? 'Dialog vocal finalizat' : 'Dialog vocal de exersat'}</strong><b>{voiceCompleted ? '✓' : '—'}</b></div>
-              <button type="button" className="lapp-result__vocabulary" onClick={() => props.onReviewVocabulary()}><span><BookIcon /></span><strong>Revezi vocabularul</strong><b aria-hidden="true">→</b></button>
+              <button type="button" className="lapp-result__vocabulary" onClick={() => props.onReviewVocabulary()}><span><BookIcon /></span><strong>{ui('ui_557f8b7181d3dca5')}</strong><b aria-hidden="true">→</b></button>
             </div>
-            <section className="lapp-next-practice" aria-label="Continuă practica">
-              <h2>Ce poți exersa mai departe</h2>
-              {recommended.scenario && <Link to={'/scenarii?nivel='+levelCode+'&scenariu='+encodeURIComponent(recommended.scenario.id)+'&porneste=1'}><strong>Vorbește cu Nora</strong><small>{recommended.scenario.title}</small><span aria-hidden="true">→</span></Link>}
-              <Link to={'/hangman?nivel='+levelCode}><strong>Descoperă cuvântul</strong><small>Exersează vocabularul în imagini</small><span aria-hidden="true">→</span></Link>
-              {recommended.verb && <Link to={'/challenge30?nivel='+levelCode+'&lectie='+lesson.id+'&verb='+encodeURIComponent(recommended.verb.id)}><strong>Exersează verbele</strong><small>{recommended.verb.infinitive} · {recommended.verb.translation}</small><span aria-hidden="true">→</span></Link>}
+            <section className="lapp-next-practice" aria-label={ui('web_33135ce4cf748a2c')}>
+              <h2>{ui('web_886034be8997b615')}</h2>
+              {recommended.scenario && <Link to={'/scenarii?nivel='+levelCode+'&scenariu='+encodeURIComponent(recommended.scenario.id)+'&porneste=1'}><strong>{ui('web_dbd53375b71ce918')}</strong><small>{recommended.scenario.title}</small><span aria-hidden="true">→</span></Link>}
+              <Link to={'/hangman?nivel='+levelCode}><strong>{ui('ui_a60eba1190b8698d')}</strong><small>{ui('web_9b5f3ed4cc37f36f')}</small><span aria-hidden="true">→</span></Link>
+              {recommended.verb && <Link to={'/challenge30?nivel='+levelCode+'&lectie='+lesson.id+'&verb='+encodeURIComponent(recommended.verb.id)}><strong>{ui('web_ed28d9de1e9670a5')}</strong><small>{recommended.verb.infinitive} · {recommended.verb.translation}</small><span aria-hidden="true">→</span></Link>}
             </section>
             <div className="lapp-result__actions">
               {lesson.id < courseLessons.length
-                ? <button type="button" className="is-solid" onClick={goNextLesson}>Următoarea lecție →</button>
-                : <Link className="is-solid" to="/invata">Înapoi la curs</Link>}
+                ? <button type="button" className="is-solid" onClick={goNextLesson}>{ui('web_0c63f3dbd676b83a')}</button>
+                : <Link className="is-solid" to="/invata">{ui('ui_cbd40252ce099626')}</Link>}
             </div>
           </section>
         )}
@@ -280,7 +281,7 @@ const LessonAppView = (props) => {
 
       {step < resultStep && step !== LESSON_STAGE.GRAMMAR && step !== LESSON_STAGE.RECALL && step !== LESSON_STAGE.VOCABULARY && step !== LESSON_STAGE.CAREER && step !== LESSON_STAGE.EXERCISES && (
         <AppBar onBack={previous} backDisabled={step === LESSON_STAGE.INTRO}
-          primaryLabel={step === LESSON_STAGE.INTRO ? 'Începe lecția' : step === LESSON_STAGE.VOICE ? 'Finalizează lecția' : 'Continuă'}
+          primaryLabel={step === LESSON_STAGE.INTRO ? ui('ui_54609dd4c72877da') : step === LESSON_STAGE.VOICE ? 'Finalizează lecția' : ui('ui_5fc4497d148a38a8')}
           onPrimary={next} primarySolid />
       )}
     </div>

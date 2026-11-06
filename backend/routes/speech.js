@@ -1,3 +1,4 @@
+const {voiceLanguage,currentLanguages,pairId} = require('../languageContext');
 const express = require('express');
 
 const router = express.Router();
@@ -47,7 +48,7 @@ const handleSpeech = async (req, res, next) => {
 
   const normalizedText = text.trim();
   const speechText = prepareSpeechText(normalizedText, slow);
-  const cacheKey = `${voiceId}:${ELEVENLABS_MODEL_ID}:${slow ? 'slow-v2' : 'normal'}:${speechText}`;
+  const cacheKey = `${pairId(currentLanguages())}:${voiceId}:${ELEVENLABS_MODEL_ID}:${slow ? 'slow-v2' : 'normal'}:${speechText}`;
   const cachedAudio = audioCache.get(cacheKey);
 
   if (cachedAudio) {
@@ -73,7 +74,7 @@ const handleSpeech = async (req, res, next) => {
       body: JSON.stringify({
         text: speechText,
         model_id: ELEVENLABS_MODEL_ID,
-        language_code: 'no',
+        language_code: voiceLanguage().transcription,
         voice_settings: {
           stability: 0.58,
           similarity_boost: 0.78,

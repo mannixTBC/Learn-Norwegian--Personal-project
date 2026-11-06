@@ -1,7 +1,9 @@
+import {ui} from '../../languages/messages.js';
+import {courseLocalStorage as localStorage} from '../../languages/storage.js';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import catalog from './conversationScenarios.json';
+import catalog from '../../content/features/scenarios.js';
 import { resolvePublicScenario } from './scenarioDifficulty.mjs';
 import { getScenarioReviewItems } from './scenarioReviewItems.mjs';
 
@@ -27,13 +29,13 @@ export default function ScenarioReview({ level }) {
   }, [userId, level, version]);
   if (!items.length) return null;
   return <details className="recall-scenarios">
-    <summary>Scenarii de reluat · {items.length}</summary>
-    <p>Obiectivele rămase după ultima încercare. Le exersezi din nou în conversație.</p>
+    <summary>{ui('web_a0a0b9cd1499b2c0')}{items.length}</summary>
+    <p>{ui('web_ee3fd739c4f6a7fe')}</p>
     {items.map(item => <article key={item.id}>
       <h2>{item.title}</h2>
-      {item.previouslyCompleted && <p>Ai reușit anterior. Ultima încercare mai are obiective de exersat.</p>}
+      {item.previouslyCompleted && <p>{ui('web_f0a9da8fc0932169')}</p>}
       <ul>{item.missing.map(goal => <li key={goal}>{goal}</li>)}</ul>
-      <Link to={'/scenarii?nivel=' + level + '&scenariu=' + encodeURIComponent(item.id)}>Reia situația →</Link>
+      <Link to={'/scenarii?nivel=' + level + '&scenariu=' + encodeURIComponent(item.id)}>{ui('web_4fb21eeb68b86d90')}</Link>
     </article>)}
   </details>;
 }

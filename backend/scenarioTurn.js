@@ -1,14 +1,16 @@
-const tutor = require('./scenarioTutor');
+// nordlingo-language-context-v1
+const {addLanguageInstructions} = require('./languageContext');
+const tutor = require('./languageTutors').scenario;
 const assessment = require('./scenarioAssessment');
 
 // One quota reservation per learner turn; every provider call contributes usage.
 // The total provider deadline remains below the 45-second quota lease.
-async function runScenarioTurn({ client, scenario, difficulty, session, message, onUsage = () => {} }) {
+async function runScenarioTurn({ client, scenario, difficulty, session, message, reference=null, onUsage = () => {} }) {
   const deadline = Date.now() + 35000;
   async function complete(request) {
     const remaining = deadline - Date.now();
     if (remaining <= 0) throw Object.assign(new Error('Scenario deadline exceeded'), { status: 504 });
-    const completion = await client.chat.completions.create(request, {
+    const completion = await client.chat.completions.create(addLanguageInstructions(request), {
       timeout: Math.min(20000, remaining), maxRetries: 0,
     });
     onUsage(completion.usage);
@@ -25,8 +27,9 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
     } else if (session.turn + 1 >= difficulty.turns) {
       reply = 'Takk for samtalen. Vi avslutter øvelsen her.';
     } else {
-      reply = assessment.partnerReply(await complete(
-        assessment.partnerRequest(scenario, difficulty, session, message, evaluated)));
+      const request=assessment.partnerRequest(scenario, difficulty, session, message, evaluated);
+      if(reference)request.messages.splice(1,0,reference);
+      reply = assessment.partnerReply(await complete(request));
     }
   } else {
     // Unmigrated scenarios retain their existing one-call evaluation behavior.

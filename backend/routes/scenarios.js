@@ -1,8 +1,10 @@
+// nordlingo-language-context-v1
 const express = require('express');
+const {prepareCourseSession,referenceMessage}=require('../courseRuntime.cjs');
 const { requireAuth } = require('../middleware/authSupabaseUser');
 const { getOpenAI, isOpenAIConfigured } = require('../openai');
 const { consumeChatQuota, recordChatUsage } = require('../chatUsage');
-const tutor = require('../scenarioTutor');
+const tutor = require('../languageTutors').scenario;
 const { runScenarioTurn, addUsage } = require('../scenarioTurn');
 const { cartesiaSpeechBuffer } = require('../cartesiaSpeech');
 const router = express.Router();
@@ -44,7 +46,7 @@ router.post('/start', wrap(async (req, res) => {
   const session = { userId: req.userId, scenarioId, level, turn: 0, done: false, achieved: [], feedback: '',
     expires: Date.now() + 3600000, history: [{ role: 'assistant', content: scenario.opening }] };
   if (scenario.revision) session.scenarioRevision = scenario.revision;
-  res.json(response(session, scenario, difficulty));
+  res.json(response(await prepareCourseSession(req,session,'scenario'), scenario, difficulty));
 }));
 router.post('/resume', wrap(async (req, res) => {
   const { session, scenario, difficulty } = currentSession(req.body?.sessionToken, req.userId);
@@ -83,6 +85,7 @@ router.post('/turn', wrap(async (req, res) => {
     try {
       result = await runScenarioTurn({
         client: getOpenAI(), scenario, difficulty, session, message: message.trim(),
+        reference: scenario.definition ? await referenceMessage(req,session,message.trim()) : null,
         onUsage: value => { usage = addUsage(usage, value); },
       });
     } catch (_) {

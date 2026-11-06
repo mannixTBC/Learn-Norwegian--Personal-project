@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import './Hangman.css';
@@ -207,22 +208,19 @@ class Hangman extends Component {
 
     return (
       <div className="hangman">
-        <Link to="/invata-limba" className="hangman__back">
-          ← Înapoi la Învață limba
-        </Link>
+        <Link to="/invata-limba" className="hangman__back">{ui('web_8e575762fa7dae5e')}</Link>
 
         <div className="hangman__card">
           <header className="hangman__header">
-            <h1 className="hangman__title">Spânzurătoarea</h1>
-            <p className="hangman__subtitle">Ghici cuvântul în norvegiană</p>
+            <h1 className="hangman__title">{ui('web_a77fa3399343b031')}</h1>
+            <p className="hangman__subtitle">{ui('web_7359af872c7f2bd9')}</p>
           </header>
 
           <div className="hangman__body">
             <div className="hangman__meta">
-              <span className="hangman__score">Punctaj: {this.state.score}</span>
-              <span className="hangman__round">Runda {this.state.round} / 5</span>
-              <span className="hangman__attempts">
-                Încercări greșite: {mistake} / {maxWrong}
+              <span className="hangman__score">{ui('web_6ed494935e584bd3')}{this.state.score}</span>
+              <span className="hangman__round">{ui('web_98e361b8802eb988')}{this.state.round} / 5</span>
+              <span className="hangman__attempts">{ui('web_d568cafa9923d022')}{mistake} / {maxWrong}
               </span>
             </div>
 
@@ -240,10 +238,10 @@ class Hangman extends Component {
               <div className={`hangman__result hangman__result--${isWinner ? 'win' : 'lose'}`}>
                 {isWinner ? 'Ai câștigat!' : 'Ai pierdut!'}
                 {isWinner && (
-                  <p className="hangman__points">+{10 + (maxWrong - mistake) * 2} puncte</p>
+                  <p className="hangman__points">+{10 + (maxWrong - mistake) * 2}{ui('web_e8480d2e1fb335e8')}</p>
                 )}
                 {gameOver && (
-                  <p className="hangman__answer">Cuvântul era: <strong>{word}</strong></p>
+                  <p className="hangman__answer">{ui('web_7ad35490c8a7f6be')}<strong>{word}</strong></p>
                 )}
                 {gameOver && (
                   <p className="hangman__auto-reset">

@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
@@ -17,7 +18,7 @@ export const GrammarHighlight = ({ text, focus = [] }) => {
     ? <mark key={index}>{part}</mark> : part);
 };
 
-const SourceLesson = ({ source }) => source ? <Link className="lesson-grammar__source" to={`/curs/${source.level.toLowerCase()}/${source.id}`}>Din {source.level} · Lecția {source.id}: {source.title}</Link> : null;
+const SourceLesson = ({ source }) => source ? <Link className="lesson-grammar__source" to={`/curs/${source.level.toLowerCase()}/${source.id}`}>{ui('ui_c7add53ba0ddbd8b')}{source.level}{ui('ui_a2ba73094f24b2ce')}{source.id}: {source.title}</Link> : null;
 
 const pagesOf = (text, limit = 340) => {
   const words = (text || '').split(/\s+/).filter(Boolean);
@@ -102,33 +103,33 @@ export default function LessonGrammar({ lesson, onBack, onContinue }) {
     else change(() => onContinue?.());
   };
   const nextLabel = optional === 'recall' ? (pointIndex < lesson.grammar.points.length - 1 ? 'Următorul reper' : 'Continuă la exerciții')
-    : isReading ? (readingQuestion ? 'Înapoi la regulă' : page === readingPages.length - 1 ? 'Întrebarea de lectură' : 'Pagina următoare')
+    : isReading ? (readingQuestion ? ui('ui_cb8925e090efef7a') : page === readingPages.length - 1 ? 'Întrebarea de lectură' : 'Pagina următoare')
     : page < explanationPages.length - 1 ? 'Continuă explicația'
-      : view === 'contrast' || optional ? 'Înapoi la regulă'
+      : view === 'contrast' || optional ? ui('ui_cb8925e090efef7a')
         : pointIndex < lesson.grammar.points.length - 1 ? 'Următorul reper' : 'Continuă la exerciții';
   const example = point.examples[exampleIndex];
   return <div className="lesson-grammar lesson-grammar--focused" data-lesson={lesson.uid}>
     <article className="lesson-grammar__card" data-concept={isReading ? 'reading' : point.concept}>
-      {optional === 'recall' && <button type="button" className="grammar-focus__return" onClick={() => openOptional(null)}><span aria-hidden="true">←</span> Înapoi la regulă</button>}
-      <div className="lesson-grammar__meta"><span>{isReading ? 'Lectură opțională' : optional ? 'Reamintire opțională' : `Reperul ${pointIndex + 1} din ${lesson.grammar.points.length}`}</span><small>{isReading ? `${Math.min(page + 1, readingPages.length)} / ${readingPages.length}` : point.kind === 'usage' ? 'Exprimare și sens' : 'Gramatică'}</small></div>
+      {optional === 'recall' && <button type="button" className="grammar-focus__return" onClick={() => openOptional(null)}><span aria-hidden="true">←</span>{ui('web_16bd0337e3c7f784')}</button>}
+      <div className="lesson-grammar__meta"><span>{isReading ? 'Lectură opțională' : optional ? 'Reamintire opțională' : `Reperul ${pointIndex + 1} din ${lesson.grammar.points.length}`}</span><small>{isReading ? `${Math.min(page + 1, readingPages.length)} / ${readingPages.length}` : point.kind === 'usage' ? 'Exprimare și sens' : ui('ui_b3e5917f6637de1c')}</small></div>
       <h2 ref={titleRef} tabIndex={-1}>{isReading ? lesson.reading.title : point.title}</h2>
       {!isReading && <SourceLesson source={point.sourceLesson} />}
       {isReading ? <>
         {!readingQuestion ? <p className="grammar-focus__reading" lang="nb">{readingPages[page]}</p> : <div className="grammar-focus__question">
           <p lang={lesson.reading.questionLanguage}>{lesson.reading.question}</p>
-          <label htmlFor="grammar-reading-answer">Răspunsul tău</label>
+          <label htmlFor="grammar-reading-answer">{ui('ui_d6e45310ea716363')}</label>
           <textarea id="grammar-reading-answer" rows={3} value={readingAnswer} onChange={(event) => setReadingAnswer(event.target.value)} />
           <button type="button" aria-expanded={showReadingAnswer} onClick={() => setShowReadingAnswer(!showReadingAnswer)}>{showReadingAnswer ? 'Ascunde reperul' : 'Compară cu un răspuns-reper'}</button>
           {showReadingAnswer && <div className="grammar-focus__reading-answer"><strong lang={lesson.reading.answerLanguage}>{lesson.reading.answer}</strong><p>{lesson.reading.explanation}</p></div>}
         </div>}
-        {page > 0 && <button type="button" className="grammar-focus__link" onClick={() => change(() => setPage(page - 1))}>← Pagina anterioară</button>}
+        {page > 0 && <button type="button" className="grammar-focus__link" onClick={() => change(() => setPage(page - 1))}>{ui('web_eeb8bc2d6ea2f13a')}</button>}
       </> : view === 'contrast' ? <>
         <div className="grammar-focus__contrast">
           <div className="lesson-grammar__before"><small>{point.kind === 'grammar' ? 'De corectat' : 'Formularea inițială'}</small><p lang="nb">{point.contrast.before}</p></div>
           <div className="lesson-grammar__after"><small>{point.kind === 'grammar' ? 'Forma corectă' : 'În contextul lecției'}</small><p lang="nb"><GrammarHighlight text={point.contrast.after} focus={point.focus} /></p></div>
           <p className="lesson-grammar__reason">{explanationPages[page]}</p>
         </div>
-        <button type="button" className="grammar-focus__link" onClick={() => changeView('rule')}>← Înapoi la regulă</button>
+        <button type="button" className="grammar-focus__link" onClick={() => changeView('rule')}>{ui('web_16d564b8c4af29da')}</button>
       </> : <>
         <p className="lesson-grammar__explanation">{explanationPages[page]}</p>
         <div className="lesson-grammar__example">
@@ -136,15 +137,15 @@ export default function LessonGrammar({ lesson, onBack, onContinue }) {
           {audio(`${optional || pointIndex}-${exampleIndex}`, example.norwegian)}
         </div>
       </>}
-      {!isReading && explanationPages.length > 1 && <div className="grammar-focus__pages"><button type="button" disabled={page === 0} onClick={() => change(() => setPage(page - 1))}>←</button><span>Explicație {page + 1} / {explanationPages.length}</span><button type="button" disabled={page === explanationPages.length - 1} onClick={() => change(() => setPage(page + 1))}>→</button></div>}
+      {!isReading && explanationPages.length > 1 && <div className="grammar-focus__pages"><button type="button" disabled={page === 0} onClick={() => change(() => setPage(page - 1))}>←</button><span>{ui('web_b4a92263449f3070')}{page + 1} / {explanationPages.length}</span><button type="button" disabled={page === explanationPages.length - 1} onClick={() => change(() => setPage(page + 1))}>→</button></div>}
     </article>
-    {!optional && <aside className="grammar-focus__extras" aria-label="Materiale opționale">
-      {lesson.grammar.recall && <button type="button" onClick={() => openOptional('recall')}>Reamintire <span>Opțional</span></button>}
-      {lesson.reading && <button type="button" onClick={() => openOptional('reading')}>Lectură <span>Opțional</span></button>}
+    {!optional && <aside className="grammar-focus__extras" aria-label={ui('web_92b63f1f22421568')}>
+      {lesson.grammar.recall && <button type="button" onClick={() => openOptional('recall')}>{ui('web_3f141971c9362453')}<span>{ui('web_b11098987e1ce971')}</span></button>}
+      {lesson.reading && <button type="button" onClick={() => openOptional('reading')}>{ui('web_45110b58088e3e8b')}<span>{ui('web_b11098987e1ce971')}</span></button>}
     </aside>}
     {audioError && <p className="lesson-grammar__audio-error" role="status">{audioError}</p>}
-    <nav className="grammar-focus__navigation" aria-label="Navigare gramatică">
-      <button type="button" onClick={back}>← Înapoi</button>
+    <nav className="grammar-focus__navigation" aria-label={ui('web_3aa41d0ae738c34f')}>
+      <button type="button" onClick={back}>{ui('web_a354f4064be3dfef')}</button>
       <button type="button" className="grammar-focus__primary" onClick={next}>{nextLabel} →</button>
     </nav>
   </div>;

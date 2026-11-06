@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -148,71 +149,69 @@ const AuthPage = () => {
 
   return (
     <div className={`auth-page ${installedApp ? `auth-fjord ${mobileEmailOpen || isRecovery ? 'auth-fjord--form' : ''}` : 'auth-web'}`}>
-      {installedApp ? <section className="auth-fjord__hero" aria-label="NordLingo">
-        {mobileEmailOpen && !isRecovery && <button className="auth-fjord__back" type="button" aria-label="Înapoi la opțiunile de conectare" onClick={() => { clearFeedback(); setMobileEmailOpen(false); }}>←</button>}
-        <Link to="/" className="auth-fjord__brand"><img src="/branding/nordlingo-selected-color.png" alt="NordLingo" /></Link>
+      {installedApp ? <section className="auth-fjord__hero" aria-label={ui('ui_ee728f3245aed708')}>
+        {mobileEmailOpen && !isRecovery && <button className="auth-fjord__back" type="button" aria-label={ui('ui_98945804443c27d1')} onClick={() => { clearFeedback(); setMobileEmailOpen(false); }}>←</button>}
+        <Link to="/" className="auth-fjord__brand"><img src="/branding/nordlingo-selected-color.png" alt={ui('ui_ee728f3245aed708')} /></Link>
         <img className="auth-fjord__scene" src="/images/loading-fjord.webp" alt="" />
       </section> : <section className="auth-story" aria-labelledby="auth-story-title">
         <div>
-          <span className="auth-story__eyebrow">Norvegiană pentru viața ta</span>
-          <h1 id="auth-story-title">Învață pas cu pas.</h1>
-          <p>Construiește-ți încrederea în norvegiană, de la primele cuvinte la conversațiile de zi cu zi.</p>
-          <div className="auth-story__features"><span>Lecții practice</span><span>Ascultare și pronunție</span><span>Progresul tău</span></div>
+          <span className="auth-story__eyebrow">{ui('web_6e58a0bd2d2e13ff')}</span>
+          <h1 id="auth-story-title">{ui('ui_229266d269e2a8e0')}</h1>
+          <p>{ui('ui_9313d36dbe0d9b2e')}</p>
+          <div className="auth-story__features"><span>{ui('web_b9d1764fed7c7521')}</span><span>{ui('web_863591d5a5ca2ce2')}</span><span>{ui('web_f64810848bf53922')}</span></div>
         </div>
       </section>}
       <main className="auth-panel">
         <div className="auth-panel__inner">
-          {!installedApp && <Link className="auth-panel__back" to="/">← Înapoi la pagina principală</Link>}
+          {!installedApp && <Link className="auth-panel__back" to="/">{ui('web_2ff33ea3a43ccf4d')}</Link>}
 
-          {installedApp && !isRecovery && <section className={`auth-mobile-quick ${mobileEmailOpen ? 'is-hidden' : ''}`} aria-label="Alege cum vrei să continui">
-            <h1>Bine ai revenit!</h1>
+          {installedApp && !isRecovery && <section className={`auth-mobile-quick ${mobileEmailOpen ? 'is-hidden' : ''}`} aria-label={ui('web_bf458cf637a1eb2c')}>
+            <h1>{ui('ui_9702a93f937cab68')}</h1>
             <button className="auth-google" type="button" disabled={submitting} onClick={continueWithGoogle}>
               <span className="auth-google__icon"><GoogleIcon /></span>
-              <span className="auth-google__copy"><strong>Continuă cu Google</strong><small>Cea mai rapidă opțiune</small></span>
+              <span className="auth-google__copy"><strong>{ui('ui_f109a965ce4721cd')}</strong><small>{ui('web_a4d4decd1924a0f6')}</small></span>
               <span className="auth-google__arrow" aria-hidden="true">→</span>
             </button>
-            <button className="auth-mobile-email" type="button" disabled={submitting} onClick={() => { switchMode('login'); setMobileEmailOpen(true); }}>
-              Conectare cu e-mail
-            </button>
+            <button className="auth-mobile-email" type="button" disabled={submitting} onClick={() => { switchMode('login'); setMobileEmailOpen(true); }}>{ui('web_1819b7be8f668300')}</button>
             <button className="auth-guest" type="button" disabled={submitting} onClick={continueAsGuest}>
               <span className="auth-guest__icon"><GuestIcon /></span>
-              <span><strong>Continuă ca vizitator</strong><small>Fără cont și fără parolă</small></span>
+              <span><strong>{ui('ui_57ef432292f0f5c3')}</strong><small>{ui('web_5644b21c5b95ba5b')}</small></span>
               <span className="auth-guest__arrow" aria-hidden="true">→</span>
             </button>
-            <p className="auth-fjord__register">Nu ai cont? <button type="button" onClick={() => { switchMode('register'); setMobileEmailOpen(true); }}>Creează un cont</button></p>
+            <p className="auth-fjord__register">{ui('web_aa8def74208ef8fd')}<button type="button" onClick={() => { switchMode('register'); setMobileEmailOpen(true); }}>{ui('ui_216147cfd0d20f2c')}</button></p>
             {error && <div className="auth-error" role="alert">{error}</div>}
           </section>}
 
           <div className={`auth-details ${mobileEmailOpen || isRecovery ? 'is-open' : ''}`}>
 
             <header>
-              <FormHeading>{isRecovery ? 'Parolă nouă' : mode === 'login' ? 'Conectare' : 'Creează un cont'}</FormHeading>
-              <p>{isRecovery ? 'Alege o parolă pentru contul tău.' : mode === 'login' ? 'Intră în contul tău.' : 'Începe călătoria ta în norvegiană.'}</p>
+              <FormHeading>{isRecovery ? ui('ui_0c16a8469ec40459') : mode === 'login' ? ui('ui_2a8874f48f3cd1d4') : ui('ui_216147cfd0d20f2c')}</FormHeading>
+              <p>{isRecovery ? ui('ui_fc054126338613c8') : mode === 'login' ? ui('ui_290c33b191f530fc') : ui('ui_cd3e3e56e981d75c')}</p>
             </header>
 
             <form onSubmit={submit}>
-              {!isRecovery && mode === 'register' && <label><span>Numele tău</span><input required minLength={2} value={form.name} onChange={(event) => update('name', event.target.value)} placeholder="Ex: Andrei" autoComplete="name" /></label>}
-              {!isRecovery && <label><span>Adresa de e-mail</span><input required type="email" autoCapitalize="none" spellCheck={false} value={form.email} onChange={(event) => update('email', event.target.value)} placeholder="nume@email.com" autoComplete="email" /></label>}
-              <label><span>{isRecovery ? 'Parola nouă' : 'Parola'}</span><div className="auth-password"><input required minLength={8} type={showPassword ? 'text' : 'password'} value={form.password} onChange={(event) => update('password', event.target.value)} placeholder="Parola ta" aria-describedby={mode === 'register' ? 'auth-password-hint' : undefined} autoComplete={isRecovery || mode === 'register' ? 'new-password' : 'current-password'} /><button type="button" aria-label={showPassword ? 'Ascunde parola' : 'Arată parola'} aria-pressed={showPassword} onClick={() => setShowPassword((visible) => !visible)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>{showPassword && <path d="m3 3 18 18"/>}</svg></button></div>{mode === 'register' && <small id="auth-password-hint">Minimum 8 caractere.</small>}</label>
-              {isRecovery && <label><span>Confirmă parola nouă</span><input required minLength={8} type={showPassword ? 'text' : 'password'} value={form.confirmPassword} onChange={(event) => update('confirmPassword', event.target.value)} placeholder="Repetă parola" autoComplete="new-password" /></label>}
-              {mode === 'login' && <button className="auth-forgot" type="button" disabled={submitting} onClick={sendPasswordReset}>Ai uitat parola?</button>}
+              {!isRecovery && mode === 'register' && <label><span>{ui('ui_b54f1d8a41645cda')}</span><input required minLength={2} value={form.name} onChange={(event) => update('name', event.target.value)} placeholder={ui('web_0e1d35f27e2e29fe')} autoComplete="name" /></label>}
+              {!isRecovery && <label><span>{ui('ui_deb062e302c598be')}</span><input required type="email" autoCapitalize="none" spellCheck={false} value={form.email} onChange={(event) => update('email', event.target.value)} placeholder={ui('web_955616c0c8933e62')} autoComplete="email" /></label>}
+              <label><span>{isRecovery ? 'Parola nouă' : ui('ui_e3962ceb93e1d6fc')}</span><div className="auth-password"><input required minLength={8} type={showPassword ? 'text' : 'password'} value={form.password} onChange={(event) => update('password', event.target.value)} placeholder={ui('web_d874a2c3412b27e4')} aria-describedby={mode === 'register' ? 'auth-password-hint' : undefined} autoComplete={isRecovery || mode === 'register' ? 'new-password' : 'current-password'} /><button type="button" aria-label={showPassword ? 'Ascunde parola' : 'Arată parola'} aria-pressed={showPassword} onClick={() => setShowPassword((visible) => !visible)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>{showPassword && <path d="m3 3 18 18"/>}</svg></button></div>{mode === 'register' && <small id="auth-password-hint">{ui('web_7aacac9c2b992dc1')}</small>}</label>
+              {isRecovery && <label><span>{ui('ui_edc1a0c232a4146c')}</span><input required minLength={8} type={showPassword ? 'text' : 'password'} value={form.confirmPassword} onChange={(event) => update('confirmPassword', event.target.value)} placeholder={ui('web_38dfd104890dd6d6')} autoComplete="new-password" /></label>}
+              {mode === 'login' && <button className="auth-forgot" type="button" disabled={submitting} onClick={sendPasswordReset}>{ui('web_536ed7ff9131c40c')}</button>}
               {error && <div className="auth-error" role="alert">{error}</div>}
               {success && <div className="auth-success" role="status">{success}</div>}
               <button className="auth-submit" type="submit" disabled={submitting || initializing}>{submitting ? 'Se procesează...' : isRecovery ? 'Salvează parola nouă' : mode === 'login' ? 'Conectează-te' : 'Creează contul'}</button>
             </form>
 
             {!isRecovery && <>
-              <p className="auth-switch">{mode === 'login' ? 'Nu ai cont?' : 'Ai deja un cont?'} <button type="button" onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}>{mode === 'login' ? 'Creează un cont' : 'Conectează-te'}</button></p>
-              {!installedApp && <section className="auth-web__alternatives" aria-label="Alte opțiuni de conectare">
-                <div className="auth-guest-separator">sau continuă cu</div>
+              <p className="auth-switch">{mode === 'login' ? ui('ui_812977368714f7e6') : 'Ai deja un cont?'} <button type="button" onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}>{mode === 'login' ? ui('ui_216147cfd0d20f2c') : 'Conectează-te'}</button></p>
+              {!installedApp && <section className="auth-web__alternatives" aria-label={ui('web_5af71bc9cf12d280')}>
+                <div className="auth-guest-separator">{ui('web_feca5e68527fb559')}</div>
                 <button className="auth-google" type="button" disabled={submitting} onClick={continueWithGoogle}>
                   <span className="auth-google__icon"><GoogleIcon /></span>
-                  <span className="auth-google__copy"><strong>Continuă cu Google</strong><small>Folosește contul tău Google</small></span>
+                  <span className="auth-google__copy"><strong>{ui('ui_f109a965ce4721cd')}</strong><small>{ui('web_1232ad38bf36254b')}</small></span>
                   <span className="auth-google__arrow" aria-hidden="true">→</span>
                 </button>
                 <button className="auth-guest" type="button" disabled={submitting} onClick={continueAsGuest}>
                   <span className="auth-guest__icon"><GuestIcon /></span>
-                  <span><strong>Continuă ca vizitator</strong><small>Fără cont și fără parolă</small></span>
+                  <span><strong>{ui('ui_57ef432292f0f5c3')}</strong><small>{ui('web_5644b21c5b95ba5b')}</small></span>
                   <span className="auth-guest__arrow" aria-hidden="true">→</span>
                 </button>
               </section>}

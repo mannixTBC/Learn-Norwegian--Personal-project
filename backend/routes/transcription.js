@@ -1,3 +1,5 @@
+// nordlingo-language-context-v1
+const {requireTranscriptionLanguage} = require('../languageContext');
 const express = require('express');
 const { requireAuth } = require('../middleware/authSupabaseUser');
 const { deepgramEnabled, languageCode, validateAudio, transcribeDeepgram, createTranscriptionGuard } = require('../deepgramTranscription');
@@ -13,7 +15,7 @@ router.post('/', async (req, res) => {
   res.on('close', disconnected);
   try {
     const audio = validateAudio(req.body);
-    const language = languageCode(req.body.language || 'no');
+    const language = languageCode(requireTranscriptionLanguage(req.body.language));
     if (!deepgramEnabled()) return res.status(503).json({ error: 'Transcrierea Deepgram nu este încă activată.', code: 'STT_NOT_CONFIGURED' });
     release = reserve(req.userId);
     const result = await transcribeDeepgram({ ...audio, language, signal: controller.signal });

@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import React, { useMemo, useState } from 'react';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
 import './ChallengeSentenceMatch.css';
@@ -59,14 +60,14 @@ const ChallengeSentenceMatch = ({ verbs, onComplete }) => {
 
   return (
     <section className="sentence-match">
-      <div className="sentence-match__heading"><div><span>Exercițiu suplimentar</span><h3>Asociază propoziția cu sensul ei</h3><p>Ascultă propoziția completă și alege traducerea potrivită.</p></div><span>{questions.length} propoziții</span></div>
+      <div className="sentence-match__heading"><div><span>{ui('web_e3a7fd6d29b09dab')}</span><h3>{ui('web_fab9debe3bee6bff')}</h3><p>{ui('web_d4e65a50b3a01e46')}</p></div><span>{questions.length}{ui('web_6cef11fc356c1c02')}</span></div>
       <div className="sentence-match__list">
         {questions.map((question, index) => {
           const correct = answers[index] === question.translation;
-          return <article className={checked ? (correct ? 'correct' : 'wrong') : ''} key={question.sentence}><div className="sentence-match__number">{String(index + 1).padStart(2, '0')}</div><div className="sentence-match__question"><div><blockquote lang="no">{question.sentence}</blockquote><button type="button" onClick={() => speakNorwegian(question.sentence)} aria-label={`Ascultă propoziția: ${question.sentence}`}>▶ Ascultă</button></div><div className="sentence-match__options">{question.options.map((option) => <button type="button" className={answers[index] === option ? 'selected' : ''} disabled={checked} onClick={() => setAnswers((current) => ({ ...current, [index]: option }))} key={option}>{option}</button>)}</div>{checked && !correct && <p className="sentence-match__feedback">Răspuns corect: <strong>{question.translation}</strong></p>}{checked && correct && <p className="sentence-match__feedback">Corect! Ai înțeles propoziția.</p>}</div></article>;
+          return <article className={checked ? (correct ? 'correct' : 'wrong') : ''} key={question.sentence}><div className="sentence-match__number">{String(index + 1).padStart(2, '0')}</div><div className="sentence-match__question"><div><blockquote lang="no">{question.sentence}</blockquote><button type="button" onClick={() => speakNorwegian(question.sentence)} aria-label={`Ascultă propoziția: ${question.sentence}`}>{ui('web_27f211fee66e5afd')}</button></div><div className="sentence-match__options">{question.options.map((option) => <button type="button" className={answers[index] === option ? 'selected' : ''} disabled={checked} onClick={() => setAnswers((current) => ({ ...current, [index]: option }))} key={option}>{option}</button>)}</div>{checked && !correct && <p className="sentence-match__feedback">{ui('web_4926920a341d9eb7')}<strong>{question.translation}</strong></p>}{checked && correct && <p className="sentence-match__feedback">{ui('web_ee321aa2d85d65b5')}</p>}</div></article>;
         })}
       </div>
-      {!checked ? <button className="sentence-match__check" type="button" disabled={Object.keys(answers).length !== questions.length} onClick={checkAnswers}>Verifică propozițiile</button> : <div className="sentence-match__score">Scor: <strong>{score} / {questions.length}</strong><button type="button" onClick={() => { setAnswers({}); setChecked(false); }}>Repetă exercițiul</button></div>}
+      {!checked ? <button className="sentence-match__check" type="button" disabled={Object.keys(answers).length !== questions.length} onClick={checkAnswers}>{ui('web_e34340832f793142')}</button> : <div className="sentence-match__score">{ui('web_5c69f37879487f8d')}<strong>{score} / {questions.length}</strong><button type="button" onClick={() => { setAnswers({}); setChecked(false); }}>{ui('web_d938c309b2417c48')}</button></div>}
     </section>
   );
 };

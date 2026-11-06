@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
@@ -9,7 +10,7 @@ import './HomePage.css';
 const sections = [
   { to: '/invata', icon: '📘', title: 'Învață norvegiana', text: 'Lecții, exerciții, pronunție și recapitulare într-un singur traseu.' },
   { to: '/descopera', icon: '🏔️', title: 'Descoperă', text: 'Natură, tradiții și cultura Norvegiei.' },
-  { to: '/viata-in-norvegia', icon: '🧭', title: 'Viața în Norvegia', text: 'Muncă, acte, vreme și știri într-un singur loc.' },
+  { to: '/viata-in-norvegia', icon: '🧭', title: ui('ui_cea9aa1d0028ee59'), text: 'Muncă, acte, vreme și știri într-un singur loc.' },
 ];
 
 /**
@@ -37,21 +38,21 @@ const HomePage = () => {
   return <div className="landing">
     <section className="landing__hero">
       <div className="landing__hero-content">
-        <p className="landing__eyebrow">Limba și viața în Norvegia</p>
-        <h1 className="landing__title">Construiește-ți drumul spre Norvegia</h1>
-        <p className="landing__subtitle">Învață norvegiana pas cu pas și găsește informațiile practice de care ai nevoie.</p>
+        <p className="landing__eyebrow">{ui('web_eb0ff974e458cf16')}</p>
+        <h1 className="landing__title">{ui('web_426862eb8b15473d')}</h1>
+        <p className="landing__subtitle">{ui('web_67ce0216fe9c9e7d')}</p>
         <div className="landing__actions">
-          <Link to="/dashboard" className="landing__button landing__button--primary">Începe să înveți</Link>
+          <Link to="/dashboard" className="landing__button landing__button--primary">{ui('web_1e320b7666c6f692')}</Link>
           <PWAInstallButton className="landing__button landing__button--install" />
-          <Link to="/viata-in-norvegia" className="landing__button landing__button--secondary">Explorează ghidurile</Link>
+          <Link to="/viata-in-norvegia" className="landing__button landing__button--secondary">{ui('web_654c851f300bfde8')}</Link>
         </div>
       </div>
     </section>
 
     <section className="landing__sections" aria-labelledby="landing-sections-title">
       <div className="landing__section-heading">
-        <p className="landing__eyebrow landing__eyebrow--dark">Alege direcția</p>
-        <h2 id="landing-sections-title">Totul este mai ușor de găsit</h2>
+        <p className="landing__eyebrow landing__eyebrow--dark">{ui('web_d7f5aef529fe8f11')}</p>
+        <h2 id="landing-sections-title">{ui('web_493440d1b64c15c9')}</h2>
       </div>
       <div className="landing__cards">
         {sections.map((section) => (
@@ -59,7 +60,7 @@ const HomePage = () => {
             <span className="landing-card__icon">{section.icon}</span>
             <h3>{section.title}</h3>
             <p>{section.text}</p>
-            <span className="landing-card__action">Deschide →</span>
+            <span className="landing-card__action">{ui('web_b9e9c00bf07fbdf3')}</span>
           </Link>
         ))}
       </div>

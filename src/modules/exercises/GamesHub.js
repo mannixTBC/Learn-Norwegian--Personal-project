@@ -1,14 +1,16 @@
+import {ui} from '../../languages/messages.js';
+import {courseLocalStorage as localStorage} from '../../languages/storage.js';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getLearningLevel } from '../lessons/learningLevel';
 import { getReviewStats } from '../../services/spacedReview';
 import { useAuth } from '../auth/AuthContext';
 import { getCareerPath, getCareerProfile } from '../../services/careerProfile';
-import { readPracticeProgress } from './practiceActivities';
+import { readPracticeProgress } from '../../content/features/practice.js';
 import GamesMosaic from './GamesMosaic';
 import DesktopGamesHub from './DesktopGamesHub';
 import { isInstalledAppView } from '../../services/appExperience';
-import { readGameProgress } from './practiceGameData';
+import { readGameProgress } from '../../content/features/games.js';
 import { getVerbSessions, readVerbProgress } from './challenge30/verbsForLevel';
 import { claimNorthernPassStop, NORTHERN_PASS_UPDATE_EVENT, readNorthernPassProgress } from '../../services/northernPassProgress';
 
@@ -57,7 +59,7 @@ const GamesHub = () => {
   const gameCards = [
     { id: 'quiz', to: `/chestionar?nivel=${level}`, title: 'Chestionar', text: 'Testează ce ai învățat într-un mod distractiv.', progress: readGameProgress(localStorage, 'quiz', level, user?.id) },
     { id: 'order', to: `/drag?nivel=${level}`, title: 'Construiește propoziția', text: 'Pune cuvintele în ordinea corectă.', progress: readGameProgress(localStorage, 'order', level, user?.id) },
-    { id: 'word', to: `/hangman?nivel=${level}`, title: 'Descoperă cuvântul', text: 'Folosește indiciile și scrie expresia corectă.', progress: readGameProgress(localStorage, 'word', level, user?.id) },
+    { id: 'word', to: `/hangman?nivel=${level}`, title: ui('ui_a60eba1190b8698d'), text: 'Folosește indiciile și scrie expresia corectă.', progress: readGameProgress(localStorage, 'word', level, user?.id) },
   ].map((game) => ({
     ...game,
     progress: {
@@ -69,14 +71,14 @@ const GamesHub = () => {
   const appGameCards = [
     { id: 'quiz', to: `/chestionar?nivel=${level}`, title: 'Vocabular', progress: gameCards[0].progress },
     { id: 'order', to: `/drag?nivel=${level}`, title: 'Propoziții', progress: gameCards[1].progress },
-    { id: 'verbs', to: `/challenge30?nivel=${level}`, title: 'Verbe', progress: { completed: verbSession, target: verbSessionCount } },
+    { id: 'verbs', to: `/challenge30?nivel=${level}`, title: ui('ui_0ab5702e18c47e05'), progress: { completed: verbSession, target: verbSessionCount } },
     { id: 'pronunciation', to: `/pronuntie?nivel=${level}`, title: 'Pronunție', progress: { completed: pronunciationBest, target: 100 } },
-    { id: 'word', to: `/hangman?nivel=${level}`, title: 'Cuvinte', progress: gameCards[2].progress },
-    { id: 'review', to: `/recapitulare?nivel=${level}`, title: 'Recapitulare', progress: { completed: reviewStats.total - reviewStats.due, target: Math.max(1, reviewStats.total) }, badge: reviewStats.due ? `${reviewStats.due} de repetat` : reviewStats.total ? 'La zi' : 'Nou' },
+    { id: 'word', to: `/hangman?nivel=${level}`, title: ui('web_3bd236551c6abf1b'), progress: gameCards[2].progress },
+    { id: 'review', to: `/recapitulare?nivel=${level}`, title: ui('ui_fe74dd05d0e5825f'), progress: { completed: reviewStats.total - reviewStats.due, target: Math.max(1, reviewStats.total) }, badge: reviewStats.due ? `${reviewStats.due} de repetat` : reviewStats.total ? 'La zi' : 'Nou' },
   ];
   const careerPath = getCareerPath(getCareerProfile(user)?.pathId);
   const newGames = [
-    { id: 'listen', to: '/asculta-si-alege', title: 'Ascultă și alege', text: 'Auzi norvegiana. Descoperă sensul.', meta: `${level} · 10 întrebări` },
+    { id: 'listen', to: '/asculta-si-alege', title: ui('ui_b58cf3ae7c001d99'), text: 'Auzi norvegiana. Descoperă sensul.', meta: `${level} · 10 întrebări` },
     { id: 'missions', to: '/misiuni-la-serviciu', title: 'Misiuni la serviciu', text: 'Situații reale. Replica potrivită.', meta: `${['C1', 'C2'].includes(level) ? 'Recapitulare B2' : level} · ${careerPath.shortTitle}` },
   ].map((game) => ({ ...game, progress: readPracticeProgress(localStorage, { game: game.id, level: game.id === 'missions' && ['C1', 'C2'].includes(level) ? 'B2' : level, pathId: careerPath.id, userId: user?.id || 'guest' }) }));
 

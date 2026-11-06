@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../common/Article.css';
@@ -5,105 +6,86 @@ import '../common/Article.css';
 const CumTeAngajezi = () => {
   return (
     <article className="articol-stiri">
-      <Link to="/joburi" className="articol-stiri__back">
-        ← Înapoi la Joburi
-      </Link>
+      <Link to="/joburi" className="articol-stiri__back">{ui('web_c7324323e36e32f0')}</Link>
       <div className="articol-stiri__card">
         <div className="articol-stiri__header">
-          <p className="articol-stiri__meta">Ghid angajare · Norvegia</p>
-          <h1 className="articol-stiri__title">
-            Cum te angajezi în Norvegia
-          </h1>
-          <p className="articol-stiri__lead">
-            Acte necesare, site-uri de joburi, tipuri de contracte și meserii foarte căutate în funcție de sezon și regiune – tot ce ai nevoie pentru a găsi de lucru în Norvegia.
-          </p>
+          <p className="articol-stiri__meta">{ui('web_4056bbb920194f48')}</p>
+          <h1 className="articol-stiri__title">{ui('web_5ccf7f7754878f05')}</h1>
+          <p className="articol-stiri__lead">{ui('web_f23bf1e5c5381ca5')}</p>
         </div>
         <div className="articol-stiri__body">
         <section>
-          <h2>Acte necesare pentru angajare</h2>
-          <p>
-            Înainte de a aplica, asigură-te că ai documentele în ordine. Ca cetățean UE/SEE, ai dreptul de a lucra în Norvegia. Iată ce îți trebuie:
-          </p>
+          <h2>{ui('web_5c333acb815ec04b')}</h2>
+          <p>{ui('web_bc1d938f5a7d8b97')}</p>
           <ul>
-            <li><strong>Pașaport valabil</strong> sau carte de identitate – obligatoriu pentru intrare și înregistrare</li>
-            <li><strong>Contract de muncă</strong> – esențial pentru obținerea D-nummer și înregistrarea la UDI</li>
-            <li><strong>CV</strong> – adaptat la standardele norvegiene (clar, pe o pagină, în engleză sau norvegiană)</li>
-            <li><strong>D-nummer</strong> – număr de identificare temporar, obținut la început; îți permite să lucrezi și să plătești taxe</li>
-            <li><strong>Personnummer</strong> – pentru ședere lungă, după ce îți se aprobă dreptul de ședere</li>
+            <li><strong>{ui('web_73e17eaa7317b470')}</strong>{ui('web_8cb9d77118cb5da3')}</li>
+            <li><strong>{ui('web_15c6c23c59f00ccd')}</strong>{ui('web_7b7b7d1cf0d7d288')}</li>
+            <li><strong>{ui('web_0f5fed1791e0ff94')}</strong>{ui('web_d91385921729256b')}</li>
+            <li><strong>{ui('web_a9eb35e6b9ebd375')}</strong>{ui('web_8a694f87743466e8')}</li>
+            <li><strong>{ui('web_a4caeac1df71d541')}</strong>{ui('web_7b6ecb072ba6bd43')}</li>
           </ul>
-          <p>
-            Pentru detalii complete despre documente, vezi secțiunea <Link to="/joburi/acte" className="articol-stiri__link">Acte</Link>.
+          <p>{ui('web_674bbe6fc91eafdd')}<Link to="/joburi/acte" className="articol-stiri__link">{ui('web_2972c444318f8bae')}</Link>.
           </p>
         </section>
 
         <section>
-          <h2>Site-uri unde găsești joburi în Norvegia</h2>
-          <p>
-            Norvegienii folosesc în mare parte site-uri și platforme digitale pentru recrutare. Iată cele mai importante:
-          </p>
+          <h2>{ui('web_223c691a9366c6dc')}</h2>
+          <p>{ui('web_0465dd54183af1ff')}</p>
           <ul>
-            <li><strong>Finn.no</strong> – cel mai mare site de anunțuri din Norvegia. Secțiunea „Jobb” (Joburi) agregă oferte din toată țara. Poți filtra pe oraș, domeniu și tip de contract. Mult folosit atât de angajatori mici, cât și de mari companii.</li>
-            <li><strong>NAV.no</strong> – site-ul oficial al Agenției pentru Muncă și Bunăstare. Ofere liste de joburi, programe de înscriere ca job seeker și informații despre drepturi. Dacă te înregistrezi, primești recomandări personalizate.</li>
-            <li><strong>LinkedIn</strong> – foarte utilizat în sectorul IT, finanțe, consultanță și corporații internaționale. Multe firme norvegiene publică oferte aici.</li>
-            <li><strong>Indeed.no</strong> – agregator de anunțuri, strânge oferte de pe multiple surse.</li>
-            <li><strong>Arbeidsplassen.no</strong> – portalul oficial NAV pentru joburi. Mai multe posturi în sectorul public și de stat.</li>
-            <li><strong>StepStone.no</strong> – popular în Europa, și în Norvegia există oferte, mai ales în domenii corporatiste.</li>
+            <li><strong>{ui('web_25fa2064e89e01f4')}</strong>{ui('web_e90e9cac78631bbf')}</li>
+            <li><strong>{ui('web_39205760d06b06dd')}</strong>{ui('web_e1f38e3882f26b17')}</li>
+            <li><strong>{ui('web_dd84425b72da12c6')}</strong>{ui('web_3184a42f20f2ad9e')}</li>
+            <li><strong>{ui('web_1c37a94ae5684bb7')}</strong>{ui('web_0775c68e51cb7600')}</li>
+            <li><strong>{ui('web_66dacdb0978446b1')}</strong>{ui('web_88877c07a9ee1c79')}</li>
+            <li><strong>{ui('web_5662c0f0108e851c')}</strong>{ui('web_9070b89d670793db')}</li>
           </ul>
-          <p>
-            Sfat: Creează un profil pe Finn și NAV, setează alerte pentru cuvinte cheie din domeniul tău și verifică zilnic. Multe firme postează și pe propriile site-uri – dacă știi compania, merită să verifici direct secțiunea „Karriere” sau „Ledige stillinger”.
-          </p>
+          <p>{ui('web_a5d0abe6ead6535b')}</p>
         </section>
 
         <section>
-          <h2>Tipuri de contract de muncă</h2>
-          <p>
-            Legislatia norvegiană recunoaște mai multe forme de angajare. Înțelegerea lor te ajută să știi la ce să te aștepți:
-          </p>
+          <h2>{ui('web_b369920d82ee4144')}</h2>
+          <p>{ui('web_0883f20c7ddbac05')}</p>
           <ul>
-            <li><strong>Fast ansatt</strong> (angajat permanent) – contract pe nedeterminat. Cel mai stabil, cu drepturi complete: concediu plătit (minimum 25 zile/an), protecție la concediere, pensie de stat. Angajatorul poate înceta contractul doar în anumite condiții (reducere de personal, încălcare gravă etc.).</li>
-            <li><strong>Midlertidig ansettelse</strong> (angajare temporară) – contract pe termen determinat. Poate dura luni sau ani, dar are o dată de încheiere. Util pentru sezonieri, înlocuiri sau proiecte. Drepturile sunt similare cu cele ale angajaților permanenți în perioada contractului.</li>
-            <li><strong>Deltid</strong> (part-time) – ore reduse (ex. 50%, 80%). Frecvent în comerț, sănătate, ospătărie. Drepturile sunt proporționale cu orele lucrate.</li>
-            <li><strong>Vikariat</strong> (sublocuire) – înlocuiești temporar un angajat absent. Contract scurt, de obicei câteva săptămâni sau luni.</li>
-            <li><strong>Sommerjobb / sesongarbeid</strong> (job de vară / sezonier) – tipic pentru agricultură, turism, pescuit. De obicei primăvară–toamnă. Mulți români lucrează în pescuit sau în hotele din nord în sezon.</li>
+            <li><strong>{ui('web_32e11011db8911b2')}</strong>{ui('web_b5c23bcbb5aef702')}</li>
+            <li><strong>{ui('web_502f8d33e552b9b8')}</strong>{ui('web_c915c03ad237ee19')}</li>
+            <li><strong>{ui('web_ab7b0f3496fe17a3')}</strong>{ui('web_3854eb46ad7090cc')}</li>
+            <li><strong>{ui('web_8b828f074dc1f77f')}</strong>{ui('web_114d03cfa766550a')}</li>
+            <li><strong>{ui('web_a91026e13e545a2f')}</strong>{ui('web_7dc3e1c01518caf8')}</li>
           </ul>
         </section>
 
         <section>
-          <h2>Joburi foarte căutate – pe sezon și zonă</h2>
-          <p>
-            Cererea de muncă variază mult în funcție de regiune și perioadă. Iată o orientare generală:
-          </p>
+          <h2>{ui('web_f6f5c03c8b40fb79')}</h2>
+          <p>{ui('web_4d3497a14915cfc9')}</p>
 
-          <h3>Vara (mai–septembrie)</h3>
+          <h3>{ui('web_84ac060651c28824')}</h3>
           <ul>
-            <li><strong>Turism și ospătărie</strong> – hotele, restaurante, cabane din fiorduri și pe coastă (Bergen, Geiranger, Lofoten, Tromsø) angajează masiv. Ospătari, bucătari, personal de curățenie.</li>
-            <li><strong>Agricultură și horticultură</strong> – cules de fructe, legume, flori în sud și vest. Multe ferme angajează muncitori străini.</li>
-            <li><strong>Pescuit și procesare pește</strong> – în nord (Lofoten, Finnmark) și pe coasta de vest. Sezonul de cod și pește proaspăt atrage mii de lucrători.</li>
-            <li><strong>Construcții</strong> – lucrările de exterior se intensifică; cerere pentru muncitori calificați.</li>
+            <li><strong>{ui('web_8fc993f4ac301e59')}</strong>{ui('web_3ebb51c8607fd20b')}</li>
+            <li><strong>{ui('web_84b8c4e05240a693')}</strong>{ui('web_9542dd2e6a286bb0')}</li>
+            <li><strong>{ui('web_373030b5d40ead11')}</strong>{ui('web_fa564212db4f7c0f')}</li>
+            <li><strong>{ui('ui_e98b8f11cf37fb63')}</strong>{ui('web_42300bc48eca214d')}</li>
           </ul>
 
-          <h3>Iarna (noiembrie–martie)</h3>
+          <h3>{ui('web_9fa7d362dfe21bc4')}</h3>
           <ul>
-            <li><strong>Stațiuni de schi</strong> – Trysil, Hemsedal, Norefjell etc. Instructori, barmani, personal de recepție.</li>
-            <li><strong>Vedere aurore boreale</strong> – în nord (Tromsø, Alta, Lofoten). Ghizi, personal în hosteluri și turism de experiență.</li>
-            <li><strong>Pescuit de crab</strong> – în nord, de la sfârșitul toamnei până în primăvară. Foarte bine plătit, dar greu fizic.</li>
+            <li><strong>{ui('web_1fbb00053c48697e')}</strong>{ui('web_9f971854c3ec3b99')}</li>
+            <li><strong>{ui('web_56e976cd377b57f4')}</strong>{ui('web_6f0f3de549416671')}</li>
+            <li><strong>{ui('web_8c65bf3dc330d7eb')}</strong>{ui('web_4338425499b9450e')}</li>
           </ul>
 
-          <h3>Pe regiuni</h3>
+          <h3>{ui('web_d9133ba41c7f09bc')}</h3>
           <ul>
-            <li><strong>Oslo și regiunea</strong> – IT, finanțe, consultanță, sănătate, învățământ. Multe corporații și startup-uri. Competiție mare, dar și salarii ridicate.</li>
-            <li><strong>Stavanger</strong> – industria petrolieră (offshore, engineering, logistică). Cerere fluctuantă cu prețul petrolului.</li>
-            <li><strong>Bergen</strong> – turism, comerț marin, servicii. Oferte constante în ospătărie și logistică.</li>
-            <li><strong>Nord (Tromsø, Bodø, Lofoten, Finnmark)</strong> – pescuit, turism (vară și iarnă), construcții. Salarii mai mari decât în sud pentru compensarea condițiilor grele.</li>
-            <li><strong>Sud (Kristiansand, Arendal)</strong> – industrie, servicii, turism de coastă.</li>
+            <li><strong>{ui('web_b04d477ff5a7faf7')}</strong>{ui('web_15db7c2e57353607')}</li>
+            <li><strong>{ui('web_7da94aa07bf76227')}</strong>{ui('web_7cadfcf6a47a69e5')}</li>
+            <li><strong>{ui('web_deae09060dcc8c1b')}</strong>{ui('web_c3d0fedf54896672')}</li>
+            <li><strong>{ui('web_4b671cfce17e2e38')}</strong>{ui('web_6b8da41864e56646')}</li>
+            <li><strong>{ui('web_1604cfae947414c2')}</strong>{ui('web_4f77d27bdae3fb44')}</li>
           </ul>
         </section>
 
         <section>
-          <h2>Rezumat</h2>
-          <p>
-            Pentru a te angaja în Norvegia: pregătește documentele (pașaport, CV, contract), creează profile pe <strong>Finn.no</strong> și <strong>NAV</strong>, aplică și pentru joburi temporare sau sezoniere dacă vrei să începi rapid. Învață elemente de norvegiană – deși mulți angajatori acceptă engleza, limba locală deschide mai multe uși. Verifică constant ofertele pe site-urile menționate și nu ezita să contactezi direct firmele care te interesează.
-          </p>
+          <h2>{ui('web_c844efdcf2ecda01')}</h2>
+          <p>{ui('web_5013869a6160bf02')}<strong>{ui('web_25fa2064e89e01f4')}</strong>{ui('web_313eb2bd1e1c1595')}<strong>{ui('web_59d29bfe4c87cb9e')}</strong>{ui('web_cca48d32b4b8f265')}</p>
         </section>
         </div>
       </div>

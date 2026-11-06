@@ -1,3 +1,4 @@
+import {languageFetch as fetch} from '../languages/fetch';
 import { supabase } from './supabaseClient';
 import { apiUrl } from './api';
 

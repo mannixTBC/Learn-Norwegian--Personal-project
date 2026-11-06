@@ -1,3 +1,6 @@
+import {courseSessionStorage as sessionStorage} from '../../languages/storage.js';
+import {getLanguages} from '../../languages/runtime.js';
+import {conversationKey} from '../../languages/apiContext.js';
 const restartCodes = new Set(['SCENARIO_SESSION_INVALID', 'SCENARIO_SESSION_EXPIRED', 'SCENARIO_UPDATED', 'SCENARIO_ENDED']);
 export class ConversationError extends Error {
   constructor(message, kind = 'retry') { super(message); this.name = 'ConversationError'; this.kind = kind; }
@@ -84,7 +87,7 @@ export function validateConversation(result, scenario, { operation, previousTurn
 }
 
 export const conversationStorageKey = (userId, level, pathId) =>
-  'conversation-session:v1:' + JSON.stringify([userId || 'guest', level, pathId]);
+  conversationKey('conversation-session:v1:' + JSON.stringify([userId || 'guest', level, pathId]),getLanguages());
 export function readConversation(key, scenarios) {
   try {
     const data = JSON.parse(sessionStorage.getItem(key) || 'null');

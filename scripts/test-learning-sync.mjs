@@ -5,6 +5,29 @@ import { createLearningSync } from '../src/services/learningSync.js';
 const user = '11111111-1111-4111-8111-111111111111';
 const other = '22222222-2222-4222-8222-222222222222';
 const key = (suffix, id = user) => `curriculum_2026.2_${id}_${suffix}`;
+test('an unbundled course preserves progress beyond lesson 24 during restoration',async()=>{
+ const {sync,storage,state}=fixture();
+ const future=`course:de:curriculum_2099.1_${user}_a1_progress`;
+ try{
+  state.cloud[future]={completed:[25,30],unlocked:30};
+  await sync.restore(user);
+  assert.deepEqual(JSON.parse(storage.getItem(future)),{completed:[25,30],unlocked:30});
+ }finally{sync.dispose();}
+});
+test('language-prefixed progress remains isolated in offline queues, restoration and ownership checks',async()=>{
+ const {sync,storage,state}=fixture();
+ try{
+  const nb=key('a1_progress'),de='course:de:'+nb,foreign='course:de:'+key('a1_progress',other);
+  await sync.syncProgress(nb,{completed:[1],unlocked:2});
+  await sync.syncProgress(de,{completed:[3],unlocked:4});
+  assert.deepEqual(await sync.syncProgress(foreign,{completed:[24],unlocked:24}),{queued:true});
+  await sync.flush(user);
+  assert.deepEqual(state.cloud[nb].completed,[1]);assert.deepEqual(state.cloud[de].completed,[3]);
+  assert.equal(state.cloud[foreign],undefined);
+  await sync.restore(user);assert.deepEqual(JSON.parse(storage.getItem(de)).completed,[3]);
+  assert.deepEqual(JSON.parse(storage.getItem(nb)).completed,[1]);
+ }finally{sync.dispose();}
+});
 const fixture = () => {
   const values = new Map();
   const storage = { getItem: (k) => values.get(k) ?? null, setItem: (k, v) => values.set(k, v),

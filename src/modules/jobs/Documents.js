@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../common/Article.css';
@@ -5,82 +6,61 @@ import '../common/Article.css';
 const Acte = () => {
   return (
     <article className="articol-stiri">
-      <Link to="/joburi" className="articol-stiri__back">
-        ← Înapoi la Joburi
-      </Link>
+      <Link to="/joburi" className="articol-stiri__back">{ui('web_c7324323e36e32f0')}</Link>
       <div className="articol-stiri__card">
         <div className="articol-stiri__header">
-          <p className="articol-stiri__meta">Documente · Joburi</p>
-          <h1 className="articol-stiri__title">
-            Acte necesare pentru lucru în Norvegia
-          </h1>
-          <p className="articol-stiri__lead">
-            Ca cetățean UE/SEE, ai dreptul de a lucra în Norvegia. Iată documentele principale de care ai nevoie pentru a te angaja și a te stabili legal.
-          </p>
+          <p className="articol-stiri__meta">{ui('web_6f12412380f8dfaf')}</p>
+          <h1 className="articol-stiri__title">{ui('web_70afc0c85fb45c9c')}</h1>
+          <p className="articol-stiri__lead">{ui('web_a62ac09ed7a8531c')}</p>
         </div>
         <div className="articol-stiri__body">
         <section>
-          <h2>Documente de identitate</h2>
+          <h2>{ui('web_8ca2582c329da76b')}</h2>
           <p>
-            <strong>Pașaport valabil</strong> sau <strong>carte de identitate</strong> – sunt obligatorii pentru intrarea în Norvegia și pentru toate procedurile ulterioare. Pașaportul este recomandat, deoarece buletinul a cauzat în unele cazuri probleme la anumite instituții. Asigură-te că documentul are valabilitate cel puțin 6 luni.
-          </p>
+            <strong>{ui('web_73e17eaa7317b470')}</strong>{ui('web_68669b670b95e811')}<strong>{ui('web_8b7fe38c74f492f2')}</strong>{ui('web_97824e315d2a0d43')}</p>
         </section>
 
         <section>
-          <h2>Înregistrare pentru ședere</h2>
-          <p>
-            Dacă rămâi în Norvegia mai mult de 3 luni, trebuie să te înregistrezi. Cererea se depune online pe site-ul UDI (Direcția Imigrării Norvegiene): <strong>selfservice.udi.no</strong>. După trimitere, trebuie să te prezinți la SUA (Centrul de servicii pentru muncitorii străini) sau la poliție cu documentele depuse. Vei primi un certificat de înregistrare (registreringsbevis) care confirmă dreptul de ședere.
-          </p>
-          <p>
-            Pentru angajați, este necesar contractul de muncă sau un certificat de încadrare în muncă (nu neapărat full-time). Procedura poate dura câteva săptămâni sau luni în orașe mari precum Oslo.
-          </p>
+          <h2>{ui('web_2d4e391fa4f22015')}</h2>
+          <p>{ui('web_f6a6b16a9a07ca21')}<strong>{ui('web_ae8e809085c74aad')}</strong>{ui('web_d4649942ab6d7491')}</p>
+          <p>{ui('web_e18f847e308d3c07')}</p>
         </section>
 
         <section>
-          <h2>D-nummer și Personnummer</h2>
+          <h2>{ui('web_937fe31db87538ef')}</h2>
           <p>
-            <strong>D-nummer</strong> – număr de identificare temporar pe care îl primești la început. Îți permite să lucrezi, să plătești taxe, să deschizi cont bancar și să închiriezi sau cumperi imobil. Se obține de obicei prin angajator (care cere o carte fiscală – skattekort – de la Skatteetaten), prin NAV (dacă te înregistrezi ca job seeker) sau după înregistrarea la UDI, la un birou fiscal (skattekontor) cu pașaport și contract de muncă.
-          </p>
+            <strong>{ui('web_a9eb35e6b9ebd375')}</strong>{ui('web_70d77a4644f7055b')}</p>
           <p>
-            <strong>Personnummer</strong> (sau fødselsnummer) – numărul permanent de identificare norvegian. Îl poți solicita după ce ai primit D-nummer și ți s-a aprobat dreptul de ședere pe termen lung. Este necesar pentru multe servicii publice și pentru angajare pe termen lung.
-          </p>
+            <strong>{ui('web_a4caeac1df71d541')}</strong>{ui('web_b774d83ff64ea270')}</p>
         </section>
 
         <section>
-          <h2>Contract de muncă</h2>
+          <h2>{ui('web_15c6c23c59f00ccd')}</h2>
           <p>
-            <strong>Contract de muncă</strong> – este esențial pentru înregistrare și pentru obținerea D-nummer. Nu trebuie neapărat să fie full-time; și contracte part-time sau temporare sunt acceptate. Angajatorul trebuie să respecte legislația norvegiană privind condițiile de muncă, salariu și ore de lucru.
-          </p>
+            <strong>{ui('web_15c6c23c59f00ccd')}</strong>{ui('web_bee5da792d9a7daf')}</p>
         </section>
 
         <section>
-          <h2>CV și documente de calificare</h2>
+          <h2>{ui('web_d9bd419c2c97cb90')}</h2>
           <p>
-            <strong>CV</strong> – adaptat la standardele norvegiene (de obicei pe o pagină, clar, cu experiență și competențe relevante). Mulți angajatori cer CV în limba engleză sau norvegiană.
-          </p>
+            <strong>{ui('web_0f5fed1791e0ff94')}</strong>{ui('web_d49a53657e23c3e4')}</p>
           <p>
-            <strong>Diplome și certificate</strong> – pentru unele meserii (medicină, inginerie, învățământ etc.) sunt necesare traduceri autorizate sau echivalare a diplomelor. Verifică pe site-ul Nokut sau la autoritatea competentă din domeniul tău.
-          </p>
+            <strong>{ui('web_97f273ae2bd986a1')}</strong>{ui('web_103e2b1b383747fd')}</p>
         </section>
 
         <section>
-          <h2>Alte documente utile</h2>
+          <h2>{ui('web_ee132c8ed613d9c3')}</h2>
           <p>
-            <strong>Extras de cont bancar</strong> – util dacă nu ai încă un contract de muncă și trebuie să dovedești fonduri suficiente pentru ședere.
-          </p>
+            <strong>{ui('web_17b606642ecac94d')}</strong>{ui('web_0ce402b6f208af93')}</p>
           <p>
-            <strong>Asigurare de sănătate</strong> – ca cetățean UE, ai dreptul la cardul sanitar european pentru șederi scurte. Pentru ședere lungă, te înregistrezi în sistemul norvegian de asigurări de sănătate.
-          </p>
+            <strong>{ui('web_55dbac3b4fab7c80')}</strong>{ui('web_3b83a0cf435b8a40')}</p>
           <p>
-            <strong>Certificat de căsătorie / acte de familie</strong> – dacă vii cu membri ai familiei, sunt necesare documente care dovedesc relația (certificat de căsătorie, certificat de naștere pentru copii).
-          </p>
+            <strong>{ui('web_86db6d70a99073d8')}</strong>{ui('web_11d5832ab7d8cca9')}</p>
         </section>
 
         <section>
-          <h2>Rezumat</h2>
-          <p>
-            Documentele principale de care ai nevoie sunt: pașaport sau carte de identitate valabilă, contract de muncă, înregistrare la UDI (dacă stai mai mult de 3 luni), D-nummer pentru lucru și taxe, CV și eventual diplome cu traduceri. Informațiile oficiale se găsesc pe udi.no și sua.no. Este recomandat să începi procedurile cu cât mai mult timp înainte.
-          </p>
+          <h2>{ui('web_c844efdcf2ecda01')}</h2>
+          <p>{ui('web_695fb8cf0024e011')}</p>
         </section>
         </div>
       </div>

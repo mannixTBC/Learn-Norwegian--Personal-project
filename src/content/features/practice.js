@@ -1,0 +1,11 @@
+import { getContent } from '../activeContent';
+import { contentValue } from '../contentValue';
+export const practiceLevels = contentValue('practice', 'practiceLevels', true);
+export const normalizePracticeLevel = (...args)=>getContent('practice').normalizePracticeLevel(...args);
+export const shuffleItems = (...args)=>getContent('practice').shuffleItems(...args);
+export const buildListeningQuestions = (...args)=>getContent('practice').buildListeningQuestions(...args);
+export const buildAdaptiveListeningQuestions = (...args)=>getContent('practice').buildAdaptiveListeningQuestions(...args);
+export const buildMissionQuestions = (...args)=>getContent('practice').buildMissionQuestions(...args);
+export const practiceProgressKey = (...args)=>getContent('practice').practiceProgressKey(...args);
+export const readPracticeProgress = (...args)=>getContent('practice').readPracticeProgress(...args);
+export const savePracticeProgress = (...args)=>getContent('practice').savePracticeProgress(...args);

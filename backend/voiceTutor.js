@@ -1,3 +1,5 @@
+// nordlingo-language-context-v1
+const {languageInstructions,voiceLanguage} = require('./languageContext');
 const catalog = require('./voiceCatalog.json');
 
 const getVoiceLesson = ({ level, lessonId, pathId }) => {
@@ -72,7 +74,7 @@ ${JSON.stringify({ level: context.level, title: context.title, sectionTitle: con
 
 const buildVoiceSession = (context) => ({
   type: 'realtime', model: process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime',
-  output_modalities: ['audio'], instructions: buildVoiceInstructions(context),
+  output_modalities: ['audio'], instructions: languageInstructions()+"\n"+buildVoiceInstructions(context),
   // Audio tokens share this budget. Brevity comes from instructions, not cutting speech mid-sentence.
   max_output_tokens: 1024,
   audio: {
@@ -80,7 +82,7 @@ const buildVoiceSession = (context) => ({
       noise_reduction: { type: 'near_field' },
       transcription: {
         model: 'gpt-transcribe',
-        languages: ['no'],
+        languages: [voiceLanguage().transcription],
         prompt: `En muntlig norsktime på bokmål om ${context.title}, med korte elevsvar.`,
         keywords: [...new Set(context.vocabulary.slice(0, 8).map((entry) => entry?.[0]).filter(Boolean))],
       },

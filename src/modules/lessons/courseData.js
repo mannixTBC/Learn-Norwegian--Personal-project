@@ -1,4 +1,4 @@
-import { courseCatalog } from './norwegian-program/lessonContent';
+import { courseCatalog } from '../../content/activeContent.js';
 
 export const levels = Object.values(courseCatalog).map(({ code, title, description }) => ({ code, title, description, available: true }));
 export const levelLessons = Object.fromEntries(Object.entries(courseCatalog).map(([code, course]) => [code, course.lessons.map((lesson) => ({

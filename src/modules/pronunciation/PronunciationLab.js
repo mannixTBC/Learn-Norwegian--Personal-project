@@ -1,3 +1,6 @@
+import {getLearningLocale} from '../../languages/runtime';
+import {ui} from '../../languages/messages.js';
+import {courseLocalStorage as localStorage} from '../../languages/storage.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
 import { speakPronunciationModel } from '../../services/azurePronunciationSpeech';
@@ -230,7 +233,7 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId, rewardAttempts
     const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!Recognition) return;
     const recognition = new Recognition();
-    recognition.lang = 'nb-NO';
+    recognition.lang = getLearningLocale();
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.onresult = (event) => {
@@ -361,43 +364,43 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId, rewardAttempts
   return (
     <section className="pronunciation-lab" aria-labelledby="pronunciation-lab-title">
       <div className="pronunciation-lab__heading">
-        <div><span>Exersează cu vocea ta</span><div className="pronunciation-lab__title-row"><h2 id="pronunciation-lab-title">Înregistrează și verifică pronunția</h2><em>Opțional</em></div><p>Ascultă modelul, apoi înregistrează aceeași frază.</p></div>
-        <div className="pronunciation-lab__best"><small>Cel mai bun scor · {level}</small><strong>{bestScore || '—'}{bestScore ? '%' : ''}</strong><span>{attempts.length ? `${attempts.length} încercări salvate local` : 'Prima încercare te așteaptă'}</span></div>
+        <div><span>{ui('web_48444736b5fc2732')}</span><div className="pronunciation-lab__title-row"><h2 id="pronunciation-lab-title">{ui('web_70002ef182634995')}</h2><em>{ui('web_b11098987e1ce971')}</em></div><p>{ui('web_b1043c5960141e2b')}</p></div>
+        <div className="pronunciation-lab__best"><small>{ui('web_86f49c9bcd6f9ce8')}{level}</small><strong>{bestScore || '—'}{bestScore ? '%' : ''}</strong><span>{attempts.length ? `${attempts.length} încercări salvate local` : 'Prima încercare te așteaptă'}</span></div>
       </div>
 
       <div className="pronunciation-lab__workspace">
         <div className="pronunciation-lab__prompt">
           <ExerciseArtwork kind="pronunciation" text={phrase.word}/>
-          <div className="pronunciation-lab__prompt-label"><span>{String(phraseIndex + 1).padStart(2, '0')}</span><div><small>Fraza selectată · Lecția {lessonId}</small><strong>{phrase.word}</strong></div></div>
+          <div className="pronunciation-lab__prompt-label"><span>{String(phraseIndex + 1).padStart(2, '0')}</span><div><small>{ui('web_52635fe285721858')}{lessonId}</small><strong>{phrase.word}</strong></div></div>
           <blockquote lang="no">{phrase.example}</blockquote>
-          <p><span>RO</span>{phrase.translation}</p>
+          <p><span>{ui('web_0049aa51a630b791')}</span>{phrase.translation}</p>
           <div className="pronunciation-lab__model-actions">
-            <button type="button" onClick={() => speakPronunciationModel(phrase.example)} aria-label="Ascultă modelul"><span aria-hidden="true">▶</span> Ascultă</button>
-            <button type="button" onClick={() => speakPronunciationModel(phrase.example, { slow: true })} aria-label="Ascultă mai lent"><span aria-hidden="true">◷</span> Lent</button>
+            <button type="button" onClick={() => speakPronunciationModel(phrase.example)} aria-label={ui('web_f0330ca93eadaded')}><span aria-hidden="true">▶</span>{ui('web_4440778d8ba0d20d')}</button>
+            <button type="button" onClick={() => speakPronunciationModel(phrase.example, { slow: true })} aria-label={ui('web_929c7c800471390c')}><span aria-hidden="true">◷</span>{ui('web_4549aa1b3a05310b')}</button>
           </div>
-          <div className="pronunciation-lab__tip"><span aria-hidden="true">◎</span><p><strong>Sfat:</strong> ascultă întâi ritmul frazei, nu doar fiecare sunet separat.</p></div>
+          <div className="pronunciation-lab__tip"><span aria-hidden="true">◎</span><p><strong>{ui('web_d7bd0cdec75c2539')}</strong>{ui('web_094b588029326023')}</p></div>
         </div>
 
         <div className={`pronunciation-recorder pronunciation-recorder--${status}`}>
           <PremiumGate feature="Evaluarea pronunției cu Azure Speech">
             {result ? (
               <div className={`pronunciation-result pronunciation-result--${result.feedback.tone}`}>
-                <div className="pronunciation-result__score" style={{ '--score': `${result.score * 3.6}deg` }}><div><strong>{result.score}</strong><span>din 100</span></div></div>
+                <div className="pronunciation-result__score" style={{ '--score': `${result.score * 3.6}deg` }}><div><strong>{result.score}</strong><span>{ui('web_3b1d96cd4a35c46c')}</span></div></div>
                 <div className="pronunciation-result__content">
-                  <span className="pronunciation-result__eyebrow">Rezultatul încercării</span>
+                  <span className="pronunciation-result__eyebrow">{ui('web_7dfaaeab378213f8')}</span>
                   <h3>{result.feedback.title}</h3>
                   <p>{result.feedback.text}</p>
-                  <div className="pronunciation-result__metrics"><div><span>Claritate</span><strong>{result.accuracy}%</strong></div><div><span>Frază completă</span><strong>{result.completeness}%</strong></div><div><span>Fluență</span><strong>{result.rhythm}%</strong></div></div>
+                  <div className="pronunciation-result__metrics"><div><span>{ui('web_eb95f8e94ea601be')}</span><strong>{result.accuracy}%</strong></div><div><span>{ui('web_4040b3bc90229a75')}</span><strong>{result.completeness}%</strong></div><div><span>{ui('web_c59e4963e03958e8')}</span><strong>{result.rhythm}%</strong></div></div>
                 </div>
                 <div className="pronunciation-result__transcript">
-                  <div><span>Ce am recunoscut</span><small>Răspuns recunoscut automat</small></div>
+                  <div><span>{ui('ui_4ee0aacc43bf1087')}</span><small>{ui('web_88e2e9d1bfbaeae3')}</small></div>
                   <blockquote lang="no">„{result.transcript}”</blockquote>
-                  <div className="pronunciation-result__words" aria-label="Evaluare pe cuvinte">
+                  <div className="pronunciation-result__words" aria-label={ui('web_3e692c9be8c60bf0')}>
                     {result.alignment.filter((item) => item.expected).map((item, index) => <span className={`is-${item.status}`} title={item.status === 'correct' ? 'Pronunțat clar' : item.status === 'close' ? `Aproape · recunoscut „${item.spoken}”` : item.status === 'missing' ? 'Cuvânt lipsă' : `Recunoscut „${item.spoken}”`} key={`${item.expected}-${index}`}>{item.expected}</span>)}
                   </div>
-                  <div className="pronunciation-result__legend"><span><i className="correct" />clar</span><span><i className="close" />aproape</span><span><i className="different" />de repetat</span></div>
+                  <div className="pronunciation-result__legend"><span><i className="correct" />{ui('web_1542a1d9d7b6e658')}</span><span><i className="close" />{ui('web_d0fe2a1329ff0758')}</span><span><i className="different" />{ui('web_ca3ad866f591fd6c')}</span></div>
                 </div>
-                <button type="button" className="pronunciation-result__retry" onClick={resetAttempt}>↻ Înregistrează din nou</button>
+                <button type="button" className="pronunciation-result__retry" onClick={resetAttempt}>{ui('web_25d7b1b04384d846')}</button>
               </div>
             ) : (
               <>
@@ -410,8 +413,8 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId, rewardAttempts
                 </div>
                 {(() => {
                   const isBusy = status === 'requesting' || status === 'analyzing' || status === 'processing';
-                  const label = status === 'recording' ? 'Oprește înregistrarea' : status === 'requesting' ? 'Pregătim microfonul…' : isBusy ? 'Se analizează…' : 'Începe înregistrarea';
-                  const hint = status === 'recording' ? 'Vorbește, apoi atinge pentru a opri.' : status === 'requesting' ? 'Permite accesul la microfon când ți se cere.' : isBusy ? 'Îți pregătim feedbackul.' : 'Atinge, spune fraza, apoi oprește.';
+                  const label = status === 'recording' ? ui('ui_6b788923b942b5d9') : status === 'requesting' ? 'Pregătim microfonul…' : isBusy ? ui('ui_6e5a6789766476d0') : ui('ui_4965f042ac418235');
+                  const hint = status === 'recording' ? 'Vorbește, apoi atinge pentru a opri.' : status === 'requesting' ? 'Permite accesul la microfon când ți se cere.' : isBusy ? ui('ui_1d45e3442a2cf3e6') : 'Atinge, spune fraza, apoi oprește.';
                   return (
                     <button
                       className={`pronunciation-recorder__button${status === 'recording' ? ' is-recording' : ''}`}
@@ -427,9 +430,9 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId, rewardAttempts
                     </button>
                   );
                 })()}
-                {audioUrl && status !== 'recording' && <audio className="pronunciation-recorder__playback" src={audioUrl} controls preload="metadata">Browserul tău nu poate reda înregistrarea.</audio>}
-                {error && <div className="pronunciation-recorder__error" role="alert"><strong>Nu am putut finaliza evaluarea</strong><p>{error}</p><small>Poți continua fără nicio restricție folosind butoanele „Ascultă” și „Lent”.</small><button type="button" onClick={resetAttempt}>Încearcă din nou</button></div>}
-                <p className="pronunciation-recorder__privacy"><span aria-hidden="true">▣</span> Înregistrarea este folosită pentru evaluare și nu este păstrată în aplicație.</p>
+                {audioUrl && status !== 'recording' && <audio className="pronunciation-recorder__playback" src={audioUrl} controls preload="metadata">{ui('web_14fa7fb6eabac38f')}</audio>}
+                {error && <div className="pronunciation-recorder__error" role="alert"><strong>{ui('web_2e8bd6015736a365')}</strong><p>{error}</p><small>{ui('web_cbe09fdea4b43a06')}</small><button type="button" onClick={resetAttempt}>{ui('web_a09d291920163176')}</button></div>}
+                <p className="pronunciation-recorder__privacy"><span aria-hidden="true">▣</span>{ui('web_5c2857d5e715b29c')}</p>
               </>
             )}
           </PremiumGate>
@@ -437,9 +440,9 @@ const PronunciationLab = ({ phrase, phraseIndex, level, lessonId, rewardAttempts
       </div>
 
       {!result && (
-        <div className="pronunciation-lab__steps"><div><span>1</span><p><strong>Ascultă</strong> modelul normal sau lent.</p></div><div><span>2</span><p><strong>Înregistrează</strong> fraza într-un loc liniștit.</p></div><div><span>3</span><p><strong>Corectează</strong> cuvintele evidențiate.</p></div></div>
+        <div className="pronunciation-lab__steps"><div><span>1</span><p><strong>{ui('ui_f1e65126c6a41e7b')}</strong>{ui('web_42050f72cda777e7')}</p></div><div><span>2</span><p><strong>{ui('web_bcec78261da9500e')}</strong>{ui('web_70b1d22a6c439173')}</p></div><div><span>3</span><p><strong>{ui('web_afc987299da301a9')}</strong>{ui('web_70c87dcdd2efe2c7')}</p></div></div>
       )}
-      <p className="pronunciation-lab__disclaimer">Scorul este orientativ și nu influențează progresul lecțiilor.</p>
+      <p className="pronunciation-lab__disclaimer">{ui('web_b494b49b0fe1ba2d')}</p>
     </section>
   );
 };

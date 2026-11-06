@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
@@ -174,10 +175,10 @@ const AccountSettings = () => {
   return (
     <div className="account-page">
       <header className="account-page__heading">
-        <Link to="/dashboard">← Înapoi</Link>
-        <span>Setările contului</span>
-        <h1>Contul tău</h1>
-        <p>Identitatea, planul și opțiunile tale de confidențialitate.</p>
+        <Link to="/dashboard">{ui('web_a354f4064be3dfef')}</Link>
+        <span>{ui('web_47bc960820b07686')}</span>
+        <h1>{ui('web_a7bbb75ad1ee8dfd')}</h1>
+        <p>{ui('web_8d610997d9516fb3')}</p>
       </header>
 
       <div className="account-page__layout">
@@ -188,14 +189,14 @@ const AccountSettings = () => {
             <h2>{user.name}</h2>
             <p>{user.email || 'Fără adresă de e-mail asociată'}</p>
           </div>
-          <span className="account-profile__plan">{plan === 'premium' ? 'Premium' : 'Gratuit'}</span>
+          <span className="account-profile__plan">{plan === 'premium' ? ui('ui_de88c121a82a0635') : 'Gratuit'}</span>
         </section>
 
         <section className="account-subscription" aria-labelledby="account-subscription-title">
           <div className="account-subscription__mark" aria-hidden="true">★</div>
           <div className="account-subscription__copy">
-            <small>Abonament</small>
-            <h2 id="account-subscription-title">{isPremium ? 'Premium activ' : 'Plan gratuit'}</h2>
+            <small>{ui('web_7a14d043c93b42b3')}</small>
+            <h2 id="account-subscription-title">{isPremium ? 'Premium activ' : ui('ui_d68df4133cab56c1')}</h2>
             <p>{user.isGuest
               ? 'Creează sau conectează un cont pentru a activa funcțiile Premium.'
               : isPremium
@@ -204,18 +205,18 @@ const AccountSettings = () => {
             {billingError && <div className="account-subscription__error" role="alert">{billingError}</div>}
           </div>
           {registeredAccount && <button type="button" onClick={openBilling} disabled={billingLoading || isDevBypass}>{billingLoading ? 'Se încarcă…' : isPremium ? 'Gestionează abonamentul' : 'Treci la Premium'}</button>}
-          {user.isGuest && <button type="button" onClick={connectAccount}>Conectează un cont</button>}
+          {user.isGuest && <button type="button" onClick={connectAccount}>{ui('web_22b6ccba1dcb649b')}</button>}
         </section>
 
         <section className="account-privacy" aria-labelledby="account-privacy-title">
           <div className="account-privacy__icon"><PrivacyIcon /></div>
           <div className="account-privacy__copy">
-            <small>Confidențialitate și AI</small>
-            <h2 id="account-privacy-title">Contribuie la îmbunătățirea Norei</h2>
+            <small>{ui('web_13391864a84949fe')}</small>
+            <h2 id="account-privacy-title">{ui('web_b61568b79b31182c')}</h2>
             <p>{voiceConsent
               ? 'Păstrăm numai textul dialogurilor vocale, fără audio, cel mult 90 de zile. Dezactivarea șterge și transcriptele salvate.'
               : 'Dialogurile tale nu sunt păstrate. Poți permite opțional salvarea textului, fără înregistrările audio.'}</p>
-            {voiceConsentState === 'unavailable' && <span className="account-privacy__notice">Preferința nu este disponibilă momentan.</span>}
+            {voiceConsentState === 'unavailable' && <span className="account-privacy__notice">{ui('web_86223486305affe7')}</span>}
           </div>
           <label className={`account-privacy__toggle ${voiceConsent ? 'account-privacy__toggle--enabled' : ''}`}>
             <input type="checkbox" checked={voiceConsent} disabled={!['ready'].includes(voiceConsentState)} onChange={updateVoiceConsent} />
@@ -226,14 +227,14 @@ const AccountSettings = () => {
 
         <section className="account-signout" aria-labelledby="account-signout-title">
           <div className="account-signout__icon"><LogoutIcon /></div>
-          <div className="account-signout__copy"><small>Sesiunea ta</small><h2 id="account-signout-title">Deconectare</h2><p>Ieși în siguranță din cont pe acest dispozitiv.</p></div>
-          <button type="button" onClick={signOut}><LogoutIcon />Deconectare</button>
+          <div className="account-signout__copy"><small>{ui('web_b2c704d29cde1dcc')}</small><h2 id="account-signout-title">{ui('web_da3fc3c543362c72')}</h2><p>{ui('web_1a2fa4dac31842a2')}</p></div>
+          <button type="button" onClick={signOut}><LogoutIcon />{ui('web_da3fc3c543362c72')}</button>
         </section>
 
         <section className="account-danger" aria-labelledby="account-danger-title">
           <div className="account-danger__icon"><DeleteIcon /></div>
           <div className="account-danger__copy">
-            <small>Zonă sensibilă</small>
+            <small>{ui('web_ae0354f6321818da')}</small>
             <h2 id="account-danger-title">{registeredAccount ? 'Șterge definitiv contul' : 'Șterge datele de vizitator'}</h2>
             <p>{registeredAccount
               ? 'Progresul, istoricul și profilul vor fi eliminate. Dacă există un abonament asociat, acesta va fi oprit înaintea ștergerii.'
@@ -243,10 +244,10 @@ const AccountSettings = () => {
         </section>
       </div>
 
-      <div className="account-mobile" aria-label="Setările contului">
+      <div className="account-mobile" aria-label={ui('web_47bc960820b07686')}>
         <header className="account-mobile__heading">
-          <Link className="account-mobile__brand" to="/dashboard" aria-label="NordLingo — Acasă"><NorwegianFlagIcon /></Link>
-          <div><h1>Contul tău</h1><p>Profilul și preferințele tale</p></div>
+          <Link className="account-mobile__brand" to="/dashboard" aria-label={ui('web_5eea99318c403ce0')}><NorwegianFlagIcon /></Link>
+          <div><h1>{ui('web_a7bbb75ad1ee8dfd')}</h1><p>{ui('ui_1ed6c972df6e7fdf')}</p></div>
         </header>
 
         <section className="account-mobile__profile" aria-labelledby="account-mobile-profile-title">
@@ -254,29 +255,29 @@ const AccountSettings = () => {
           <div className="account-mobile__identity">
             <h2 id="account-mobile-profile-title">{user.name}</h2>
             <p>{user.email || 'Fără adresă de e-mail asociată'}</p>
-            <span>{plan === 'premium' ? 'Premium' : 'Plan gratuit'}</span>
+            <span>{plan === 'premium' ? ui('ui_de88c121a82a0635') : ui('ui_d68df4133cab56c1')}</span>
           </div>
         </section>
 
-        <section className="account-mobile__preferences" aria-label="Opțiunile contului">
+        <section className="account-mobile__preferences" aria-label={ui('web_fad6bc2e6ab06ea2')}>
           <div className="account-mobile__settings">
           <button type="button" className="account-mobile__row account-mobile__subscription" onClick={registeredAccount ? openBilling : connectAccount} disabled={billingLoading || isDevBypass}>
             <span className="account-mobile__row-icon"><SubscriptionIcon /></span>
             <span className="account-mobile__row-copy">
-              <strong>Abonamentul meu</strong>
-              <small>{billingLoading ? 'Se încarcă…' : user.isGuest ? 'Conectează un cont' : isPremium ? 'Premium activ' : 'Plan gratuit'}</small>
+              <strong>{ui('web_160a73945a39942f')}</strong>
+              <small>{billingLoading ? 'Se încarcă…' : user.isGuest ? ui('web_22b6ccba1dcb649b') : isPremium ? 'Premium activ' : ui('ui_d68df4133cab56c1')}</small>
             </span>
             <span className="account-mobile__chevron"><ChevronIcon /></span>
           </button>
           <div className="account-mobile__row account-mobile__row--privacy">
             <span className="account-mobile__row-icon"><PrivacyIcon /></span>
             <span className="account-mobile__row-copy">
-              <strong>Confidențialitate și Nora</strong>
-              <small>Salvarea transcrierilor</small>
-              {voiceConsentState === 'unavailable' && <em>Preferința nu este disponibilă momentan.</em>}
+              <strong>{ui('ui_d8c12b54ccd29306')}</strong>
+              <small>{ui('web_cdd68148a51932c0')}</small>
+              {voiceConsentState === 'unavailable' && <em>{ui('web_86223486305affe7')}</em>}
             </span>
             <label className={`account-mobile__toggle ${voiceConsent ? 'account-mobile__toggle--enabled' : ''}`}>
-              <span className="sr-only">Salvarea transcrierilor</span>
+              <span className="sr-only">{ui('web_cdd68148a51932c0')}</span>
               <input type="checkbox" checked={voiceConsent} disabled={voiceConsentState !== 'ready'} onChange={updateVoiceConsent} />
               <span aria-hidden="true" />
             </label>
@@ -285,8 +286,8 @@ const AccountSettings = () => {
           <button type="button" className="account-mobile__row" onClick={() => setManagingAccount(true)}>
             <span className="account-mobile__row-icon"><AccountIcon /></span>
             <span className="account-mobile__row-copy">
-              <strong>Administrare cont</strong>
-              <small>Date personale și ștergerea contului</small>
+              <strong>{ui('ui_861cba646e2282ca')}</strong>
+              <small>{ui('web_bc018ae54053e391')}</small>
             </span>
             <span className="account-mobile__chevron"><ChevronIcon /></span>
           </button>
@@ -294,8 +295,8 @@ const AccountSettings = () => {
           <button type="button" className="account-mobile__row account-mobile__row--signout" onClick={signOut}>
             <span className="account-mobile__row-icon"><LogoutIcon /></span>
             <span className="account-mobile__row-copy">
-              <strong>Deconectare</strong>
-              <small>Ieși din cont pe acest dispozitiv</small>
+              <strong>{ui('web_da3fc3c543362c72')}</strong>
+              <small>{ui('web_b49f9079902f5e81')}</small>
             </span>
             <span className="account-mobile__chevron"><ChevronIcon /></span>
           </button>
@@ -312,16 +313,16 @@ const AccountSettings = () => {
           <section className="account-manage-dialog" role="dialog" aria-modal="true" aria-labelledby="account-manage-title">
             <header>
               <div>
-                <span>Setările profilului</span>
-                <h2 id="account-manage-title">Administrare cont</h2>
+                <span>{ui('web_24a01a3ce2c3fe83')}</span>
+                <h2 id="account-manage-title">{ui('ui_861cba646e2282ca')}</h2>
               </div>
-              <button type="button" onClick={() => setManagingAccount(false)} aria-label="Închide administrarea contului">×</button>
+              <button type="button" onClick={() => setManagingAccount(false)} aria-label={ui('ui_1d631437e161887c')}>×</button>
             </header>
 
             <div className="account-manage-dialog__details">
               <span className="account-manage-dialog__icon"><AccountIcon /></span>
-              <div><small>Nume</small><strong>{user.name}</strong></div>
-              <div><small>Adresă de e-mail</small><strong>{user.email || 'Neasociată'}</strong></div>
+              <div><small>{ui('web_582ee8efec80e564')}</small><strong>{user.name}</strong></div>
+              <div><small>{ui('web_482d98a06f160158')}</small><strong>{user.email || 'Neasociată'}</strong></div>
             </div>
 
             <button type="button" className="account-manage-dialog__action account-manage-dialog__action--danger" onClick={() => { setManagingAccount(false); setConfirming(true); }}>
@@ -337,14 +338,14 @@ const AccountSettings = () => {
         <div className="account-delete-overlay" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeDialog(); }}>
           <section className="account-delete-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-account-title">
             <div className="account-delete-dialog__mark"><DeleteIcon /></div>
-            <span>Acțiune ireversibilă</span>
+            <span>{ui('web_b85964d44a8a6a91')}</span>
             <h2 id="delete-account-title">{registeredAccount ? 'Ștergi definitiv contul?' : 'Ștergi datele salvate?'}</h2>
             <p>{registeredAccount
               ? 'Nu vei mai putea recupera profilul sau progresul. Spune-ne motivul, apoi confirmă ștergerea.'
               : 'Nu vei mai putea recupera progresul local. Spune-ne motivul, apoi confirmă ștergerea.'}</p>
             <form onSubmit={removeAccount}>
               <fieldset className="account-delete-reasons">
-                <legend>De ce alegi să pleci?</legend>
+                <legend>{ui('web_d0589be1d5eeec9a')}</legend>
                 {deletionReasons.map((reason, index) => (
                   <label className={deletionReason === reason.id ? 'selected' : ''} key={reason.id}>
                     <input
@@ -363,17 +364,17 @@ const AccountSettings = () => {
               </fieldset>
               {deletionReason === 'other' && (
                 <div className="account-delete-other">
-                  <label htmlFor="delete-account-other">Spune-ne pe scurt motivul</label>
-                  <textarea id="delete-account-other" value={customReason} onChange={(event) => setCustomReason(event.target.value)} maxLength={240} placeholder="Scrie motivul aici…" disabled={deleting} />
+                  <label htmlFor="delete-account-other">{ui('web_e81cebb639c1048c')}</label>
+                  <textarea id="delete-account-other" value={customReason} onChange={(event) => setCustomReason(event.target.value)} maxLength={240} placeholder={ui('web_1cc16633f0d0e1dc')} disabled={deleting} />
                   <small>{customReason.length}/240</small>
                 </div>
               )}
-              <label htmlFor="delete-account-confirmation">Scrie <strong>ȘTERGE</strong></label>
+              <label htmlFor="delete-account-confirmation">{ui('web_eda968f99cf89527')}<strong>{ui('web_5b78f80897849547')}</strong></label>
               <input id="delete-account-confirmation" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} autoComplete="off" disabled={deleting} />
               {error && <div className="account-delete-dialog__error" role="alert">{error}</div>}
               <div className="account-delete-dialog__actions">
-                <button type="button" onClick={closeDialog} disabled={deleting}>Păstrează contul</button>
-                <button type="submit" disabled={deleting || !deletionReason || (deletionReason === 'other' && customReason.trim().length < 3) || confirmation.trim().toLocaleUpperCase('ro-RO') !== 'ȘTERGE'}>{deleting ? 'Se șterge…' : 'Șterge definitiv'}</button>
+                <button type="button" onClick={closeDialog} disabled={deleting}>{ui('web_ff44fc72c0cfb699')}</button>
+                <button type="submit" disabled={deleting || !deletionReason || (deletionReason === 'other' && customReason.trim().length < 3) || confirmation.trim().toLocaleUpperCase('ro-RO') !== ui('web_5b78f80897849547')}>{deleting ? 'Se șterge…' : 'Șterge definitiv'}</button>
               </div>
             </form>
           </section>

@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { quizData } from './quizData';
@@ -65,8 +66,8 @@ const Chestionar = () => {
   if (questions.length === 0) {
     return (
       <div className="chestionar">
-        <Link to="/invata-limba" className="chestionar__back">← Înapoi la Învață limba</Link>
-        <p className="chestionar__empty">Nu există întrebări.</p>
+        <Link to="/invata-limba" className="chestionar__back">{ui('web_8e575762fa7dae5e')}</Link>
+        <p className="chestionar__empty">{ui('web_85ea7dc2b4e9940e')}</p>
       </div>
     );
   }
@@ -74,24 +75,18 @@ const Chestionar = () => {
   if (isFinished) {
     return (
       <div className="chestionar">
-        <Link to="/invata-limba" className="chestionar__back">← Înapoi la Învață limba</Link>
+        <Link to="/invata-limba" className="chestionar__back">{ui('web_8e575762fa7dae5e')}</Link>
         <div className="chestionar__card">
           <div className="chestionar__header">
-            <h1 className="chestionar__title">Chestionar</h1>
-            <p className="chestionar__subtitle">Testarea s-a încheiat</p>
+            <h1 className="chestionar__title">{ui('web_88fc523885ff8734')}</h1>
+            <p className="chestionar__subtitle">{ui('web_fd8b6c3fb79d5361')}</p>
           </div>
           <div className="chestionar__result">
-            <p className="chestionar__score-text">
-              Ai răspuns corect la <strong>{correctCount}</strong> din <strong>{questions.length}</strong> întrebări.
+            <p className="chestionar__score-text">{ui('web_2dfe425ac34a8a1b')}<strong>{correctCount}</strong>{ui('ui_dbd8b6478643d623')}<strong>{questions.length}</strong>{ui('web_900dd983b52ee8b9')}</p>
+            <p className="chestionar__stats">{ui('web_3d29833568013ecb')}<span className="chestionar__stat--correct">{correctCount}</span>
+              {' · '}{ui('web_4d02a9081e156176')}<span className="chestionar__stat--wrong">{wrongCount}</span>
             </p>
-            <p className="chestionar__stats">
-              Corecte: <span className="chestionar__stat--correct">{correctCount}</span>
-              {' · '}
-              Greșite: <span className="chestionar__stat--wrong">{wrongCount}</span>
-            </p>
-            <button type="button" className="chestionar__btn chestionar__btn--primary" onClick={handleReset}>
-              Încearcă din nou
-            </button>
+            <button type="button" className="chestionar__btn chestionar__btn--primary" onClick={handleReset}>{ui('web_a09d291920163176')}</button>
           </div>
         </div>
       </div>
@@ -100,12 +95,11 @@ const Chestionar = () => {
 
   return (
     <div className="chestionar">
-      <Link to="/invata-limba" className="chestionar__back">← Înapoi la Învață limba</Link>
+      <Link to="/invata-limba" className="chestionar__back">{ui('web_8e575762fa7dae5e')}</Link>
       <div className="chestionar__card">
         <div className="chestionar__header">
-          <h1 className="chestionar__title">Chestionar</h1>
-          <p className="chestionar__subtitle">
-            Întrebarea {currentIndex + 1} din {questions.length}
+          <h1 className="chestionar__title">{ui('web_88fc523885ff8734')}</h1>
+          <p className="chestionar__subtitle">{ui('web_d3526d8dd6340992')}{currentIndex + 1}{ui('ui_dbd8b6478643d623')}{questions.length}
           </p>
         </div>
 
@@ -126,7 +120,7 @@ const Chestionar = () => {
           </div>
 
           {answeredCount === 0 && (
-            <p className="chestionar__hint">Selectează răspunsul, apoi apasă „Salvează”</p>
+            <p className="chestionar__hint">{ui('web_013c2f3d8f5bf449')}</p>
           )}
 
           <div className="chestionar__progress-wrap">
@@ -139,30 +133,24 @@ const Chestionar = () => {
               className="chestionar__btn chestionar__btn--secondary"
               onClick={handlePrevious}
               disabled={currentIndex === 0}
-            >
-              Înapoi
-            </button>
+            >{ui('ui_43d3098298b6c977')}</button>
             <button
               type="button"
               className="chestionar__btn chestionar__btn--primary"
               onClick={handleConfirm}
               disabled={selectedAnswer === null}
-            >
-              Salvează
-            </button>
+            >{ui('web_761a3ee3fc998031')}</button>
             <button
               type="button"
               className="chestionar__btn chestionar__btn--secondary"
               onClick={handleNext}
               disabled={currentIndex >= questions.length - 1}
-            >
-              Următorul
-            </button>
+            >{ui('ui_3432e94fd956d7b4')}</button>
           </div>
 
           <div className="chestionar__stats-row">
-            <span className="chestionar__stat chestionar__stat--correct">Corecte: {correctCount}</span>
-            <span className="chestionar__stat chestionar__stat--wrong">Greșite: {wrongCount}</span>
+            <span className="chestionar__stat chestionar__stat--correct">{ui('web_3d29833568013ecb')}{correctCount}</span>
+            <span className="chestionar__stat chestionar__stat--wrong">{ui('web_4d02a9081e156176')}{wrongCount}</span>
           </div>
         </div>
       </div>

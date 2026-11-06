@@ -1,10 +1,11 @@
+import {ui} from '../../languages/messages.js';
 import React,{useState} from 'react';
 import {Link} from 'react-router-dom';
 import {guideArticles} from './guideArticles';
 import './DiscoverCards.css';
 import './LifeHub.css';
 
-const categories=['Toate','Înainte de plecare','După sosire','Muncă','Viața zilnică','Integrare','Orașe'];
+const categories=['Toate','Înainte de plecare','După sosire','Muncă','Viața zilnică','Integrare',ui('web_652e279f2c5a7260')];
 const normalize=(value)=>value.toLocaleLowerCase('ro').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 
 const ServiceIcon=({type})=>{
@@ -34,27 +35,27 @@ const NorwayLifeHub=()=>{
  };
 
  return <div className="article-library life-library">
-  <header className="library-hero life-library-hero"><p>Ghid practic pentru români</p><h1>Viața în Norvegia, pas cu pas</h1><span>Acte, muncă, locuință, bancă și integrare explicate simplu pentru cei care se mută sau locuiesc deja aici.</span><div><Link to="/viata-in-norvegia/ghid/primii-pasi-roman-norvegia">Vezi primii pași →</Link><small>Verificat în iulie 2026</small></div></header>
+  <header className="library-hero life-library-hero"><p>{ui('web_01676c238569fad3')}</p><h1>{ui('web_ba505dd4b28d73cc')}</h1><span>{ui('web_d601d3c8f63be69d')}</span><div><Link to="/viata-in-norvegia/ghid/primii-pasi-roman-norvegia">{ui('web_80fbbfb716d7e869')}</Link><small>{ui('web_45f55b4a84e51946')}</small></div></header>
 
-  <nav className="life-quick-links" aria-label="Acces rapid"><a href="#articole"><span aria-hidden="true">▤</span>Articole practice</a><Link to="/joburi"><span aria-hidden="true">💼</span>Muncă și documente</Link><Link to="/weather"><span aria-hidden="true">🌦️</span>Vremea</Link><Link to="/news"><span aria-hidden="true">📰</span>Știri</Link></nav>
+  <nav className="life-quick-links" aria-label={ui('web_22a4a2dae38902d3')}><a href="#articole"><span aria-hidden="true">▤</span>{ui('web_ca92bdac27b478e9')}</a><Link to="/joburi"><span aria-hidden="true">💼</span>{ui('web_0a75ff9827cfe8ab')}</Link><Link to="/weather"><span aria-hidden="true">🌦️</span>{ui('ui_10fe23b38f149d99')}</Link><Link to="/news"><span aria-hidden="true">📰</span>{ui('ui_739370da1ce6bf30')}</Link></nav>
 
-  <section className="featured-article life-featured"><div><span>Recomandat pentru început · 12 minute</span><h2>Primii pași în Norvegia pentru un cetățean român</h2><p>Înregistrarea UE/SEE, Folkeregisteret, numărul de identificare, skattekort, contul bancar și BankID, explicate în ordine.</p><Link to="/viata-in-norvegia/ghid/primii-pasi-roman-norvegia">Citește articolul →</Link></div><div className="featured-article__visual"><strong>7</strong><span>pași administrativi</span></div></section>
+  <section className="featured-article life-featured"><div><span>{ui('web_04a04b46e4734230')}</span><h2>{ui('web_a53081e79fa06a28')}</h2><p>{ui('web_389ca8cc3b62591f')}</p><Link to="/viata-in-norvegia/ghid/primii-pasi-roman-norvegia">{ui('web_d30e6cf14a983ac3')}</Link></div><div className="featured-article__visual"><strong>7</strong><span>{ui('web_a6958b8ef0a2f6b3')}</span></div></section>
 
   <section className="article-section" id="articole">
-   <div className="article-section__heading"><div><p>Biblioteca practică</p><h2>Informațiile de care ai nevoie</h2></div><span>{articles.length} {articles.length===1?'articol':'articole'}</span></div>
-   <label className="life-search"><span aria-hidden="true">⌕</span><input type="search" value={query} onChange={(event)=>{setQuery(event.target.value);setShowAll(true)}} placeholder="Ce informație cauți?" aria-label="Caută în articole"/></label>
+   <div className="article-section__heading"><div><p>{ui('web_ce46db914cb0e6ea')}</p><h2>{ui('web_2f2c2fc483e0a66e')}</h2></div><span>{articles.length} {articles.length===1?'articol':'articole'}</span></div>
+   <label className="life-search"><span aria-hidden="true">⌕</span><input type="search" value={query} onChange={(event)=>{setQuery(event.target.value);setShowAll(true)}} placeholder={ui('web_02f72c500e0b720b')} aria-label={ui('web_cf73cfb1bce0ae81')}/></label>
    <div className="article-filters">{categories.map((item)=><button type="button" className={category===item?'active':''} onClick={()=>selectCategory(item)} key={item}>{item}</button>)}</div>
-   <div className={`article-list ${isLimited?'article-list--limited':''}`}>{articles.map((article,index)=><article key={article.slug}><Link className="article-list__card" to={`/viata-in-norvegia/ghid/${article.slug}`} aria-label={`Citește ${article.title}`}><div className="article-list__number">{String(index+1).padStart(2,'0')}</div><div className="article-list__copy"><span>{article.category} · {article.readTime} min</span><h3>{article.title}</h3><p>{article.excerpt}</p></div><strong className="article-list__arrow" aria-hidden="true">→</strong></Link></article>)}</div>
-   {articles.length===0&&<div className="life-search-empty"><strong>Nu am găsit un articol.</strong><span>Încearcă „BankID”, „contract”, „locuință” sau „medic”.</span></div>}
-   {isLimited&&<button type="button" className="life-show-all" onClick={()=>setShowAll(true)}>Arată toate cele {articles.length} articole <span aria-hidden="true">↓</span></button>}
+   <div className={`article-list ${isLimited?'article-list--limited':''}`}>{articles.map((article,index)=><article key={article.slug}><Link className="article-list__card" to={`/viata-in-norvegia/ghid/${article.slug}`} aria-label={`Citește ${article.title}`}><div className="article-list__number">{String(index+1).padStart(2,'0')}</div><div className="article-list__copy"><span>{article.category} · {article.readTime}{ui('ui_2e75737a6b582974')}</span><h3>{article.title}</h3><p>{article.excerpt}</p></div><strong className="article-list__arrow" aria-hidden="true">→</strong></Link></article>)}</div>
+   {articles.length===0&&<div className="life-search-empty"><strong>{ui('web_99a87df18c4fc0b9')}</strong><span>{ui('web_2d4fceb1ce5a6484')}</span></div>}
+   {isLimited&&<button type="button" className="life-show-all" onClick={()=>setShowAll(true)}>{ui('web_736c344c2366bcbd')}{articles.length}{ui('web_4a60759c22b085af')}<span aria-hidden="true">↓</span></button>}
   </section>
 
   <section className="life-services" aria-labelledby="life-services-title">
-   <header className="life-services__heading"><div><span>Acces rapid</span><h2 id="life-services-title">Utile pentru viața de zi cu zi</h2></div><p>Informațiile practice importante, mereu la îndemână.</p></header>
+   <header className="life-services__heading"><div><span>{ui('web_22a4a2dae38902d3')}</span><h2 id="life-services-title">{ui('web_8bdee9d35c822e31')}</h2></div><p>{ui('web_55a772671ba47958')}</p></header>
    <div className="life-services__grid">
-    <Link className="life-service life-service--work" to="/joburi"><span className="life-service__icon"><ServiceIcon type="work"/></span><div><small>Ghid practic</small><h3>Muncă și acte</h3><p>Contract, angajare și pașii administrativi esențiali.</p><b>Explorează ghidurile</b></div><strong aria-hidden="true">→</strong></Link>
-    <Link className="life-service life-service--weather" to="/weather"><span className="life-service__icon"><ServiceIcon type="weather"/></span><div><small>Date actuale</small><h3>Vremea</h3><p>Condițiile din principalele orașe norvegiene.</p><b>Vezi vremea</b></div><strong aria-hidden="true">→</strong></Link>
-    <Link className="life-service life-service--news" to="/news"><span className="life-service__icon"><ServiceIcon type="news"/></span><div><small>Actualitate</small><h3>Știri</h3><p>Noutăți recente din Norvegia, traduse în română.</p><b>Citește noutățile</b></div><strong aria-hidden="true">→</strong></Link>
+    <Link className="life-service life-service--work" to="/joburi"><span className="life-service__icon"><ServiceIcon type="work"/></span><div><small>{ui('web_81d8b33171b49ec1')}</small><h3>{ui('web_37a4a575590aed2c')}</h3><p>{ui('web_ef57595c79d9854a')}</p><b>{ui('web_654c851f300bfde8')}</b></div><strong aria-hidden="true">→</strong></Link>
+    <Link className="life-service life-service--weather" to="/weather"><span className="life-service__icon"><ServiceIcon type="weather"/></span><div><small>{ui('web_635b1dae26a8c252')}</small><h3>{ui('ui_10fe23b38f149d99')}</h3><p>{ui('web_39467ba89f7ad62b')}</p><b>{ui('web_94b0e77a1e091659')}</b></div><strong aria-hidden="true">→</strong></Link>
+    <Link className="life-service life-service--news" to="/news"><span className="life-service__icon"><ServiceIcon type="news"/></span><div><small>{ui('web_294e47cdfea0f108')}</small><h3>{ui('ui_739370da1ce6bf30')}</h3><p>{ui('web_46b2150a26c4c993')}</p><b>{ui('web_9fd2852ef401504e')}</b></div><strong aria-hidden="true">→</strong></Link>
    </div>
   </section>
  </div>;

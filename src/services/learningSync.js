@@ -1,15 +1,19 @@
+import {progressLessonIds} from '../data/courseIdentity.js';
 const object = (value) => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
-const scenarioKey = /^scenario_result_v1_([0-9a-f-]{36})_[ABC][12]_[a-z0-9-]{1,80}_[a-f0-9]{64}$/;
-const ownerOf = (key) => scenarioKey.exec(key)?.[1] || /^curriculum_\d+\.\d+_([0-9a-f-]{36})_/.exec(key)?.[1];
+const scenarioKey = /^(?:course:(?:nb|de|fr|en):)?scenario_result_v1_([0-9a-f-]{36})_[ABC][12]_[a-z0-9-]{1,80}_[a-f0-9]{64}$/;
+const ownerOf = (key) => scenarioKey.exec(key)?.[1] || /^(?:course:(?:nb|de|fr|en):)?curriculum_\d+\.\d+_([0-9a-f-]{36})_/.exec(key)?.[1];
 const ownedKey = (key, id) => ownerOf(key) === id && (scenarioKey.test(key) ||
-  /^curriculum_\d+\.\d+_[0-9a-f-]{36}_(?:[abc][12]_(?:progress|final_(?:best|passed)|\d+_resume.*)|current_lesson)$/.test(key));
+  /^(?:course:(?:nb|de|fr|en):)?curriculum_\d+\.\d+_[0-9a-f-]{36}_(?:[abc][12]_(?:progress|final_(?:best|passed)|\d+_resume.*)|current_lesson)$/.test(key));
 const mergeValue = (key, remote, local) => {
   if (scenarioKey.test(key)) return remote ?? local;
-  if (/_progress$/.test(key)) return {
+  if (/_progress$/.test(key)) {
+    const ids = progressLessonIds(key);
+    return {
     completed: [...new Set([...(Array.isArray(remote?.completed) ? remote.completed : []), ...(Array.isArray(local?.completed) ? local.completed : [])])]
-      .filter((id) => Number.isInteger(id) && id >= 1 && id <= 24).sort((a, b) => a - b),
-    unlocked: Math.min(24, Math.max(1, Number(remote?.unlocked) || 1, Number(local?.unlocked) || 1)),
-  };
+      .filter((id) => Number.isInteger(id) && id >= 1 && id <= 999999 && (!ids || ids.includes(id))).sort((a, b) => a - b),
+    unlocked: Math.min(ids?.length || 1000000, Math.max(1, Number(remote?.unlocked) || 1, Number(local?.unlocked) || 1)),
+    };
+  }
   if (/_final_best$/.test(key)) return Math.max(Number(remote) || 0, Number(local) || 0);
   if (/(_final_passed|_voice_complete)$/.test(key)) return remote === true || local === true;
   return local;

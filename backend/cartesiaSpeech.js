@@ -1,3 +1,5 @@
+// nordlingo-language-context-v1
+const {voiceLanguage} = require('./languageContext');
 const CARTESIA_ENDPOINT = 'https://api.cartesia.ai/tts/bytes';
 
 const configured = () => Boolean(process.env.CARTESIA_API_KEY && process.env.CARTESIA_VOICE_ID);
@@ -8,7 +10,7 @@ const speed = (value, fallback) => {
 
 const cartesiaSpeechStream = async (text, signal, options = {}) => {
   if (!configured()) throw Object.assign(new Error('Streamingul Cartesia nu este configurat.'), { status: 503 });
-  const locale = options.locale || 'no-NO';
+  const locale = options.locale || voiceLanguage().speechLocale;
   const isRomanian = locale.toLowerCase().startsWith('ro');
   const voiceId = options.voiceId || (isRomanian && process.env.CARTESIA_FEEDBACK_VOICE_ID) || process.env.CARTESIA_VOICE_ID;
   const voiceSpeed = speed(

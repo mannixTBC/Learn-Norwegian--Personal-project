@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React from 'react';
 import WeatherCard from './WeatherCard';
 import 'weather-icons/css/weather-icons.css';
@@ -5,11 +6,11 @@ import './WeatherPage.css';
 
 const API_KEY = "53d81b0d0c74cce91d48f62434ea1b03";
 const CITIES = [
-  { name: 'Oslo', country: 'no' },
-  { name: 'Bergen', country: 'no' },
+  { name: ui('web_43152cc97f457f27'), country: 'no' },
+  { name: ui('web_deae09060dcc8c1b'), country: 'no' },
   { name: 'Trondheim', country: 'no' },
-  { name: 'Stavanger', country: 'no' },
-  { name: 'Tromsø', apiName: 'Tromso', country: 'no' },
+  { name: ui('web_7da94aa07bf76227'), country: 'no' },
+  { name: 'Tromsø', apiName: ui('web_9edfa4753032bb85'), country: 'no' },
   { name: 'Kristiansand', country: 'no' },
   { name: 'Bodø', apiName: 'Bodo', country: 'no' },
   { name: 'Ålesund', apiName: 'Alesund', country: 'no' },
@@ -89,8 +90,8 @@ class Weather extends React.Component {
         <div className="weather-page">
           <div className="weather-state">
             <span className="weather-state__icon" aria-hidden="true">☁</span>
-            <h1>Pregătim vremea din Norvegia</h1>
-            <p>Se încarcă cele mai recente date meteo...</p>
+            <h1>{ui('web_b9dcc9a309891712')}</h1>
+            <p>{ui('web_19ac124b170f66b2')}</p>
             <span className="weather-state__loader" aria-hidden="true" />
           </div>
         </div>
@@ -102,11 +103,9 @@ class Weather extends React.Component {
         <div className="weather-page">
           <div className="weather-state weather-state--error">
             <span className="weather-state__icon" aria-hidden="true">↻</span>
-            <h1>Vremea nu a putut fi încărcată</h1>
-            <p>Conexiunea cu serviciul meteo a fost întreruptă. Poți încerca din nou.</p>
-            <button onClick={this.fetchAllWeather} className="weather-retry-btn">
-              Încearcă din nou
-            </button>
+            <h1>{ui('web_1e9f4e3e0fdcd0fa')}</h1>
+            <p>{ui('web_5f0f2748884e9448')}</p>
+            <button onClick={this.fetchAllWeather} className="weather-retry-btn">{ui('web_a09d291920163176')}</button>
           </div>
         </div>
       );
@@ -125,27 +124,26 @@ class Weather extends React.Component {
         <div className="weather-shell">
           <header className="weather-hero">
             <div className="weather-hero__copy">
-              <span className="weather-eyebrow"><i /> Date meteo actuale</span>
-              <h1>Vremea în Norvegia</h1>
-              <p>O privire rapidă asupra condițiilor din principalele orașe, ca să îți poți planifica ziua mai ușor.</p>
+              <span className="weather-eyebrow"><i />{ui('web_407be3974f241dd2')}</span>
+              <h1>{ui('ui_9038c00a9eed701f')}</h1>
+              <p>{ui('web_b4cbfe625d66d118')}</p>
             </div>
             <div className="weather-overview">
-              <span>Intervalul de astăzi</span>
+              <span>{ui('web_1619f95c9117ea79')}</span>
               <strong>{lowestTemperature}° <i>—</i> {highestTemperature}°</strong>
-              <small>Actualizat la {updatedAt}</small>
+              <small>{ui('web_38b0eaff135b9b36')}{updatedAt}</small>
             </div>
           </header>
 
           <section className="weather-content" aria-labelledby="weather-cities-title">
             <div className="weather-heading">
               <div>
-                <span>8 orașe urmărite</span>
-                <h2 id="weather-cities-title">Cum este vremea acum</h2>
-                <p>Temperaturi și condiții meteo actualizate pentru orașele principale.</p>
+                <span>{ui('web_d8be2f5b4ebb38b1')}</span>
+                <h2 id="weather-cities-title">{ui('web_ae105927a7d925b6')}</h2>
+                <p>{ui('web_c287b0855dc35037')}</p>
               </div>
               <button onClick={this.fetchAllWeather} className="weather-refresh-btn">
-                <span aria-hidden="true">↻</span> Actualizează
-              </button>
+                <span aria-hidden="true">↻</span>{ui('web_a7740735bc3b615b')}</button>
             </div>
 
             <div className="weather-grid">
@@ -156,9 +154,9 @@ class Weather extends React.Component {
           <aside className="weather-advice">
             <span className="weather-advice__icon" aria-hidden="true">⌁</span>
             <div>
-              <small>Bine de știut</small>
-              <h2>Vremea se poate schimba repede</h2>
-              <p>Mai ales pe coastă și la munte, ia cu tine un strat impermeabil chiar dacă ziua începe senin.</p>
+              <small>{ui('web_243f3e9d2a098c41')}</small>
+              <h2>{ui('web_047292ef8d577ff4')}</h2>
+              <p>{ui('web_f67aeea2a2ab3a3c')}</p>
             </div>
           </aside>
         </div>

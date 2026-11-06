@@ -1,3 +1,5 @@
+// nordlingo-language-context-v1
+const {bindSessionLanguages,verifySessionLanguages} = require('./languageContext');
 const crypto = require('node:crypto');
 
 const fail = (message, status = 401) => Object.assign(new Error(message), { status });
@@ -11,6 +13,7 @@ const createVoiceStreamTicket = ({ text, sessionId, turn }, now = Date.now()) =>
   const cipher = crypto.createCipheriv('aes-256-gcm', key(), iv);
   const payload = Buffer.from(JSON.stringify({
     kind: 'cartesia-dialogue',
+    ...bindSessionLanguages({}),
     text: text.trim(),
     sessionId,
     turn,
@@ -34,7 +37,7 @@ const verifyVoiceStreamTicket = (ticket, now = Date.now()) => {
       || payload.text.length > 1_200 || !Number.isFinite(payload.expires) || payload.expires < now) {
       throw new Error('expired-ticket');
     }
-    return payload;
+    return verifySessionLanguages(payload);
   } catch (_) {
     throw fail('Linkul audio a expirat sau nu este valid.', 401);
   }

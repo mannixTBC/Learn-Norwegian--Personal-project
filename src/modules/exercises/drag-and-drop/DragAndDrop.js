@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import React from 'react';
 import initialData from './initialData';
 import Column from './Column';
@@ -100,12 +101,12 @@ class DragAndDrop extends React.Component {
 
     return (
       <div className="game-container">
-        <h1>Clasifică cuvintele</h1>
-        <p className="instructions">Trage cuvintele în categoria corectă: Animale sau Culori</p>
+        <h1>{ui('web_f5b8f98c44b4e462')}</h1>
+        <p className="instructions">{ui('web_71eccbd1ed4eff7c')}</p>
 
         <DragDropContext onDragEnd={this.onDragEnd}>
           <div className="game-board">
-            <Column droppableId="words" title="Cuvinte" isEmpty={words.length === 0}>
+            <Column droppableId="words" title={ui('web_3bd236551c6abf1b')} isEmpty={words.length === 0}>
               {words.map((wordId, index) => (
                 <Word key={wordId} word={wordMap[wordId]} index={index} />
               ))}
@@ -133,18 +134,12 @@ class DragAndDrop extends React.Component {
         </DragDropContext>
 
         <div className="actions">
-          <button onClick={this.checkAnswers} className="btn btn-check">
-            Verifică răspunsurile
-          </button>
-          <button onClick={this.resetGame} className="btn btn-reset">
-            Resetează
-          </button>
+          <button onClick={this.checkAnswers} className="btn btn-check">{ui('web_4cd932350dfac851')}</button>
+          <button onClick={this.resetGame} className="btn btn-reset">{ui('web_ac95bc9c271af24d')}</button>
         </div>
 
         {checked && (
-          <div className="score">
-            Scor: {score} / {Object.keys(wordMap).length} corecte
-          </div>
+          <div className="score">{ui('web_5c69f37879487f8d')}{score} / {Object.keys(wordMap).length}{ui('web_46b0458e0186fc59')}</div>
         )}
       </div>
     );

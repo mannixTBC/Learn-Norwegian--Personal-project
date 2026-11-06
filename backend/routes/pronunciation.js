@@ -1,3 +1,5 @@
+// nordlingo-language-context-v1
+const {voiceLanguage} = require('../languageContext');
 const express = require('express');
 
 const router = express.Router();
@@ -8,7 +10,7 @@ const AZURE_SPEECH_VOICE = process.env.AZURE_SPEECH_VOICE || 'nb-NO-PernilleNeur
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const MAX_REFERENCE_LENGTH = 500;
 const MAX_AUDIO_BYTES = 4 * 1024 * 1024;
-const AZURE_LANGUAGE = 'nb-NO';
+const azureLanguage = () => voiceLanguage().locale;
 const ALLOWED_AUDIO_TYPES = new Set([
   'audio/webm',
   'audio/webm;codecs=opus',
@@ -50,7 +52,7 @@ const normalizeAzureResult = (payload) => {
 
   return {
     text: (best && (best.Display || best.Lexical)) || payload.DisplayText || '',
-    languageCode: AZURE_LANGUAGE,
+    languageCode: azureLanguage(),
     words: azureWords.map((word) => ({
       text: word.Word || '',
       start: secondsFromTicks(word.Offset),
@@ -92,7 +94,7 @@ const evaluateWithAzure = async ({ audio, mimeType, referenceText }) => {
     EnableMiscue: true,
   }), 'utf8').toString('base64');
   const endpoint = new URL(`https://${AZURE_SPEECH_REGION}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1`);
-  endpoint.searchParams.set('language', AZURE_LANGUAGE);
+  endpoint.searchParams.set('language', azureLanguage());
   endpoint.searchParams.set('format', 'detailed');
 
   const response = await fetch(endpoint, {
@@ -156,7 +158,7 @@ const transcribeWithElevenLabs = async ({ audio, mimeType }) => {
   const form = new FormData();
   form.append('file', new Blob([audio], { type: mimeType }), `pronunciation.${extensionFor(mimeType)}`);
   form.append('model_id', 'scribe_v2');
-  form.append('language_code', 'no');
+  form.append('language_code', voiceLanguage().transcription);
   form.append('tag_audio_events', 'false');
   form.append('diarize', 'false');
   form.append('timestamps_granularity', 'word');
@@ -175,7 +177,7 @@ const transcribeWithElevenLabs = async ({ audio, mimeType }) => {
   const transcript = await response.json();
   return {
     text: transcript.text || '',
-    languageCode: transcript.language_code || 'no',
+    languageCode: transcript.language_code || voiceLanguage().transcription,
     languageProbability: transcript.language_probability || null,
     words: Array.isArray(transcript.words)
       ? transcript.words.filter((word) => word.type === 'word').map((word) => ({
@@ -192,7 +194,7 @@ const transcribeWithElevenLabs = async ({ audio, mimeType }) => {
 router.get('/status', (req, res) => res.json({
   azureConfigured: validAzureRegion(),
   provider: 'azure-speech',
-  language: AZURE_LANGUAGE,
+  language: azureLanguage(),
   voice: AZURE_SPEECH_VOICE,
 }));
 

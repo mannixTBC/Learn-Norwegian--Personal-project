@@ -1,3 +1,5 @@
+import {languageFetch} from '../../languages/fetch';
+import {courseLocalStorage as localStorage} from '../../languages/storage.js';
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../../services/supabaseClient';
 import { apiUrl } from '../../services/api';
@@ -55,7 +57,7 @@ export default function useConversationSession({ userId, level, pathId, scenario
     update({ ...before, busy: true, error: null, operation, notice: '' });
     try {
       const result = validateConversation(await conversationRequest(operation, payload, {
-        signal: controller.signal, getAccessToken, baseUrl: apiUrl('/api/scenarios'),
+        signal: controller.signal, getAccessToken, fetcher: languageFetch, baseUrl: apiUrl('/api/scenarios'),
       }), scenario, { operation, previousTurn: before.session?.turn || 0, level });
       if (!isCurrent()) return;
       const next = { ...current.current, session: result, savedToken: null, busy: false, error: null,

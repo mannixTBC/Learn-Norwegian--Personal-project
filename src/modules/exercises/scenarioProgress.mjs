@@ -1,4 +1,5 @@
 // Learning history only: no transcript, draft or signed token is stored here.
+import {courseIdentity} from '../../data/courseIdentity.js';
 export const resultPrefix = (userId, level) => `scenario_result_v1_${userId || 'guest'}_${level}_`;
 export const scenarioDefinition = scenario => JSON.stringify([
   scenario.revision || 1, scenario.objectiveIds || [], scenario.goals, scenario.difficulty.turns,
@@ -53,7 +54,7 @@ export async function saveScenarioResult({ storage, userId, level, scenario, res
   const previous = parse(storage.getItem(key));
   const value = valid(previous, scenario) ? previous : { version: 1, definition: scenarioDefinition(scenario),
     achieved: [...result.achieved].sort((a, b) => a - b), endReason: result.endReason,
-    turn: result.turn, date: new Date().toISOString() };
+    turn: result.turn, date: new Date().toISOString(), course: courseIdentity() };
   if (!valid(value, scenario)) throw new Error('Invalid scenario result');
   storage.setItem(key, JSON.stringify(value));
   return { saved: true, key, value };

@@ -1,7 +1,9 @@
+import {ui} from '../../languages/messages.js';
+import {courseLocalStorage as localStorage} from '../../languages/storage.js';
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import { courseCatalog } from '../lessons/norwegian-program/lessonContent';
+import { courseCatalog } from '../../content/activeContent.js';
 import { learningLevels, levelName } from '../lessons/learningLevel';
 import { getReviewItemsForLevel, getReviewStats } from '../../services/spacedReview';
 import { getDailyGoal, getStudySummary, setDailyGoal } from '../../services/learningActivity';
@@ -107,7 +109,7 @@ const RecommendationVisual = ({ type, fallback, pathId }) => {
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const activeLevel = learningLevels.includes(localStorage.getItem('norwegian_active_level')) ? localStorage.getItem('norwegian_active_level') : 'A1';
+  const activeLevel = learningLevels.includes(localStorage.getItem('norwegian_active_level')) ? localStorage.getItem('norwegian_active_level') : ui('ui_16a36e86f6fed5d4');
   const course = courseCatalog[activeLevel];
   const activeProgress = readProgress(activeLevel, user);
   const nextLesson = course.lessons.find((lesson) => !activeProgress.completed.includes(lesson.id)) || course.lessons[course.lessons.length - 1];
@@ -162,68 +164,68 @@ const Dashboard = () => {
         <div className="daily-dashboard__welcome">
           <span>{new Date().toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
           <h1>{user && user.isGuest ? greeting() : `${greeting()}, ${user ? user.name.split(' ')[0] : 'prietene'}`}</h1>
-          <p>Ai un plan simplu pentru astăzi. Fiecare minut se adună în progresul tău.</p>
-          <div><span>Nivel activ</span><strong>{activeLevel} · {levelName[activeLevel]}</strong><Link to={`/invata?nivel=${activeLevel}`}>Vezi cursul →</Link></div>
+          <p>{ui('web_9fd13a2cd84960c1')}</p>
+          <div><span>{ui('web_a83add46adfe2454')}</span><strong>{activeLevel} · {levelName[activeLevel]}</strong><Link to={`/invata?nivel=${activeLevel}`}>{ui('web_153da0ffd4ba6de5')}</Link></div>
           <section className="dashboard-desktop-progress" aria-label={`Progres nivel ${activeLevel}`}>
-            <div><span>{activeProgress.completed.length} din {course.lessons.length} lecții finalizate</span><strong>{activeLevelProgress}%</strong></div>
+            <div><span>{activeProgress.completed.length}{ui('ui_dbd8b6478643d623')}{course.lessons.length}{ui('web_f1755afa0a66fbaa')}</span><strong>{activeLevelProgress}%</strong></div>
             <div className="dashboard-desktop-progress__track" role="progressbar" aria-label={`Progres la nivelul ${activeLevel}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={activeLevelProgress}><span style={{ width: `${activeLevelProgress}%` }} /></div>
-            <p className="dashboard-desktop-progress__streak">{activity.streak ? <>Serie curentă: <strong>{activity.streak} {activity.streak === 1 ? 'zi' : 'zile'}</strong> · Continuă și astăzi</> : 'Începe astăzi seria ta de zile de studiu.'}</p>
+            <p className="dashboard-desktop-progress__streak">{activity.streak ? <>{ui('web_1361ac83c61d4718')}<strong>{activity.streak} {activity.streak === 1 ? 'zi' : 'zile'}</strong>{ui('web_ed6c41a039ab6a68')}</> : 'Începe astăzi seria ta de zile de studiu.'}</p>
           </section>
         </div>
         <div className="dashboard-desktop-start">
           <div>
-            <span>Următoarea lecție · {nextLesson.duration} min</span>
-            <strong>Lecția {nextLesson.id}: {nextLesson.title}</strong>
+            <span>{ui('web_79c528a04549be63')}{nextLesson.duration}{ui('ui_2e75737a6b582974')}</span>
+            <strong>{ui('ui_abf153365567efe1')}{nextLesson.id}: {nextLesson.title}</strong>
           </div>
           <Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>
-            {activeProgress.completed.length ? 'Continuă lecția' : 'Începe lecția'} <span aria-hidden="true">→</span>
+            {activeProgress.completed.length ? ui('ui_6bbb599cd39f1d5d') : ui('ui_54609dd4c72877da')} <span aria-hidden="true">→</span>
           </Link>
         </div>
         <div className="daily-goal">
-          <div className="daily-goal__ring" style={{ '--goal-progress': `${goalPercent * 3.6}deg` }}><div><strong>{activity.todayMinutes}</strong><span>din {dailyGoal} min</span></div></div>
-          <div><span>Obiectivul de astăzi</span><strong>{goalPercent >= 100 ? 'Obiectiv atins!' : `${dailyGoal - activity.todayMinutes > 0 ? dailyGoal - activity.todayMinutes : 0} minute rămase`}</strong><small>{activity.todaySessions ? `${activity.todaySessions} activități astăzi` : 'Începe cu o activitate scurtă'}</small></div>
+          <div className="daily-goal__ring" style={{ '--goal-progress': `${goalPercent * 3.6}deg` }}><div><strong>{activity.todayMinutes}</strong><span>{ui('web_7cd4e21293d592db')}{dailyGoal}{ui('ui_2e75737a6b582974')}</span></div></div>
+          <div><span>{ui('web_161d6ab17d374146')}</span><strong>{goalPercent >= 100 ? 'Obiectiv atins!' : `${dailyGoal - activity.todayMinutes > 0 ? dailyGoal - activity.todayMinutes : 0} minute rămase`}</strong><small>{activity.todaySessions ? `${activity.todaySessions} activități astăzi` : 'Începe cu o activitate scurtă'}</small></div>
         </div>
       </header>
 
-      <section className="dashboard-mobile-start" aria-label="Continuă învățarea">
+      <section className="dashboard-mobile-start" aria-label={ui('web_086934f28eadeec2')}>
         <div className="dashboard-mobile-start__welcome">
           <span>{greeting()}</span>
-          <h1>{user && !user.isGuest ? user.name.split(' ')[0] : 'Hai să continuăm'}</h1>
+          <h1>{user && !user.isGuest ? user.name.split(' ')[0] : ui('ui_cdda62f450e2ca93')}</h1>
         </div>
         <div className="dashboard-mobile-start__top">
           <div>
-            <span>Progresul tău · {activeLevel}</span>
+            <span>{ui('web_d8b37400e6052b2d')}{activeLevel}</span>
             <strong>{activeLevelProgress}%</strong>
           </div>
-          <small>{activeProgress.completed.length} din {course.lessons.length} lecții</small>
+          <small>{activeProgress.completed.length}{ui('ui_dbd8b6478643d623')}{course.lessons.length}{ui('ui_fa56bbc8c2c6fc10')}</small>
         </div>
         <div className="dashboard-mobile-start__track" aria-hidden="true">
           <span style={{ width: `${activeLevelProgress}%` }} />
         </div>
         <div className="dashboard-mobile-start__lesson">
           <div>
-            <small>Următorul pas</small>
-            <h2>Lecția {nextLesson.id}: {nextLesson.title}</h2>
-            <p>{nextLesson.duration} min · {nextLesson.vocabulary.length} expresii</p>
+            <small>{ui('web_d2a9ecabc33165da')}</small>
+            <h2>{ui('ui_abf153365567efe1')}{nextLesson.id}: {nextLesson.title}</h2>
+            <p>{nextLesson.duration}{ui('ui_46e2a1c0fa99b3a3')}{nextLesson.vocabulary.length}{ui('ui_a6619ff79822addd')}</p>
           </div>
           <Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>
-            {activeProgress.completed.length ? 'Continuă lecția' : 'Începe lecția'} <span aria-hidden="true">→</span>
+            {activeProgress.completed.length ? ui('ui_6bbb599cd39f1d5d') : ui('ui_54609dd4c72877da')} <span aria-hidden="true">→</span>
           </Link>
         </div>
-        <div className="dashboard-mobile-start__secondary" aria-label="Alte activități">
-          <Link to={`/invata?nivel=${activeLevel}`}><span aria-hidden="true">Aa</span>Toate lecțiile</Link>
-          <Link to={`/recapitulare?nivel=${activeLevel}`}><span aria-hidden="true">↻</span>Recapitulare</Link>
+        <div className="dashboard-mobile-start__secondary" aria-label={ui('web_d8e382a281aebbe7')}>
+          <Link to={`/invata?nivel=${activeLevel}`}><span aria-hidden="true">{ui('web_81acaafba961bb83')}</span>{ui('web_c7f49bea475cef84')}</Link>
+          <Link to={`/recapitulare?nivel=${activeLevel}`}><span aria-hidden="true">↻</span>{ui('ui_fe74dd05d0e5825f')}</Link>
         </div>
       </section>
 
-      <section className="dashboard-app-home" aria-label="Pagina principală a aplicației">
+      <section className="dashboard-app-home" aria-label={ui('web_39668ceac3860055')}>
         <header className="dashboard-app-home__hero">
-          <Link className="dashboard-app-home__brand" to="/dashboard" aria-label="NordLingo — Acasă">
-            <img src="/branding/nordlingo-selected-color.png" alt="NordLingo" />
+          <Link className="dashboard-app-home__brand" to="/dashboard" aria-label={ui('web_5eea99318c403ce0')}>
+            <img src="/branding/nordlingo-selected-color.png" alt={ui('ui_ee728f3245aed708')} />
           </Link>
           <div>
             <span>{greeting()}</span>
-            <h1>{user && !user.isGuest ? user.name.split(' ')[0] : 'Hai să continuăm'}</h1>
+            <h1>{user && !user.isGuest ? user.name.split(' ')[0] : ui('ui_cdda62f450e2ca93')}</h1>
           </div>
         </header>
 
@@ -232,8 +234,8 @@ const Dashboard = () => {
             <strong>{activeLevelProgress}%</strong>
           </div>
           <div className="dashboard-app-home__progress-copy">
-            <strong>Progresul tău · {activeLevel}</strong>
-            <span>{activeProgress.completed.length} din {course.lessons.length} lecții</span>
+            <strong>{ui('web_d8b37400e6052b2d')}{activeLevel}</strong>
+            <span>{activeProgress.completed.length}{ui('ui_dbd8b6478643d623')}{course.lessons.length}{ui('ui_fa56bbc8c2c6fc10')}</span>
             <div aria-hidden="true"><i style={{ width: `${activeLevelProgress}%` }} /></div>
           </div>
           <span className="dashboard-app-home__progress-icon"><DashboardAppIcon type="progress" /></span>
@@ -241,12 +243,12 @@ const Dashboard = () => {
 
         <article className="dashboard-app-home__lesson" style={{ '--dashboard-lesson-image': `url("${getLessonImage(activeLevel, nextLesson.id)}")` }}>
           <div className="dashboard-app-home__lesson-copy">
-            <span>Următorul pas</span>
-            <h2>Lecția {nextLesson.id}: {nextLesson.title}</h2>
-            <p><span><DashboardAppIcon type="clock" />{nextLesson.duration} min</span><span><DashboardAppIcon type="chat" />{nextLesson.vocabulary.length} expresii</span></p>
+            <span>{ui('web_d2a9ecabc33165da')}</span>
+            <h2>{ui('ui_abf153365567efe1')}{nextLesson.id}: {nextLesson.title}</h2>
+            <p><span><DashboardAppIcon type="clock" />{nextLesson.duration}{ui('ui_2e75737a6b582974')}</span><span><DashboardAppIcon type="chat" />{nextLesson.vocabulary.length}{ui('ui_a6619ff79822addd')}</span></p>
           </div>
           <Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>
-            {activeProgress.completed.length ? 'Continuă lecția' : 'Începe lecția'} <span aria-hidden="true">→</span>
+            {activeProgress.completed.length ? ui('ui_6bbb599cd39f1d5d') : ui('ui_54609dd4c72877da')} <span aria-hidden="true">→</span>
           </Link>
         </article>
 
@@ -254,64 +256,64 @@ const Dashboard = () => {
       </section>
 
       <Link className="dashboard-mobile-games" to={`/jocuri?nivel=${activeLevel}`}>
-        <span className="dashboard-mobile-games__icon" aria-hidden="true">Aa</span>
+        <span className="dashboard-mobile-games__icon" aria-hidden="true">{ui('web_81acaafba961bb83')}</span>
         <div>
-          <small>Practică în ritmul tău</small>
-          <h2>Jocuri și exerciții</h2>
-          <p>Vocabular, propoziții, verbe și pronunție.</p>
+          <small>{ui('web_0318c92e2aaa4fed')}</small>
+          <h2>{ui('web_4ff8c30397e8a3a2')}</h2>
+          <p>{ui('web_9dc8d7884dfb14de')}</p>
         </div>
         <strong aria-hidden="true">→</strong>
       </Link>
 
       {careerPath && (
-        <section className="dashboard-career" aria-label="Direcția personalizată a cursului">
+        <section className="dashboard-career" aria-label={ui('web_28c5e0aa62f82fd0')}>
           <span className="dashboard-career__icon" aria-hidden="true">{careerPath.icon}</span>
-          <div><small>Direcția cursului tău</small><h2>{careerPath.title}</h2><p>{careerPath.outcome}</p>{careerModule && <div>{careerModule.phrases.map((phrase) => <span key={phrase[0]}>{phrase[0]}</span>)}</div>}</div>
-          <Link to="/alege-directia?redirect=/dashboard">Schimbă direcția →</Link>
+          <div><small>{ui('web_db83519e5632add9')}</small><h2>{careerPath.title}</h2><p>{careerPath.outcome}</p>{careerModule && <div>{careerModule.phrases.map((phrase) => <span key={phrase[0]}>{phrase[0]}</span>)}</div>}</div>
+          <Link to="/alege-directia?redirect=/dashboard">{ui('web_1717f542639a2541')}</Link>
         </section>
       )}
 
       <section className="dashboard-section dashboard-today" aria-labelledby="today-plan-title">
-        <div className="dashboard-section__heading"><div><span>Plan personalizat · {activeLevel}</span><h2 id="today-plan-title">Ce faci astăzi</h2></div><Link to={`/invata?nivel=${activeLevel}`}>Vezi toate lecțiile →</Link></div>
+        <div className="dashboard-section__heading"><div><span>{ui('web_e9703bbf047005f5')}{activeLevel}</span><h2 id="today-plan-title">{ui('web_e637439c66f4cd67')}</h2></div><Link to={`/invata?nivel=${activeLevel}`}>{ui('web_51345f07896323fe')}</Link></div>
         <div className="dashboard-today__grid">
-          <article className="today-task today-task--primary"><div className="today-task__top"><span>01</span><small>Activitatea principală</small></div><h3>Continuă lecția {nextLesson.id}</h3><p>{nextLesson.title}</p><div className="today-task__meta"><span>◷ {nextLesson.duration} min</span><span>○ {nextLesson.vocabulary.length} expresii</span></div><Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>{activeProgress.completed.length ? 'Continuă lecția' : 'Începe lecția'} →</Link></article>
-          <article className="today-task"><div className="today-task__top"><span>02</span><small>Memorie</small></div><h3>{reviews.due ? `Repetă ${reviews.due} elemente` : 'Recapitularea este la zi'}</h3><p>{reviews.due ? 'Greșelile recente sunt pregătite pentru repetare spațiată.' : reviews.total ? 'Următoarele elemente vor apărea când este momentul potrivit.' : 'Greșelile din lecții vor fi salvate automat aici.'}</p><Link to={`/recapitulare?nivel=${activeLevel}`}>{reviews.due ? 'Începe recapitularea' : 'Recapitulează'} →</Link></article>
-          <article className="today-task"><div className="today-task__top"><span>03</span><small>Exercițiu opțional</small></div><h3>Pronunție · 5 minute</h3><p>Ascultă o frază, înregistrează-te și compară rezultatul fără să afecteze progresul.</p><Link to={`/pronuntie?nivel=${activeLevel}`}>Deschide laboratorul →</Link></article>
+          <article className="today-task today-task--primary"><div className="today-task__top"><span>01</span><small>{ui('web_543eb0e533683fc7')}</small></div><h3>{ui('web_2f98469645083847')}{nextLesson.id}</h3><p>{nextLesson.title}</p><div className="today-task__meta"><span>◷ {nextLesson.duration}{ui('ui_2e75737a6b582974')}</span><span>○ {nextLesson.vocabulary.length}{ui('ui_a6619ff79822addd')}</span></div><Link to={`/curs/${activeLevel.toLowerCase()}/${nextLesson.id}`}>{activeProgress.completed.length ? ui('ui_6bbb599cd39f1d5d') : ui('ui_54609dd4c72877da')} →</Link></article>
+          <article className="today-task"><div className="today-task__top"><span>02</span><small>{ui('web_64e1fdd0bdf033e3')}</small></div><h3>{reviews.due ? `Repetă ${reviews.due} elemente` : 'Recapitularea este la zi'}</h3><p>{reviews.due ? 'Greșelile recente sunt pregătite pentru repetare spațiată.' : reviews.total ? 'Următoarele elemente vor apărea când este momentul potrivit.' : 'Greșelile din lecții vor fi salvate automat aici.'}</p><Link to={`/recapitulare?nivel=${activeLevel}`}>{reviews.due ? 'Începe recapitularea' : 'Recapitulează'} →</Link></article>
+          <article className="today-task"><div className="today-task__top"><span>03</span><small>{ui('web_b8f58ca36b4f99d1')}</small></div><h3>{ui('web_3643f20f88660057')}</h3><p>{ui('web_452cb1025b14f471')}</p><Link to={`/pronuntie?nivel=${activeLevel}`}>{ui('web_c3dc2f5c739dac2c')}</Link></article>
         </div>
       </section>
 
-      <section className="dashboard-stats" aria-label="Statisticile tale">
-        <article><span className="dashboard-stat__icon">↗</span><div><small>Serie curentă</small><strong>{activity.streak} {activity.streak === 1 ? 'zi' : 'zile'}</strong><p>{activity.streak ? 'Continuă și astăzi' : 'Începe seria astăzi'}</p></div></article>
-        <article><span className="dashboard-stat__icon">Aa</span><div><small>Cuvinte învățate</small><strong>{totalWords}</strong><p>din {totalLessons} lecții</p></div></article>
-        <article><span className="dashboard-stat__icon">%</span><div><small>Scor mediu</small><strong>{activity.averageScore ? `${activity.averageScore}%` : '—'}</strong><p>{activity.averageScore ? 'lecții și evaluări' : 'apare după primul rezultat'}</p></div></article>
-        <article><span className="dashboard-stat__icon">◷</span><div><small>Timp total</small><strong>{activity.totalMinutes} min</strong><p>{activity.activeDays} {activity.activeDays === 1 ? 'zi activă' : 'zile active'}</p></div></article>
+      <section className="dashboard-stats" aria-label={ui('web_1a71d5462a6ee936')}>
+        <article><span className="dashboard-stat__icon">↗</span><div><small>{ui('web_7719efed0bb1413e')}</small><strong>{activity.streak} {activity.streak === 1 ? 'zi' : 'zile'}</strong><p>{activity.streak ? 'Continuă și astăzi' : 'Începe seria astăzi'}</p></div></article>
+        <article><span className="dashboard-stat__icon">{ui('web_81acaafba961bb83')}</span><div><small>{ui('web_7c212ba7f036fcd9')}</small><strong>{totalWords}</strong><p>{ui('web_7cd4e21293d592db')}{totalLessons}{ui('ui_fa56bbc8c2c6fc10')}</p></div></article>
+        <article><span className="dashboard-stat__icon">%</span><div><small>{ui('web_9f571a76d38400e6')}</small><strong>{activity.averageScore ? `${activity.averageScore}%` : '—'}</strong><p>{activity.averageScore ? 'lecții și evaluări' : 'apare după primul rezultat'}</p></div></article>
+        <article><span className="dashboard-stat__icon">◷</span><div><small>{ui('web_c3813bcdc930bf7a')}</small><strong>{activity.totalMinutes}{ui('ui_2e75737a6b582974')}</strong><p>{activity.activeDays} {activity.activeDays === 1 ? 'zi activă' : 'zile active'}</p></div></article>
       </section>
 
       <div className="dashboard-main-grid">
         <section className="dashboard-panel dashboard-week" aria-labelledby="weekly-title">
-          <div className="dashboard-panel__heading"><div><span>Ultimele 7 zile</span><h2 id="weekly-title">Rezumat săptămânal</h2></div><strong>{activity.weekMinutes} min</strong></div>
+          <div className="dashboard-panel__heading"><div><span>{ui('web_081c93ac2248b3d7')}</span><h2 id="weekly-title">{ui('web_51d1fbc6a86ee970')}</h2></div><strong>{activity.weekMinutes}{ui('ui_2e75737a6b582974')}</strong></div>
           <div className="dashboard-week__chart" aria-label={`${activity.weekMinutes} minute studiate în ultimele șapte zile`}>
             {activity.last7Days.map((day) => <div key={day.key}><div><span style={{ height: `${day.minutes ? Math.max(12, (day.minutes / maxWeekMinutes) * 100) : 4}%` }} className={day.minutes ? 'active' : ''}><i>{day.minutes || ''}</i></span></div><small>{day.label}</small><b>{day.dayNumber}</b></div>)}
           </div>
-          <div className="dashboard-goal-picker"><div><strong>Obiectiv zilnic</strong><span>Alege un ritm realist pentru programul tău.</span></div><div>{[5, 10, 15, 20].map((goal) => <button type="button" className={dailyGoal === goal ? 'active' : ''} onClick={() => selectGoal(goal)} key={goal}>{goal} min</button>)}</div></div>
+          <div className="dashboard-goal-picker"><div><strong>{ui('ui_667c7e104a7fcccd')}</strong><span>{ui('web_720c99685ea04416')}</span></div><div>{[5, 10, 15, 20].map((goal) => <button type="button" className={dailyGoal === goal ? 'active' : ''} onClick={() => selectGoal(goal)} key={goal}>{goal}{ui('ui_2e75737a6b582974')}</button>)}</div></div>
         </section>
 
         <section className="dashboard-panel dashboard-calendar" aria-labelledby="calendar-title">
-          <div className="dashboard-panel__heading"><div><span>Consecvență</span><h2 id="calendar-title">Calendarul activității</h2></div><strong>{activity.activeDays} zile</strong></div>
+          <div className="dashboard-panel__heading"><div><span>{ui('web_278efa56d13ebe05')}</span><h2 id="calendar-title">{ui('web_a0fab5255ef8035a')}</h2></div><strong>{activity.activeDays}{ui('web_fc4df31f7962ed97')}</strong></div>
           <div className="dashboard-calendar__weekdays">{['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((day, index) => <span key={`${day}-${index}`}>{day}</span>)}</div>
           <div className="dashboard-calendar__days">{activity.last28Days.map((day) => <span className={`${day.minutes ? 'active' : ''} ${day.minutes >= dailyGoal ? 'goal' : ''} ${day.isToday ? 'today' : ''}`} title={`${day.date.toLocaleDateString('ro-RO')}: ${day.minutes} minute`} key={day.key}>{day.date.getDate()}</span>)}</div>
-          <div className="dashboard-calendar__legend"><span><i />fără activitate</span><span><i className="active" />studiu</span><span><i className="goal" />obiectiv atins</span></div>
+          <div className="dashboard-calendar__legend"><span><i />{ui('web_170eca28a6d617e7')}</span><span><i className="active" />{ui('web_9a9140cef778b55f')}</span><span><i className="goal" />{ui('web_38b8b01a95408558')}</span></div>
         </section>
       </div>
 
       <section className="dashboard-section dashboard-recommendations" aria-labelledby="recommendations-title">
-        <div className="dashboard-section__heading"><div><span>Următorii pași</span><h2 id="recommendations-title">Recomandări pentru tine</h2><p className="dashboard-recommendations__subtitle">Bazate pe nivel, direcție și greșelile recente</p></div></div>
+        <div className="dashboard-section__heading"><div><span>{ui('web_73698799bb4d6baa')}</span><h2 id="recommendations-title">{ui('web_b7dafc7bdfd82ff5')}</h2><p className="dashboard-recommendations__subtitle">{ui('web_e1ef9de501c704da')}</p></div></div>
         <div className="dashboard-recommendations__grid">{recommendations.map((item) => <article className={item.visual ? `dashboard-recommendation dashboard-recommendation--${item.visual}` : 'dashboard-recommendation'} key={item.title}><span className={item.visual ? `dashboard-recommendation__visual dashboard-recommendation__visual--${item.visual}` : 'dashboard-recommendation__visual'} aria-hidden="true"><RecommendationVisual type={item.visual} fallback={item.icon} pathId={item.pathId} /></span><div><h3>{item.title}</h3><p>{item.text}</p><Link to={item.to}>{item.action} →</Link></div></article>)}</div>
       </section>
 
       <section className="dashboard-section dashboard-levels" aria-labelledby="levels-progress-title">
-        <div className="dashboard-section__heading"><div><span>Imagine completă</span><h2 id="levels-progress-title">Progres pe niveluri</h2></div><Link to={`/invata?nivel=${activeLevel}`}>Vezi toate lecțiile →</Link></div>
-        <div className="dashboard-levels__grid">{levels.map((item) => <article className={item.level === activeLevel ? 'active' : ''} key={item.level}><div><span>{item.level}</span><small>{levelName[item.level]}{item.level === activeLevel ? ' · nivel activ' : ''}</small><strong>{item.percent}%</strong></div><div className="dashboard-levels__track"><span style={{ width: `${item.percent}%` }} /></div><p>{item.completed} din {item.total} lecții · {item.words} cuvinte</p></article>)}</div>
+        <div className="dashboard-section__heading"><div><span>{ui('web_c4775dc2e98843b3')}</span><h2 id="levels-progress-title">{ui('web_50b798afe61e8f9f')}</h2></div><Link to={`/invata?nivel=${activeLevel}`}>{ui('web_51345f07896323fe')}</Link></div>
+        <div className="dashboard-levels__grid">{levels.map((item) => <article className={item.level === activeLevel ? 'active' : ''} key={item.level}><div><span>{item.level}</span><small>{levelName[item.level]}{item.level === activeLevel ? ' · nivel activ' : ''}</small><strong>{item.percent}%</strong></div><div className="dashboard-levels__track"><span style={{ width: `${item.percent}%` }} /></div><p>{item.completed}{ui('ui_dbd8b6478643d623')}{item.total}{ui('web_5edfa5841c3617fe')}{item.words}{ui('web_f75773e3941bf565')}</p></article>)}</div>
       </section>
 
       <MobileAppNav activeLevel={activeLevel} />

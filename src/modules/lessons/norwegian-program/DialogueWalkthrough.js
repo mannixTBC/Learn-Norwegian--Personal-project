@@ -1,3 +1,5 @@
+import {ui} from '../../../languages/messages.js';
+import {courseLocalStorage as localStorage} from '../../../languages/storage.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
 import { SpeakerAvatar, getDialogueVoice } from './lessonParts';
@@ -77,11 +79,11 @@ export default function DialogueWalkthrough({ dialogue }) {
   };
 
 
-  return <section className="dialogue-walkthrough" aria-label="Urmărește conversația">
-    <header className="dw-header"><div><span className="dw-counter">{`Scena ${scene + 1} din ${total}`}</span><h2>Urmărește conversația</h2></div>
+  return <section className="dialogue-walkthrough" aria-label={ui('ui_35bca4fb2b9530c3')}>
+    <header className="dw-header"><div><span className="dw-counter">{`Scena ${scene + 1} din ${total}`}</span><h2>{ui('ui_35bca4fb2b9530c3')}</h2></div>
       <div className="dw-header-actions">
-      <button type="button" className="dw-sound dw-replay" disabled={muted} onClick={() => { setTranslations({}); void play(scene); }} aria-label="Reascultă scena" title="Reascultă scena"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2 8"/><path d="M3 4v6h6"/></svg></button>
-      <button type="button" className="dw-sound" onClick={toggleSound} aria-label={muted ? 'Activează sunetul' : 'Oprește sunetul'} aria-pressed={!muted} title={muted ? 'Activează sunetul' : 'Oprește sunetul'}>
+      <button type="button" className="dw-sound dw-replay" disabled={muted} onClick={() => { setTranslations({}); void play(scene); }} aria-label={ui('ui_d893a7704f2058df')} title={ui('ui_d893a7704f2058df')}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2 8"/><path d="M3 4v6h6"/></svg></button>
+      <button type="button" className="dw-sound" onClick={toggleSound} aria-label={muted ? ui('ui_efa3650f2431f1e3') : ui('ui_0b96ca6c1611e29f')} aria-pressed={!muted} title={muted ? ui('ui_efa3650f2431f1e3') : ui('ui_0b96ca6c1611e29f')}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4Z"/>{muted ? <path d="m16 9 5 6m0-6-5 6"/> : <><path d="M15 8a6 6 0 0 1 0 8"/><path d="M18 5a10 10 0 0 1 0 14"/></>}</svg>
       </button></div>
     </header>
@@ -89,14 +91,14 @@ export default function DialogueWalkthrough({ dialogue }) {
       <div className="dw-lines">{dialogue.slice(scene * 2, scene * 2 + 2).map(([speaker, text, translation], offset) => {
         const index = scene * 2 + offset;
         return <article key={index} className={`dw-line ${active === index ? 'is-speaking' : ''}`}>
-          <div className="dw-speaker"><SpeakerAvatar voice={getDialogueVoice(speaker, index)}/><strong>{speaker}</strong>{active === index && <span className="dw-speaking">Se aude acum</span>}</div>
+          <div className="dw-speaker"><SpeakerAvatar voice={getDialogueVoice(speaker, index)}/><strong>{speaker}</strong>{active === index && <span className="dw-speaking">{ui('ui_53bf89042a8b2ede')}</span>}</div>
           <p lang="nb">{text}</p>
-          <button type="button" className="dw-link" aria-expanded={!!translations[index]} onClick={() => { if (!translations[index]) stop(); setTranslations(current => ({ ...current, [index]: !current[index] })); }}>{translations[index] ? 'Ascunde traducerea' : 'În română'}</button>
+          <button type="button" className="dw-link" aria-expanded={!!translations[index]} onClick={() => { if (!translations[index]) stop(); setTranslations(current => ({ ...current, [index]: !current[index] })); }}>{translations[index] ? ui('ui_a558381823af9c41') : ui('ui_85a14f5580388bc9')}</button>
           {translations[index] && <p className="dw-translation" lang="ro">{translation}</p>}
         </article>;
       })}</div>
       {error && <p role="status" className="dw-error">{error}</p>}
-      {scene + 1 < total && <footer className="dw-controls"><button type="button" className="dw-primary" onClick={() => changeScene(scene + 1)}>Mai departe</button></footer>}
+      {scene + 1 < total && <footer className="dw-controls"><button type="button" className="dw-primary" onClick={() => changeScene(scene + 1)}>{ui('ui_f41e66cf1ac21fc7')}</button></footer>}
     </>
   </section>;
 }

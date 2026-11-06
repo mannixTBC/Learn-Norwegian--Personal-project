@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../common/Article.css';
@@ -5,145 +6,65 @@ import '../common/Article.css';
 const CeTrebuieSaStii = () => {
   return (
     <article className="articol-stiri">
-      <Link to="/joburi" className="articol-stiri__back">
-        ← Înapoi la Joburi
-      </Link>
+      <Link to="/joburi" className="articol-stiri__back">{ui('web_c7324323e36e32f0')}</Link>
       <div className="articol-stiri__card">
         <div className="articol-stiri__header">
-          <p className="articol-stiri__meta">Ghid practic · Norvegia</p>
-          <h1 className="articol-stiri__title">
-            Ce trebuie să știi înainte să mergi în Norvegia
-          </h1>
-          <p className="articol-stiri__lead">
-            Climat, diferențe între nord și sud, cultura locală și informații utile pentru cei care plănuiesc să lucreze sau să se stabilească în Norvegia.
-          </p>
+          <p className="articol-stiri__meta">{ui('web_4986391416f152c4')}</p>
+          <h1 className="articol-stiri__title">{ui('web_dd34e8a3b7a57e89')}</h1>
+          <p className="articol-stiri__lead">{ui('web_af9d04899dd9fe70')}</p>
         </div>
         <div className="articol-stiri__body">
         <section>
-          <h2>Clima</h2>
+          <h2>{ui('web_9daf8cd9c532454b')}</h2>
+          <p>{ui('web_16c21c2ff865aad1')}</p>
           <p>
-            Norvegia are un climat temperat oceanic pe coastă și mai rece în interior și nord. 
-            Datorită curentului Golfului, coasta vestică rămâne mai caldă decât ar sugera latitudinea, 
-            dar ploile sunt frecvente, mai ales în Bergen și zona vestică.
-          </p>
+            <strong>{ui('web_245bd4bb3f6ae733')}</strong>{ui('web_dd3179193d2ca45b')}</p>
           <p>
-            <strong>Vara</strong> (iunie–august) este cea mai plăcută perioadă: temperaturi între 15–25°C în sud, 
-            zile lungi (în nord poți experimenta soarele de miezul nopții, când soarele nu mai apune). 
-            E perioada ideală pentru drumeții, camping, pescuit și explorarea fiordurilor.
-          </p>
+            <strong>{ui('web_7ceee72c340b2bf0')}</strong>{ui('web_a3e0403965ffb46f')}</p>
           <p>
-            <strong>Iarna</strong> (decembrie–martie) este dură: frig intens, multă zăpadă și gheață. 
-            În nord, solstițiul de iarnă înseamnă noapte polară (mørketid) – săptămâni întregi fără soare. 
-            Dimineața și seara sunt întunecoase, ceea ce poate afecta starea de spirit dacă nu ești pregătit. 
-            Pe de altă parte, poți vedea aurorele boreale (nordlys), o experiență unică.
-          </p>
-          <p>
-            <strong>Primăvara și toamna</strong> sunt deseori ploioase și vânturoase. Bergen e cunoscută ca 
-            „orașul ploii” – un umbrelă sau o jachetă impermeabilă de calitate sunt indispensabile. 
-            Vremea poate schimba rapid; chiar și vara, poți trece de la soare la ploaie în câteva ore. 
-            Verifică mereu prognoza înainte de trasee lungi în natură.
-          </p>
+            <strong>{ui('web_d2c7cf647780b7c2')}</strong>{ui('web_94303b940e5c6c1d')}</p>
         </section>
 
         <section>
-          <h2>Nord vs Sud</h2>
+          <h2>{ui('web_75641b2352b7eaa7')}</h2>
+          <p>{ui('web_6ace78de87650d6a')}</p>
           <p>
-            Norvegia se întinde pe aproximativ 1750 km, de la Stavanger în sud până la Capul Nord. 
-            Diferențele între regiuni sunt mari, atât la climat, cât și la oportunități și stil de viață.
-          </p>
+            <strong>{ui('web_f35f07b675e9e92d')}</strong>{ui('web_b28309b09b6f06e6')}</p>
           <p>
-            <strong>Sudul</strong> (Oslo, Bergen, Stavanger, Kristiansand) oferă un climat mai blând, 
-            populație mai mare și mai multe locuri de muncă. Infrastructura e bună: trenuri rapide, 
-            autostrăzi, aeroporturi și servicii de sănătate. Oslo e centrul economic și cultural; 
-            Bergen e porțile către fiorduri; Stavanger e legată de industria petrolieră. 
-            Pentru cine vine prima dată sau vrea să se integreze mai ușor, sudul e de obicei alegerea mai potrivită.
-          </p>
-          <p>
-            <strong>Nordul</strong> (Tromsø, Bodø, Lofoten, Finnmark) oferă peisaje spectaculoase: 
-            munți, fiorduri, insule și aurore boreale. Dar iernile sunt foarte grele, 
-            noaptea polară durează luni, iar costurile (mâncare, transport, utilități) sunt mai mari. 
-            Ofertele de muncă sunt mai limitate; economia se bazează pe pescuit, turism și petrol în apele nordice. 
-            Statul acordă un „bonus nordic” (nordtillegg) – un supliment la salariu pentru lucrătorii din nord – 
-            pentru a compensa condițiile dificile și costurile ridicate.
-          </p>
-          <p>
-            Costul vieții e ridicat în toată Norvegia; Norvegia e una dintre cele mai scumpe țări din Europa. 
-            Chirie, mâncare, transport și utilități sunt semnificativ mai scumpe decât în România. 
-            În nord, unele produse pot fi și mai scumpe din cauza distanțelor de transport.
-          </p>
+            <strong>{ui('web_10a76b9f2eaa6364')}</strong>{ui('web_65562a4adcd79298')}</p>
+          <p>{ui('web_20987064798a4150')}</p>
         </section>
 
         <section>
-          <h2>Cultura norvegiană</h2>
+          <h2>{ui('web_e08e85b36d36608a')}</h2>
+          <p>{ui('web_a348fc40be187a5c')}</p>
           <p>
-            Norvegienii pun preț pe egalitate, simplitate și respect pentru natură. 
-            Înțelegerea acestor valori te ajută să te integrezi mai bine.
-          </p>
+            <strong>{ui('web_fa240ebdc9a25e0e')}</strong>{ui('web_e33d8908d60589f1')}</p>
           <p>
-            <strong>Egalitarismul</strong> (likestilling) e fundamental: nu există distanță mare între 
-            manageri și angajați, și se folosește adesea „du” (tu) în loc de „dere” (dumneavoastră). 
-            Titlurile sau gradul nu sunt atât de importante; contează mai mult ce faci decât ce poziție ai. 
-            Nu te aștepta la tratament special doar pentru că ai un anumit rol.
-          </p>
+            <strong>{ui('web_d2d1c821474d4878')}</strong>{ui('web_4ca1dc70844d3587')}</p>
           <p>
-            <strong>Moderația</strong> (jevndøheten) e apreciată: norvegienii evită să se laude excesiv 
-            sau să se pună în evidență. E important să fii respectuos, modest și să nu exagerezi. 
-            Promisiunile exagerate sau tonul prea entuziast pot fi privite cu suspiciune.
-          </p>
+            <strong>{ui('web_659857aa208cb7e4')}</strong>{ui('web_3ad9752d97d86141')}</p>
           <p>
-            <strong>Punctualitatea</strong> e foarte importantă: întâlnirile încep la ora stabilită, 
-            iar deadline-urile se respectă. A întârzia fără să anunți e considerat lipsă de respect.
-          </p>
+            <strong>{ui('web_d1bab30d33de47ba')}</strong>{ui('web_698c13d8aa38b8ad')}</p>
           <p>
-            <strong>Naturen</strong> (natura) ocupă un loc central în viața norvegienilor: drumeții, 
-            schi, pescuit, camping și călătorii în natură sunt activități foarte frecvente. 
-            Multe conversații și activități sociale gravitează în jurul naturii. 
-            Dacă ești sportiv sau îți place natura, vei găsi rapid subiecte de discuție.
-          </p>
-          <p>
-            <strong>Hygge</strong> (confort, lumină, atmosferă plăcută) e important în viața de acasă: 
-            lumânări, lumină caldă, timp petrecut cu familie și prieteni. Multe socializări au loc acasă, 
-            nu neapărat în baruri sau restaurante.
-          </p>
-          <p>
-            Norvegienii pot părea rezervați la început – nu înseamnă că sunt neprietenoși. 
-            Odată ce te cunosc și simt că te pot încrede, devin calzi și prietenoși. 
-            Ajută dacă începi să înveți norvegiana și arăți interes pentru cultura lor.
-          </p>
+            <strong>{ui('web_e2da1fcce90f8b88')}</strong>{ui('web_06c23063b36ab3fd')}</p>
+          <p>{ui('web_71dc09d67b989fd3')}</p>
         </section>
 
         <section>
-          <h2>Date generale utile</h2>
+          <h2>{ui('web_5664eaffbe9a7b99')}</h2>
           <p>
-            <strong>Monedă:</strong> coroană norvegiană (NOK). Nu face parte din zona euro. 
-            Cursul variază; în general, 1 EUR ≈ 11–12 NOK. Cardurile sunt acceptate peste tot; 
-            numerarul e mai puțin folosit.
-          </p>
+            <strong>{ui('web_2b14c02b6bcee487')}</strong>{ui('web_01e3fd12494b4498')}</p>
           <p>
-            <strong>Limba:</strong> norvegiană, cu două forme scrise oficiale – bokmål (mai răspândit) 
-            și nynorsk (mai mult în vest). Engleza e vorbită foarte bine de majoritatea populației; 
-            poți trăi cu engleza, dar pentru integrare și muncă, norvegiana e esențială.
-          </p>
+            <strong>{ui('web_943b814bb879e11a')}</strong>{ui('web_a68f75d8921ee8a9')}</p>
           <p>
-            <strong>Protește-te de frig:</strong> îmbrăcăminte stratificată (mai multe straturi subțiri), 
-            bocanci rezistenți la apă și zăpadă, mănuși, eșarfă și căciulă. În iarnă, 
-            temperatura poate scădea până la -20°C sau mai jos în nord.
-          </p>
+            <strong>{ui('web_c34f4ba5a32846b5')}</strong>{ui('web_7235f8c422b176a6')}</p>
           <p>
-            <strong>Transport:</strong> trenurile (NSB/Vy) și autobuzele sunt de calitate bună și punctuale. 
-            În nord și în zonele rurale, o mașină poate fi foarte utilă. 
-            Ferry-urile sunt frecvente pentru traversarea fiordurilor și insulelor.
-          </p>
+            <strong>{ui('web_0212e4d1bcedca83')}</strong>{ui('web_9683f59f9c4215c2')}</p>
           <p>
-            <strong>Salariu și muncă:</strong> nu există salariu minim legal; salariile se negociază 
-            prin convenții colective. În general, salariile sunt ridicate față de România. 
-            Programul standard e de 37,5 ore pe săptămână; viața personală e respectată, 
-            iar overtime-ul se plătește extra. Sunt obligatorii 25 de zile de concediu plătit pe an.
-          </p>
+            <strong>{ui('web_242afce229973616')}</strong>{ui('web_d07d39267166e6fe')}</p>
           <p>
-            <strong>Siguranță:</strong> Norvegia are una dintre cele mai scăzute rate de criminalitate din lume. 
-            Pe străzi te poți simți în siguranță, iar obiectele pierdute sunt adesea returnate proprietarilor.
-          </p>
+            <strong>{ui('web_4995e14a10c845c0')}</strong>{ui('web_2a26497e56eefbf7')}</p>
         </section>
         </div>
       </div>

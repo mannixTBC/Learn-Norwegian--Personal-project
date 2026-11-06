@@ -1,4 +1,7 @@
+// nordlingo-language-context-v1
+const {addLanguageInstructions} = require('../languageContext');
 const express = require('express');
+const {prepareCourseSession}=require('../courseRuntime.cjs');
 
 const { getOpenAI, isOpenAIConfigured } = require('../openai');
 const { requireAuth } = require('../middleware/authSupabaseUser');
@@ -22,7 +25,7 @@ const {
   learningSummary,
   feedbackFor,
   situationFor,
-} = require('../chatTutor');
+} = require('../languageTutors').lesson;
 
 const router = express.Router();
 
@@ -91,7 +94,7 @@ router.post('/start', wrap(async (req, res) => {
 
   const { session, opening } = newSession(context, req.userId);
   res.json(commonResponse({
-    session,
+    session: await prepareCourseSession(req,session,'information'),
     reply: opening.reply,
     question: opening.question,
     questionTranslation: opening.questionTranslation,
@@ -132,7 +135,7 @@ router.post('/turn', wrap(async (req, res) => {
   let result;
   try {
     completion = await getOpenAI().chat.completions.create(
-      buildCompletionRequest(context, session, message),
+      addLanguageInstructions(buildCompletionRequest(context, session, message)),
       { timeout: 15_000, maxRetries: 0 },
     );
     result = finalizeTurn(parseCompletion(completion), session, context, message);

@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './ListeningExpedition.css';
@@ -17,12 +18,12 @@ function Icon({ name, ...props }) {
 export function ListeningExpeditionLayout({ level, requestedLevel = level, onExit, checked = false, children }) {
   return <div className={'listening-expedition' + (onExit ? ' listening-expedition--playing' : '') + (checked ? ' listening-expedition--checked' : '')}>
     <header className="expedition-header">
-      {onExit ? <button type="button" className="expedition-back" aria-label="Închide sesiunea" onClick={onExit}><Icon name="back" /></button>
-        : <Link className="expedition-back" aria-label="Înapoi la jocuri" to={'/jocuri?nivel=' + requestedLevel}><Icon name="back" /></Link>}
-      {<Link to="/dashboard" className="expedition-brand" aria-label="NordLingo — Acasă"><img src="/branding/nordlingo-selected-color.png" alt="NordLingo" /></Link>}
-      <span className="expedition-level" aria-label={'Nivel ' + level}>{level}</span>
+      {onExit ? <button type="button" className="expedition-back" aria-label={ui('web_e2f5cf878208dc21')} onClick={onExit}><Icon name="back" /></button>
+        : <Link className="expedition-back" aria-label={ui('web_4d841d600c45fb73')} to={'/jocuri?nivel=' + requestedLevel}><Icon name="back" /></Link>}
+      {<Link to="/dashboard" className="expedition-brand" aria-label={ui('web_5eea99318c403ce0')}><img src="/branding/nordlingo-selected-color.png" alt={ui('ui_ee728f3245aed708')} /></Link>}
+      <span className="expedition-level" aria-label={ui('ui_1450f9b5ea87b98c') + level}>{level}</span>
     </header>
-    <section className="expedition-sheet" aria-label="Ascultă și alege">{children}</section>
+    <section className="expedition-sheet" aria-label={ui('ui_b58cf3ae7c001d99')}>{children}</section>
   </div>;
 }
 
@@ -39,35 +40,35 @@ export default function ListeningExpedition({ level, requestedLevel, question, c
     const timer = window.setTimeout(() => nextRef.current(), 2400);
     return () => { window.clearTimeout(timer); dialog?.close(); };
   }, [checked, correct, current]);
-  const playbackLabel = audioStatus === 'loading' ? 'Se încarcă…' : audioStatus === 'playing' ? 'Se redă…' : heard ? 'Ascultă din nou' : 'Ascultă înregistrarea';
+  const playbackLabel = audioStatus === 'loading' ? ui('web_02bf71cba392fbc4') : audioStatus === 'playing' ? 'Se redă…' : heard ? ui('ui_f44b0b599ead02f3') : ui('ui_10aed56aa8237020');
   const type = { word: 'Cuvânt', expression: 'Expresie', dialogue: 'Replică din dialog' }[question.contentType];
   return <ListeningExpeditionLayout {...{ level, requestedLevel, onExit, checked }}>
     <div className="expedition-stage">{retry ? 'RECAPITULARE' : 'ETAPA'} {current + 1} / {total}</div>
-    <progress className="expedition-progress" aria-label="Progresul sesiunii" value={current + 1} max={Math.max(1, total)} />
+    <progress className="expedition-progress" aria-label={ui('web_845f7806fcc783e5')} value={current + 1} max={Math.max(1, total)} />
 
 
     <div className="expedition-player-area">
       <img className="expedition-art" src="/images/practice/listening-notebook.png" alt="" />
-      <button type="button" className={'expedition-player' + (audioBusy ? ' is-playing' : '')} onClick={() => audioBusy ? stopAudio() : play()} aria-label={audioBusy ? 'Oprește redarea' : playbackLabel} aria-busy={audioStatus === 'loading'}>
+      <button type="button" className={'expedition-player' + (audioBusy ? ' is-playing' : '')} onClick={() => audioBusy ? stopAudio() : play()} aria-label={audioBusy ? ui('ui_926e26688b3f621b') : playbackLabel} aria-busy={audioStatus === 'loading'}>
         <span className="expedition-play"><Icon name={audioBusy ? 'stop' : 'speaker'} /></span>
         <span className="expedition-track"><span className="expedition-wave" aria-hidden="true">{Array.from({ length: 31 }, (_, i) => <i key={i} style={{ '--height': `${10 + ((i * 13 + 7) % 29)}px`, '--delay': `${i * -45}ms` }} />)}</span><span className="expedition-play-label">{playbackLabel}</span></span>
       </button>
-      <div className="expedition-controls"><button type="button" className="expedition-replay" onClick={() => play()} disabled={audioBusy}><span aria-hidden="true">↻</span>Ascultă din nou</button><button type="button" className="expedition-slow" onClick={() => play(true)} disabled={audioBusy}><Icon name="slow" />Mai lent</button></div>
+      <div className="expedition-controls"><button type="button" className="expedition-replay" onClick={() => play()} disabled={audioBusy}><span aria-hidden="true">↻</span>{ui('ui_f44b0b599ead02f3')}</button><button type="button" className="expedition-slow" onClick={() => play(true)} disabled={audioBusy}><Icon name="slow" />{ui('ui_7e65a53eb92be733')}</button></div>
     </div>
     <div className="activity-question__meta expedition-meta"><span>{retry ? 'Repetă greșelile' : `Lecția ${question.lessonId} · ${question.topic}`}</span><span>{type}</span></div>
-    <h2 className="expedition-question" id="listening-instruction" ref={headingRef} tabIndex={-1}>Ce ai auzit?</h2>
-    {audioStatus === 'error' && <div className="expedition-error" role="alert">Sunetul nu a putut fi redat. Verifică internetul și încearcă din nou.<button type="button" onClick={() => play()}>Reîncearcă redarea</button></div>}
-    <div className="expedition-choices" role="group" aria-label="Alege răspunsul" aria-describedby="listening-instruction">{question.options.map((option, index) => {
+    <h2 className="expedition-question" id="listening-instruction" ref={headingRef} tabIndex={-1}>{ui('ui_dea89d46970b49d9')}</h2>
+    {audioStatus === 'error' && <div className="expedition-error" role="alert">{ui('web_794a77186f98f513')}<button type="button" onClick={() => play()}>{ui('ui_408fa01ada826275')}</button></div>}
+    <div className="expedition-choices" role="group" aria-label={ui('web_48c3b5b6fd78b692')} aria-describedby="listening-instruction">{question.options.map((option, index) => {
       const state = checked ? option === question.answer ? 'correct' : option === selected ? 'wrong' : '' : selected === option ? 'selected' : '';
       return <button type="button" key={option} className={'expedition-option ' + state} aria-pressed={selected === option} disabled={checked || !heard} onClick={() => setSelected(option)}><span className="expedition-letter" aria-hidden="true">{state === 'correct' || state === 'wrong' ? <Icon name={state === 'correct' ? 'check' : 'cross'} /> : String.fromCharCode(65 + index)}</span><span>{option}</span></button>;
     })}</div>
     {checked && <dialog ref={feedbackRef} className={'expedition-popup ' + (correct ? 'correct' : 'wrong')} aria-labelledby="listening-feedback-title" aria-describedby="listening-feedback-description" onCancel={(event) => { event.preventDefault(); if (correct) next(); else repeatQuestion(); }}>
       <span className="expedition-popup-icon"><Icon name={correct ? 'check' : 'cross'} /></span>
-      <h3 id="listening-feedback-title">{correct ? 'Corect!' : 'Mai încearcă o dată'}</h3>
+      <h3 id="listening-feedback-title">{correct ? ui('ui_a2a3c5105a33294f') : ui('ui_9209dc69eca1f3ca')}</h3>
       <div id="listening-feedback-description"><p lang="ro">{question.answer}</p></div>
-      {!correct && <><small>Greșeala este salvată pentru recapitulare.</small><button type="button" className="expedition-submit" onClick={repeatQuestion} autoFocus>Repetă întrebarea<Icon name="arrow" /></button></>}
-      {correct && <><button type="button" className="expedition-submit" onClick={next} autoFocus>{current === total - 1 ? 'Vezi rezultatul' : 'Continuă'}<Icon name="arrow" /></button><span className="expedition-auto-next">Continuăm și automat…</span></>}
+      {!correct && <><small>{ui('ui_b1a9f3c2252309f8')}</small><button type="button" className="expedition-submit" onClick={repeatQuestion} autoFocus>{ui('ui_2065f88ac40484c1')}<Icon name="arrow" /></button></>}
+      {correct && <><button type="button" className="expedition-submit" onClick={next} autoFocus>{current === total - 1 ? ui('ui_1834cd8f7b513ef9') : ui('ui_5fc4497d148a38a8')}<Icon name="arrow" /></button><span className="expedition-auto-next">{ui('web_16d9937e85a21596')}</span></>}
     </dialog>}
-    <button className="expedition-submit" type="button" style={{ visibility: checked ? 'hidden' : undefined }} disabled={checked || selected === null || !heard} onClick={verify}>Verifică</button>
+    <button className="expedition-submit" type="button" style={{ visibility: checked ? 'hidden' : undefined }} disabled={checked || selected === null || !heard} onClick={verify}>{ui('ui_b69a8da1603647a2')}</button>
   </ListeningExpeditionLayout>;
 }

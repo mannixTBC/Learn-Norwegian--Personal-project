@@ -1,3 +1,4 @@
+import {courseLocalStorage as localStorage} from '../languages/storage.js';
 import { CURRICULUM_VERSION } from '../modules/lessons/curriculumMetadata';
 import { LESSON_FLOW_VERSION } from '../modules/lessons/norwegian-program/lessonFlow';
 

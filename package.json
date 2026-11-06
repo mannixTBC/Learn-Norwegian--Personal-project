@@ -76,7 +76,10 @@
     "test:scenario-review": "node --test scripts/test-scenario-review.mjs",
     "test:scenario-flow": "npm run test:exercise-canvas && npm run test:scenarios && npm run test:scenario-review && node scripts/test-review-sheet.mjs && node scripts/test-scenario-catalog.mjs && node scripts/test-scenario-layout.mjs",
     "build:conversation-catalog": "node scripts/expand-conversation-catalog.cjs && node scripts/link-conversation-lessons.mjs",
-    "test:scenario-recommendations": "node --test scripts/test-scenario-recommendations.mjs && node scripts/test-studio-learning.mjs"
+    "test:scenario-recommendations": "node --test scripts/test-scenario-recommendations.mjs && node scripts/test-studio-learning.mjs",
+    "test:languages": "node --test scripts/test-languages.mjs backend/languageContext.test.cjs scripts/test-learning-sync.mjs",
+    "test:course-database": "node scripts/test-course-content.mjs && node --test backend/courseRuntime.test.cjs backend/knowledge.test.cjs",
+    "test:database-sql": "node scripts/test-database.mjs"
   },
   "browserslist": {
     "production": [

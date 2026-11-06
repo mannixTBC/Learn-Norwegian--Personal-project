@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { sendChatTurn, startChatSession } from '../../services/chat';
 import DialogueFeedback from './DialogueFeedback';
@@ -186,13 +187,11 @@ export default function ChatAssistant({ level, lessonId, pathId = 'general', les
       <div className="chat-assistant__heading">
         <div className="chat-assistant__heading-row">
           <div>
-            <span className="chat-assistant__eyebrow">💬 Asistent conversație</span>
-            <h2 id="chat-assistant-title">Exersează cu un partener virtual</h2>
+            <span className="chat-assistant__eyebrow">{ui('web_f0dd0c9c812401fb')}</span>
+            <h2 id="chat-assistant-title">{ui('web_bd20abc3166d7fa7')}</h2>
           </div>
           {session && !['starting', 'done'].includes(status) && (
-            <button className="chat-assistant__restart" type="button" onClick={start} disabled={status === 'sending'}>
-              Reîncepe runda
-            </button>
+            <button className="chat-assistant__restart" type="button" onClick={start} disabled={status === 'sending'}>{ui('web_d53337bd51955cdc')}</button>
           )}
         </div>
         <p>{session?.situation || `Conversează în norvegiană pe baza lecției „${lessonTitle || `Lecția ${lessonId}`}”.`}</p>
@@ -202,7 +201,7 @@ export default function ChatAssistant({ level, lessonId, pathId = 'general', les
         {session && (
           <div className="chat-assistant__session-status" aria-live="polite">
             <span className={session.done ? 'is-done' : ''}>{remainingLabel}</span>
-            {session.maxTurns !== null && <small>{session.turn} răspunsuri · maximum {session.maxTurns}</small>}
+            {session.maxTurns !== null && <small>{session.turn}{ui('web_e8313fe7862e0e7d')}{session.maxTurns}</small>}
           </div>
         )}
 
@@ -212,7 +211,7 @@ export default function ChatAssistant({ level, lessonId, pathId = 'general', les
           role="log"
           aria-live="polite"
           aria-relevant="additions"
-          aria-label="Conversația în norvegiană"
+          aria-label={ui('web_e202ca22dc32c734')}
         >
           {messages.map((message) => (
             message.role === 'user' ? (
@@ -227,7 +226,7 @@ export default function ChatAssistant({ level, lessonId, pathId = 'general', les
                 </div>
                 {message.correction && (
                   <aside className="chat-assistant__correction" lang="ro">
-                    <strong>Corectare scurtă</strong>
+                    <strong>{ui('web_6d23cb27cda06b33')}</strong>
                     <p>{message.correction}</p>
                   </aside>
                 )}
@@ -248,23 +247,23 @@ export default function ChatAssistant({ level, lessonId, pathId = 'general', les
         {error && (
           <div className="chat-assistant__error" role="alert">
             <span>{error}</span>
-            {status === 'start-error' && <button type="button" onClick={start}>Încearcă din nou</button>}
+            {status === 'start-error' && <button type="button" onClick={start}>{ui('web_a09d291920163176')}</button>}
           </div>
         )}
 
         {status === 'ready' && <div className="chat-assistant__support">
-          <button type="button" onClick={() => handleSend('ajutor')}>Ajută-mă</button>
-          <button type="button" onClick={() => handleSend('repetă')}>Repetă întrebarea</button>
-          <button type="button" onClick={() => handleSend('stop')}>Încheie cu feedback</button>
+          <button type="button" onClick={() => handleSend('ajutor')}>{ui('web_1a032ba64cea4329')}</button>
+          <button type="button" onClick={() => handleSend('repetă')}>{ui('ui_2065f88ac40484c1')}</button>
+          <button type="button" onClick={() => handleSend('stop')}>{ui('web_b66ad70277ef6a3d')}</button>
         </div>}
         {status === 'done' ? (
           <div className="chat-assistant__complete" role="status">
             <div>
-              <strong>Ai încheiat această rundă.</strong>
+              <strong>{ui('web_2e49e25c5e9fc724')}</strong>
               <p>{session?.feedback}</p>
               <DialogueFeedback key={session?.sessionToken} learning={session?.learning} level={level} lessonId={lessonId} />
             </div>
-            <button type="button" onClick={start}>Continuă cu o rundă nouă</button>
+            <button type="button" onClick={start}>{ui('web_90577ee85cbb37c4')}</button>
           </div>
         ) : (
           <form className="chat-assistant__input-row" onSubmit={(event) => { event.preventDefault(); handleSend(); }}>
@@ -279,7 +278,7 @@ export default function ChatAssistant({ level, lessonId, pathId = 'general', les
                 disabled={status !== 'ready'}
                 maxLength={MAX_MESSAGE_LENGTH}
                 rows={2}
-                aria-label="Mesaj către asistent"
+                aria-label={ui('web_91e13d89c8d31b3c')}
                 aria-describedby="chat-assistant-character-count"
               />
               <small id="chat-assistant-character-count" className="chat-assistant__character-count">
@@ -290,7 +289,7 @@ export default function ChatAssistant({ level, lessonId, pathId = 'general', les
               type="submit"
               className="chat-assistant__send"
               disabled={status !== 'ready' || !input.trim()}
-              aria-label="Trimite mesajul"
+              aria-label={ui('web_7d4f0ac617666aeb')}
             >
               <span aria-hidden="true">→</span>
             </button>

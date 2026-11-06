@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import './Column.css';
@@ -15,7 +16,7 @@ export default function Column({ droppableId, title, isEmpty, children }) {
           >
             {children}
             {provided.placeholder}
-            {isEmpty && <span className="column-hint">Trage cuvinte aici</span>}
+            {isEmpty && <span className="column-hint">{ui('web_41061782e639df47')}</span>}
           </div>
         )}
       </Droppable>

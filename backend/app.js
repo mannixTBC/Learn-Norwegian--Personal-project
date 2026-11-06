@@ -1,3 +1,4 @@
+// nordlingo-language-context-v1
 require('dotenv').config();
 if (process.env.NODE_ENV !== 'production' && !process.env.NETLIFY) require('dotenv').config({ path: '.env.local' });
 const express = require('express');
@@ -17,6 +18,7 @@ const accountRouter = require('./routes/account');
 const app = express();
 
 app.use(cors({ origin: true }));
+app.use(['/api/chat','/api/scenarios','/api/voice','/api/pronunciation','/api/transcription','/api/speech'], require('./languageContext').languageMiddleware);
 // Text chat never needs the multi-megabyte body allowance used by voice uploads.
 // Mount it first with a deliberately small parser so oversized requests are
 // rejected before they consume memory or reach the OpenAI integration.

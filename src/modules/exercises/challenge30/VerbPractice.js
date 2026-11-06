@@ -1,3 +1,5 @@
+import {ui} from '../../../languages/messages.js';
+import {courseLocalStorage as localStorage} from '../../../languages/storage.js';
 import React, { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { ExerciseIcon, ExerciseLayout } from '../ExerciseUI';
@@ -5,7 +7,7 @@ import { isInstalledAppView } from '../../../services/appExperience';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
 import { recordStudyActivity } from '../../../services/learningActivity';
 import { getVerbSessions, readVerbProgress } from './verbsForLevel';
-import { createVerbSession, getKnownReviewVerbs } from './verbPracticeData';
+import { createVerbSession, getKnownReviewVerbs } from '../../../content/features/verbPractice.js';
 import {
   initVerbSession, verbPracticeReducer, currentVerbFrame, verbSessionSummary,
   readVerbPracticeProgress, recordVerbPracticeCompletion, selectDueVerbReviews,
@@ -13,7 +15,7 @@ import {
 import './VerbPractice.css';
 
 const phases = ['Descoperă', 'Recunoaște', 'Folosește', 'Reține'];
-const statusLabels = { retained: 'Reținut astăzi', repeated: 'Repetat astăzi', helped: 'Cu ajutor', wrong: 'De repetat', unseen: 'De exersat' };
+const statusLabels = { retained: 'Reținut astăzi', repeated: 'Repetat astăzi', helped: 'Cu ajutor', wrong: ui('ui_352b62f7948b0ff4'), unseen: 'De exersat' };
 const getStorage = () => { try { return window.localStorage; } catch { return null; } };
 const readSessions = (level, count) => readVerbProgress(getStorage(), level, count);
 
@@ -31,15 +33,15 @@ function SessionPicker({ currentDay, sessions, progress, onChoose, onClose }) {
     return () => { dialog?.close?.(); if (trigger?.isConnected) trigger.focus(); };
   }, []);
   return <dialog ref={ref} className="verb-practice__sessions" aria-labelledby="verb-sessions-title" onCancel={event => { event.preventDefault(); onClose(); }}>
-    <header><div><small>Parcursul tău</small><h2 id="verb-sessions-title">Sesiunile de verbe</h2></div><button type="button" onClick={onClose} aria-label="Închide sesiunile">×</button></header>
-    <p>Reia o sesiune parcursă sau continuă de unde ai rămas.</p>
+    <header><div><small>{ui('web_bbd8309a1930ce2c')}</small><h2 id="verb-sessions-title">{ui('web_0814975cd0ec3e98')}</h2></div><button type="button" onClick={onClose} aria-label={ui('web_70f9799b8c89de54')}>×</button></header>
+    <p>{ui('web_5439dede77529e39')}</p>
     <div className="verb-practice__session-list">{sessions.map((verbs, index) => {
       const day = index + 1, completed = progress.completed.includes(day);
       return <button type="button" data-session={day} key={day} disabled={day > progress.day} aria-current={day === currentDay ? 'step' : undefined} onClick={() => onChoose(day)}>
-        <span>{completed ? '✓' : String(day).padStart(2, '0')}</span><strong>Sesiunea {day}</strong><small>{completed ? 'Parcursă' : day > progress.day ? 'Urmează' : 'Continuă'}</small>
+        <span>{completed ? '✓' : String(day).padStart(2, '0')}</span><strong>{ui('web_47f6c2da7c963bd7')}{day}</strong><small>{completed ? 'Parcursă' : day > progress.day ? 'Urmează' : ui('ui_5fc4497d148a38a8')}</small>
       </button>;
     })}</div>
-    <p className="verb-practice__saved-count" role="progressbar" aria-label="Sesiuni parcurse" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress.completed.length / sessions.length * 100)}>{progress.completed.length} din {sessions.length} sesiuni parcurse</p>
+    <p className="verb-practice__saved-count" role="progressbar" aria-label={ui('web_215eb5d5966eabdf')} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress.completed.length / sessions.length * 100)}>{progress.completed.length}{ui('ui_dbd8b6478643d623')}{sessions.length}{ui('web_4ea8c756a21f5b52')}</p>
   </dialog>;
 }
 
@@ -120,7 +122,7 @@ function SessionRunner({ level, userId, day, sessions, progress, onChoose, onCom
   };
   const primaryLabel = result ? summary.weakIds.length ? 'Repetă verbele' : day < sessions.length ? 'Sesiunea următoare' : 'Înapoi la Jocuri'
     : frame?.type === 'intro' ? frame.number === frame.total ? 'Începe exercițiile' : 'Următorul verb'
-      : checked ? frame.number === frame.total ? 'Vezi rezultatul' : 'Continuă' : 'Verifică';
+      : checked ? frame.number === frame.total ? ui('ui_1834cd8f7b513ef9') : ui('ui_5fc4497d148a38a8') : ui('ui_b69a8da1603647a2');
   const hasResponse = q?.options ? !!value : !!value.trim();
   const formInstruction = q?.prompt || 'Scrie doar verbul lipsă, la prezent.';
   const missingSentence = q?.sentence?.split('___');
@@ -128,39 +130,39 @@ function SessionRunner({ level, userId, day, sessions, progress, onChoose, onCom
     : frame?.type === 'intro' ? verb.norwegian.length > 18 || verb.example.length > 60
       : (q?.sentence?.length || 0) + (q?.translation?.length || 0) > 120 || q?.answer?.length > 18;
 
-  return <section ref={root} onFocus={event => { if (event.target.id === 'verb-answer') setEditing(true); }} className={'verb-practice verb-practice--' + (app ? 'app' : 'web')} aria-label="Sesiune de verbe" data-writing={editing && !checked} data-view={result ? 'result' : frame?.type}>
-    {app && <header className="verb-practice__top"><Link to={'/jocuri?nivel=' + level}><span aria-hidden="true">←</span> Jocuri</Link><img src="/branding/nordlingo-selected-color.png" alt="NordLingo" width="145" height="49" /><span className="verb-practice__level" aria-label={'Nivel ' + level}>{level}</span></header>}
-    <div className="verb-practice__banner"><div>{app && <h1>Verbe</h1>}<button type="button" data-action="sessions" onClick={() => setPickerOpen(true)} aria-haspopup="dialog" aria-label="Alege sesiunea de verbe">Sesiunea {day} · {session.title}<span aria-hidden="true">⌄</span></button></div><ExerciseIcon name="verbs" /></div>
-    <ol className="verb-practice__route" aria-label="Etapele sesiunii">{phases.map((label, index) => <li key={label} className={result || index < phase ? 'is-done' : index === phase ? 'is-active' : ''} aria-current={!result && index === phase ? 'step' : undefined}>{label}</li>)}</ol>
+  return <section ref={root} onFocus={event => { if (event.target.id === 'verb-answer') setEditing(true); }} className={'verb-practice verb-practice--' + (app ? 'app' : 'web')} aria-label={ui('web_0e9717cd5e6b4879')} data-writing={editing && !checked} data-view={result ? 'result' : frame?.type}>
+    {app && <header className="verb-practice__top"><Link to={'/jocuri?nivel=' + level}><span aria-hidden="true">←</span>{ui('web_4912d8667f898df6')}</Link><img src="/branding/nordlingo-selected-color.png" alt={ui('ui_ee728f3245aed708')} width="145" height="49" /><span className="verb-practice__level" aria-label={ui('ui_1450f9b5ea87b98c') + level}>{level}</span></header>}
+    <div className="verb-practice__banner"><div>{app && <h1>{ui('ui_0ab5702e18c47e05')}</h1>}<button type="button" data-action="sessions" onClick={() => setPickerOpen(true)} aria-haspopup="dialog" aria-label={ui('web_18392e4cbc17f96f')}>{ui('web_47f6c2da7c963bd7')}{day} · {session.title}<span aria-hidden="true">⌄</span></button></div><ExerciseIcon name="verbs" /></div>
+    <ol className="verb-practice__route" aria-label={ui('web_7c72ab42eabf696f')}>{phases.map((label, index) => <li key={label} className={result || index < phase ? 'is-done' : index === phase ? 'is-active' : ''} aria-current={!result && index === phase ? 'step' : undefined}>{label}</li>)}</ol>
     <section className="verb-practice__card" aria-label={result ? 'Rezultatul sesiunii' : 'Exercițiul curent'} data-question-id={q?.id} data-phase={q?.phase} data-dense={dense} data-kind={result ? 'result' : frame?.type}>
       {result ? <div className="verb-practice__result">
-        <div className="verb-practice__meta"><span>{state.retry ? 'Repetare încheiată' : 'Sesiune încheiată'}</span><span>{level}</span></div>
-        <h2 ref={heading} tabIndex={-1}>Ai făcut încă un pas.</h2>
-        <p className="verb-practice__score">{summary.correct} din {summary.total} răspunsuri corecte{summary.helped > 0 ? ' · ' + summary.helped + ' cu ajutor' : ''}</p>
+        <div className="verb-practice__meta"><span>{state.retry ? 'Repetare încheiată' : ui('ui_f565f52a394e5205')}</span><span>{level}</span></div>
+        <h2 ref={heading} tabIndex={-1}>{ui('web_9750cbede11ebab0')}</h2>
+        <p className="verb-practice__score">{summary.correct}{ui('ui_dbd8b6478643d623')}{summary.total}{ui('ui_9872b8021dcbf076')}{summary.helped > 0 ? ' · ' + summary.helped + ' cu ajutor' : ''}</p>
         <div className="verb-practice__results">{session.verbs.map(item => {
           const outcome = summary.verbs.find(entry => entry.verbId === item.id)?.status || 'unseen';
           return <div className="verb-practice__result-row" data-verb-id={item.id} key={item.id}><div><strong lang="nb">{item.norwegian} <span aria-hidden="true">→</span> {item.form}</strong><small>{item.romanian}</small></div><span className={'verb-practice__status is-' + outcome}>{statusLabels[outcome]}</span></div>;
         })}</div>
-        <p className="verb-practice__summary-note">{summary.weakIds.length ? 'Verbele mai dificile revin la repetare. Le vei revedea și în sesiunile următoare.' : 'Revino în zilele următoare ca să consolidezi verbele.'}{session.reviewVerbs.length > 0 && <span>Ai reluat și {session.reviewVerbs.map(item => item.form).join(', ')} din sesiunile anterioare.</span>}{state.retry && <span>Scorul primei încercări rămâne păstrat.</span>}</p>
-        {saveError && <div className="verb-practice__save-error" role="alert">Progresul nu a putut fi salvat.<button type="button" onClick={saveCompletion}>Salvează din nou</button></div>}
+        <p className="verb-practice__summary-note">{summary.weakIds.length ? 'Verbele mai dificile revin la repetare. Le vei revedea și în sesiunile următoare.' : 'Revino în zilele următoare ca să consolidezi verbele.'}{session.reviewVerbs.length > 0 && <span>{ui('web_6118048d68cc34d6')}{session.reviewVerbs.map(item => item.form).join(', ')}{ui('web_d774706c9d11cd52')}</span>}{state.retry && <span>{ui('web_ab5f7df5ea700151')}</span>}</p>
+        {saveError && <div className="verb-practice__save-error" role="alert">{ui('web_3adb70034c7c39b5')}<button type="button" onClick={saveCompletion}>{ui('web_debf9db3bb68fe84')}</button></div>}
       </div> : <>
-        <div className="verb-practice__meta"><span>{frame.type === 'intro' ? 'Descoperă' : state.retry ? 'Repetare' : 'Exersează'} · {frame.number} din {frame.total}</span><span>{frame.type === 'intro' ? 'Verb nou' : q.old ? 'Din urmă' : { meaning: 'Sens', context: 'Context', recall: 'Forma corectă' }[q.phase]}</span></div>
+        <div className="verb-practice__meta"><span>{frame.type === 'intro' ? 'Descoperă' : state.retry ? 'Repetare' : ui('ui_883ac773a5d0ae00')} · {frame.number}{ui('ui_dbd8b6478643d623')}{frame.total}</span><span>{frame.type === 'intro' ? 'Verb nou' : q.old ? 'Din urmă' : { meaning: 'Sens', context: 'Context', recall: 'Forma corectă' }[q.phase]}</span></div>
         {frame.type === 'intro' ? <>
-          <div className="verb-practice__discovery"><h2 ref={heading} tabIndex={-1} lang="nb">{verb.norwegian}</h2><p className="verb-practice__meaning">{verb.romanian}</p><div className="verb-practice__form-pair"><span lang="nb">{verb.norwegian}</span><span aria-hidden="true">→</span><strong lang="nb">{verb.form}</strong><small>{verb.formLabel}</small></div><div className="verb-practice__example"><p lang="nb"><HighlightedSentence sentence={verb.example} form={verb.form} /></p><p>{verb.translation}</p><button type="button" className="verb-practice__audio" disabled={playing} onClick={listen}><ExerciseIcon name="listen" />{playing ? 'Ascultă…' : 'Ascultă propoziția'}</button><small role="status">{audioStatus}</small></div></div>
+          <div className="verb-practice__discovery"><h2 ref={heading} tabIndex={-1} lang="nb">{verb.norwegian}</h2><p className="verb-practice__meaning">{verb.romanian}</p><div className="verb-practice__form-pair"><span lang="nb">{verb.norwegian}</span><span aria-hidden="true">→</span><strong lang="nb">{verb.form}</strong><small>{verb.formLabel}</small></div><div className="verb-practice__example"><p lang="nb"><HighlightedSentence sentence={verb.example} form={verb.form} /></p><p>{verb.translation}</p><button type="button" className="verb-practice__audio" disabled={playing} onClick={listen}><ExerciseIcon name="listen" />{playing ? 'Ascultă…' : ui('ui_e5754a2f37259ec8')}</button><small role="status">{audioStatus}</small></div></div>
           <div className="verb-practice__feedback is-neutral"><ExerciseIcon name="review" /><p>{verb.formLabel === 'infinitiv' ? 'Reține expresia întreagă și felul în care se leagă în propoziție.' : 'La prezent, forma verbului rămâne aceeași pentru toate persoanele.'}</p></div>
         </> : <>
-          <h2 ref={heading} tabIndex={-1} className="verb-practice__question-title">{q.phase === 'meaning' ? q.prompt : q.old ? 'Îți mai amintești?' : q.phase === 'context' ? 'Alege verbul potrivit' : 'Alege forma corectă'}</h2>
+          <h2 ref={heading} tabIndex={-1} className="verb-practice__question-title">{q.phase === 'meaning' ? q.prompt : q.old ? 'Îți mai amintești?' : q.phase === 'context' ? 'Alege verbul potrivit' : ui('web_664220258c6fa7da')}</h2>
           {q.phase === 'recall' && <p className="verb-practice__intention">{q.prompt}</p>}
           {q.sentence && <><p className="verb-practice__intention">{q.translation}</p><p className="verb-practice__sentence" lang="nb">{missingSentence[0]}<span className="verb-practice__blank">{checked ? q.answer : value || '…'}</span>{missingSentence.slice(1).join('___')}</p></>}
-          {q.options ? <div className="verb-practice__choices" role="group" aria-label="Alege răspunsul">{q.options.map((option, index) => <button type="button" data-choice={option} key={option} aria-pressed={value === option} disabled={checked} className={checked ? option === q.answer ? 'is-correct' : value === option ? 'is-wrong' : '' : ''} onClick={() => dispatch({ type: 'SET_RESPONSE', value: option, frameKey })}><span aria-hidden="true">{checked && option === q.answer ? '✓' : checked && value === option ? '×' : String.fromCharCode(65 + index)}</span>{option}</button>)}</div>
-            : <div className="verb-practice__writing"><label htmlFor="verb-answer">{formInstruction}</label><input ref={input} id="verb-answer" aria-label="Verbul lipsă" lang="nb" type="text" value={value} onChange={event => dispatch({ type: 'SET_RESPONSE', value: event.target.value, frameKey })} onKeyDown={event => { if (event.key === 'Enter' && hasResponse && !checked) { event.preventDefault(); action('CHECK'); } }} disabled={checked} autoComplete="off" autoCorrect="off" autoCapitalize="none" spellCheck={false} placeholder="Verbul în norvegiană" /><div className="verb-practice__helper"><span>{frame.hinted ? 'Prima literă: ' + q.answer[0] + '…' : 'Fără variante de răspuns'}</span><button type="button" data-action="hint" disabled={checked || frame.hinted} onClick={() => { action('USE_HINT'); input.current?.focus(); }}>{frame.hinted ? 'Cu ajutor' : 'Indiciu'}</button></div></div>}
+          {q.options ? <div className="verb-practice__choices" role="group" aria-label={ui('web_48c3b5b6fd78b692')}>{q.options.map((option, index) => <button type="button" data-choice={option} key={option} aria-pressed={value === option} disabled={checked} className={checked ? option === q.answer ? 'is-correct' : value === option ? 'is-wrong' : '' : ''} onClick={() => dispatch({ type: 'SET_RESPONSE', value: option, frameKey })}><span aria-hidden="true">{checked && option === q.answer ? '✓' : checked && value === option ? '×' : String.fromCharCode(65 + index)}</span>{option}</button>)}</div>
+            : <div className="verb-practice__writing"><label htmlFor="verb-answer">{formInstruction}</label><input ref={input} id="verb-answer" aria-label="Verbul lipsă" lang="nb" type="text" value={value} onChange={event => dispatch({ type: 'SET_RESPONSE', value: event.target.value, frameKey })} onKeyDown={event => { if (event.key === 'Enter' && hasResponse && !checked) { event.preventDefault(); action('CHECK'); } }} disabled={checked} autoComplete="off" autoCorrect="off" autoCapitalize="none" spellCheck={false} placeholder="Verbul în norvegiană" /><div className="verb-practice__helper"><span>{frame.hinted ? 'Prima literă: ' + q.answer[0] + '…' : 'Fără variante de răspuns'}</span><button type="button" data-action="hint" disabled={checked || frame.hinted} onClick={() => { action('USE_HINT'); input.current?.focus(); }}>{frame.hinted ? 'Cu ajutor' : ui('ui_d0a636af5808946e')}</button></div></div>}
           <div className={'verb-practice__feedback ' + (checked ? frame.record.correct ? 'is-correct' : 'is-wrong' : 'is-neutral')} role={checked ? 'status' : undefined}>
-            <span aria-hidden="true">{checked ? frame.record.correct ? '✓' : '↻' : '·'}</span><div>{checked ? <><strong>{frame.record.correct ? frame.record.helped ? 'Corect, cu ajutor.' : 'Corect!' : 'Reține forma potrivită.'}</strong><p lang={q.phase === 'meaning' ? undefined : 'nb'}>{q.phase === 'meaning' ? q.infinitive + ' — ' + q.answer : q.sentence.replace('___', q.answer)}</p>{(!frame.record.correct || frame.record.helped) && <small>{!frame.record.correct ? 'Verbul va reveni la repetare.' : 'Îl vei revedea fără indiciu.'}</small>}</> : <p>{q.old ? 'Un verb cunoscut, într-o situație nouă.' : q.phase === 'meaning' ? 'Alege sensul, apoi verifică.' : q.phase === 'context' ? 'Sensul în română te ajută să alegi verbul.' : 'Alege forma verbului care completează propoziția la prezent.'}</p>}</div>
+            <span aria-hidden="true">{checked ? frame.record.correct ? '✓' : '↻' : '·'}</span><div>{checked ? <><strong>{frame.record.correct ? frame.record.helped ? 'Corect, cu ajutor.' : ui('ui_a2a3c5105a33294f') : 'Reține forma potrivită.'}</strong><p lang={q.phase === 'meaning' ? undefined : 'nb'}>{q.phase === 'meaning' ? q.infinitive + ' — ' + q.answer : q.sentence.replace('___', q.answer)}</p>{(!frame.record.correct || frame.record.helped) && <small>{!frame.record.correct ? 'Verbul va reveni la repetare.' : 'Îl vei revedea fără indiciu.'}</small>}</> : <p>{q.old ? 'Un verb cunoscut, într-o situație nouă.' : q.phase === 'meaning' ? 'Alege sensul, apoi verifică.' : q.phase === 'context' ? 'Sensul în română te ajută să alegi verbul.' : 'Alege forma verbului care completează propoziția la prezent.'}</p>}</div>
           </div>
         </>}
       </>}
     </section>
-    <footer className="verb-practice__footer"><button type="button" data-action="previous" disabled={!result && state.cursor === 0} onClick={() => action('BACK')}><span aria-hidden="true">←</span> Înapoi</button><button type="button" data-action="primary" disabled={!result && frame?.type !== 'intro' && !checked && !hasResponse} onClick={primary}>{primaryLabel}<span aria-hidden="true">→</span></button></footer>
+    <footer className="verb-practice__footer"><button type="button" data-action="previous" disabled={!result && state.cursor === 0} onClick={() => action('BACK')}><span aria-hidden="true">←</span>{ui('web_80e573ed8afaa1d0')}</button><button type="button" data-action="primary" disabled={!result && frame?.type !== 'intro' && !checked && !hasResponse} onClick={primary}>{primaryLabel}<span aria-hidden="true">→</span></button></footer>
     {pickerOpen && <SessionPicker {...{ sessions, progress }} currentDay={day} onChoose={value => { setPickerOpen(false); onChoose(value); }} onClose={() => setPickerOpen(false)} />}
   </section>;
 }
@@ -186,5 +188,5 @@ export default function VerbPractice({ level, userId }) {
     return saved;
   };
   const runner = <SessionRunner key={level + '-' + day} {...{ level, userId, day, sessions, progress, app }} onChoose={setDay} onComplete={complete} />;
-  return app ? runner : <ExerciseLayout className="challenge30" level={level} title="Verbele de astăzi" description="Descoperă sensul, folosește verbele în propoziții și alege forma corectă." icon="verbs" allowLevelChange>{runner}</ExerciseLayout>;
+  return app ? runner : <ExerciseLayout className="challenge30" level={level} title={ui('web_72a665dcd507285b')} description="Descoperă sensul, folosește verbele în propoziții și alege forma corectă." icon="verbs" allowLevelChange>{runner}</ExerciseLayout>;
 }

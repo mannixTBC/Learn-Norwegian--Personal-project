@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import articles, { articleList } from './discoverArticles';
@@ -12,8 +13,8 @@ const DiscoverArticle = ({ articleKey }) => {
   return (
     <div className="discover-article">
       <div className="discover-article__topbar">
-        <Link to="/descopera" className="discover-article__back">← Înapoi la Descoperă</Link>
-        <span>{article.readTime} de citit</span>
+        <Link to="/descopera" className="discover-article__back">{ui('web_08576f3305596198')}</Link>
+        <span>{article.readTime}{ui('web_bbc40dd05c138f77')}</span>
       </div>
 
       <header className="discover-article__hero" style={{ backgroundImage: `url(${article.image})` }}>
@@ -25,7 +26,7 @@ const DiscoverArticle = ({ articleKey }) => {
         {article.imageAlt && <p className="discover-article__image-alt">{article.imageAlt}</p>}
       </header>
 
-      <section className="discover-article__stats" aria-label="Repere rapide">
+      <section className="discover-article__stats" aria-label={ui('web_3f7ee7f8840f6ac1')}>
         {article.stats.map((stat) => (
           <div key={stat.value}>
             <strong>{stat.value}</strong>
@@ -36,8 +37,8 @@ const DiscoverArticle = ({ articleKey }) => {
 
       <div className="discover-article__layout">
         <aside className="discover-article__aside">
-          <p>În acest articol</p>
-          <nav aria-label="Cuprinsul articolului">
+          <p>{ui('web_0b92348f403c3c86')}</p>
+          <nav aria-label={ui('web_84c70634cfe90722')}>
             {article.sections.map((section, index) => (
               <a href={`#sectiunea-${index + 1}`} key={section.title}>
                 <span>{section.number}</span>{section.title}
@@ -102,8 +103,8 @@ const DiscoverArticle = ({ articleKey }) => {
 
           <section className="discover-article__language">
             <div>
-              <p>Norvegiana din articol</p>
-              <h2>Patru cuvinte de păstrat</h2>
+              <p>{ui('web_23c4573e1ce8fff1')}</p>
+              <h2>{ui('web_33eb94bdb9ada871')}</h2>
             </div>
             <dl>
               {article.words.map(([word, meaning]) => (
@@ -113,7 +114,7 @@ const DiscoverArticle = ({ articleKey }) => {
           </section>
 
           <footer className="discover-article__sources">
-            <p>Surse și lectură suplimentară</p>
+            <p>{ui('web_463e9620c6a9badb')}</p>
             {article.sources.map(([label, url]) => (
               <a href={url} target="_blank" rel="noopener noreferrer" key={url}>{label} ↗</a>
             ))}
@@ -122,13 +123,13 @@ const DiscoverArticle = ({ articleKey }) => {
       </div>
 
       <section className="discover-article__related">
-        <div><p>Continuă explorarea</p><h2>Următoarea poveste începe aici</h2></div>
+        <div><p>{ui('web_32988e5668a75edd')}</p><h2>{ui('web_477d30f2fc644e21')}</h2></div>
         <div className="discover-article__related-grid">
           {related.map((item) => (
             <Link to={item.path} key={item.key} style={{ backgroundImage: `url(${item.image})` }}>
               <span>{item.category.split(' · ')[0]}</span>
               <h3>{item.title}</h3>
-              <b>Citește articolul →</b>
+              <b>{ui('web_d30e6cf14a983ac3')}</b>
             </Link>
           ))}
         </div>

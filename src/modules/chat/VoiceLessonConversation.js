@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { sendChatTurn, startChatSession } from '../../services/chat';
 import { practiceRequest, audioBlob, recordPracticeAnswer, recordingPayload } from '../../services/voicePractice';
@@ -80,7 +81,7 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   const batchRetry = useRef(null);
   const batchReplay = useRef(null);
   const practiceDeadline = useRef(0);
-  const recordingSeconds = ['A1', 'A2'].includes(level) ? 45 : 120;
+  const recordingSeconds = [ui('ui_16a36e86f6fed5d4'), 'A2'].includes(level) ? 45 : 120;
 
   const stopPlayback = () => {
     const player = playback.current;
@@ -695,26 +696,26 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
   };
 
   return <section className={`voice-lesson voice-lesson--redesigned${active ? ' voice-lesson--active' : ''}`} aria-labelledby="voice-lesson-title">
-    <p className="lesson-eyebrow">{stepNumber ? `Pasul ${stepNumber} · ` : ''}Practică vocală</p>
-    <h1 id="voice-lesson-title">Hai să vorbim în norvegiană</h1>
+    <p className="lesson-eyebrow">{stepNumber ? `Pasul ${stepNumber} · ` : ''}{ui('web_4254bb164d018f89')}</p>
+    <h1 id="voice-lesson-title">{ui('web_2de270feeb9d7854')}</h1>
     <div className={`voice-lesson__card ${status === 'idle' ? 'voice-lesson__card--welcome' : ''}`}>
       {status === 'idle' && <div className="voice-lesson__art" aria-hidden="true" />}
-      <div className="voice-lesson__partner"><span className="voice-lesson__avatar" aria-hidden="true"><span className="voice-lesson__avatar-letter">N</span><picture className="voice-lesson__portrait"><source media="(min-width: 861px)" srcSet="/images/voice/nora-avatar.webp" /><img src="/images/voice/nora-avatar.webp" alt="" width="56" height="56" /></picture></span><div><strong className="voice-lesson__name">Nora{['speaking', 'feedbackAudio'].includes(status) && <span className="voice-lesson__wave" aria-hidden="true">{[0,1,2,3,4].map((bar) => <i key={bar} />)}</span>}</strong><span>Voce AI · {level} · {mode === 'realtime' ? 'dialog live' : 'mod compatibil'}</span></div><span className={`voice-lesson__status ${active ? 'voice-lesson__status--active' : ''}`} role="status">{labels[status]}</span></div>
-      {status === 'idle' && <div className="voice-lesson__welcome"><span className="voice-lesson__eyebrow">Misiunea ta</span><h2>{(lessonTitle || 'Conversația lecției').replace(/^Misiune:\s*/i, '')}</h2><p>{task || 'Exersează situația lecției împreună cu Nora.'} Poți inventa numele și detaliile.</p><aside className="voice-lesson__tip"><span aria-hidden="true">☼</span>Folosește expresiile învățate în lecții.</aside></div>}
-      {configured === false && <p className="voice-lesson__notice">Practica vocală nu este disponibilă momentan. Poți finaliza lecția și reveni mai târziu.</p>}
+      <div className="voice-lesson__partner"><span className="voice-lesson__avatar" aria-hidden="true"><span className="voice-lesson__avatar-letter">{ui('web_8ce86a6ae65d3692')}</span><picture className="voice-lesson__portrait"><source media="(min-width: 861px)" srcSet="/images/voice/nora-avatar.webp" /><img src="/images/voice/nora-avatar.webp" alt="" width="56" height="56" /></picture></span><div><strong className="voice-lesson__name">{ui('ui_c8ccf6c9714f85c0')}{['speaking', 'feedbackAudio'].includes(status) && <span className="voice-lesson__wave" aria-hidden="true">{[0,1,2,3,4].map((bar) => <i key={bar} />)}</span>}</strong><span>{ui('web_44d03cb7b7180944')}{level} · {mode === 'realtime' ? 'dialog live' : 'mod compatibil'}</span></div><span className={`voice-lesson__status ${active ? 'voice-lesson__status--active' : ''}`} role="status">{labels[status]}</span></div>
+      {status === 'idle' && <div className="voice-lesson__welcome"><span className="voice-lesson__eyebrow">{ui('web_52870c835fcfa92b')}</span><h2>{(lessonTitle || 'Conversația lecției').replace(/^Misiune:\s*/i, '')}</h2><p>{task || 'Exersează situația lecției împreună cu Nora.'}{ui('web_30aa36820ebfa7f8')}</p><aside className="voice-lesson__tip"><span aria-hidden="true">☼</span>{ui('web_de9d44c416a6e129')}</aside></div>}
+      {configured === false && <p className="voice-lesson__notice">{ui('web_ee3e7dcc616b760b')}</p>}
       {error && <p className="voice-lesson__error" role="alert">{error}</p>}
       {transcriptNotice && <p className="voice-lesson__notice" role="status">{transcriptNotice}</p>}
-      {dialog && active && <div className="voice-lesson__progress"><span>Dialogul lecției</span><small>{dialog.turn} răspunsuri · maximum {dialog.maxTurns}</small></div>}
-      {messages.length > 0 && <div className="voice-lesson__transcript" role="log" aria-label="Dialogul în norvegiană">
+      {dialog && active && <div className="voice-lesson__progress"><span>{ui('ui_3c26b5887d9db3a0')}</span><small>{dialog.turn}{ui('web_e8313fe7862e0e7d')}{dialog.maxTurns}</small></div>}
+      {messages.length > 0 && <div className="voice-lesson__transcript" role="log" aria-label={ui('web_d65218375d5f55f1')}>
         {messages.map((message, messageIndex) => message.role === 'user'
-          ? <div key={`${message.role}-${message.turn}-${messageIndex}`} className="voice-lesson__message voice-lesson__message--user"><small>Tu</small><p lang="nb">{message.content}</p></div>
+          ? <div key={`${message.role}-${message.turn}-${messageIndex}`} className="voice-lesson__message voice-lesson__message--user"><small>{ui('ui_62afcc74654de6ab')}</small><p lang="nb">{message.content}</p></div>
           : <div key={`${message.role}-${message.turn}-${messageIndex}`} className="voice-lesson__exchange">
             <img className="voice-lesson__chat-avatar" src="/images/voice/nora-avatar.webp" alt="" width="28" height="28" />
             <div className="voice-lesson__message voice-lesson__message--assistant">
-              <small>Nora</small>
+              <small>{ui('ui_c8ccf6c9714f85c0')}</small>
               {message.reply && <p lang="nb">{message.reply}</p>}
               {message.question && <p className="voice-lesson__dialog-question" lang="nb">{message.question}</p>}
-              {message.questionTranslation && <p className="voice-lesson__question-translation"><span aria-hidden="true">RO</span>{message.questionTranslation}</p>}
+              {message.questionTranslation && <p className="voice-lesson__question-translation"><span aria-hidden="true">{ui('web_0049aa51a630b791')}</span>{message.questionTranslation}</p>}
               {message.suggestions?.length > 0 && <div className="voice-lesson__answer-help">
                 <button
                   type="button"
@@ -738,35 +739,35 @@ export default function VoiceLessonConversation({ level, lessonId, pathId, lesso
                 </div>}
               </div>}
             </div>
-            {message.correction && <aside className="voice-lesson__correction"><strong>Corectare scurtă</strong><p>{message.correction}</p></aside>}
+            {message.correction && <aside className="voice-lesson__correction"><strong>{ui('web_6d23cb27cda06b33')}</strong><p>{message.correction}</p></aside>}
           </div>)}
       </div>}
-      {feedback && <div className="voice-lesson__message voice-lesson__feedback"><small>Feedbackul tău</small><p>{feedback.text}</p></div>}
+      {feedback && <div className="voice-lesson__message voice-lesson__feedback"><small>{ui('web_e2167cfdfd61e1a6')}</small><p>{feedback.text}</p></div>}
       {feedback && <DialogueFeedback key={conversationId.current} learning={dialog?.learning} level={level} lessonId={lessonId} />}
-      {status === 'ended' && transcriptConsent && transcriptSaveStatus === 'saved' && <p className="voice-lesson__saved">Transcript salvat în siguranță pentru îmbunătățirea Norei · fără înregistrarea audio</p>}
+      {status === 'ended' && transcriptConsent && transcriptSaveStatus === 'saved' && <p className="voice-lesson__saved">{ui('web_21765b6cc2dfb776')}</p>}
       {pendingTranscript && <div className="voice-lesson__confirmation" role="status">
-        <small>Verificare rapidă</small>
+        <small>{ui('web_e9e0745af57908a7')}</small>
         <p>{pendingTranscript.transcript.message}</p>
       </div>}
       <div className="voice-lesson__controls">
         {!active && <button type="button" className="voice-lesson__primary" disabled={configured !== true} onClick={start}>{status === 'ended' ? 'Pornește un dialog nou' : 'Pornește dialogul'}</button>}
-        {mode === 'batch' && status === 'recording' && <button type="button" className="voice-lesson__primary" onClick={() => recording.current?.stop()}>Am terminat răspunsul</button>}
-        {mode === 'batch' && status === 'recording' && <button type="button" onClick={() => requestBatchSupport()}>Ajută-mă</button>}
-        {mode === 'batch' && status === 'recording' && <button type="button" onClick={() => requestBatchSupport('repetă')}>Repetă</button>}
-        {mode === 'batch' && status === 'recording' && <button type="button" onClick={() => requestBatchSupport('mai lent')}>Mai lent</button>}
-        {mode === 'realtime' && status === 'listening' && <button type="button" className="voice-lesson__primary" onClick={requestRealtimeHelp}>Ajută-mă</button>}
-        {mode === 'realtime' && status === 'listening' && <button type="button" onClick={() => realtime.current?.slow()}>Mai lent</button>}
-        {mode === 'realtime' && status === 'listening' && <button type="button" onClick={() => realtime.current?.repeat()}>Repetă</button>}
-        {status === 'retryApi' && <button type="button" onClick={() => { if (mode === 'batch') retryBatch(); else { setStatus('thinking'); realtime.current?.retry(); } }}>Reîncearcă evaluarea</button>}
-        {status === 'retryAudio' && <button type="button" onClick={() => { setError(''); setStatus('speaking'); if (mode === 'batch') batchReplay.current?.(); else realtime.current?.replay(); }}>Reascultă replica</button>}
-        {mode === 'realtime' && dialog?.turn > 0 && status === 'listening' && <button type="button" onClick={finishRealtime}>Încheie cu feedback</button>}
-        {mode === 'batch' && dialog?.turn > 0 && status === 'recording' && <button type="button" onClick={() => requestBatchSupport('stop')}>Încheie cu feedback</button>}
-        {mode === 'realtime' && status === 'playbackBlocked' && <button type="button" className="voice-lesson__primary" onClick={resumeRealtimePlayback}>Pornește sunetul</button>}
-        {status === 'confirming' && <button type="button" className="voice-lesson__primary" onClick={acceptPendingTranscript}>Da, continuă</button>}
-        {status === 'confirming' && <button type="button" onClick={retryPendingTranscript}>Mai încerc</button>}
-        {active && <button type="button" onClick={stop}>Oprește conversația</button>}
+        {mode === 'batch' && status === 'recording' && <button type="button" className="voice-lesson__primary" onClick={() => recording.current?.stop()}>{ui('web_11acf38c8d3b8300')}</button>}
+        {mode === 'batch' && status === 'recording' && <button type="button" onClick={() => requestBatchSupport()}>{ui('web_1a032ba64cea4329')}</button>}
+        {mode === 'batch' && status === 'recording' && <button type="button" onClick={() => requestBatchSupport('repetă')}>{ui('ui_b8c341f9756d3352')}</button>}
+        {mode === 'batch' && status === 'recording' && <button type="button" onClick={() => requestBatchSupport('mai lent')}>{ui('ui_7e65a53eb92be733')}</button>}
+        {mode === 'realtime' && status === 'listening' && <button type="button" className="voice-lesson__primary" onClick={requestRealtimeHelp}>{ui('web_1a032ba64cea4329')}</button>}
+        {mode === 'realtime' && status === 'listening' && <button type="button" onClick={() => realtime.current?.slow()}>{ui('ui_7e65a53eb92be733')}</button>}
+        {mode === 'realtime' && status === 'listening' && <button type="button" onClick={() => realtime.current?.repeat()}>{ui('ui_b8c341f9756d3352')}</button>}
+        {status === 'retryApi' && <button type="button" onClick={() => { if (mode === 'batch') retryBatch(); else { setStatus('thinking'); realtime.current?.retry(); } }}>{ui('web_8e596b7665c5820a')}</button>}
+        {status === 'retryAudio' && <button type="button" onClick={() => { setError(''); setStatus('speaking'); if (mode === 'batch') batchReplay.current?.(); else realtime.current?.replay(); }}>{ui('web_985a31fe417ad629')}</button>}
+        {mode === 'realtime' && dialog?.turn > 0 && status === 'listening' && <button type="button" onClick={finishRealtime}>{ui('web_b66ad70277ef6a3d')}</button>}
+        {mode === 'batch' && dialog?.turn > 0 && status === 'recording' && <button type="button" onClick={() => requestBatchSupport('stop')}>{ui('web_b66ad70277ef6a3d')}</button>}
+        {mode === 'realtime' && status === 'playbackBlocked' && <button type="button" className="voice-lesson__primary" onClick={resumeRealtimePlayback}>{ui('web_c185a77238f64786')}</button>}
+        {status === 'confirming' && <button type="button" className="voice-lesson__primary" onClick={acceptPendingTranscript}>{ui('web_912936cbbdd8f9bb')}</button>}
+        {status === 'confirming' && <button type="button" onClick={retryPendingTranscript}>{ui('web_f4442d8b8a324f7d')}</button>}
+        {active && <button type="button" onClick={stop}>{ui('web_ce7983ee207a7093')}</button>}
       </div>
-      {status === 'idle' && <p className="voice-lesson__start-caption">Nora vorbește prima. Apoi răspunzi natural.</p>}
+      {status === 'idle' && <p className="voice-lesson__start-caption">{ui('web_f51a312b1dd33173')}</p>}
 
     </div>
   </section>;

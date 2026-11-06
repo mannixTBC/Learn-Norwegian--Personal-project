@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import React from 'react';
 import { makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -93,13 +94,13 @@ const Tabel = () => {
    
     <div className={classes.tabel}>
     <Paper className={classes.root}>
-      <Table className={classes.table} aria-label="simple table">
+      <Table className={classes.table} aria-label={ui('web_ec44f5db4bc5b209')}>
         <TableHead>
           <TableRow>
             <NumberCell>#</NumberCell>
-            <TableCell className={classes.cuvant}  style={{width:'30%'}}>Cuvânt</TableCell>
-            <TableCell className={classes.pronuntie} align="right">Pronunție</TableCell>
-            <TableCell className={classes.traducere} align="right">Traducere</TableCell>
+            <TableCell className={classes.cuvant}  style={{width:'30%'}}>{ui('web_a96577976a4b5cd0')}</TableCell>
+            <TableCell className={classes.pronuntie} align="right">{ui('web_a0d81f59f290be9e')}</TableCell>
+            <TableCell className={classes.traducere} align="right">{ui('ui_433d672de98d51cb')}</TableCell>
             
           </TableRow>
         </TableHead>

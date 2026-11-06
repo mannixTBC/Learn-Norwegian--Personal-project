@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {speakNorwegian} from '../../../services/norwegianSpeech';
 import {getDialogueVoice} from './lessonParts';
@@ -20,8 +21,8 @@ export default function LessonDialogueOverview({dialogue}) {
   }}catch{if(!controller.signal.aborted)setError('Sunetul nu a pornit. Poți reîncerca sau citi dialogul.');}
   finally{if(playback.current===controller){playback.current=null;setPlaying(false);setActive(null);}}
  };
- return <section className="lapp-dialogue-full lapp-card" aria-label="Dialogul lecției">
-  <div className="lapp-dialogue-tools"><button type="button" onClick={play} aria-pressed={playing}>{playing?'Oprește audio':'Ascultă dialogul'}</button><button type="button" onClick={()=>setTranslated(v=>!v)} aria-expanded={translated}>{translated?'Ascunde traducerea':'În română'}</button></div>
+ return <section className="lapp-dialogue-full lapp-card" aria-label={ui('ui_3c26b5887d9db3a0')}>
+  <div className="lapp-dialogue-tools"><button type="button" onClick={play} aria-pressed={playing}>{playing?'Oprește audio':'Ascultă dialogul'}</button><button type="button" onClick={()=>setTranslated(v=>!v)} aria-expanded={translated}>{translated?ui('ui_a558381823af9c41'):ui('ui_85a14f5580388bc9')}</button></div>
   <div className="lapp-dialogue-lines">{dialogue.map(([speaker,text,translation],i)=><article key={i} className={active===i?'is-speaking':''}><strong>{speaker}</strong><p lang="nb">{text}</p>{translated&&<p lang="ro" className="lapp-dialogue-translation">{translation}</p>}</article>)}</div>
   {error&&<p role="alert">{error}</p>}
  </section>;

@@ -1,3 +1,4 @@
+import {courseLocalStorage as localStorage} from '../../languages/storage.js';
 import { curriculumLevels } from './curriculumMetadata';
 
 export const learningLevels = curriculumLevels.map((level) => level.code);

@@ -1,3 +1,5 @@
+// nordlingo-language-context-v1
+import languageModule from '../../backend/languageContext.js';
 import ticketModule from '../../backend/voiceStreamTicket.js';
 import cartesiaModule from '../../backend/cartesiaSpeech.js';
 
@@ -9,7 +11,7 @@ export default async (request) => {
   try {
     const ticket = new URL(request.url).searchParams.get('ticket');
     const payload = verifyVoiceStreamTicket(ticket);
-    const upstream = await cartesiaSpeechStream(payload.text, request.signal);
+    const upstream = await cartesiaSpeechStream(payload.text, request.signal, {locale:languageModule.catalog.learning[(payload.languages || languageModule.fallback).learningLanguage].speechLocale});
     return new Response(upstream.body, {
       status: 200,
       headers: {

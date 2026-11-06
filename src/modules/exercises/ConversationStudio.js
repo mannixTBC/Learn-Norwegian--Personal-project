@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import catalog from './conversationScenarios.json';
+import catalog from '../../content/features/scenarios.js';
 import { readStudioLearning } from './studioLearning';
 import { resolvePublicScenario } from './scenarioDifficulty.mjs';
 import useConversationSession from './useConversationSession';

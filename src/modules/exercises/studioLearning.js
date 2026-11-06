@@ -1,4 +1,5 @@
-import { courseCatalog } from '../lessons/norwegian-program/lessonContent';
+import {courseLocalStorage as localStorage} from '../../languages/storage.js';
+import { courseCatalog } from '../../content/activeContent.js';
 import { readCourseProgress, finalTestKey } from '../../services/curriculumProgress';
 import { stageFromLearning } from './scenarioStages.mjs';
 

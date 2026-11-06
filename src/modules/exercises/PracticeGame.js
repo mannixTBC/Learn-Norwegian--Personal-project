@@ -1,25 +1,27 @@
+import {ui} from '../../languages/messages.js';
+import {courseLocalStorage as localStorage} from '../../languages/storage.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { courseCatalog } from '../lessons/norwegian-program/lessonContent';
+import { courseCatalog } from '../../content/activeContent.js';
 import { getLearningLevel } from '../lessons/learningLevel';
 import { useAuth } from '../auth/AuthContext';
 import { speakNorwegian } from '../../services/norwegianSpeech';
 import { saveReviewItem } from '../../services/spacedReview';
 import { recordStudyActivity } from '../../services/learningActivity';
 import { ExerciseLayout } from './ExerciseUI';
-import { createPracticeQuestions, normalizePracticeAnswer, saveGameProgress, shufflePractice } from './practiceGameData';
+import { createPracticeQuestions, normalizePracticeAnswer, saveGameProgress, shufflePractice } from '../../content/features/games.js';
 import './PracticeGame.css';
-import {createSentenceSession, sentenceHint} from './sentencePractice';
+import {createSentenceSession, sentenceHint} from '../../content/features/sentences.js';
 import {readCourseProgress} from '../../services/curriculumProgress';
 import PracticePuzzleView from './PracticePuzzleView';
 import WordDiscovery, { WordDiscoveryResult } from './WordDiscovery';
-import {createWordSpellingSession} from './wordSpelling';
+import {createWordSpellingSession} from '../../content/features/spelling.js';
 import { createVocabularySession } from './vocabularyFlow';
 
 const gameInfo = {
   quiz: { title: 'Vocabular', subtitle: 'Alege sensul potrivit.' },
   order: { title: 'Propoziții', subtitle: 'Atinge cuvintele în ordine.' },
-  word: { title: 'Descoperă cuvântul', subtitle: 'Pornește de la sens și găsește expresia în norvegiană.' },
+  word: { title: ui('ui_a60eba1190b8698d'), subtitle: 'Pornește de la sens și găsește expresia în norvegiană.' },
 };
 
 const PracticeSession = ({ game, level, user }) => {
@@ -107,11 +109,11 @@ const PracticeSession = ({ game, level, user }) => {
   if (screen === 'result' && game === 'word') return <WordDiscoveryResult level={level} score={score} results={results} onRestart={start} onRetry={() => begin(mistakes.map(item => item.question), true)} />;
 
   if (screen === 'result') return <ExerciseLayout className="practice-game" level={level} icon={game} title={info.title} compact>
-    <section className="game-result"><span className="game-result__icon" aria-hidden="true">{mistakes.length ? '↗' : '✓'}</span><p>Sesiune finalizată · {level}</p><h1 ref={questionTitle} tabIndex={-1}>{mistakes.length ? 'Încă un pas înainte' : 'Le-ai rezolvat pe toate!'}</h1><div className="game-result__score">{Math.round(score / results.length * 100)}<small>%</small></div><p>{score} din {results.length} răspunsuri corecte</p>{game === 'order' && results.some(item=>item.helped) && <p>{results.filter(item=>item.correct&&item.helped).length} răspunsuri corecte cu indiciu.</p>}<div className="game-result__actions">{mistakes.length > 0 && <button type="button" className="exercise-primary" onClick={() => begin(mistakes.map((item) => item.question), true)}>{game === 'order' ? 'Repetă propozițiile' : 'Repetă greșelile'} ({mistakes.length})</button>}<button type="button" className={mistakes.length ? 'exercise-secondary' : 'exercise-primary'} onClick={start}>Sesiune nouă</button><Link to={'/jocuri?nivel=' + level}>Înapoi la jocuri</Link></div></section>
-    {mistakes.length > 0 && <section className="mistake-summary"><h2>De repetat</h2>{mistakes.map((result) => <article key={result.question.id}><span>{result.question.prompt}</span><strong lang={game === 'quiz' && result.question.type === 'choice' ? 'ro' : 'nb'}>{result.question.answer}</strong></article>)}</section>}
+    <section className="game-result"><span className="game-result__icon" aria-hidden="true">{mistakes.length ? '↗' : '✓'}</span><p>{ui('web_77320365d5488158')}{level}</p><h1 ref={questionTitle} tabIndex={-1}>{mistakes.length ? 'Încă un pas înainte' : 'Le-ai rezolvat pe toate!'}</h1><div className="game-result__score">{Math.round(score / results.length * 100)}<small>%</small></div><p>{score}{ui('ui_dbd8b6478643d623')}{results.length}{ui('ui_9872b8021dcbf076')}</p>{game === 'order' && results.some(item=>item.helped) && <p>{results.filter(item=>item.correct&&item.helped).length}{ui('web_fc9813130efacfc0')}</p>}<div className="game-result__actions">{mistakes.length > 0 && <button type="button" className="exercise-primary" onClick={() => begin(mistakes.map((item) => item.question), true)}>{game === 'order' ? 'Repetă propozițiile' : 'Repetă greșelile'} ({mistakes.length})</button>}<button type="button" className={mistakes.length ? 'exercise-secondary' : 'exercise-primary'} onClick={start}>{ui('ui_3bbd5edf7ea5fe1b')}</button><Link to={'/jocuri?nivel=' + level}>{ui('web_4d841d600c45fb73')}</Link></div></section>
+    {mistakes.length > 0 && <section className="mistake-summary"><h2>{ui('ui_352b62f7948b0ff4')}</h2>{mistakes.map((result) => <article key={result.question.id}><span>{result.question.prompt}</span><strong lang={game === 'quiz' && result.question.type === 'choice' ? 'ro' : 'nb'}>{result.question.answer}</strong></article>)}</section>}
   </ExerciseLayout>;
 
-  if (!question) return <ExerciseLayout className="practice-game" level={level} title={info.title} icon={game}><p role="alert">Nu sunt întrebări disponibile pentru această sesiune.</p><Link to={'/jocuri?nivel=' + level}>Înapoi la jocuri</Link></ExerciseLayout>;
+  if (!question) return <ExerciseLayout className="practice-game" level={level} title={info.title} icon={game}><p role="alert">{ui('ui_5f25d058014542b5')}</p><Link to={'/jocuri?nivel=' + level}>{ui('web_4d841d600c45fb73')}</Link></ExerciseLayout>;
 
   if (game === 'word') return <WordDiscovery key={current + '-' + question.id} question={question} current={current} total={questions.length} level={level} checked={checked} onSpeak={playAnswer} onNext={next} onResolve={(correct, given, helped=false) => {
     if (answered.current) return;

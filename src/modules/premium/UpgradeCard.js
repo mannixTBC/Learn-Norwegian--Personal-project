@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './premium.css';
@@ -19,17 +20,15 @@ const BENEFITS = [
 export default function UpgradeCard({ feature, compact = false }) {
   return (
     <div className={`upgrade-card${compact ? ' upgrade-card--compact' : ''}`}>
-      <div className="upgrade-card__badge">★ Premium</div>
-      {feature && <h3 className="upgrade-card__title">{feature} este exclusivă Premium</h3>}
-      {!feature && <h3 className="upgrade-card__title">Treci la Premium</h3>}
+      <div className="upgrade-card__badge">{ui('web_f9e15bb1e603f439')}</div>
+      {feature && <h3 className="upgrade-card__title">{feature}{ui('web_0ae7739b2fce59a9')}</h3>}
+      {!feature && <h3 className="upgrade-card__title">{ui('web_9f216b6ec98d877c')}</h3>}
       <ul className="upgrade-card__benefits">
         {BENEFITS.map((benefit) => (
           <li key={benefit}>{benefit}</li>
         ))}
       </ul>
-      <Link className="upgrade-card__cta" to="/premium">
-        Află mai mult
-      </Link>
+      <Link className="upgrade-card__cta" to="/premium">{ui('web_a0b7d4a29d484479')}</Link>
     </div>
   );
 }

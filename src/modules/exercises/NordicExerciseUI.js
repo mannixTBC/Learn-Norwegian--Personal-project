@@ -1,7 +1,8 @@
+import {ui} from '../../languages/messages.js';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import NorwegianFlagIcon from '../layout/Navbar/NorwegianFlagIcon';
-import { wordDiscoveryCatalog } from './wordDiscoveryCatalog';
+import { wordDiscoveryCatalog } from '../../content/features/words.js';
 import './NordicExercises.css';
 import './GameFamilies.css';
 
@@ -38,14 +39,14 @@ export function NordicHeader({ title, subtitle, level, onExit, backTo, levelCont
   const backIcon = <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m10 5-7 7 7 7M3 12h18" /></svg>;
   return <header className="ng-header">
     <div className="ng-brand">
-      {onExit ? <button type="button" className="ng-exit" aria-label="Închide sesiunea" onClick={onExit}>{backIcon}</button> : <Link className="ng-exit" aria-label="Înapoi la jocuri" to={backTo || '/jocuri?nivel=' + level}>{backIcon}</Link>}
-      <Link to="/dashboard" aria-label="NordLingo — Acasă"><NorwegianFlagIcon className="ng-logo" /></Link>
-      {levelControl || <span className="ng-level" aria-label={'Nivel ' + level}>{level}</span>}
+      {onExit ? <button type="button" className="ng-exit" aria-label={ui('web_e2f5cf878208dc21')} onClick={onExit}>{backIcon}</button> : <Link className="ng-exit" aria-label={ui('web_4d841d600c45fb73')} to={backTo || '/jocuri?nivel=' + level}>{backIcon}</Link>}
+      <Link to="/dashboard" aria-label={ui('web_5eea99318c403ce0')}><NorwegianFlagIcon className="ng-logo" /></Link>
+      {levelControl || <span className="ng-level" aria-label={ui('ui_1450f9b5ea87b98c') + level}>{level}</span>}
     </div>
     {heading && <div className="ng-heading"><h1>{title}</h1>{subtitle && <p>{subtitle}</p>}</div>}
   </header>;
 }
 
-export function NordicProgress({ current, total, label = 'Progresul sesiunii', detail }) {
+export function NordicProgress({ current, total, label = ui('web_845f7806fcc783e5'), detail }) {
   return <div className="ng-progress"><progress aria-label={label} value={current} max={Math.max(1, total)} /><span>{detail || `${current} / ${total}`}</span></div>;
 }

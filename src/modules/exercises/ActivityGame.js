@@ -1,14 +1,16 @@
+import {ui} from '../../languages/messages.js';
+import {courseLocalStorage as localStorage} from '../../languages/storage.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import { courseCatalog } from '../lessons/norwegian-program/lessonContent';
+import { courseCatalog } from '../../content/activeContent.js';
 import { getLearningLevel } from '../lessons/learningLevel';
 import { getCareerPath, getCareerProfile } from '../../services/careerProfile';
 import { speakNorwegian } from '../../services/norwegianSpeech';
 import { saveReviewItem } from '../../services/spacedReview';
 import { recordStudyActivity } from '../../services/learningActivity';
 import { readCourseProgress } from '../../services/curriculumProgress';
-import { buildAdaptiveListeningQuestions, buildMissionQuestions, savePracticeProgress } from './practiceActivities';
+import { buildAdaptiveListeningQuestions, buildMissionQuestions, savePracticeProgress } from '../../content/features/practice.js';
 import { workMissionData } from './workMissionData';
 import { ExerciseLayout } from './ExerciseUI';
 import './ActivityGame.css';
@@ -24,7 +26,7 @@ export const ActivityIcon = ({ game, ...props }) => (
 );
 
 const info = {
-  listen: { title: 'Ascultă și alege', eyebrow: 'Antrenează-ți urechea', description: 'Prinde sensul, cu fiecare ascultare.', detail: 'Ascultă norvegiana, apoi alege sensul corect. Descoperi textul și traducerea după răspuns.', action: 'Începe să asculți', unit: 'întrebări' },
+  listen: { title: ui('ui_b58cf3ae7c001d99'), eyebrow: 'Antrenează-ți urechea', description: 'Prinde sensul, cu fiecare ascultare.', detail: 'Ascultă norvegiana, apoi alege sensul corect. Descoperi textul și traducerea după răspuns.', action: 'Începe să asculți', unit: 'întrebări' },
   missions: { title: 'Misiuni la serviciu', eyebrow: 'Norvegiană în situații reale', description: 'Un pas mai sigur în fiecare conversație.', detail: 'Înțelege cererea, apoi alege replica potrivită. Două provocări pentru fiecare situație din domeniul tău.', action: 'Începe misiunile', unit: 'misiuni' },
 };
 
@@ -33,7 +35,7 @@ const ActivitySession = ({ game }) => {
   const location = useLocation();
   const history = useHistory();
   const requestedLevel = getLearningLevel(location.search);
-  const missionLevels = ['A1', 'A2', 'B1', 'B2'];
+  const missionLevels = [ui('ui_16a36e86f6fed5d4'), 'A2', 'B1', 'B2'];
   const limitedMissions = game === 'missions' && !missionLevels.includes(requestedLevel);
   const level = limitedMissions ? 'B2' : requestedLevel;
   const details = info[game];
@@ -125,18 +127,18 @@ const ActivitySession = ({ game }) => {
   if (screen === 'result') return (
     <ResultLayout className={`activity-game activity-game--${game}`} title={details.title} icon={game} level={level} requestedLevel={requestedLevel} compact backTo={'/jocuri?nivel=' + requestedLevel}>
       <section className="activity-result">
-        <span className="activity-result__icon" aria-hidden="true">{mistakes.length ? '↗' : '✓'}</span><span className="activity-eyebrow">{retry ? 'Recapitulare încheiată' : 'Sesiune încheiată'} · {level}</span>
+        <span className="activity-result__icon" aria-hidden="true">{mistakes.length ? '↗' : '✓'}</span><span className="activity-eyebrow">{retry ? ui('ui_9d587e38ad645024') : ui('ui_f565f52a394e5205')} · {level}</span>
         <h1 ref={headingRef} tabIndex={-1}>{mistakes.length ? 'Fiecare încercare te duce înainte.' : 'Ai prins toate răspunsurile!'}</h1>
-        <p>{correctCount} din {questions.length} răspunsuri corecte{game === 'missions' ? ` · ${path.shortTitle}` : ''}</p>
+        <p>{correctCount}{ui('ui_dbd8b6478643d623')}{questions.length}{ui('ui_9872b8021dcbf076')}{game === 'missions' ? ` · ${path.shortTitle}` : ''}</p>
         <div className="activity-result__score"><strong>{Math.round(correctCount / questions.length * 100)}<small>%</small></strong><span>{retry ? 'la repetarea greșelilor' : 'în această sesiune'}</span></div>
         <p>{mistakes.length ? 'Greșelile sunt salvate pentru recapitulare. Le poți exersa din nou chiar acum.' : 'Continuă cu o sesiune nouă ca să consolidezi ce ai învățat.'}</p>
-        <div className="activity-result__actions">{mistakes.length > 0 && <button type="button" className="activity-primary" onClick={() => begin(mistakes.map((item) => item.question), true)}>Repetă greșelile ({mistakes.length})</button>}<button type="button" className={mistakes.length ? 'activity-secondary' : 'activity-primary'} onClick={start}>Sesiune nouă</button></div>
+        <div className="activity-result__actions">{mistakes.length > 0 && <button type="button" className="activity-primary" onClick={() => begin(mistakes.map((item) => item.question), true)}>{ui('web_398e807e380b3b76')}{mistakes.length})</button>}<button type="button" className={mistakes.length ? 'activity-secondary' : 'activity-primary'} onClick={start}>{ui('ui_3bbd5edf7ea5fe1b')}</button></div>
       </section>
-      <section className="activity-review" aria-label="Răspunsurile sesiunii"><h2>Ce iei cu tine din sesiune</h2>{results.map(({ question: item, given, correct }) => <article className={correct ? 'correct' : 'wrong'} key={item.id}><span aria-hidden="true">{correct ? '✓' : '↻'}</span><div><small>{correct ? 'Corect' : 'De repetat'} · {item.topic}</small><h3 lang={item.kind === 'listen' || item.kind === 'intent' ? 'nb' : 'ro'}>{item.audioText || item.quote || item.context}</h3>{!correct && <p>Ai ales: {given}</p>}<p><strong lang={item.kind === 'reply' ? 'nb' : 'ro'}>{item.answer}</strong></p></div></article>)}</section>
+      <section className="activity-review" aria-label={ui('web_16b315faee38f7d9')}><h2>{ui('web_e237af8c7de4b2f8')}</h2>{results.map(({ question: item, given, correct }) => <article className={correct ? 'correct' : 'wrong'} key={item.id}><span aria-hidden="true">{correct ? '✓' : '↻'}</span><div><small>{correct ? ui('ui_6c2b431b8fba2553') : ui('ui_352b62f7948b0ff4')} · {item.topic}</small><h3 lang={item.kind === 'listen' || item.kind === 'intent' ? 'nb' : 'ro'}>{item.audioText || item.quote || item.context}</h3>{!correct && <p>{ui('web_cd174af6e4fe5def')}{given}</p>}<p><strong lang={item.kind === 'reply' ? 'nb' : 'ro'}>{item.answer}</strong></p></div></article>)}</section>
     </ResultLayout>
   );
 
-  if (!question) return <ExerciseLayout className="activity-game" title={details.title} icon={game} level={level} backTo={'/jocuri?nivel=' + requestedLevel}><p role="alert">Nu sunt întrebări disponibile pentru această sesiune.</p><Link to={'/jocuri?nivel=' + requestedLevel}>Înapoi la jocuri</Link></ExerciseLayout>;
+  if (!question) return <ExerciseLayout className="activity-game" title={details.title} icon={game} level={level} backTo={'/jocuri?nivel=' + requestedLevel}><p role="alert">{ui('ui_5f25d058014542b5')}</p><Link to={'/jocuri?nivel=' + requestedLevel}>{ui('web_4d841d600c45fb73')}</Link></ExerciseLayout>;
 
   const PlayView = !isInstalledAppView() ? DesktopActivityView : game === 'listen' ? ListeningExpedition : ActivityPlayView;
   return <PlayView game={game} details={details} level={level} requestedLevel={requestedLevel} limitedMissions={limitedMissions} pathId={pathId} question={question} current={current} total={questions.length} retry={retry} headingRef={headingRef} needsAudio={needsAudio} audioBusy={audioBusy} audioStatus={audioStatus} heard={heard} selected={selected} setSelected={setSelected} checked={checked} play={play} stopAudio={stopAudio} onExit={() => { stopAudio(); history.push('/jocuri?nivel=' + requestedLevel); }} verify={verify} next={next} repeatQuestion={() => { resetQuestion(true); headingRef.current?.focus(); }}/>;

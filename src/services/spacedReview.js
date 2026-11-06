@@ -1,3 +1,4 @@
+import {courseLocalStorage as localStorage} from '../languages/storage.js';
 export const REVIEW_STORAGE_KEY = 'norwegian_review_items';
 
 const MINUTE = 60 * 1000;

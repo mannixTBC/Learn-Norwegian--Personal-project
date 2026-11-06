@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ExerciseLevelSelect } from './ExerciseUI';
@@ -25,22 +26,22 @@ export default function PracticeOverview({ level, cards = [], activities = [] })
   const listenUrl = new URL(listen?.to || '/asculta-si-alege', 'https://nordlingo.net');
   listenUrl.searchParams.set('nivel', level);
   const rows = [
-    { id:'grammar', title:'Gramatică', subtitle:'Reguli și explicații', time:4, to:'/gramatica?nivel='+encodeURIComponent(level) },
-    { id:'review', title:'Recapitulare', subtitle:'Repetă și consolidează', time:3, to:'/recapitulare-azi?nivel='+encodeURIComponent(level) },
-    { id:'word', title:'Descoperă cuvântul', subtitle:'Ghicește cuvântul', time:3, to:byId.word?.to || '/hangman?nivel='+encodeURIComponent(level) },
-    { id:'listen', title:'Înțelege ce auzi', subtitle:'Ascultă și alege', time:4, to:listenUrl.pathname+listenUrl.search },
-    { id:'order', title:'Construiește fraze', subtitle:'Propoziții în context', time:5, to:byId.order?.to || '/drag?nivel='+encodeURIComponent(level) },
-    { id:'pronunciation', title:'Exersează pronunția', subtitle:'Ascultă și repetă', time:3, to:byId.pronunciation?.to || '/pronuntie?nivel='+encodeURIComponent(level) },
+    { id:'grammar', title:ui('ui_b3e5917f6637de1c'), subtitle:'Reguli și explicații', time:4, to:'/gramatica?nivel='+encodeURIComponent(level) },
+    { id:'review', title:ui('ui_fe74dd05d0e5825f'), subtitle:'Repetă și consolidează', time:3, to:'/recapitulare-azi?nivel='+encodeURIComponent(level) },
+    { id:'word', title:ui('ui_a60eba1190b8698d'), subtitle:'Ghicește cuvântul', time:3, to:byId.word?.to || '/hangman?nivel='+encodeURIComponent(level) },
+    { id:'listen', title:ui('ui_41349046bc57865f'), subtitle:ui('ui_b58cf3ae7c001d99'), time:4, to:listenUrl.pathname+listenUrl.search },
+    { id:'order', title:ui('ui_bdeb956c78055dc4'), subtitle:'Propoziții în context', time:5, to:byId.order?.to || '/drag?nivel='+encodeURIComponent(level) },
+    { id:'pronunciation', title:ui('ui_efcec15f0e8e3101'), subtitle:'Ascultă și repetă', time:3, to:byId.pronunciation?.to || '/pronuntie?nivel='+encodeURIComponent(level) },
   ];
   return <div className="practice-overview practice-overview--pencil">
     <header className="practice-header">
-      <div className="practice-top"><Link to="/dashboard" className="practice-brand" aria-label="NordLingo - Acasă"><NorwegianFlagIcon/></Link><ExerciseLevelSelect level={level}/></div>
-      <div className="practice-heading"><h1>Ce vrei să exersezi?</h1></div>
+      <div className="practice-top"><Link to="/dashboard" className="practice-brand" aria-label={ui('web_c5ac94a4335cbea9')}><NorwegianFlagIcon/></Link><ExerciseLevelSelect level={level}/></div>
+      <div className="practice-heading"><h1>{ui('ui_56e2f4a1b2800215')}</h1></div>
     </header>
-    <section className="practice-quick" aria-label="Exerciții de practică"><div className="practice-rows">{rows.map(row => <Link className="practice-row" key={row.id} data-game={row.id} to={row.to}>
+    <section className="practice-quick" aria-label={ui('web_569b49d564ebbc59')}><div className="practice-rows">{rows.map(row => <Link className="practice-row" key={row.id} data-game={row.id} to={row.to}>
       <Artwork type={row.id}/>
       <span className="practice-row-copy"><strong>{row.title}</strong><small>{row.subtitle}</small></span>
-      <span className="practice-card-footer"><span className="practice-time"><Clock/>{row.time} min</span><span className="practice-chevron" aria-hidden="true">›</span></span>
+      <span className="practice-card-footer"><span className="practice-time"><Clock/>{row.time}{ui('ui_2e75737a6b582974')}</span><span className="practice-chevron" aria-hidden="true">›</span></span>
     </Link>)}</div></section>
     <PracticeStudioCard level={level}/>
   </div>;

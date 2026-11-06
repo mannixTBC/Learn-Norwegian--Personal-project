@@ -1,3 +1,4 @@
+import {languageFetch as fetch} from '../languages/fetch';
 import { speakNorwegian } from './norwegianSpeech';
 import { apiUrl } from './api';
 

@@ -1,3 +1,4 @@
+import {ui} from '../../../languages/messages.js';
 import './NordicChoice.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { speakNorwegian } from '../../../services/norwegianSpeech';
@@ -92,13 +93,13 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
 
   return (
     <div className={`lapp-exercise${exercise.type === 'choice' ? ' nordic-choice' : ''}${checked ? ' is-checked' : ''}`}>
-      {practicing ? <p className="lapp-exercise__reviewed">Repetare · scorul primei încercări se păstrează.</p> : reviewing && <p className="lapp-exercise__reviewed">Răspuns deja verificat</p>}
+      {practicing ? <p className="lapp-exercise__reviewed">{ui('web_944c0204356e278f')}</p> : reviewing && <p className="lapp-exercise__reviewed">{ui('web_a0325b4c6b410031')}</p>}
       {exercise.type === 'choice' ? <div className="nordic-choice__prompt">
         <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M26 14c0 6-5 10-11 10H9l-6 4 2-8a10 10 0 0 1-2-6C3 8 8 4 15 4s11 4 11 10Z" /><circle cx="10" cy="14" r="1" /><circle cx="15" cy="14" r="1" /><circle cx="20" cy="14" r="1" /></svg>
-        <div><span>Alege răspunsul potrivit</span><h2 ref={heading} tabIndex={-1}>{exercise.prompt}</h2></div>
+        <div><span>{ui('web_1996204e62eeb7f4')}</span><h2 ref={heading} tabIndex={-1}>{exercise.prompt}</h2></div>
       </div> : <h2 ref={heading} tabIndex={-1}>{exercise.prompt}</h2>}
       {exercise.instruction && <p className="lapp-exercise__instruction">{exercise.instruction}</p>}
-      {exercise.type === 'choice' && <div className="lapp-options" role="group" aria-label="Variante de răspuns">
+      {exercise.type === 'choice' && <div className="lapp-options" role="group" aria-label={ui('web_d29f85a604990dca')}>
         {exercise.options.map((option, position) => {
           const selected = value !== '' && Number(value) === position;
           const correct = checked && position === exercise.answer;
@@ -113,56 +114,56 @@ export default function LessonAppExercise({ exercise, vocabulary = [], index, on
       </div>}
       {exercise.type === 'fill' && <form id={formId} onSubmit={(event) => { event.preventDefault(); submit(); }}>
         <div className={`lapp-exercise__card${checked ? outcome ? ' is-correct' : ' is-wrong' : ''}`}>
-          <label className={sentence ? 'sr-only' : 'lapp-answer-label'} htmlFor={`lesson-answer-${index}`}>Cuvântul lipsă</label>
+          <label className={sentence ? 'sr-only' : 'lapp-answer-label'} htmlFor={`lesson-answer-${index}`}>{ui('web_c5cbe80424b77e84')}</label>
           <div className={sentence ? 'lapp-exercise__inline-sentence' : ''} lang="nb">
             {sentence && <span>{sentence.split('___')[0]}</span>}
             <input className={`answer-input${sentence ? ' answer-input--inline' : ''}`} id={`lesson-answer-${index}`} value={value} disabled={checked} aria-invalid={checked && !outcome ? true : undefined} lang="nb" autoComplete="off" autoCapitalize="none" autoCorrect="off" spellCheck={false} onChange={(event) => updateDraft({ value: event.target.value })} placeholder={sentence ? '…' : 'Scrie în norvegiană'} />
             {sentence && <span>{sentence.split('___').slice(1).join('___')}</span>}
           </div>
         </div>
-        {!checked && <p className="lapp-exercise__hint">Scrie cuvântul, apoi verifică răspunsul.</p>}
+        {!checked && <p className="lapp-exercise__hint">{ui('web_462e07ad3471adff')}</p>}
       </form>}
       {exercise.type === 'order' && <>
         <div className="lapp-exercise__card">
           {exercise.dialogueCue && <p className="lapp-exercise__dialogue" lang="nb">{exercise.dialogueCue}</p>}
-          <div className="sentence-builder" aria-label="Propoziția ta">{words.map((word, position) => <button type="button" disabled={checked} key={wordIndexes[position]} aria-label={checked ? word : `Elimină ${word}`} onClick={() => removeOrderWord(position)}>{formattedOrder.length === exercise.answer.length ? formattedOrder[position] : word}{!checked && <span aria-hidden="true">×</span>}</button>)}{Array.from({ length: Math.max(0, exercise.words.length - wordIndexes.length) }, (_, position) => <span className="lapp-exercise__word-slot" key={`empty-${position}`} aria-hidden="true" />)}</div>
-          <div className="word-bank" aria-label="Cuvinte disponibile">{exercise.words.map((word, position) => <button type="button" disabled={checked || wordIndexes.includes(position)} key={position} onClick={() => addOrderWord(position)}>{word}</button>)}</div>
+          <div className="sentence-builder" aria-label={ui('web_c45de7846db3a2d2')}>{words.map((word, position) => <button type="button" disabled={checked} key={wordIndexes[position]} aria-label={checked ? word : `Elimină ${word}`} onClick={() => removeOrderWord(position)}>{formattedOrder.length === exercise.answer.length ? formattedOrder[position] : word}{!checked && <span aria-hidden="true">×</span>}</button>)}{Array.from({ length: Math.max(0, exercise.words.length - wordIndexes.length) }, (_, position) => <span className="lapp-exercise__word-slot" key={`empty-${position}`} aria-hidden="true" />)}</div>
+          <div className="word-bank" aria-label={ui('ui_7f216313f7587489')}>{exercise.words.map((word, position) => <button type="button" disabled={checked || wordIndexes.includes(position)} key={position} onClick={() => addOrderWord(position)}>{word}</button>)}</div>
         </div>
-        {!checked && <p className="lapp-exercise__hint">Atinge cuvintele în ordine. Atinge un cuvânt ales pentru a-l elimina.</p>}
+        {!checked && <p className="lapp-exercise__hint">{ui('web_dad6e24d5f6416ec')}</p>}
       </>}
       {exercise.type === 'gaps' && <div className="lapp-exercise__card gap-exercise">
         {exercise.context && <div className="lapp-exercise__context"><span>{exercise.context.title}</span><p>{exercise.context.description}</p></div>}
-        {exercise.translation && <p className="lapp-exercise__meaning">Spune: „{exercise.translation}”</p>}
+        {exercise.translation && <p className="lapp-exercise__meaning">{ui('web_a716658ffeac31ba')}{exercise.translation}”</p>}
         <div className="gap-sentence" lang="nb">{exercise.sentence.split('___').map((part, position, parts) => <React.Fragment key={position}><span>{part}</span>{position < parts.length - 1 && <button type="button" className={`gap-slot${gapAnswers[position] ? ' gap-slot--filled' : ''}${checked ? outcome ? ' is-correct' : ' is-wrong' : ''}`} disabled={checked} aria-label={gapAnswers[position] ? checked ? gapAnswers[position] : `Elimină ${gapAnswers[position]}` : `Spațiul liber ${position + 1}`} onClick={() => clearGapAnswer(position)}>{gapAnswers[position] || <span className="gap-slot__placeholder" aria-hidden="true" />}</button>}</React.Fragment>)}</div>
-        <div className="gap-word-bank" aria-label="Cuvinte disponibile">{exercise.options.map((option) => <button type="button" disabled={checked || gapAnswers.includes(option)} className={checked && exercise.answer.includes(option) ? 'is-correct' : checked && gapAnswers.includes(option) ? 'is-wrong' : ''} key={option} onClick={() => placeGapAnswer(option)}>{option}</button>)}</div>
+        <div className="gap-word-bank" aria-label={ui('ui_7f216313f7587489')}>{exercise.options.map((option) => <button type="button" disabled={checked || gapAnswers.includes(option)} className={checked && exercise.answer.includes(option) ? 'is-correct' : checked && gapAnswers.includes(option) ? 'is-wrong' : ''} key={option} onClick={() => placeGapAnswer(option)}>{option}</button>)}</div>
         {!checked && <p className="lapp-exercise__hint">{singleGap ? 'Atinge varianta potrivită. Se verifică imediat.' : 'Completează toate spațiile, apoi verifică răspunsul.'}</p>}
       </div>}
-      {!checked && exercise.type === 'choice' && exercise.hint && <details className="nordic-choice__hint"><summary>Indiciu</summary><p>{exercise.hint}</p></details>}
+      {!checked && exercise.type === 'choice' && exercise.hint && <details className="nordic-choice__hint"><summary>{ui('ui_d0a636af5808946e')}</summary><p>{exercise.hint}</p></details>}
       <dialog ref={feedback} className="lapp-exercise__feedback-dialog" aria-labelledby={feedbackTitleId} onCancel={() => setFeedbackOpen(false)} onClose={closeFeedback}>
       {checked && <div className={`lapp-exercise__feedback ${outcome ? 'is-correct' : 'is-wrong'}`}>
-        <button className="lapp-exercise__feedback-close" type="button" onClick={() => setFeedbackOpen(false)} aria-label="Închide rezultatul">×</button>
+        <button className="lapp-exercise__feedback-close" type="button" onClick={() => setFeedbackOpen(false)} aria-label={ui('web_b9eb884196e012e1')}>×</button>
         <div className="lapp-exercise__feedback-heading">
           <strong id={feedbackTitleId}><span className="lapp-exercise__feedback-icon" aria-hidden="true">{outcome ? '✓' : '!'}</span>{outcome ? practicing ? 'Ai corectat răspunsul!' : 'Exact! Ai reținut bine.' : 'Să reținem diferența'}</strong>
-          {!outcome && <small className="lapp-exercise__saved"><BookmarkIcon /> Salvat la Recapitulare</small>}
+          {!outcome && <small className="lapp-exercise__saved"><BookmarkIcon />{ui('web_d5510f691d418a28')}</small>}
         </div>
-        {(!outcome || exercise.type !== 'choice') && <p className="lapp-exercise__answer">{!outcome && 'Răspuns corect: '}<b lang={exercise.type === 'choice' ? undefined : 'nb'}>{correctAnswer}</b></p>}
+        {(!outcome || exercise.type !== 'choice') && <p className="lapp-exercise__answer">{!outcome && ui('web_4926920a341d9eb7')}<b lang={exercise.type === 'choice' ? undefined : 'nb'}>{correctAnswer}</b></p>}
         {exercise.translation && <p>{exercise.translation}</p>}
         <p>{exercise.explanation}</p>
-        {spokenAnswer && <button className="lapp-exercise__listen" type="button" onClick={playAnswer} disabled={playing} aria-label="Ascultă răspunsul corect"><SpeakerIcon />{playing ? 'Se redă…' : 'Ascultă'}</button>}
+        {spokenAnswer && <button className="lapp-exercise__listen" type="button" onClick={playAnswer} disabled={playing} aria-label={ui('web_941c97d17791be57')}><SpeakerIcon />{playing ? 'Se redă…' : ui('ui_f1e65126c6a41e7b')}</button>}
         {audioError && <p role="alert">{audioError}</p>}
         <div className="lapp-exercise__feedback-actions">
-          {!outcome && <button className="lapp-exercise__repeat" type="button" onClick={repeatExercise}><span aria-hidden="true">↻</span> Repetă</button>}
-          <button ref={feedbackContinue} className="lapp-exercise__primary lapp-exercise__modal-continue" type="button" onClick={continueExercise}>{reviewing ? 'Următorul' : 'Continuă'} <span aria-hidden="true">→</span></button>
+          {!outcome && <button className="lapp-exercise__repeat" type="button" onClick={repeatExercise}><span aria-hidden="true">↻</span>{ui('web_079e926854d13d4e')}</button>}
+          <button ref={feedbackContinue} className="lapp-exercise__primary lapp-exercise__modal-continue" type="button" onClick={continueExercise}>{reviewing ? ui('ui_3432e94fd956d7b4') : ui('ui_5fc4497d148a38a8')} <span aria-hidden="true">→</span></button>
         </div>
       </div>}
       </dialog>
-      {!checked && <p className="lapp-exercise__review-note"><BookmarkIcon /> Greșelile se salvează la Recapitulare.</p>}
+      {!checked && <p className="lapp-exercise__review-note"><BookmarkIcon />{ui('web_f1ee7600a2a75848')}</p>}
       <footer className="lapp-exercise__footer"><div className={`lapp-exercise__navigation${checked ? ' has-feedback' : ''}`}>
-        <button className="lapp-exercise__back" type="button" onClick={previousExercise} disabled={!onPrevious} aria-label={index === 0 ? 'Etapa anterioară' : 'Exercițiul anterior'}><span aria-hidden="true">←</span> Înapoi</button>
-        {checked && <button ref={feedbackTrigger} className="lapp-exercise__feedback-trigger" type="button" onClick={() => setFeedbackOpen(true)} aria-label="Vezi rezultatul răspunsului" aria-haspopup="dialog"><span aria-hidden="true">ⓘ</span></button>}
-        {checked ? <button className="lapp-exercise__primary" type="button" onClick={continueExercise}>{reviewing ? 'Următorul' : 'Continuă'} <span aria-hidden="true">→</span></button>
-          : (manualCheck || exercise.type === 'choice') && (exercise.type === 'fill' ? <button className="lapp-exercise__primary" type="submit" form={formId} disabled={!complete}>Verifică răspunsul <span aria-hidden="true">→</span></button>
-            : <button className="lapp-exercise__primary" type="button" disabled={!complete} onClick={() => submit()}>{exercise.type === 'order' ? 'Verifică ordinea' : exercise.type === 'choice' ? 'Verifică' : 'Verifică răspunsul'} <span aria-hidden="true">→</span></button>)}
+        <button className="lapp-exercise__back" type="button" onClick={previousExercise} disabled={!onPrevious} aria-label={index === 0 ? 'Etapa anterioară' : 'Exercițiul anterior'}><span aria-hidden="true">←</span>{ui('web_80e573ed8afaa1d0')}</button>
+        {checked && <button ref={feedbackTrigger} className="lapp-exercise__feedback-trigger" type="button" onClick={() => setFeedbackOpen(true)} aria-label={ui('web_98ccaabc579b0fac')} aria-haspopup="dialog"><span aria-hidden="true">ⓘ</span></button>}
+        {checked ? <button className="lapp-exercise__primary" type="button" onClick={continueExercise}>{reviewing ? ui('ui_3432e94fd956d7b4') : ui('ui_5fc4497d148a38a8')} <span aria-hidden="true">→</span></button>
+          : (manualCheck || exercise.type === 'choice') && (exercise.type === 'fill' ? <button className="lapp-exercise__primary" type="submit" form={formId} disabled={!complete}>{ui('web_63cb0bbfe8885963')}<span aria-hidden="true">→</span></button>
+            : <button className="lapp-exercise__primary" type="button" disabled={!complete} onClick={() => submit()}>{exercise.type === 'order' ? 'Verifică ordinea' : exercise.type === 'choice' ? ui('ui_b69a8da1603647a2') : 'Verifică răspunsul'} <span aria-hidden="true">→</span></button>)}
       </div></footer>
     </div>
   );

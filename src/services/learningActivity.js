@@ -1,3 +1,6 @@
+import {getLanguages} from '../languages/runtime';
+import {courseIdentity} from '../data/courseIdentity.js';
+import {courseLocalStorage as localStorage} from '../languages/storage.js';
 import { syncStudyActivity } from './supabaseLearning';
 import { awardNorthernPassActivity } from './northernPassProgress';
 
@@ -36,6 +39,10 @@ export const recordStudyActivity = ({ type, level = 'A1', minutes = 1, score = n
     date: now.toISOString(),
     day: localDateKey(now),
     ...details,
+    languages: {...getLanguages()},
+    learningLanguage: getLanguages().learningLanguage,
+    courseId: courseIdentity().courseId,
+    courseVersion: courseIdentity().version,
   };
   const next = [...readStudyActivity(), event].slice(-500);
   localStorage.setItem(ACTIVITY_STORAGE_KEY, JSON.stringify(next));

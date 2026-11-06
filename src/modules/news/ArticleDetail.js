@@ -1,3 +1,4 @@
+import {ui} from '../../languages/messages.js';
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import { apiUrl } from '../../services/api';
@@ -138,8 +139,8 @@ const ArticleDetail = () => {
     return (
       <div className="article-detail">
         <div className="article-detail__not-found">
-          <h2>Articolul nu a fost găsit</h2>
-          <Link to="/news" className="article-detail__back">Înapoi la știri</Link>
+          <h2>{ui('web_191c5d8d3d498317')}</h2>
+          <Link to="/news" className="article-detail__back">{ui('web_f4a226900690cd1b')}</Link>
         </div>
       </div>
     );
@@ -157,9 +158,7 @@ const ArticleDetail = () => {
   return (
     <div className="article-detail">
       <article className="article-detail__content">
-        <Link to="/news" className="article-detail__back">
-          ← Înapoi la știri
-        </Link>
+        <Link to="/news" className="article-detail__back">{ui('web_89c7886801640c2b')}</Link>
 
         <header className="article-detail__header">
           <span className="article-detail__source">{source}</span>
@@ -181,7 +180,7 @@ const ArticleDetail = () => {
 
         <div className="article-detail__body">
           {loadingContent && (
-            <p className="article-detail__loading">Se încarcă articolul complet...</p>
+            <p className="article-detail__loading">{ui('web_ded056335178cfbc')}</p>
           )}
 
           {contentError && !fullContent && (
@@ -220,9 +219,7 @@ const ArticleDetail = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="article-detail__original"
-          >
-            Citește pe sursa originală →
-          </a>
+          >{ui('web_2e8f5993a6ab9c65')}</a>
         )}
       </article>
     </div>
