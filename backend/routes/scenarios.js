@@ -63,7 +63,7 @@ router.post('/speech', wrap(async (req, res) => {
   }
   const text = session.history[index].content;
   const audio = await cartesiaSpeechBuffer(text, undefined,
-    req.body?.slow === true ? { speed: 0.65 } : {});
+    { voiceId: 'e8e5fffb-252c-436d-b842-8879b84445b6', ...(req.body?.slow === true ? { speed: 0.65 } : {}) });
   res.set('Content-Type', 'audio/mpeg');
   res.set('X-Audio-Provider', 'cartesia');
   res.send(audio);
