@@ -142,8 +142,8 @@ test('scenario API validates assessment before roleplay, records both calls, and
     const result = await post('turn', { sessionToken: fresh.sessionToken, message: 'Jeg er ti minutter forsinket.' });
     assert.equal(result.status, 502);
     assert.deepEqual(Object.keys(await result.json()), ['error', 'code'], 'no partially advanced session is returned');
-    assert.equal(calls.length - before, ['bad-evidence', 'truncated'].includes(failure) ? 1 : 2);
-    assert.equal(usageRecords.at(-1).prompt_tokens, failure === 'bad-actor' ? 8 : 4);
+    assert.equal(calls.length - before, failure === 'truncated' ? 1 : 2);
+    assert.equal(usageRecords.at(-1).prompt_tokens, ['bad-actor','bad-evidence'].includes(failure) ? 8 : 4);
   }
   mode = 'provider-auth';
   const providerFailure = await post('turn', { sessionToken: fresh.sessionToken, message: 'Jeg er ti minutter forsinket.' });

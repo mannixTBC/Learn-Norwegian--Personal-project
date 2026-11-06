@@ -127,9 +127,28 @@ test('failed assessment or actor leaves the input session untouched and still re
         return completion({ reply: '' });
       }) }));
     assert.deepEqual(session, original);
-    assert.equal(calls, mode === 'bad-assessment' ? 1 : 2);
-    assert.equal(usage.prompt_tokens, mode === 'bad-actor' ? 20 : 10);
+    assert.equal(calls, 2);
+    assert.equal(usage.prompt_tokens, mode === 'actor-network' ? 10 : 20);
   }
+});
+
+test('malformed assessment is retried once before a validated partner reply',async()=>{
+  const {scenario,difficulty}=tutor.context('general-introduction','A1');
+  const session={turn:0,history:[{role:'assistant',content:scenario.opening}],achieved:[],done:false};
+  let calls=0,usage=null;
+  const result=await runScenarioTurn({scenario,difficulty,session,message:'Hei, jeg er din kollega.',
+    onUsage:value=>{usage=addUsage(usage,value);},client:clientWith(async request=>{
+      calls++;
+      if(calls<=2){
+        assert.equal(request.response_format.type,'json_schema');
+        assert.equal(request.response_format.json_schema.strict,true);
+        assert.equal(request.response_format.json_schema.schema.properties.objectives.minItems,3);
+        return completion(calls===1?{feedback:'Prøv igjen',objectives:[]}:missingReport(scenario));
+      }
+      return completion({reply:'Hei! Hva heter du?'});
+    })});
+  assert.equal(calls,3);assert.equal(result.session.turn,1);assert.deepEqual(result.session.achieved,[]);
+  assert.equal(session.turn,0);assert.equal(usage.prompt_tokens,30);
 });
 
 test('complete missions and exhausted budgets close without asking another question or inventing success', async () => {

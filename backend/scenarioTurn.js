@@ -18,8 +18,18 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
   }
   let achieved, feedback, reply;
   if (scenario.definition) {
-    const result = await complete(assessment.assessmentRequest(scenario, difficulty, session, message));
-    const evaluated = assessment.assess(result, scenario, session, message);
+    const request = assessment.assessmentRequest(scenario, difficulty, session, message);
+    let evaluated;
+    for (let attempt=0;attempt<2;attempt++) {
+      const result = await complete(request);
+      try { evaluated = assessment.assess(result, scenario, session, message); break; }
+      catch (error) {
+        if(attempt===1)throw error;
+        // Retry only a rejected assessment, within the same deadline and quota.
+        // Never award progress or publish a partner reply from invalid evidence.
+        request.messages[0].content+='\nThe previous assessment failed validation. Include every objective and criterion in the exact supplied order. Give nonempty feedback. Evidence must quote exact learner transcript substrings with the correct turn IDs; context must quote earlier partner turns. When evidence is absent, mark missing and use empty evidence/context arrays.';
+      }
+    }
     achieved = evaluated.achieved;
     feedback = evaluated.feedback;
     if (achieved.length === scenario.goals.length) {
