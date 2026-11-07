@@ -91,6 +91,20 @@ function assess(result, scenario, session, message) {
   };
 }
 
+function combinedRequest(scenario, difficulty, session, message, reference) {
+  const request = assessmentRequest(scenario, difficulty, session, message);
+  const schema = request.response_format.json_schema.schema;
+  schema.properties.reply = {type:'string',minLength:1,maxLength:1200};
+  schema.required.push('reply');
+  const instructions = request.messages[0];
+  instructions.content = instructions.content
+    .replace('Do not play the partner or generate a dialogue reply.', 'Evaluate first, then write Nora’s reply in the reply field.')
+    .replace('brief specific Romanian feedback on demonstrated communication and one useful next improvement', 'one concise Romanian feedback sentence')
+    + '\nUse the completed evaluation to write reply as Nora in Norwegian Bokmål. Answer the current learner message naturally and invite at most one missing communicative act. Respect role, language level, sentence limits and fact disclosure. Do not repeat an achieved goal or reveal learner-only facts. Offer or confirm a concrete plan only when required. Never use your proposed reply as evidence. Do not mention assessment in the reply.';
+  if(reference)request.messages.splice(1,0,reference);
+  return request;
+}
+
 function partnerRequest(scenario, difficulty, session, message, assessment) {
   return {
     model: process.env.OPENAI_CHAT_MODEL || 'gpt-4o-mini',
@@ -112,4 +126,4 @@ function partnerReply(result) {
   return result.reply.trim();
 }
 
-module.exports = { transcript, assessmentRequest, parseCompletion, assess, partnerRequest, partnerReply };
+module.exports = { transcript, assessmentRequest, combinedRequest, parseCompletion, assess, partnerRequest, partnerReply };

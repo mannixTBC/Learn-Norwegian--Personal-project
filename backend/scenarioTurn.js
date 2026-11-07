@@ -18,11 +18,17 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
   }
   let achieved, feedback, reply;
   if (scenario.definition) {
-    const request = assessment.assessmentRequest(scenario, difficulty, session, message);
+    const combined = process.env.SCENARIO_COMBINED_TURN === 'true';
+    const request = combined ? assessment.combinedRequest(scenario, difficulty, session, message, reference)
+      : assessment.assessmentRequest(scenario, difficulty, session, message);
     let evaluated;
     for (let attempt=0;attempt<2;attempt++) {
       const result = await complete(request);
-      try { evaluated = assessment.assess(result, scenario, session, message); break; }
+      try {
+        evaluated = assessment.assess(result, scenario, session, message);
+        if (combined) reply = assessment.partnerReply(result);
+        break;
+      }
       catch (error) {
         if(attempt===1)throw error;
         // Retry only a rejected assessment, within the same deadline and quota.
