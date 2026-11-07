@@ -260,3 +260,29 @@ test('combined scenario turn validates evidence and generates the reply in one r
   assert.equal(result.reply,'Hei! Hva heter du?');
   assert.deepEqual(result.session.achieved,[]);
 });
+
+test('a fragmented opening sentence is emitted once before the assessment arrives', async t => {
+  const previous = process.env.SCENARIO_COMBINED_TURN;
+  t.after(() => {
+    if (previous === undefined) delete process.env.SCENARIO_COMBINED_TURN;
+    else process.env.SCENARIO_COMBINED_TURN = previous;
+  });
+  process.env.SCENARIO_COMBINED_TURN = 'true';
+  const {scenario,difficulty} = tutor.context('family-new-neighbor','A1');
+  const session = {turn:0, history:[{role:'assistant',content:scenario.opening}], achieved:[]};
+  const lead = 'Hei, Alex!';
+  const reply = 'Hva vil du se?';
+  const spoken = [];
+  const event = (content,finish_reason=null) => ({choices:[{delta:{content},finish_reason}]});
+  const client = clientWith(async function* () {
+    yield event('{"lead":"Hei, ');
+    assert.deepEqual(spoken,[]);
+    yield event('Alex!",');
+    assert.deepEqual(spoken,[lead]);
+    yield event(JSON.stringify({...missingReport(scenario),reply}).slice(1),'stop');
+  });
+  const result = await runScenarioTurn({client,session,scenario,difficulty,message:'Hei',
+    onSentence:text=>spoken.push(text)});
+  assert.deepEqual(spoken,[lead]);
+  assert.equal(result.reply,lead + ' ' + reply);
+});
