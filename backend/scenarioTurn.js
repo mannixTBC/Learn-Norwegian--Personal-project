@@ -44,10 +44,11 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
     const request = combined ? assessment.combinedRequest(scenario, difficulty, session, message, reference)
       : assessment.assessmentRequest(scenario, difficulty, session, message);
     if(combined && onSentence) {
+      request.model = process.env.OPENAI_SCENARIO_STREAM_MODEL || 'gpt-4.1-mini';
       const schema=request.response_format.json_schema.schema;
       schema.properties={lead:{type:'string',minLength:1,maxLength:240},...schema.properties};
       schema.required.unshift('lead');
-      request.messages[0].content += '\nWrite lead FIRST: one short natural Bokmål sentence directly answering the learner in character, using only permitted facts. Do not announce achievement or closure. The reply field is the continuation, usually one short follow-up question. Never repeat the lead. Both together obey the sentence limit.';
+      request.messages[0].content += '\nWrite lead FIRST: one brief, natural Bokmål sentence (usually 3–7 words) directly answering the learner in character, using only permitted facts. Do not announce achievement or closure. The reply field is the continuation, usually one short follow-up question. Never repeat the lead. Both together obey the sentence limit.';
     }
     let evaluated;
     for (let attempt=0;attempt<2;attempt++) {

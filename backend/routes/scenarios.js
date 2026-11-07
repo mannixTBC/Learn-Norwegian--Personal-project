@@ -9,6 +9,7 @@ const { runScenarioTurn, addUsage } = require('../scenarioTurn');
 const { cartesiaSpeechBuffer } = require('../cartesiaSpeech');
 const router = express.Router();
 router.use((req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
+router.use((req, res, next) => { req.scenarioReceivedAt = Date.now(); next(); });
 router.use(requireAuth);
 const fail = (message, status, code) => Object.assign(new Error(message), { status, code });
 const wrap = fn => async (req, res) => {
@@ -81,7 +82,10 @@ router.post('/turn', wrap(async (req, res) => {
     throw fail('Conversația s-a încheiat. Poți începe o sesiune nouă.', 409, 'SCENARIO_ENDED');
   }
   if (!isOpenAIConfigured()) throw fail('Asistentul nu este configurat.', 503, 'SCENARIO_UNAVAILABLE');
+  const authenticatedAt = Date.now();
   await consumeChatQuota(req);
+  const quotaAt = Date.now();
+  let modelAt;
   const progressive=req.get('Accept')==='application/x-ndjson' && process.env.SCENARIO_COMBINED_TURN==='true' && Boolean(scenario.definition);
   const abort=new AbortController();
   if(progressive) res.once('close',()=>abort.abort());
@@ -92,16 +96,23 @@ router.post('/turn', wrap(async (req, res) => {
     res.write(JSON.stringify(event)+'\n');
   }
   function onSentence(text) {
+    const sentenceAt = Date.now();
     firstAudio=cartesiaSpeechBuffer(text,abort.signal,{voiceId:'e8e5fffb-252c-436d-b842-8879b84445b6'})
-      .then(audio=>send({type:'audio',text,audio:audio.toString('base64')})).catch(()=>{});
+      .then(audio=>{
+        const timing = {auth:authenticatedAt-req.scenarioReceivedAt,quota:quotaAt-authenticatedAt,
+          context:modelAt-quotaAt,firstSentence:sentenceAt-modelAt,voice:Date.now()-sentenceAt};
+        send({type:'audio',text,audio:audio.toString('base64'),timing});
+      }).catch(()=>{});
   }
   let usage = null;
   try {
     let result;
     try {
+      const reference = scenario.definition ? await referenceMessage(req,session,message.trim()) : null;
+      modelAt = Date.now();
       result = await runScenarioTurn({
         onSentence:progressive ? onSentence : undefined, signal:abort.signal, client: getOpenAI(), scenario, difficulty, session, message: message.trim(),
-        reference: scenario.definition ? await referenceMessage(req,session,message.trim()) : null,
+        reference,
         onUsage: value => { usage = addUsage(usage, value); },
       });
     } catch (error) {
