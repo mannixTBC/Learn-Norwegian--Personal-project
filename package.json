@@ -28,7 +28,8 @@
     "serverless-http": "^3.2.0",
     "stripe": "^18.4.0",
     "styled-components": "^6.4.3",
-    "weather-icons": "git+https://github.com/erikflowers/weather-icons.git"
+    "weather-icons": "git+https://github.com/erikflowers/weather-icons.git",
+    "ws": "^8.18.0"
   },
   "scripts": {
     "test:transcription": "node --test backend/deepgramTranscription.test.cjs backend/routes/transcription.test.cjs backend/routes/voicePractice.test.js backend/voiceTranscriptDecision.test.js",

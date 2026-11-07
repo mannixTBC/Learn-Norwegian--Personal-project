@@ -29,4 +29,12 @@ router.post('/', async (req, res) => {
     release?.(); res.off('close', disconnected);
   }
 });
+router.post('/live', (req,res,next)=>{
+  try {
+    if(!deepgramEnabled() || !process.env.DEEPGRAM_API_KEY)return res.sendStatus(503);
+    const language=languageCode(requireTranscriptionLanguage(req.body?.language));
+    const ticket=require('../liveDictation').issue(language,reserve(req.userId));
+    res.json({ticket});
+  } catch(error){res.status(error.status || 503).json({error:error.message});}
+});
 module.exports = router;
