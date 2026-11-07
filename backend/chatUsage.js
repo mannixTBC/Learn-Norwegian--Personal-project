@@ -136,7 +136,7 @@ const consumeDurableQuota = async (req) => {
   const supabase = getSupabaseForAccessToken(req.accessToken);
   if (!supabase) throw serviceError();
 
-  const { data, error } = await supabase.rpc('consume_chat_quota');
+  const { data, error } = await supabase.rpc(req.checkQuotaSession ? 'consume_session_chat_quota' : 'consume_chat_quota');
   if (error) throw error;
 
   const row = rpcRow(data);
@@ -175,12 +175,16 @@ const consumeChatQuota = async (req) => {
     req.chatQuotaResult = result;
     return result;
   } catch (error) {
+    if (req.checkQuotaSession && error?.code === 'PT401') {
+      releaseLocalGuard(req);
+      throw Object.assign(new Error('Sesiunea nu mai este activă.'), {status:401});
+    }
     if (error?.isChatQuotaError) {
       releaseLocalGuard(req);
       throw error;
     }
 
-    if (isLocalDevelopment(req)) {
+    if (!req.checkQuotaSession && isLocalDevelopment(req)) {
       try {
         const result = consumeLocalDailyQuota(req);
         req.chatQuotaResult = result;

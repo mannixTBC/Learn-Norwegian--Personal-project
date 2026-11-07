@@ -1,7 +1,7 @@
 // nordlingo-language-context-v1
 const express = require('express');
 const {prepareCourseSession,referenceMessage}=require('../courseRuntime.cjs');
-const { requireAuth } = require('../middleware/authSupabaseUser');
+const { requireAuth, requireTurnClaims } = require('../middleware/authSupabaseUser');
 const { getOpenAI, isOpenAIConfigured } = require('../openai');
 const { consumeChatQuota, recordChatUsage } = require('../chatUsage');
 const tutor = require('../languageTutors').scenario;
@@ -10,7 +10,8 @@ const { cartesiaSpeechBuffer } = require('../cartesiaSpeech');
 const router = express.Router();
 router.use((req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
 router.use((req, res, next) => { req.scenarioReceivedAt = Date.now(); next(); });
-router.use(requireAuth);
+router.post('/turn', requireTurnClaims);
+router.use((req,res,next)=>req.checkQuotaSession ? next() : requireAuth(req,res,next));
 const fail = (message, status, code) => Object.assign(new Error(message), { status, code });
 const wrap = fn => async (req, res) => {
   try { await fn(req, res); } catch (error) {

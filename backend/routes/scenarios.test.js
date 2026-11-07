@@ -17,7 +17,7 @@ test('scenario API validates assessment before roleplay, records both calls, and
   const openai = require('../openai');
   const usage = require('../chatUsage');
   const originals = {
-    requireAuth: auth.requireAuth, getOpenAI: openai.getOpenAI, isOpenAIConfigured: openai.isOpenAIConfigured,
+    requireTurnClaims: auth.requireTurnClaims, requireAuth: auth.requireAuth, getOpenAI: openai.getOpenAI, isOpenAIConfigured: openai.isOpenAIConfigured,
     consumeChatQuota: usage.consumeChatQuota, recordChatUsage: usage.recordChatUsage,
     secret: process.env.CHAT_SESSION_SECRET,
   };
@@ -26,6 +26,7 @@ test('scenario API validates assessment before roleplay, records both calls, and
   const calls = [], usageRecords = [];
   let reservations = 0, mode = 'normal';
   t.after(() => {
+    auth.requireTurnClaims = originals.requireTurnClaims;
     auth.requireAuth = originals.requireAuth;
     openai.getOpenAI = originals.getOpenAI;
     openai.isOpenAIConfigured = originals.isOpenAIConfigured;
@@ -38,6 +39,7 @@ test('scenario API validates assessment before roleplay, records both calls, and
   });
   process.env.CHAT_SESSION_SECRET = 'scenario-contract-integration-test-secret';
   auth.requireAuth = (req, res, next) => { req.userId = 'scenario-test-user'; next(); };
+  auth.requireTurnClaims = (req,res,next)=>{req.checkQuotaSession=true; auth.requireAuth(req,res,next);};
   openai.isOpenAIConfigured = () => true;
   openai.getOpenAI = () => ({ chat: { completions: { create: async (request, options) => {
     calls.push(request);

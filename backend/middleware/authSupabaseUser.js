@@ -72,7 +72,30 @@ const requireAuth = async (req, res, next) => {
   }
 };
 
+// The turn handler must reserve durable quota with the live-session check
+// before starting any model work. Other endpoints keep their getUser check.
+async function requireTurnClaims(req, res, next) {
+  const token = /^Bearer (\S+)$/.exec(req.headers.authorization || '')?.[1];
+  if (!token) return res.status(401).json({error:'Lipsește token-ul de autentificare.'});
+  if (!supabaseAdmin) return res.status(503).json({error:'Autentificarea este indisponibilă.'});
+  try {
+    const {data,error} = await supabaseAdmin.auth.getClaims(token);
+    const claims = data?.claims;
+    if (error || !claims?.sub || !claims.session_id || claims.iss !== SUPABASE_URL + '/auth/v1'
+        || claims.aud !== 'authenticated' || claims.role !== 'authenticated') {
+      return res.status(401).json({error:'Sesiune invalidă sau expirată.'});
+    }
+    req.userId = claims.sub;
+    req.accessToken = token;
+    req.checkQuotaSession = true;
+    return next();
+  } catch {
+    return res.status(503).json({error:'Autentificarea este indisponibilă.'});
+  }
+}
+
 module.exports = {
+  requireTurnClaims,
   requireAuth,
   getSupabase,
   getSupabaseForAccessToken,
