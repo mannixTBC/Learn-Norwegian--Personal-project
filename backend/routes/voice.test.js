@@ -45,9 +45,17 @@ test('API vocal: lipsă cheie, validare, acces, token temporar și limitarea por
     const denied = await request({ level: 'A1', lessonId: 1 });
     assert.ok([401, 503].includes(denied.status));
     assert.equal(upstreamCalls, 1);
-    const freeUser = await request({ level: 'A1', lessonId: 1 }, 'test-free-user');
+    assert.equal((await request({level:'A1',mode:'invalid'}, 'test-free-user')).status,400);
+    assert.equal((await request({level:'invalid',mode:'free'}, 'test-free-user')).status,400);
+    const freeUser = await request({ level: 'A1', mode: 'free' }, 'test-free-user');
     assert.equal(freeUser.status, 200, 'Un utilizator autentificat fără Premium poate începe dialogul.');
     assert.equal(upstreamCalls, 2);
+    assert.equal(upstreamBody.session.audio.input.turn_detection.create_response,true);
+    assert.equal(upstreamBody.session.audio.input.turn_detection.interrupt_response,true);
+    assert.equal(upstreamBody.session.audio.input.transcription.language,'no');
+    assert.equal(upstreamBody.session.audio.output.voice,'marin');
+    assert.match(upstreamBody.session.instructions,/CEFR level is A1/);
+    assert.equal((await request({level:'A1',mode:'free'}, 'test-free-user')).status,429);
   } finally {
     global.fetch = realFetch;
     for (const [key, value] of Object.entries({ OPENAI_API_KEY: saved.key, VITE_PREMIUM_DEV_BYPASS: saved.bypass, NODE_ENV: saved.env, NETLIFY: saved.netlify })) {

@@ -5,6 +5,7 @@ const { requireAuth } = require('../middleware/authSupabaseUser');
 const { getVoiceLesson, buildVoiceSession } = require('../languageTutors').voice;
 const { isNetlifyRuntime } = require('../voiceAudioCache');
 const { cartesiaConfigured } = require('../cartesiaSpeech');
+const { buildFreeVoiceSession } = require('../freeVoiceSession');
 const router = express.Router();
 const attempts = new Map();
 
@@ -29,11 +30,11 @@ router.post('/session', async (req, res, next) => {
   return requireAuth(req, res, next);
 }, async (req, res) => {
   try {
-    const { level, lessonId, pathId = 'general' } = req.body || {};
-    if (!['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(level) || !Number.isInteger(lessonId)) {
+    const { level, lessonId, pathId = 'general', mode = 'lesson' } = req.body || {};
+    if (!['lesson', 'free'].includes(mode) || !['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(level) || (mode === 'lesson' && !Number.isInteger(lessonId))) {
       return res.status(400).json({ error: 'Lecția selectată nu este validă.' });
     }
-    const context = getVoiceLesson({ level, lessonId, pathId });
+    const context = mode === 'free' ? {level} : getVoiceLesson({ level, lessonId, pathId });
     if (!context) return res.status(400).json({ error: 'Lecția sau direcția selectată nu există.' });
     const now = Date.now();
     for (const [key, time] of attempts) if (now - time > 60_000) attempts.delete(key);
@@ -43,7 +44,7 @@ router.post('/session', async (req, res, next) => {
       method: 'POST', signal: AbortSignal.timeout(20_000),
       headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json',
         'OpenAI-Safety-Identifier': crypto.createHash('sha256').update(req.userId).digest('hex') },
-      body: JSON.stringify({ expires_after: { anchor: 'created_at', seconds: 60 }, session: buildVoiceSession(context) }),
+      body: JSON.stringify({ expires_after: { anchor: 'created_at', seconds: 60 }, session: mode === 'free' ? buildFreeVoiceSession(level) : buildVoiceSession(context) }),
     });
     const data = await upstream.json();
     if (!upstream.ok || !data.value) return res.status(502).json({ error: 'Nu am putut porni partenerul vocal. Încearcă din nou.' });
