@@ -87,7 +87,9 @@ router.post('/turn', wrap(async (req, res) => {
   if(progressive) res.once('close',()=>abort.abort());
   let firstAudio;
   function send(event) {
-    if(!res.destroyed) res.type('application/x-ndjson').write(JSON.stringify(event)+'\n');
+    if(res.destroyed || res.writableEnded)return;
+    if(!res.headersSent)res.type('application/x-ndjson');
+    res.write(JSON.stringify(event)+'\n');
   }
   function onSentence(text) {
     firstAudio=cartesiaSpeechBuffer(text,abort.signal,{voiceId:'e8e5fffb-252c-436d-b842-8879b84445b6'})
