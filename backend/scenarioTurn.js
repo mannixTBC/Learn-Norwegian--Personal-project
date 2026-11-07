@@ -5,11 +5,33 @@ const assessment = require('./scenarioAssessment');
 
 // One quota reservation per learner turn; every provider call contributes usage.
 // The total provider deadline remains below the 45-second quota lease.
-async function runScenarioTurn({ client, scenario, difficulty, session, message, reference=null, onUsage = () => {} }) {
+async function runScenarioTurn({ client, scenario, difficulty, session, message, reference=null, onSentence, signal, onUsage = () => {} }) {
   const deadline = Date.now() + 35000;
-  async function complete(request) {
+  let firstSentence;
+  async function complete(request, progressive = false) {
     const remaining = deadline - Date.now();
     if (remaining <= 0) throw Object.assign(new Error('Scenario deadline exceeded'), { status: 504 });
+    if (progressive) {
+      const stream = await client.chat.completions.create({...addLanguageInstructions(request), stream:true, stream_options:{include_usage:true}},
+        {signal, timeout:Math.min(20000, remaining), maxRetries:0});
+      let content = '', finish, refusal;
+      for await (const event of stream) {
+        if (event.usage) onUsage(event.usage);
+        const choice = event.choices[0];
+        if (!choice) continue;
+        content += choice.delta.content || '';
+        refusal ||= choice.delta.refusal;
+        finish = choice.finish_reason || finish;
+        if (!firstSentence && !refusal) {
+          const match = /^\s*\{\s*"lead"\s*:\s*("(?:[^"\\]|\\.)*")/.exec(content);
+          if (match) {
+            const sentence = JSON.parse(match[1]).trim();
+            if(sentence && sentence.length <= 240) { firstSentence=sentence; onSentence(sentence); }
+          }
+        }
+      }
+      return assessment.parseCompletion({choices:[{finish_reason:finish,message:{content,refusal}}]});
+    }
     const completion = await client.chat.completions.create(addLanguageInstructions(request), {
       timeout: Math.min(20000, remaining), maxRetries: 0,
     });
@@ -21,9 +43,15 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
     const combined = process.env.SCENARIO_COMBINED_TURN === 'true';
     const request = combined ? assessment.combinedRequest(scenario, difficulty, session, message, reference)
       : assessment.assessmentRequest(scenario, difficulty, session, message);
+    if(combined && onSentence) {
+      const schema=request.response_format.json_schema.schema;
+      schema.properties={lead:{type:'string',minLength:1,maxLength:240},...schema.properties};
+      schema.required.unshift('lead');
+      request.messages[0].content += '\nWrite lead FIRST: one short natural Bokmål sentence directly answering the learner in character, using only permitted facts. Do not announce achievement or closure. The reply field is the continuation, usually one short follow-up question. Never repeat the lead. Both together obey the sentence limit.';
+    }
     let evaluated;
     for (let attempt=0;attempt<2;attempt++) {
-      const result = await complete(request);
+      const result = await complete(request, combined && Boolean(onSentence));
       try {
         evaluated = assessment.assess(result, scenario, session, message);
         if (combined) reply = assessment.partnerReply(result);
@@ -33,6 +61,7 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
         if(attempt===1)throw error;
         // Retry only a rejected assessment, within the same deadline and quota.
         // Never award progress or publish a partner reply from invalid evidence.
+        if(firstSentence) request.messages[0].content+='\nThe lead already spoken was '+JSON.stringify(firstSentence)+'. Preserve it and continue from it.';
         request.messages[0].content+='\nThe previous assessment failed validation. Include every objective and criterion in the exact supplied order. Give nonempty feedback. Evidence must quote exact learner transcript substrings with the correct turn IDs; context must quote earlier partner turns. When evidence is absent, mark missing and use empty evidence/context arrays.';
       }
     }
@@ -60,6 +89,7 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
     feedback = result.feedback;
     reply = result.reply;
   }
+  if(firstSentence) reply = firstSentence + ' ' + reply;
   // Publish a new session only after both assessment and reply have succeeded.
   const next = {
     ...session, achieved, feedback, turn: session.turn + 1,

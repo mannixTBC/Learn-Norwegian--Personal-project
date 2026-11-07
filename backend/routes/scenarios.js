@@ -63,7 +63,9 @@ router.post('/speech', wrap(async (req, res) => {
     throw fail('Replica nu este disponibilă.', 400, 'SCENARIO_MESSAGE_INVALID');
   }
   const text = session.history[index].content;
-  const audio = await cartesiaSpeechBuffer(text, undefined,
+  const prefix = req.body?.spokenPrefix;
+  const remaining = typeof prefix === 'string' && text.startsWith(prefix + ' ') ? text.slice(prefix.length).trim() : text;
+  const audio = await cartesiaSpeechBuffer(remaining, undefined,
     { voiceId: 'e8e5fffb-252c-436d-b842-8879b84445b6', ...(req.body?.slow === true ? { speed: 0.65 } : {}) });
   res.set('Content-Type', 'audio/mpeg');
   res.set('X-Audio-Provider', 'cartesia');
@@ -80,12 +82,23 @@ router.post('/turn', wrap(async (req, res) => {
   }
   if (!isOpenAIConfigured()) throw fail('Asistentul nu este configurat.', 503, 'SCENARIO_UNAVAILABLE');
   await consumeChatQuota(req);
+  const progressive=req.get('Accept')==='application/x-ndjson' && process.env.SCENARIO_COMBINED_TURN==='true' && Boolean(scenario.definition);
+  const abort=new AbortController();
+  if(progressive) res.once('close',()=>abort.abort());
+  let firstAudio;
+  function send(event) {
+    if(!res.destroyed) res.type('application/x-ndjson').write(JSON.stringify(event)+'\n');
+  }
+  function onSentence(text) {
+    firstAudio=cartesiaSpeechBuffer(text,abort.signal,{voiceId:'e8e5fffb-252c-436d-b842-8879b84445b6'})
+      .then(audio=>send({type:'audio',text,audio:audio.toString('base64')})).catch(()=>{});
+  }
   let usage = null;
   try {
     let result;
     try {
       result = await runScenarioTurn({
-        client: getOpenAI(), scenario, difficulty, session, message: message.trim(),
+        onSentence:progressive ? onSentence : undefined, signal:abort.signal, client: getOpenAI(), scenario, difficulty, session, message: message.trim(),
         reference: scenario.definition ? await referenceMessage(req,session,message.trim()) : null,
         onUsage: value => { usage = addUsage(usage, value); },
       });
@@ -93,9 +106,16 @@ router.post('/turn', wrap(async (req, res) => {
       console.warn('scenario-turn-failed', {status:error.status, code:error.code, name:error.name,
         stack:error.stack?.split('\n').slice(1,4).join('\n')});
       // A provider 401/429 is a service error, not a learner authentication/quota error.
+      abort.abort();
+      if(res.headersSent){send({type:'error'});res.end();return;}
       throw fail('Răspunsul nu a putut fi pregătit.', 502, 'SCENARIO_UNAVAILABLE');
     }
-    res.json(response(result.session, scenario, difficulty));
+    const body=response(result.session, scenario, difficulty);
+    if(progressive){
+      await firstAudio;
+      send({type:'result',body:{...body,languages:require('../languageContext').currentLanguages()}});
+      res.end();
+    }else res.json(body);
   } finally {
     try { await recordChatUsage(req, usage); } catch {}
   }
