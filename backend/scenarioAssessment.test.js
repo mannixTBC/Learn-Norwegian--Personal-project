@@ -239,3 +239,24 @@ test('migrated scenarios retract unsupported goals and close with their own outc
     }
   }
 });
+
+test('combined scenario turn validates evidence and generates the reply in one request', async t => {
+  const previous = process.env.SCENARIO_COMBINED_TURN;
+  t.after(() => {
+    if(previous === undefined) delete process.env.SCENARIO_COMBINED_TURN;
+    else process.env.SCENARIO_COMBINED_TURN = previous;
+  });
+  process.env.SCENARIO_COMBINED_TURN = 'true';
+  const {scenario, difficulty} = tutor.context('family-new-neighbor','A1');
+  const session = {turn:0, history:[{role:'assistant',content:scenario.opening}], achieved:[]};
+  let calls = 0;
+  const client = clientWith(async request => {
+    calls++;
+    assert.ok(request.response_format.json_schema.schema.required.includes('reply'));
+    return completion({...missingReport(scenario),reply:'Hei! Hva heter du?'});
+  });
+  const result = await runScenarioTurn({client,session,scenario,difficulty,message:'Hei'});
+  assert.equal(calls,1);
+  assert.equal(result.reply,'Hei! Hva heter du?');
+  assert.deepEqual(result.session.achieved,[]);
+});

@@ -42,7 +42,7 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
       reply = scenario.definition.completion.successReply || 'Takk, da er planen avtalt. God tur!';
     } else if (session.turn + 1 >= difficulty.turns) {
       reply = 'Takk for samtalen. Vi avslutter øvelsen her.';
-    } else {
+    } else if (!combined) {
       const request=assessment.partnerRequest(scenario, difficulty, session, message, evaluated);
       if(reference)request.messages.splice(1,0,reference);
       reply = assessment.partnerReply(await complete(request));
