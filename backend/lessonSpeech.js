@@ -7,7 +7,7 @@ const MAX_CACHE_BYTES = 20 * 1024 * 1024;
 let cacheBytes = 0;
 const fail = (message, status) => Object.assign(new Error(message), {status});
 
-async function lessonSpeech({text, voice = 'male', slow = false, locale = 'no-NO'}) {
+async function lessonSpeech({text, voice = 'male', slow = false, locale = 'no-NO', stream = false, signal}) {
   if (typeof text !== 'string' || !text.trim()) throw fail('Lipsește textul pentru pronunție.', 400);
   if (text.length > 3000) throw fail('Textul este prea lung pentru un singur fragment audio.', 413);
   const key = process.env.CARTESIA_API_KEY;
@@ -26,7 +26,7 @@ async function lessonSpeech({text, voice = 'male', slow = false, locale = 'no-NO
   if (!audio) {
     const response = await fetch('https://api.cartesia.ai/tts/bytes', {
       method: 'POST',
-      signal: AbortSignal.timeout(25_000),
+      signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(25_000)]) : AbortSignal.timeout(25_000),
       headers: {Authorization: `Bearer ${key}`, 'Cartesia-Version': version,
         'Content-Type': 'application/json', Accept: 'audio/mpeg'},
       body: JSON.stringify({model_id: model, transcript, voice: voiceId, locale,
@@ -35,8 +35,26 @@ async function lessonSpeech({text, voice = 'male', slow = false, locale = 'no-NO
     });
     // Never expose provider responses, credentials or submitted lesson text in errors.
     if (!response.ok) throw fail('Cartesia nu a putut genera replica. Încearcă din nou.', 502);
+    if (stream) {
+      async function* chunks() {
+        const parts = [];
+        let size = 0;
+        for await (const chunk of response.body) {
+          size += chunk.length;
+          if (size <= MAX_CACHE_BYTES) parts.push(chunk);
+          yield chunk;
+        }
+        if (!size) throw fail('Cartesia a returnat un fragment audio gol.', 502);
+        if (size <= MAX_CACHE_BYTES) remember(Buffer.concat(parts, size));
+      }
+      return {stream: chunks(), headers: {'Content-Type': 'audio/mpeg', 'Cache-Control': 'private, max-age=86400',
+        'X-Audio-Provider': 'cartesia', 'X-Audio-Voice': role}};
+    }
     audio = Buffer.from(await response.arrayBuffer());
     if (!audio.length) throw fail('Cartesia a returnat un fragment audio gol.', 502);
+    remember(audio);
+  }
+  function remember(audio) {
     if (audio.length <= MAX_CACHE_BYTES) {
       while (audioCache.size >= 100 || cacheBytes + audio.length > MAX_CACHE_BYTES) {
         const oldest = audioCache.keys().next().value;

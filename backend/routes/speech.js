@@ -1,5 +1,6 @@
 const {voiceLanguage,currentLanguages,pairId} = require('../languageContext');
 const express = require('express');
+const {pipeline} = require('node:stream/promises');
 const {lessonSpeech} = require('../lessonSpeech');
 
 const router = express.Router();
@@ -36,7 +37,15 @@ const handleSpeech = async (req, res, next) => {
 
   if (input.provider === 'cartesia') {
     try {
-      const result = await lessonSpeech({text, voice, slow, locale: voiceLanguage().speechLocale});
+      const stream = req.method === 'GET' && input.stream === '1';
+      const controller = new AbortController();
+      if (stream) res.once('close', () => controller.abort());
+      const result = await lessonSpeech({text, voice, slow, stream, signal: controller.signal, locale: voiceLanguage().speechLocale});
+      if (result.stream) {
+        res.set(result.headers);
+        await pipeline(result.stream, res);
+        return;
+      }
       return res.set(result.headers).send(result.audio);
     } catch (error) { return next(error); }
   }
