@@ -227,3 +227,83 @@ test('scenario speech uses Cartesia for the signed reply and rejects another use
   assert.equal((await post('speech', { sessionToken: session.sessionToken })).status, 401);
   assert.equal(calls.length, 2);
 });
+
+test('negotiated scenario turns display text and prefetch speech during the preceding clip', async t => {
+  const {setTimeout:delay} = require('node:timers/promises');
+  t.mock.method(require('../middleware/authSupabaseUser'),'requireAuth',(req,res,next)=>{req.userId='stream-test';next();});
+  t.mock.method(require('../middleware/authSupabaseUser'),'requireTurnClaims',(req,res,next)=>next());
+  t.mock.method(require('../openai'),'isOpenAIConfigured',()=>true);
+  t.mock.method(require('../chatUsage'),'consumeChatQuota',async()=>{});
+  t.mock.method(require('../chatUsage'),'recordChatUsage',async()=>{});
+  t.mock.method(require('../cartesiaSpeech'),'cartesiaSpeechBuffer',async text=>{
+    await delay(45);
+    return Buffer.from(text);
+  });
+  const {scenario}=tutor.context('family-new-neighbor','A1');
+  const lead='Hei, Åse!', reply='Hyggelig å møte deg. Hva heter du?';
+  const report=reportFor(scenario);
+  t.mock.method(require('../openai'),'getOpenAI',()=>({chat:{completions:{create:async function*(){
+    const chunks=['{"lead":"Hei, ', 'Åse!",',JSON.stringify(report).slice(1,-1),
+      ',"reply":"Hyggelig å ', 'møte deg. Hva ', 'heter du?"}'];
+    for(const [index,content] of chunks.entries()){
+      await delay(20);
+      yield {choices:[{delta:{content},finish_reason:index===chunks.length-1?'stop':null}]};
+    }
+  }}}}));
+  const previous=[process.env.SCENARIO_COMBINED_TURN,process.env.CHAT_SESSION_SECRET];
+  process.env.SCENARIO_COMBINED_TURN='true';
+  process.env.CHAT_SESSION_SECRET='scenario-stream-comparison-test-secret';
+  const routePath=require.resolve('./scenarios'), priorRoute=require.cache[routePath];
+  delete require.cache[routePath];
+  const app=express();app.use(express.json());app.use('/api/scenarios',require('./scenarios'));
+  const server=app.listen(0,'127.0.0.1');
+  await new Promise(resolve=>server.once('listening',resolve));
+  t.after(async()=>{
+    await new Promise(resolve=>server.close(resolve));
+    if(priorRoute)require.cache[routePath]=priorRoute;else delete require.cache[routePath];
+    ['SCENARIO_COMBINED_TURN','CHAT_SESSION_SECRET'].forEach((key,i)=>{
+      if(previous[i]===undefined)delete process.env[key];else process.env[key]=previous[i];
+    });
+  });
+  const post=(path,body,headers={})=>fetch('http://127.0.0.1:'+server.address().port+'/api/scenarios/'+path,{
+    method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify(body)});
+  const start=await (await post('start',{scenarioId:scenario.id,level:'A1'})).json();
+  for(const full of [false,true]){
+    const began=performance.now();
+    const now=()=>Math.round(performance.now()-began);
+    const res=await post('turn',{sessionToken:start.sessionToken,message:'Hei'},{Accept:'application/x-ndjson',...(full?{'X-Scenario-Stream':'2'}:{})});
+    assert.equal(res.status,200);
+    const texts=[],clips=[];
+    let firstText,firstAudio,secondReady,firstEnd,body,pending='';
+    for await(const chunk of res.body.pipeThrough(new TextDecoderStream())){
+      pending+=chunk;
+      const lines=pending.split('\n');pending=lines.pop();
+      for(const line of lines){
+        const e=JSON.parse(line);
+        if(e.type==='text'){
+          firstText??=now();
+          assert.ok(e.text.startsWith(texts.at(-1)||''));
+          texts.push(e.text);
+        }else if(e.type==='audio'){
+          clips.push(Buffer.from(e.audio,'base64').toString());
+          if(firstAudio===undefined){ firstAudio=now();firstEnd=firstAudio+300; }
+          else secondReady??=now();
+        }else { assert.equal(e.type,'result');body=e.body;firstText??=now(); }
+      }
+    }
+    assert.equal(body.reply,lead+' '+reply);
+    if(full){
+      assert.deepEqual(clips,[lead,'Hyggelig å møte deg.','Hva heter du?']);
+      assert.ok(texts.includes('Hei,') && texts.includes(lead+' Hyggelig å'));
+      assert.equal(texts.at(-1),body.reply);
+      assert.ok(secondReady<firstEnd);
+    }else{
+      assert.deepEqual(clips,[lead]);
+      await delay(Math.max(0,firstEnd-now()));
+      await (await post('speech',{sessionToken:body.sessionToken,spokenPrefix:lead})).arrayBuffer();
+      secondReady=now();
+    }
+    t.diagnostic(JSON.stringify({mode:full?'full':'previous',firstText,firstAudio,secondReady,
+      gap:Math.max(0,secondReady-firstEnd),unit:'ms',simulatedPlayback:300}));
+  }
+});

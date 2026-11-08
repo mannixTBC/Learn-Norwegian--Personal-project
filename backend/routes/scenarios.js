@@ -66,7 +66,7 @@ router.post('/speech', wrap(async (req, res) => {
   }
   const text = session.history[index].content;
   const prefix = req.body?.spokenPrefix;
-  const remaining = typeof prefix === 'string' && text.startsWith(prefix + ' ') ? text.slice(prefix.length).trim() : text;
+  const remaining = typeof prefix === 'string' && text.startsWith(prefix) && /^\s/.test(text.slice(prefix.length)) ? text.slice(prefix.length).trim() : text;
   const audio = await cartesiaSpeechBuffer(remaining, undefined,
     { voiceId: 'e8e5fffb-252c-436d-b842-8879b84445b6', ...(req.body?.slow === true ? { speed: 0.65 } : {}) });
   res.set('Content-Type', 'audio/mpeg');
@@ -90,13 +90,46 @@ router.post('/turn', wrap(async (req, res) => {
   const progressive=req.get('Accept')==='application/x-ndjson' && process.env.SCENARIO_COMBINED_TURN==='true' && Boolean(scenario.definition);
   const abort=new AbortController();
   if(progressive) res.once('close',()=>abort.abort());
+  const fullStream = progressive && req.get('X-Scenario-Stream') === '2';
   let firstAudio;
+  let previousText = '';
+  let spokenEnd = 0;
+  let audioWork = Promise.resolve();
+  let audioFailed = false;
+  function queueSentence(text) {
+    audioWork = audioWork.then(async () => {
+      if (audioFailed || abort.signal.aborted) return;
+      try {
+        const bytes = await cartesiaSpeechBuffer(text, abort.signal, {voiceId:'e8e5fffb-252c-436d-b842-8879b84445b6'});
+        send({type:'audio',text,audio:bytes.toString('base64')});
+      } catch { audioFailed = true; }
+    });
+  }
+  function progress(text, flush = false) {
+    if (!text.startsWith(previousText)) throw new Error('Inconsistent scenario preview');
+    if (text !== previousText) send({type:'text',text});
+    previousText = text;
+    let rest = text.slice(spokenEnd);
+    const boundary = /[.!?…]+[”»"’)]*(?=\s)/;
+    let match;
+    while ((match = boundary.exec(rest))) {
+      const end = match.index + match[0].length;
+      queueSentence(rest.slice(0,end).trim());
+      spokenEnd += end;
+      rest = rest.slice(end);
+    }
+    if (flush && rest.trim()) {
+      queueSentence(rest.trim());
+      spokenEnd = text.length;
+    }
+  }
   function send(event) {
     if(res.destroyed || res.writableEnded)return;
     if(!res.headersSent)res.type('application/x-ndjson');
     res.write(JSON.stringify(event)+'\n');
   }
   function onSentence(text) {
+    if (fullStream) { progress(text,true); return; }
     const sentenceAt = Date.now();
     firstAudio=cartesiaSpeechBuffer(text,abort.signal,{voiceId:'e8e5fffb-252c-436d-b842-8879b84445b6'})
       .then(audio=>{
@@ -112,7 +145,7 @@ router.post('/turn', wrap(async (req, res) => {
       const reference = scenario.definition ? await referenceMessage(req,session,message.trim()) : null;
       modelAt = Date.now();
       result = await runScenarioTurn({
-        onSentence:progressive ? onSentence : undefined, signal:abort.signal, client: getOpenAI(), scenario, difficulty, session, message: message.trim(),
+        onText:fullStream ? progress : undefined, onSentence:progressive ? onSentence : undefined, signal:abort.signal, client: getOpenAI(), scenario, difficulty, session, message: message.trim(),
         reference,
         onUsage: value => { usage = addUsage(usage, value); },
       });
@@ -126,7 +159,10 @@ router.post('/turn', wrap(async (req, res) => {
     }
     const body=response(result.session, scenario, difficulty);
     if(progressive){
-      await firstAudio;
+      if (fullStream) {
+        progress(result.reply,true);
+        await audioWork;
+      } else await firstAudio;
       send({type:'result',body:{...body,languages:require('../languageContext').currentLanguages()}});
       res.end();
     }else res.json(body);

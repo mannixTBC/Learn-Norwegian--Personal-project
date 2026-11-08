@@ -3,18 +3,33 @@ const {addLanguageInstructions} = require('./languageContext');
 const tutor = require('./languageTutors').scenario;
 const assessment = require('./scenarioAssessment');
 
+// Decode complete JSON escape sequences only, across arbitrary token boundaries.
+function partialString(source, limit) {
+  const match = /^(?:[^"\\\x00-\x1f]|\\(?:["\\/bfnrt]|u[0-9a-fA-F]{4}))*/.exec(source);
+  const decoded = JSON.parse('"' + match[0] + '"').trim();
+  return decoded.length <= limit ? decoded.replace(/[\uD800-\uDBFF]$/, '') : '';
+}
+
 // One quota reservation per learner turn; every provider call contributes usage.
 // The total provider deadline remains below the 45-second quota lease.
-async function runScenarioTurn({ client, scenario, difficulty, session, message, reference=null, onSentence, signal, onUsage = () => {} }) {
+async function runScenarioTurn({ client, scenario, difficulty, session, message, reference=null, onSentence, onText, signal, onUsage = () => {} }) {
   const deadline = Date.now() + 35000;
   let firstSentence;
+  let preview = '';
+  function publish(text) {
+    if (onText && text.length > preview.length && text.startsWith(preview)) {
+      preview = text;
+      onText(text);
+    }
+  }
   async function complete(request, progressive = false) {
     const remaining = deadline - Date.now();
     if (remaining <= 0) throw Object.assign(new Error('Scenario deadline exceeded'), { status: 504 });
     if (progressive) {
       const stream = await client.chat.completions.create({...addLanguageInstructions(request), stream:true, stream_options:{include_usage:true}},
         {signal, timeout:Math.min(20000, remaining), maxRetries:0});
-      let content = '', finish, refusal;
+      let content = '', finish, refusal, replyOffset;
+      const retryLead = firstSentence;
       for await (const event of stream) {
         if (event.usage) onUsage(event.usage);
         const choice = event.choices[0];
@@ -22,11 +37,34 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
         content += choice.delta.content || '';
         refusal ||= choice.delta.refusal;
         finish = choice.finish_reason || finish;
+        if (onText && !refusal) {
+          const lead = /^\s*\{\s*"lead"\s*:\s*"/.exec(content);
+          if (lead && !retryLead && !firstSentence) publish(partialString(content.slice(lead[0].length), 240));
+          // The strict schema puts the reply after the assessment. Only expose it
+          // once the preceding complete object validates and the turn stays open.
+          if (replyOffset === undefined && firstSentence) {
+            const match = /,\s*"reply"\s*:\s*"/g;
+            let field;
+            while ((field = match.exec(content))) {
+              try {
+                const report = JSON.parse(content.slice(0,field.index) + '}');
+                const evaluated = assessment.assess(report,scenario,session,message);
+                if (evaluated.achieved.length < scenario.goals.length && session.turn + 1 < difficulty.turns)
+                  replyOffset = match.lastIndex;
+                break;
+              } catch { /* An incomplete or nested field is not publishable. */ }
+            }
+          }
+          if (replyOffset !== undefined) {
+            const tail = partialString(content.slice(replyOffset),1200);
+            if (tail) publish(firstSentence + ' ' + tail);
+          }
+        }
         if (!firstSentence && !refusal) {
           const match = /^\s*\{\s*"lead"\s*:\s*("(?:[^"\\]|\\.)*")/.exec(content);
           if (match) {
             const sentence = JSON.parse(match[1]).trim();
-            if(sentence && sentence.length <= 240) { firstSentence=sentence; onSentence(sentence); }
+            if(sentence && sentence.length <= 240) { firstSentence=sentence; publish(sentence); onSentence(sentence); }
           }
         }
       }
@@ -49,6 +87,7 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
       schema.properties={lead:{type:'string',minLength:1,maxLength:240},...schema.properties};
       schema.required.unshift('lead');
       request.messages[0].content += '\nWrite lead FIRST: one brief, natural Bokmål sentence (usually 3–7 words) directly answering the learner in character, using only permitted facts. Do not announce achievement or closure. The reply field is the continuation, usually one short follow-up question. Never repeat the lead. Both together obey the sentence limit.';
+      if (onText) request.messages[0].content += '\nIn the lead, give the natural factual part of the answer first. It can contain a second brief statement when useful. Keep any follow-up question in reply, after the evaluation. Respect the overall sentence limit.';
     }
     let evaluated;
     for (let attempt=0;attempt<2;attempt++) {
@@ -59,7 +98,7 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
         break;
       }
       catch (error) {
-        if(attempt===1)throw error;
+        if(attempt===1 || (onText && preview.length > (firstSentence?.length || 0)))throw error;
         // Retry only a rejected assessment, within the same deadline and quota.
         // Never award progress or publish a partner reply from invalid evidence.
         if(firstSentence) request.messages[0].content+='\nThe lead already spoken was '+JSON.stringify(firstSentence)+'. Preserve it and continue from it.';
@@ -91,6 +130,7 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
     reply = result.reply;
   }
   if(firstSentence) reply = firstSentence + ' ' + reply;
+  publish(reply);
   // Publish a new session only after both assessment and reply have succeeded.
   const next = {
     ...session, achieved, feedback, turn: session.turn + 1,
