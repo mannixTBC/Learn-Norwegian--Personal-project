@@ -1,0 +1,7 @@
+**
+!backend/
+!backend/**
+backend/node_modules
+backend/.env*
+!src/
+!src/**
