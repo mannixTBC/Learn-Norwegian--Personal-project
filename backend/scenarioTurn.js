@@ -10,6 +10,24 @@ function partialString(source, limit) {
   return decoded.length <= limit ? decoded.replace(/[\uD800-\uDBFF]$/, '') : '';
 }
 
+// When a combined assessment is rejected, offer only real partner quotations
+// on its retry. Each quotation stays tied to its own signed history turn.
+function constrainRetryContext(schema, history) {
+  const choices = [];
+  for (const [turn, entry] of history.entries()) {
+    if (entry.role !== 'assistant') continue;
+    const sentences = entry.content.match(/[^.!?…]+[.!?…]*|[.!?…]+/g) || [];
+    const quotes = [...new Set([entry.content, ...sentences].map(s => s.trim())
+      .filter(s => s.length && s.length <= 600))];
+    if (quotes.length) choices.push({type:'object', additionalProperties:false,
+      properties:{turn:{type:'integer',enum:[turn]},quote:{type:'string',enum:quotes}}, required:['turn','quote']});
+  }
+  if (!choices.length) return;
+  schema.$defs = {...schema.$defs, partnerContext:{anyOf:choices}};
+  for (const objective of schema.properties.objectives.items.anyOf)
+    objective.properties.criteria.items.properties.context.items = {$ref:'#/$defs/partnerContext'};
+}
+
 // One quota reservation per learner turn; every provider call contributes usage.
 // The total provider deadline remains below the 45-second quota lease.
 async function runScenarioTurn({ client, scenario, difficulty, session, message, reference=null, onSentence, onText, signal, onUsage = () => {} }) {
@@ -101,6 +119,10 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
         if(attempt===1 || (onText && preview.length > (firstSentence?.length || 0)))throw error;
         // Retry only a rejected assessment, within the same deadline and quota.
         // Never award progress or publish a partner reply from invalid evidence.
+        if (onText) {
+          constrainRetryContext(request.response_format.json_schema.schema, session.history);
+          request.messages[0].content += '\nUse empty context for missing criteria and when no earlier partner quotation is needed. The lead you are writing now is never prior context.';
+        }
         if(firstSentence) request.messages[0].content+='\nThe lead already spoken was '+JSON.stringify(firstSentence)+'. Preserve it and continue from it.';
         request.messages[0].content+='\nThe previous assessment failed validation. Include every objective and criterion in the exact supplied order. Give nonempty feedback. Evidence must quote exact learner transcript substrings with the correct turn IDs; context must quote earlier partner turns. When evidence is absent, mark missing and use empty evidence/context arrays.';
       }

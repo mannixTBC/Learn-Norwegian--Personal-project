@@ -286,3 +286,31 @@ test('a fragmented opening sentence is emitted once before the assessment arrive
   assert.deepEqual(spoken,[lead]);
   assert.equal(result.reply,lead + ' ' + reply);
 });
+
+test('a full-stream retry constrains context to actual quotes paired with their signed turn',async t=>{
+  const prior=process.env.SCENARIO_COMBINED_TURN;
+  process.env.SCENARIO_COMBINED_TURN='true';
+  t.after(()=>{if(prior===undefined)delete process.env.SCENARIO_COMBINED_TURN;else process.env.SCENARIO_COMBINED_TURN=prior;});
+  const {scenario,difficulty}=tutor.context('family-new-neighbor','A1');
+  const history=[{role:'assistant',content:scenario.opening},{role:'user',content:'Hei!'},
+    {role:'assistant',content:'Velkommen som ny nabo! Hva heter du?'}];
+  const session={turn:1,history,achieved:[]};
+  let call=0;
+  const seen=[];
+  const client=clientWith(async function*(request){
+    const report=missingReport(scenario);
+    if(call++===0)report.objectives[0].criteria[0].context=[{turn:0,quote:'Hva heter du?'}];
+    else{
+      const options=request.response_format.json_schema.schema.$defs.partnerContext.anyOf;
+      assert.deepEqual(options.map(o=>o.properties.turn.enum),[[0],[2]]);
+      assert.ok(options[1].properties.quote.enum.includes('Hva heter du?'));
+      assert.ok(!options[0].properties.quote.enum.includes('Hva heter du?'));
+    }
+    const content=JSON.stringify({lead:'Hei, Anna!',...report,reply:'Jeg heter Nora.'});
+    yield {choices:[{delta:{content},finish_reason:'stop'}]};
+  });
+  const result=await runScenarioTurn({client,session,scenario,difficulty,message:'Jeg heter Anna. Hva heter du?',
+    onText:text=>seen.push(text),onSentence:()=>{}});
+  assert.deepEqual(seen,['Hei, Anna!',result.reply]);
+  assert.equal(call,2);
+});
