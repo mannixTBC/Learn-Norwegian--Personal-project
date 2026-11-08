@@ -91,6 +91,8 @@ router.post('/turn', wrap(async (req, res) => {
   const abort=new AbortController();
   if(progressive) res.once('close',()=>abort.abort());
   const fullStream = progressive && req.get('X-Scenario-Stream') === '2';
+  const compactPrompt = fullStream && scenario.id === 'family-new-neighbor' && session.level === 'A1' && req.get('X-Nora-Prompt-Test') === 'compact-v1';
+  if (compactPrompt) res.set('X-Nora-Prompt-Test','compact-v1');
   let firstAudio;
   let previousText = '';
   let spokenEnd = 0;
@@ -145,7 +147,7 @@ router.post('/turn', wrap(async (req, res) => {
       const reference = scenario.definition ? await referenceMessage(req,session,message.trim()) : null;
       modelAt = Date.now();
       result = await runScenarioTurn({
-        onText:fullStream ? progress : undefined, onSentence:progressive ? onSentence : undefined, signal:abort.signal, client: getOpenAI(), scenario, difficulty, session, message: message.trim(),
+        compactPrompt, onText:fullStream ? progress : undefined, onSentence:progressive ? onSentence : undefined, signal:abort.signal, client: getOpenAI(), scenario, difficulty, session, message: message.trim(),
         reference,
         onUsage: value => { usage = addUsage(usage, value); },
       });
