@@ -91,7 +91,7 @@ router.post('/turn', wrap(async (req, res) => {
   const abort=new AbortController();
   if(progressive) res.once('close',()=>abort.abort());
   const fullStream = progressive && req.get('X-Scenario-Stream') === '2';
-  const compactPrompt = fullStream && scenario.id === 'family-new-neighbor' && session.level === 'A1' && req.get('X-Nora-Prompt-Test') === 'compact-v1';
+  const compactPrompt = fullStream && scenario.id === 'general-introduction' && session.level === 'A1' && req.get('X-Nora-Prompt-Test') === 'compact-v1';
   if (compactPrompt) res.set('X-Nora-Prompt-Test','compact-v1');
   let firstAudio;
   let previousText = '';
