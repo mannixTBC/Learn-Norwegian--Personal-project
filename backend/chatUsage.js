@@ -1,4 +1,5 @@
 const crypto = require('node:crypto');
+const {isAndroidTestUser}=require('./androidTestAccess');
 
 const { getSupabaseForAccessToken } = require('./middleware/authSupabaseUser');
 
@@ -168,6 +169,9 @@ const consumeDurableQuota = async (req) => {
  */
 const consumeChatQuota = async (req) => {
   if (req?.chatQuotaResult) return req.chatQuotaResult;
+  if(isAndroidTestUser(req)){
+    return req.chatQuotaResult={allowed:true,remaining:null,limit:null,source:'android-test'};
+  }
   reserveLocalGuard(req);
 
   try {

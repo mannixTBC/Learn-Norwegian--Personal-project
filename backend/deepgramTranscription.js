@@ -103,13 +103,13 @@ async function transcribeDeepgram({ audio, mimeType, language = 'no', detectLang
 // billing cap across Netlify instances; configure provider spend alerts as well.
 function createTranscriptionGuard(now = Date.now) {
   const actors = new Map();
-  return userId => {
+  return (userId,unlimited=false) => {
     const time = now();
     for (const [id, state] of actors) if (!state.active && state.expires <= time) actors.delete(id);
     const state = actors.get(userId) || { recent: [], active: false, expires: time + 60_000 };
     state.recent = state.recent.filter(value => time - value < 60_000);
-    if (state.active || state.recent.length >= 6) throw fail('Așteaptă puțin înainte de următoarea înregistrare.', 429, 'STT_RATE_LIMIT');
-    state.active = true; state.recent.push(time); state.expires = time + 60_000; actors.set(userId, state);
+    if (state.active || (!unlimited&&state.recent.length >= 6)) throw fail('Așteaptă puțin înainte de următoarea înregistrare.', 429, 'STT_RATE_LIMIT');
+    state.active = true; if(!unlimited)state.recent.push(time); state.expires = time + 60_000; actors.set(userId, state);
     return () => { state.active = false; };
   };
 }

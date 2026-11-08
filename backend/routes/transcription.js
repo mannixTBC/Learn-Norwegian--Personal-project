@@ -1,6 +1,7 @@
 // nordlingo-language-context-v1
 const {requireTranscriptionLanguage} = require('../languageContext');
 const express = require('express');
+const {isAndroidTestUser}=require('../androidTestAccess');
 const { requireAuth } = require('../middleware/authSupabaseUser');
 const { deepgramEnabled, languageCode, validateAudio, transcribeDeepgram, createTranscriptionGuard } = require('../deepgramTranscription');
 const router = express.Router();
@@ -17,7 +18,7 @@ router.post('/', async (req, res) => {
     const audio = validateAudio(req.body);
     const language = languageCode(requireTranscriptionLanguage(req.body.language));
     if (!deepgramEnabled()) return res.status(503).json({ error: 'Transcrierea Deepgram nu este încă activată.', code: 'STT_NOT_CONFIGURED' });
-    release = reserve(req.userId);
+    release = reserve(req.userId,isAndroidTestUser(req));
     const result = await transcribeDeepgram({ ...audio, language, signal: controller.signal });
     if (!controller.signal.aborted) res.json(result);
   } catch (error) {
@@ -33,7 +34,7 @@ router.post('/live', (req,res,next)=>{
   try {
     if(!deepgramEnabled() || !process.env.DEEPGRAM_API_KEY)return res.sendStatus(503);
     const language=languageCode(requireTranscriptionLanguage(req.body?.language));
-    const ticket=require('../liveDictation').issue(language,reserve(req.userId));
+    const ticket=require('../liveDictation').issue(language,reserve(req.userId,isAndroidTestUser(req)));
     res.json({ticket});
   } catch(error){res.status(error.status || 503).json({error:error.message});}
 });

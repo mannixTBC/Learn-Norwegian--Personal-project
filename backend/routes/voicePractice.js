@@ -13,6 +13,7 @@ const { decidePrimaryTranscript, decideAmbiguousTranscript, questionKind, normal
 const { deepgramEnabled, transcribeDeepgram } = require('../deepgramTranscription');
 const router = express.Router();
 const starts = new Map();
+const {isAndroidTestUser}=require('../androidTestAccess');
 const operations = new Map();
 const lifetimes = new Map();
 const transcriptionAttempts = new Map();
@@ -203,8 +204,8 @@ router.post('/start', wrap(async (req, res) => {
   const context = Number.isInteger(lessonId) && getVoiceLesson({ level, lessonId, pathId });
   const questions = context && getPreparedQuestions(level, lessonId);
   if (!questions) throw fail('Lecția sau direcția selectată nu este validă.');
-  if (starts.has(req.userId)) throw fail('Așteaptă un minut înainte de a porni altă practică vocală.', 429);
-  starts.set(req.userId, Date.now());
+  if (!isAndroidTestUser(req)&&starts.has(req.userId)) throw fail('Așteaptă un minut înainte de a porni altă practică vocală.', 429);
+  if(!isAndroidTestUser(req))starts.set(req.userId, Date.now());
   const session = { kind: 'session', id: crypto.randomUUID(), owner: owner(req), level, lessonId, pathId, expires: Date.now() + 10 * 60_000 };
     res.json({ sessionToken: sign(await require('../courseRuntime.cjs').prepareCourseSession(req,session,'information')), questions, expiresAt: session.expires });
 }));
@@ -259,7 +260,7 @@ router.post('/transcribe', wrap(async (req, res) => {
     transcriptionAttempts.set(attemptKey, { expires: session.expires, digests: new Set(), answerDigests: new Set() });
   }
   const attempts = transcriptionAttempts.get(attemptKey);
-  if (!attempts.digests.has(digest) && attempts.digests.size >= MAX_TRANSCRIPTIONS_PER_TURN) {
+  if (!isAndroidTestUser(req)&&!attempts.digests.has(digest) && attempts.digests.size >= MAX_TRANSCRIPTIONS_PER_TURN) {
     throw fail('Ai ajuns la limita de înregistrări pentru această întrebare. Pornește un dialog nou.', 429);
   }
   attempts.digests.add(digest);
@@ -299,7 +300,7 @@ router.post('/transcribe', wrap(async (req, res) => {
     return acceptedTranscript({ voiceSession: session, dialogSession, index, text: decision.text });
   });
   if (result.consumeTurn !== false) {
-    if (!attempts.answerDigests.has(digest) && attempts.answerDigests.size >= MAX_TRANSCRIPTION_ATTEMPTS_PER_TURN) {
+    if (!isAndroidTestUser(req)&&!attempts.answerDigests.has(digest) && attempts.answerDigests.size >= MAX_TRANSCRIPTION_ATTEMPTS_PER_TURN) {
       throw fail('Ai ajuns la limita de încercări pentru această întrebare. Pornește un dialog nou.', 429);
     }
     attempts.answerDigests.add(digest);

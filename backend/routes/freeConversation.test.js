@@ -2,7 +2,7 @@ const {test}=require('node:test');const assert=require('node:assert/strict');con
 test('free conversation: auth, signed ownership, real turns, translations, quotas and expiry',async()=>{
  process.env.CHAT_SESSION_SECRET='free-conversation-test-secret';
  const auth=require('../middleware/authSupabaseUser'),ai=require('../openai'),usage=require('../chatUsage');
- auth.requireAuth=(req,res,next)=>{const id=req.headers.authorization;if(!id)return res.status(401).json({error:'Auth'});req.userId=id;next();};
+ auth.requireAuth=(req,res,next)=>{const id=req.headers.authorization;if(!id)return res.status(401).json({error:'Auth'});req.userId=id;req.verifiedUser={id,is_anonymous:false};next();};
  let calls=0,quotas=0,records=0,mode='ok',lastPrompt='';ai.isOpenAIConfigured=()=>true;
  usage.consumeChatQuota=async()=>{quotas++;if(mode==='quota')throw Object.assign(new Error('Quota'),{status:429});};usage.recordChatUsage=async()=>{records++;};
  ai.getOpenAI=()=>({chat:{completions:{create:async request=>{calls++;lastPrompt=request.messages[0].content;assert.equal(request.store,false);if(mode==='fail')throw new Error('Unavailable');return {choices:[{finish_reason:'stop',message:{content:request.response_format?JSON.stringify({reply:'Hva liker du å gjøre?',translation:'Ce îți place să faci?',hint:'Spune ce îți place.',examples:[{answer:'Jeg liker kaffe.',translation:'Îmi place cafeaua.'}],correction:null,simplified:false}):'Bună!'}}]};}}}});
@@ -38,4 +38,14 @@ test('free conversation: auth, signed ownership, real turns, translations, quota
  const beforeFailureRecords=records;
  mode='quota';assert.equal((await post('free/turn',{sessionToken:turn.sessionToken,message:'Hei'})).status,429);
  mode='fail';assert.equal((await post('free/turn',{sessionToken:turn.sessionToken,message:'Hei'})).status,502);assert.equal(records,beforeFailureRecords+1);
+ const previousTestFlag=process.env.ANDROID_TEST_UNLIMITED;process.env.ANDROID_TEST_UNLIMITED='true';mode='ok';
+ try{
+  let token=sign({...state,turn:30});
+  for(const expected of [31,32]){
+   const response=await fetch('http://local/api/chat/free/turn',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'a','X-NordLingo-Client':'android'},body:JSON.stringify({sessionToken:token,message:'Jeg liker å reise.'})});
+   assert.equal(response.status,200);const result=await response.json();assert.equal(result.turn,expected);assert.equal(result.done,false);token=result.sessionToken;
+  }
+  const audio=await fetch('http://local/api/chat/free/speech',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'a','X-NordLingo-Client':'android'},body:JSON.stringify({sessionToken:token})});assert.equal(audio.status,200);
+ }finally{if(previousTestFlag===undefined)delete process.env.ANDROID_TEST_UNLIMITED;else process.env.ANDROID_TEST_UNLIMITED=previousTestFlag;}
+
 });

@@ -11,6 +11,7 @@
  * nevoie de service_role doar pentru a citi identitatea utilizatorului.
  */
 const { createClient } = require('@supabase/supabase-js');
+const {isAndroidClient}=require('../androidTestAccess');
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
@@ -63,6 +64,8 @@ const requireAuth = async (req, res, next) => {
     if (error || !data.user) {
       return res.status(401).json({ error: 'Token invalid sau expirat.' });
     }
+    if(data.user.is_anonymous===true)return res.status(403).json({error:'Conectează-te sau creează un cont pentru a continua.',code:'ACCOUNT_REQUIRED'});
+    req.verifiedUser = data.user;
     req.userId = data.user.id;
     req.userEmail = data.user.email || null;
     req.accessToken = token;
@@ -75,12 +78,16 @@ const requireAuth = async (req, res, next) => {
 // The turn handler must reserve durable quota with the live-session check
 // before starting any model work. Other endpoints keep their getUser check.
 async function requireTurnClaims(req, res, next) {
+  // Android test access must preserve the authoritative live user check even
+  // when the daily-quota RPC (which normally checks the session) is skipped.
+  if(isAndroidClient(req))return requireAuth(req,res,next);
   const token = /^Bearer (\S+)$/.exec(req.headers.authorization || '')?.[1];
   if (!token) return res.status(401).json({error:'Lipsește token-ul de autentificare.'});
   if (!supabaseAdmin) return res.status(503).json({error:'Autentificarea este indisponibilă.'});
   try {
     const {data,error} = await supabaseAdmin.auth.getClaims(token);
     const claims = data?.claims;
+    if(!error&&claims?.is_anonymous===true)return res.status(403).json({error:'Conectează-te sau creează un cont pentru a continua.',code:'ACCOUNT_REQUIRED'});
     if (error || !claims?.sub || !claims.session_id || claims.iss !== SUPABASE_URL + '/auth/v1'
         || claims.aud !== 'authenticated' || claims.role !== 'authenticated') {
       return res.status(401).json({error:'Sesiune invalidă sau expirată.'});

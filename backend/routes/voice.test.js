@@ -6,7 +6,7 @@ const auth = require('../middleware/authSupabaseUser');
 const realAuth = auth.requireAuth;
 // A verified free user: authentication is simulated, but the real voice route runs.
 auth.requireAuth = (req, res, next) => {
-  if (req.headers.authorization === 'Bearer test-free-user') { req.userId = 'test-free-user'; return next(); }
+  if (req.headers.authorization === 'Bearer test-free-user') { req.userId = 'test-free-user'; req.verifiedUser={id:req.userId,is_anonymous:false}; return next(); }
   return realAuth(req, res, next);
 };
 const router = require('./voice');
@@ -56,6 +56,16 @@ test('API vocal: lipsă cheie, validare, acces, token temporar și limitarea por
     assert.equal(upstreamBody.session.audio.output.voice,'marin');
     assert.match(upstreamBody.session.instructions,/CEFR level is A1/);
     assert.equal((await request({level:'A1',mode:'free'}, 'test-free-user')).status,429);
+    const previousTestFlag=process.env.ANDROID_TEST_UNLIMITED;
+    process.env.ANDROID_TEST_UNLIMITED='true';
+    try{
+      for(let i=0;i<3;i++){
+        const response=await localFetch(base+'/session',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer test-free-user','X-NordLingo-Client':'android'},body:JSON.stringify({mode:'free',level:'A1'})});
+        assert.equal(response.status,200);assert.equal((await response.json()).usageLimitsDisabled,true);
+      }
+      assert.equal((await request({level:'A1',mode:'free'},'test-free-user')).status,429,'web calls retain their cooldown');
+    }finally{if(previousTestFlag===undefined)delete process.env.ANDROID_TEST_UNLIMITED;else process.env.ANDROID_TEST_UNLIMITED=previousTestFlag;}
+
   } finally {
     global.fetch = realFetch;
     for (const [key, value] of Object.entries({ OPENAI_API_KEY: saved.key, VITE_PREMIUM_DEV_BYPASS: saved.bypass, NODE_ENV: saved.env, NETLIFY: saved.netlify })) {

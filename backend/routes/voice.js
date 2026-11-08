@@ -1,6 +1,7 @@
 // nordlingo-language-context-v1
 const express = require('express');
 const crypto = require('node:crypto');
+const {isAndroidTestUser}=require('../androidTestAccess');
 const { requireAuth } = require('../middleware/authSupabaseUser');
 const { getVoiceLesson, buildVoiceSession } = require('../languageTutors').voice;
 const { isNetlifyRuntime } = require('../voiceAudioCache');
@@ -18,6 +19,7 @@ router.get('/status', (req, res) => {
   const openai = Boolean(process.env.OPENAI_API_KEY);
   res.json({
     configured: openai,
+    androidTestAccessEnabled: process.env.ANDROID_TEST_UNLIMITED==='true',
     providers: { openai, cartesia: cartesiaConfigured() },
     questionAudioCache: isNetlifyRuntime() ? 'netlify' : 'local',
   });
@@ -38,8 +40,8 @@ router.post('/session', async (req, res, next) => {
     if (!context) return res.status(400).json({ error: 'Lecția sau direcția selectată nu există.' });
     const now = Date.now();
     for (const [key, time] of attempts) if (now - time > 60_000) attempts.delete(key);
-    if (attempts.has(req.userId)) return res.status(429).json({ error: 'Așteaptă un minut înainte de a porni alt dialog.' });
-    attempts.set(req.userId, now);
+    if (!isAndroidTestUser(req)&&attempts.has(req.userId)) return res.status(429).json({ error: 'Așteaptă un minut înainte de a porni alt dialog.' });
+    if(!isAndroidTestUser(req))attempts.set(req.userId, now);
     const upstream = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST', signal: AbortSignal.timeout(20_000),
       headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json',
@@ -48,7 +50,7 @@ router.post('/session', async (req, res, next) => {
     });
     const data = await upstream.json();
     if (!upstream.ok || !data.value) return res.status(502).json({ error: 'Nu am putut porni partenerul vocal. Încearcă din nou.' });
-    return res.json({ value: data.value, expiresAt: data.expires_at });
+    return res.json({ value: data.value, expiresAt: data.expires_at, ...(isAndroidTestUser(req)?{usageLimitsDisabled:true}:{}) });
   } catch (_) {
     return res.status(502).json({ error: 'Serviciul vocal nu răspunde momentan. Încearcă din nou.' });
   }
