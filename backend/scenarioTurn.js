@@ -24,8 +24,10 @@ function constrainRetryContext(schema, history) {
   }
   if (!choices.length) return;
   schema.$defs = {...schema.$defs, partnerContext:{anyOf:choices}};
-  for (const objective of schema.properties.objectives.items.anyOf)
-    objective.properties.criteria.items.properties.context.items = {$ref:'#/$defs/partnerContext'};
+  for (const objective of schema.properties.objectives.items.anyOf) {
+    const criterion = objective.properties.criteria.items.properties;
+    criterion.context = {...criterion.context, items:{$ref:'#/$defs/partnerContext'}};
+  }
 }
 
 // One quota reservation per learner turn; every provider call contributes usage.

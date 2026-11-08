@@ -301,7 +301,11 @@ test('a full-stream retry constrains context to actual quotes paired with their 
     const report=missingReport(scenario);
     if(call++===0)report.objectives[0].criteria[0].context=[{turn:0,quote:'Hva heter du?'}];
     else{
-      const options=request.response_format.json_schema.schema.$defs.partnerContext.anyOf;
+      const schema=request.response_format.json_schema.schema;
+      const criterion=schema.properties.objectives.items.anyOf[0].properties.criteria.items.properties;
+      assert.ok(criterion.evidence.items.properties.quote);
+      assert.equal(criterion.context.items.$ref,'#/$defs/partnerContext');
+      const options=schema.$defs.partnerContext.anyOf;
       assert.deepEqual(options.map(o=>o.properties.turn.enum),[[0],[2]]);
       assert.ok(options[1].properties.quote.enum.includes('Hva heter du?'));
       assert.ok(!options[0].properties.quote.enum.includes('Hva heter du?'));
