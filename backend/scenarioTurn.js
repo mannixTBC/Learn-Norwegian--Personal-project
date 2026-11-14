@@ -1,3 +1,5 @@
+// nordlingo-luna-model-v1
+const {textModelSettings} = require('./textModel');
 // nordlingo-language-context-v1
 const {addLanguageInstructions} = require('./languageContext');
 const tutor = require('./languageTutors').scenario;
@@ -143,8 +145,8 @@ async function runScenarioTurn({ client, scenario, difficulty, session, message,
   } else {
     // Unmigrated scenarios retain their existing one-call evaluation behavior.
     const result = await complete({
-      model: process.env.OPENAI_CHAT_MODEL || 'gpt-4o-mini',
-      response_format: { type: 'json_object' }, max_tokens: 900,
+      ...textModelSettings('chat'),
+      response_format: { type: 'json_object' }, max_completion_tokens: 900,
       messages: [{ role: 'system', content: tutor.prompt(scenario, difficulty) + '\n'
         + JSON.stringify({ remainingLearnerTurns: difficulty.turns - session.turn, completedGoals: session.achieved }) },
       ...session.history, { role: 'user', content: message }],

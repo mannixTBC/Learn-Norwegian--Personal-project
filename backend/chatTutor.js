@@ -1,3 +1,6 @@
+// nordlingo-luna-model-v1
+const {textModelSettings} = require('./textModel');
+// nordlingo-feedback-languages-v1
 // nordlingo-language-context-v1
 const {bindSessionLanguages,verifySessionLanguages} = require('./languageContext');
 const crypto = require('node:crypto');
@@ -368,7 +371,7 @@ const buildSystemPrompt = (context, session) => {
     'După o comandă de cafea ȘI sandviș, nu mai oferi din nou sandvișul; cere numai un detaliu încă relevant sau încheie dacă scopul este realizat.',
     'Prioritizează obiectivele încă neexersate. Păstrează vocabularul familiar; permite maximum un cuvânt nou necesar la A1/A2, două la niveluri avansate. Nu folosi întrebări generice doar pentru a umple ture.',
     'Dacă advanceTurn este false, question rămâne exact ' + JSON.stringify(session.lastQuestion) + ', cu excepția stop (null). Ajutor: indiciu contextual scurt și aceeași întrebare.',
-    'questionTranslation: traducere fidelă în română; suggestions: două răspunsuri scurte care chiar răspund la question, cu traduceri. La final toate sunt null/listă goală.',
+    'questionTranslation: traducere fidelă în limba de explicații selectată; suggestions: două răspunsuri scurte care chiar răspund la question, cu traduceri. La final toate sunt null/listă goală.',
     'evidence: numai obiective/criterii efectiv demonstrate în ULTIMA replică; fiecare {id, quote} citează exact un fragment al cursantului (max. 180 caractere). Un criteriu gramatical cere forma corectă. Nu atribui toate obiectivele unui simplu «Ja».',
     'coveredQuestions: [{index, quote}] pentru întrebările curriculare (index de la 0) deja rezolvate de ultima replică, inclusiv când oferă mai multe informații dintr-odată.',
     'complete: true numai dacă obiectivele ȘI criteriile sunt acoperite prin dovezi anterioare sau curente. Cel puțin două răspunsuri relevante înainte de încheiere. Maximum opt; nu forța opt când situația este rezolvată.',
@@ -392,7 +395,7 @@ const RESPONSE_SCHEMA = {
       advanceTurn: { type: 'boolean', description: 'Dacă replica răspunde plauzibil întrebării și poate avansa dialogul.' },
       reply: { type: 'string', description: 'O singură reacție a Norei, fără întrebare și fără dialog-model.' },
       question: { type: ['string', 'null'], description: 'Exact o întrebare nouă pentru cursant sau null la final.' },
-      questionTranslation: { type: ['string', 'null'], description: 'Traducerea în română a întrebării sau null la final.' },
+      questionTranslation: { type: ['string', 'null'], description: 'Traducerea în limba de explicații selectată a întrebării sau null la final.' },
       suggestions: {
         type: 'array',
         description: 'Două răspunsuri ajutătoare scurte sau o listă goală la final.',
@@ -406,7 +409,7 @@ const RESPONSE_SCHEMA = {
           additionalProperties: false,
         },
       },
-      correction: { type: ['string', 'null'], description: 'Cel mult o corectare scurtă în română.' },
+      correction: { type: ['string', 'null'], description: 'Cel mult o corectare scurtă în limba de explicații selectată.' },
       memory: { type: ['string', 'null'], description: 'Cel mult un fapt nesensibil despre conversație.' },
       correctionConfidence: { type: 'string', enum: ['high', 'uncertain', 'none'] },
       complete: { type: 'boolean' },
@@ -419,9 +422,9 @@ const RESPONSE_SCHEMA = {
 };
 
 const buildCompletionRequest = (context, session, message) => ({
-  model: process.env.OPENAI_CHAT_MODEL || 'gpt-4o-mini',
+  ...textModelSettings('chat'),
   temperature: 0.35,
-  max_tokens: context.level.startsWith('C') ? 1000 : 700,
+  max_completion_tokens: context.level.startsWith('C') ? 1000 : 700,
   store: false,
   response_format: { type: 'json_schema', json_schema: RESPONSE_SCHEMA },
   messages: [

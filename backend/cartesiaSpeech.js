@@ -1,3 +1,4 @@
+// nordlingo-feedback-languages-v1
 // nordlingo-language-context-v1
 const {voiceLanguage} = require('./languageContext');
 const CARTESIA_ENDPOINT = 'https://api.cartesia.ai/tts/bytes';
@@ -9,7 +10,7 @@ const speed = (value, fallback) => {
 };
 
 const cartesiaSpeechStream = async (text, signal, options = {}) => {
-  if (!configured()) throw Object.assign(new Error('Streamingul Cartesia nu este configurat.'), { status: 503 });
+  if (!process.env.CARTESIA_API_KEY || !(options.voiceId || process.env.CARTESIA_VOICE_ID)) throw Object.assign(new Error('Streamingul Cartesia nu este configurat.'), { status: 503 });
   const locale = options.locale || voiceLanguage().speechLocale;
   const isRomanian = locale.toLowerCase().startsWith('ro');
   const voiceId = options.voiceId || (isRomanian && process.env.CARTESIA_FEEDBACK_VOICE_ID) || process.env.CARTESIA_VOICE_ID;
@@ -29,7 +30,7 @@ const cartesiaSpeechStream = async (text, signal, options = {}) => {
       Accept: 'audio/mpeg',
     },
     body: JSON.stringify({
-      model_id: process.env.CARTESIA_MODEL_ID || 'sonic-latest',
+      model_id: options.model || process.env.CARTESIA_MODEL_ID || 'sonic-latest',
       transcript: text,
       voice: voiceId,
       locale,

@@ -1,3 +1,4 @@
+// nordlingo-feedback-languages-v1
 const normalize = (value) => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('nb-NO').replace(/[^a-zæø0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
 const containsQuote = (message, quote) => {
   const source = normalize(message);
@@ -98,17 +99,6 @@ const learningSummary = (session, context) => {
   };
 };
 
-const feedbackFor = (session, context) => {
-  if (!session.turn) return 'Nu avem încă un răspuns de evaluat. Poți relua situația când dorești.';
-  const summary = learningSummary(session, context);
-  const observed = summary.goals.find((goal) => goal.kind === 'objective' && goal.status !== 'unpractised');
-  const missing = summary.goals.find((goal) => goal.status === 'unpractised');
-  const correction = summary.reviewCandidates[0];
-  const short = (text, count) => String(text || '').split(/\s+/).slice(0, count).join(' ').replace(/[.!?,;:]+$/u, '');
-  const success = observed ? `Ai exersat${observed.status === 'supported' ? ' cu ajutor' : ''}: ${short(observed.label, 8)}.` : 'Ai participat la dialog.';
-  const suggestion = correction ? `Reține: „${short(correction.corrected, 8)}”.`
-    : missing ? `Mai exersează: ${short(missing.label, 8)}.` : 'Repetă situația cu alte detalii.';
-  return `${success} ${suggestion}`;
-};
+const feedbackFor = (session, context) => require('./feedbackText').lessonFeedback(session, learningSummary(session, context));
 
 module.exports = { normalize, containsQuote, sensitive, goalsFor, situationFor, contextualSupport, applyEvidence, correctionCandidate, learningSummary, feedbackFor, validOrderedItems, orderedItemsFor, repeatsCafeOrder };

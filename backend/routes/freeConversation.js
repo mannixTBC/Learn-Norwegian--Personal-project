@@ -1,3 +1,5 @@
+// nordlingo-luna-model-v1
+const {textModelSettings} = require('../textModel');
 // nordlingo-language-context-v1
 const {languageInstructions,translationInstructions} = require('../languageContext');
 const express=require('express');
@@ -14,7 +16,7 @@ const wrap=fn=>async(req,res)=>{try{await fn(req,res);}catch(e){const status=e.s
 async function complete(req,messages,json=false){
  if(!isOpenAIConfigured())throw fail('Asistentul nu este configurat.',503);
  await consumeChatQuota(req);let completion;
- try{completion=await getOpenAI().chat.completions.create({model:process.env.OPENAI_CHAT_MODEL||'gpt-4o-mini',temperature:.4,max_tokens:1400,store:false,...(json?{response_format:{type:'json_object'}}:{}),messages},{timeout:15000,maxRetries:0});
+ try{completion=await getOpenAI().chat.completions.create({...textModelSettings('chat'),temperature:.4,max_completion_tokens:1400,store:false,...(json?{response_format:{type:'json_object'}}:{}),messages},{timeout:15000,maxRetries:0});
  const choice=completion?.choices?.[0];if(choice?.finish_reason!=='stop'||choice.message?.refusal||!choice.message?.content)throw fail('Răspuns incomplet.',502);return choice.message.content;
  }finally{try{await recordChatUsage(req,completion?.usage||null);}catch(e){console.warn("free-conversation-usage",e.name);}}
 }
