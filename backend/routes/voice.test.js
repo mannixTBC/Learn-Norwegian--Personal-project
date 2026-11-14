@@ -52,7 +52,8 @@ test('API vocal: lipsă cheie, validare, acces, token temporar și limitarea por
     assert.equal(upstreamCalls, 2);
     assert.equal(upstreamBody.session.audio.input.turn_detection.create_response,true);
     assert.equal(upstreamBody.session.audio.input.turn_detection.interrupt_response,true);
-    assert.equal(upstreamBody.session.audio.input.transcription.language,'no');
+    assert.equal(upstreamBody.session.audio.input.transcription.language,undefined);
+    assert.match(upstreamBody.session.audio.input.transcription.prompt,/Norwegian Bokmål.*Romanian/);
     assert.equal(upstreamBody.session.audio.output.voice,'marin');
     assert.match(upstreamBody.session.instructions,/CEFR level is A1/);
     assert.equal((await request({level:'A1',mode:'free'}, 'test-free-user')).status,429);

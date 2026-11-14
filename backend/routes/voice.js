@@ -46,7 +46,7 @@ router.post('/session', async (req, res, next) => {
       method: 'POST', signal: AbortSignal.timeout(20_000),
       headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json',
         'OpenAI-Safety-Identifier': crypto.createHash('sha256').update(req.userId).digest('hex') },
-      body: JSON.stringify({ expires_after: { anchor: 'created_at', seconds: 60 }, session: mode === 'free' ? buildFreeVoiceSession(level) : buildVoiceSession(context) }),
+      body: JSON.stringify({ expires_after: { anchor: 'created_at', seconds: 60 }, session: mode === 'free' ? buildFreeVoiceSession(level, req.liveLanguages, req.body?.context) : buildVoiceSession(context) }),
     });
     const data = await upstream.json();
     if (!upstream.ok || !data.value) return res.status(502).json({ error: 'Nu am putut porni partenerul vocal. Încearcă din nou.' });

@@ -25,6 +25,7 @@ app.use(['/api/chat','/api/scenarios','/api/voice','/api/pronunciation','/api/tr
 app.use('/api/scenarios', express.json({ limit: '300kb' }), require('./routes/scenarios'));
 app.use('/api/chat', express.json({ limit: '56kb' }), chatRouter);
 app.use('/api/transcription', express.json({ limit: '1400kb' }), require('./routes/transcription'));
+app.use('/api/live', express.json({limit:'56kb'}), require('./liveLanguageContext').liveLanguageMiddleware, voiceRouter);
 app.use(express.json({ limit: '6mb' }));
 
 app.get('/api/health', (req, res) => {

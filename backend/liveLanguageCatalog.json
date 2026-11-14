@@ -1,0 +1,261 @@
+{
+  "version": 1,
+  "defaultPair": {
+    "learningLanguage": "nb",
+    "supportLanguage": "ro"
+  },
+  "learning": {
+    "nb": {
+      "name": "Norwegian Bokmål",
+      "locale": "nb-NO",
+      "transcription": "no",
+      "speechLocale": "no-NO",
+      "pronunciationHint": "Use a neutral eastern Norwegian accent.",
+      "labelKey": "ui_e031b264893791c5",
+      "flag": "no"
+    },
+    "de": {
+      "name": "German",
+      "locale": "de-DE",
+      "transcription": "de",
+      "speechLocale": "de-DE",
+      "labelKey": "ui_a9e6cb6f4ad7816d",
+      "flag": "de"
+    },
+    "fr": {
+      "name": "French",
+      "locale": "fr-FR",
+      "transcription": "fr",
+      "speechLocale": "fr-FR",
+      "labelKey": "ui_9d36bfde5f91918a",
+      "flag": "fr"
+    },
+    "en": {
+      "name": "English",
+      "locale": "en-GB",
+      "transcription": "en",
+      "speechLocale": "en-GB",
+      "labelKey": "ui_390c2077ff5303ef",
+      "flag": "gb"
+    },
+    "es": {
+      "name": "Spanish",
+      "locale": "es-ES",
+      "transcription": "es",
+      "speechLocale": "es-ES",
+      "labelKey": "course_es",
+      "flag": "es"
+    },
+    "pt": {
+      "name": "Brazilian Portuguese",
+      "locale": "pt-BR",
+      "transcription": "pt",
+      "speechLocale": "pt-BR",
+      "labelKey": "course_pt",
+      "flag": "br"
+    },
+    "da": {
+      "name": "Danish",
+      "locale": "da-DK",
+      "transcription": "da",
+      "speechLocale": "da-DK",
+      "labelKey": "ui_b4900b98190c00c5",
+      "flag": "dk"
+    },
+    "it": {
+      "name": "Italian",
+      "locale": "it-IT",
+      "transcription": "it",
+      "speechLocale": "it-IT",
+      "labelKey": "ui_d56b9aeaa54ded5c",
+      "flag": "it"
+    },
+    "sv": {
+      "name": "Swedish",
+      "locale": "sv-SE",
+      "transcription": "sv",
+      "speechLocale": "sv-SE",
+      "labelKey": "ui_e29e7b49c3490fc6",
+      "flag": "se"
+    },
+    "nl": {
+      "name": "Dutch",
+      "locale": "nl-NL",
+      "transcription": "nl",
+      "speechLocale": "nl-NL",
+      "labelKey": "course_nl",
+      "flag": "nl"
+    }
+  },
+  "support": {
+    "ro": {
+      "name": "Romanian",
+      "locale": "ro-RO",
+      "nativeName": "Română",
+      "flag": "ro"
+    },
+    "en": {
+      "name": "English",
+      "locale": "en-GB",
+      "nativeName": "English",
+      "flag": "gb"
+    },
+    "pl": {
+      "name": "Polish",
+      "locale": "pl-PL",
+      "nativeName": "Polski",
+      "flag": "pl"
+    },
+    "uk": {
+      "name": "Ukrainian",
+      "locale": "uk-UA",
+      "nativeName": "Українська",
+      "flag": "ua"
+    },
+    "lt": {
+      "name": "Lithuanian",
+      "locale": "lt-LT",
+      "nativeName": "Lietuvių",
+      "flag": "lt"
+    },
+    "ar": {
+      "name": "Modern Standard Arabic",
+      "locale": "ar",
+      "nativeName": "العربية",
+      "flag": "sa"
+    },
+    "de": {
+      "name": "German",
+      "locale": "de-DE",
+      "nativeName": "Deutsch",
+      "flag": "de"
+    },
+    "es": {
+      "name": "Spanish",
+      "locale": "es-ES",
+      "nativeName": "Español",
+      "flag": "es"
+    }
+  },
+  "releasedPairs": [
+    "nb:ro",
+    "nb:en",
+    "nb:pl",
+    "nb:uk",
+    "en:ro",
+    "de:ro",
+    "fr:ro",
+    "es:ro",
+    "pt:ro",
+    "nl:ro",
+    "sv:ro",
+    "it:ro",
+    "da:ro",
+    "de:en",
+    "de:pl",
+    "de:uk",
+    "fr:en",
+    "fr:pl",
+    "fr:uk",
+    "en:pl",
+    "en:uk",
+    "es:en",
+    "es:pl",
+    "es:uk",
+    "pt:en",
+    "pt:pl",
+    "pt:uk",
+    "da:en",
+    "da:pl",
+    "da:uk",
+    "it:en",
+    "it:pl",
+    "it:uk",
+    "sv:en",
+    "sv:pl",
+    "sv:uk",
+    "nl:en",
+    "nl:pl",
+    "nl:uk",
+    "nb:lt",
+    "de:lt",
+    "fr:lt",
+    "en:lt",
+    "es:lt",
+    "pt:lt",
+    "da:lt",
+    "it:lt",
+    "sv:lt",
+    "nl:lt",
+    "nb:ar",
+    "de:ar",
+    "fr:ar",
+    "en:ar",
+    "es:ar",
+    "pt:ar",
+    "da:ar",
+    "it:ar",
+    "sv:ar",
+    "nl:ar",
+    "nb:de",
+    "fr:de",
+    "en:de",
+    "es:de",
+    "pt:de",
+    "da:de",
+    "it:de",
+    "sv:de",
+    "nl:de",
+    "nb:es",
+    "de:es",
+    "fr:es",
+    "en:es",
+    "pt:es",
+    "da:es",
+    "it:es",
+    "sv:es",
+    "nl:es"
+  ],
+  "courses": {
+    "nb": {
+      "courseId": "nb-general",
+      "version": "2026.2"
+    },
+    "de": {
+      "courseId": "de-general",
+      "version": "2026.1"
+    },
+    "fr": {
+      "courseId": "fr-general",
+      "version": "2026.1"
+    },
+    "en": {
+      "courseId": "en-general",
+      "version": "2026.1"
+    },
+    "es": {
+      "courseId": "es-general",
+      "version": "2026.1"
+    },
+    "pt": {
+      "courseId": "pt-general",
+      "version": "2026.1"
+    },
+    "da": {
+      "courseId": "da-general",
+      "version": "2026.1"
+    },
+    "it": {
+      "courseId": "it-general",
+      "version": "2026.1"
+    },
+    "sv": {
+      "courseId": "sv-general",
+      "version": "2026.1"
+    },
+    "nl": {
+      "courseId": "nl-general",
+      "version": "2026.1"
+    }
+  }
+}
