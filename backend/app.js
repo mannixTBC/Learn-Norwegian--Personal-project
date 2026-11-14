@@ -34,6 +34,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/news', newsRouter);
 app.use('/api/translate', translateRouter);
 app.use('/api/speech', speechRouter);
+app.use('/api/lesson-speech', require('./lessonSpeechRoute'));
 app.use('/api/pronunciation', pronunciationRouter);
 app.use('/api/billing', billingRouter);
 app.use('/api/voice/stream', voiceStreamRouter);

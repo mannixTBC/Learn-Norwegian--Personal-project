@@ -7,14 +7,14 @@ const MAX_CACHE_BYTES = 20 * 1024 * 1024;
 let cacheBytes = 0;
 const fail = (message, status) => Object.assign(new Error(message), {status});
 
-async function lessonSpeech({text, voice = 'male', slow = false, locale = 'no-NO', stream = false, signal}) {
+async function lessonSpeech({text, voice = 'male', slow = false, locale = 'no-NO', voiceId: selectedVoiceId, stream = false, signal}) {
   if (typeof text !== 'string' || !text.trim()) throw fail('Lipsește textul pentru pronunție.', 400);
   if (text.length > 3000) throw fail('Textul este prea lung pentru un singur fragment audio.', 413);
   const key = process.env.CARTESIA_API_KEY;
   const role = voice === 'female' ? 'female' : 'male';
-  const voiceId = role === 'female'
+  const voiceId = selectedVoiceId || (role === 'female'
     ? process.env.CARTESIA_FEMALE_VOICE_ID || process.env.CARTESIA_VOICE_ID
-    : process.env.CARTESIA_MALE_VOICE_ID || LARS_VOICE_ID;
+    : process.env.CARTESIA_MALE_VOICE_ID || LARS_VOICE_ID);
   if (!key || !voiceId) throw fail('Vocile Cartesia pentru lecții nu sunt configurate.', 503);
   const model = process.env.CARTESIA_LESSON_MODEL_ID || 'sonic-3.6-2026-08-27';
   const version = process.env.CARTESIA_API_VERSION || '2026-08-14';
