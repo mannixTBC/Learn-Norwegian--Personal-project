@@ -1,0 +1,42 @@
+// Editorial prototypes, not published content. Private facts stay outside src/.
+const criterion = (id, meaning, requiresPartnerContext = false) => ({id, meaning, requiresPartnerContext});
+function define({id, familyId, level, title, brief, learnerRole, partnerRole, opening, hint, criteria, labels, facts}) {
+  return {schemaVersion: 2, id, familyId, version: 1, learningLanguage: 'nb', level, maxTurns: 10,
+    states: ['discussion', 'agreed'], initialState: 'discussion', criteria,
+    transitions: [{from: 'discussion', to: 'agreed', requires: criteria.map(c => c.id), terminal: true}],
+    variants: [{id: 'reference', opening, facts}],
+    locales: {ro: {title, brief, learnerRole, partnerRole, hint, criteria: Object.fromEntries(criteria.map((c, i) => [c.id, labels[i]]))}}};
+}
+export const pilotScenarios = [
+  define({id: 'cafe-order-a1', familyId: 'cafe', level: 'A1', title: 'O cafea pentru tine',
+    brief: 'Comandă o cafea mică pentru a o lua cu tine. Confirmă comanda când Nora o repetă.',
+    learnerRole: 'Client', partnerRole: 'Nora, angajata cafenelei', opening: 'Hei! Hva vil du ha?',
+    hint: 'En liten kaffe, takk. Jeg vil ta den med.',
+    criteria: [criterion('order-coffee', 'The learner requests a small coffee; understandable fragments are accepted.'),
+      criterion('take-away', 'The learner communicates that the order is to take away.'),
+      criterion('confirm-order', 'The learner confirms the partner’s correct small takeaway coffee order.', true)],
+    labels: ['Cere o cafea mică.', 'Spune că o iei cu tine.', 'Confirmă comanda repetată de Nora.'],
+    facts: [{id: 'product', audience: 'shared', text: 'Small coffee is available.'},
+      {id: 'price', audience: 'partner', text: 'The small coffee costs 35 NOK. Disclose only if asked; price is not an objective.'}]}),
+  define({id: 'appointment-change-a2', familyId: 'appointments', level: 'A2', title: 'Schimbă programarea',
+    brief: 'Nu poți veni marți. Cere o altă programare și confirmă ziua și ora după ce afli opțiunile.',
+    learnerRole: 'Client cu o programare marți', partnerRole: 'Nora, recepționera', opening: 'Hei! Hva kan jeg hjelpe deg med?',
+    hint: 'Jeg kan ikke komme på tirsdag. Har dere en annen ledig time?',
+    criteria: [criterion('explain-conflict', 'The learner explains that Tuesday is not possible.'),
+      criterion('ask-availability', 'The learner asks about an alternative available appointment.'),
+      criterion('confirm-slot', 'The learner agrees to a previously offered available day and time; reject unavailable slots.', true)],
+    labels: ['Spune că nu poți veni marți.', 'Întreabă ce alternative sunt disponibile.', 'Confirmă o zi și o oră oferite de Nora.'],
+    facts: [{id: 'original', audience: 'shared', text: 'The original appointment is Tuesday; its time is unspecified.'},
+      {id: 'availability', audience: 'partner', text: 'Available: Wednesday at 10:00 or Thursday at 14:00. Reveal when asked about alternatives. No other slots are available.'}]}),
+  define({id: 'bus-delay-b1', familyId: 'transport-delay', level: 'B1', title: 'Anunță întârzierea',
+    brief: 'Conduci autobuzul 42 și ai zece minute întârziere din cauza traficului. Ești oprit în siguranță. Compară informarea pasagerilor acum cu informarea după următoarea verificare și conveniți un plan.',
+    learnerRole: 'Șoferul autobuzului 42', partnerRole: 'Nora, dispecera', opening: 'Hei! Hvordan ligger rute 42 an?',
+    hint: 'Vi kan enten … eller … Jeg foreslår … fordi …',
+    criteria: [criterion('report-delay', 'The learner reports ten minutes delay due to traffic, not an accident.'),
+      criterion('compare-options', 'The learner compares informing now versus after a later check and gives a reason for a choice; either choice can be valid.'),
+      criterion('agree-update', 'The learner agrees a feasible communication plan with the dispatcher, without promising an exact arrival time.', true)],
+    labels: ['Anunță durata și cauza întârzierii.', 'Compară cele două opțiuni și justifică alegerea.', 'Confirmă un plan realist cu dispecera.'],
+    facts: [{id: 'delay', audience: 'shared', text: 'Route 42 is ten minutes late due to traffic. No accident occurred.'},
+      {id: 'safety', audience: 'shared', text: 'Driver currently stopped safely; future communication is possible only at a safe stop. Arrival and next safe stop times are unknown.'},
+      {id: 'dispatch', audience: 'partner', text: 'Dispatch can inform passengers now with the current estimate, or after the driver checks again at a safe stop. Accept either justified feasible plan.'}]}),
+];

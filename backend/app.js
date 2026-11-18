@@ -18,6 +18,7 @@ const accountRouter = require('./routes/account');
 const app = express();
 
 app.use(cors({ origin: true }));
+require('./conversationV2').mount(app,express);
 app.use(['/api/chat','/api/scenarios','/api/voice','/api/pronunciation','/api/transcription','/api/speech'], require('./languageContext').languageMiddleware);
 // Text chat never needs the multi-megabyte body allowance used by voice uploads.
 // Mount it first with a deliberately small parser so oversized requests are
