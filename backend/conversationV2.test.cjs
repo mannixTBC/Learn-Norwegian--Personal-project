@@ -19,7 +19,7 @@ test('production mount exposes only the V2 catalog, requires auth and bounds ses
  try{
   assert.equal((await fetch(url+'/catalog?supportLanguage=ro')).status,401);
   const response=await fetch(url+'/catalog?supportLanguage=ro',{headers:{Authorization:'test'}});assert.equal(response.status,200);
-  const catalog=await response.json();assert.equal(catalog.scenarios.length,9);assert.equal(catalog.scenarios.filter(s=>s.kind==='free').length,6);
+  const catalog=await response.json();assert.equal(catalog.scenarios.length,15);assert.equal(catalog.scenarios.filter(s=>s.kind==='free').length,6);
   assert.ok(!JSON.stringify(catalog).includes('35 NOK'));
   for(let i=0;i<11;i++){
    const result=await fetch(url+'/sessions',{method:'POST',headers:{Authorization:'test','Content-Type':'application/json'},body:'{}'});

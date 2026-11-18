@@ -52,7 +52,8 @@ const questions = {
 };
 
 const catalog = require('./voiceCatalog.json');
-const entriesFor = (level, lessonId) => catalog[level]?.[lessonId]?.conversationPrompts || questions[level]?.[lessonId - 1] || null;
+const {tutorLesson}=require('./norwegianTutorContent.cjs');
+const entriesFor = (level, lessonId) => tutorLesson(level, lessonId)?.conversationPrompts || (!require('./localTutorContent.cjs').active() && questions[level]?.[lessonId - 1]) || null;
 const getPreparedQuestions = (level, lessonId) => entriesFor(level, lessonId)?.map(([question]) => question) || null;
 const getPreparedQuestionTranslation = (level, lessonId, question) => (
   entriesFor(level, lessonId)?.find(([candidate]) => candidate === question)?.[1] || null

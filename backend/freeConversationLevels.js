@@ -8,6 +8,7 @@ const profiles = {
   C2: { guidance: 'Use 2–5 natural, precise sentences with nuanced register and idiomatic phrasing. Follow complex or abstract topics if the learner chooses them; everyday topics remain welcome. Explore subtle distinctions without obscure vocabulary for its own sake. Correct only a clear error; distinguish optional stylistic suggestions from corrections.', opening: ['Hei! Hva har du lyst til å utforske i dag — en hverdagslig observasjon eller et større spørsmål?', 'Bună! Ce ai vrea să explorăm astăzi — o observație cotidiană sau o întrebare mai amplă?', 'Pornește de la o observație și dezvoltă implicațiile ei.', 'En liten hendelse på jobb fikk meg til å revurdere hva vi egentlig legger i begrepet ansvar.', 'O mică întâmplare de la serviciu m-a făcut să reconsider ce înțelegem de fapt prin responsabilitate.'] },
 };
 function openingFor(level) {
+  if(require('./localTutorContent.cjs').active())return require('./localTutorContent.cjs').openingFor(level);
   const [reply,translation,hint,answer,exampleTranslation]=profiles[level].opening;
   return {reply,translation,hint,examples:[{answer,translation:exampleTranslation}],correction:null,simplified:false};
 }

@@ -60,28 +60,13 @@ router.put('/preference', async (req, res) => {
   try {
     if (typeof req.body?.enabled !== 'boolean') throw fail('Alege dacă dorești salvarea transcriptelor.');
     const enabled = req.body.enabled;
-    const database = databaseFor(req);
-    const now = new Date().toISOString();
-    const { error } = await database.from('voice_transcript_preferences').upsert({
-      user_id: req.userId,
-      improvement_consent: enabled,
-      consent_version: enabled ? CONSENT_VERSION : null,
-      consented_at: enabled ? now : null,
-      withdrawn_at: enabled ? null : now,
-      updated_at: now,
-    }, { onConflict: 'user_id' });
-    if (error) throw error;
-
-    // Retragerea acordului șterge și transcriptele deja păstrate.
-    if (!enabled) {
-      const { error: deleteError } = await database
-        .from('voice_conversations')
-        .delete()
-        .eq('user_id', req.userId);
-      if (deleteError) throw deleteError;
-    }
-
-    return res.json({ enabled, updatedAt: now });
+    const {createClient}=require('@supabase/supabase-js');
+    const url=process.env.VITE_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if(!url||!key)throw fail('Preferința nu poate fi salvată momentan.',503);
+    const database=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
+    const {data,error}=await database.rpc('nl_set_voice_transcript_preference',{p_owner:req.userId,p_enabled:enabled}).abortSignal(AbortSignal.timeout(10000));
+    if(error)throw error;
+    return res.json(data);
   } catch (error) {
     return sendError(res, error);
   }

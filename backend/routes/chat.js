@@ -87,9 +87,9 @@ router.use(require('./freeConversation'));
 
 /** Starts a signed, short-lived lesson conversation without contacting OpenAI. */
 router.post('/start', wrap(async (req, res) => {
-  validateKeys(req.body, ['level', 'lessonId', 'pathId'], ['level', 'lessonId']);
-  const { level, lessonId, pathId = 'general' } = req.body;
-  const context = lessonFor({ level, lessonId, pathId });
+  validateKeys(req.body, ['level', 'lessonId', 'pathId', 'activityId'], ['level', 'lessonId']);
+  const { level, lessonId, activityId, pathId = 'general' } = req.body;
+  const context = lessonFor({ level, lessonId, activityId, pathId });
   if (!context) throw fail('Lecția sau direcția selectată nu este validă.');
 
   const { session, opening } = newSession(context, req.userId);

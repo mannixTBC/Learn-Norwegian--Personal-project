@@ -1,19 +1,20 @@
 'use strict';
-const {currentLanguages, pairId} = require('./languageContext');
-// Publication requires an authored adapter for every enabled mode. Provider
-// language support by itself is never enough to publish a new course.
-const packs = {
-  'nb:ro': {
-    lesson: () => require('./chatTutor'),
-    scenario: () => require('./scenarioTutor'),
-    free: () => require('./freeConversationLevels'),
-    voice: () => require('./voiceTutor'),
-  },
+const {currentLanguages} = require('./languageContext');
+const localCourses = require('./localTutorContent.cjs');
+const tutors = {
+  lesson: () => require('./chatTutor'),
+  scenario: () => require('./scenarioTutor'),
+  free: () => require('./freeConversationLevels'),
+  voice: () => require('./voiceTutor'),
 };
+function published(language) {
+  return language === 'nb' || localCourses.has(language);
+}
 function getTutor(feature) {
-  const load = packs[pairId(currentLanguages())]?.[feature];
-  if (!load) throw Object.assign(new Error('Conținutul AI pentru această limbă este în pregătire.'), {status:409, code:'LANGUAGE_CONTENT_UNAVAILABLE'});
-  return load();
+  if (!published(currentLanguages().learningLanguage) || !Object.hasOwn(tutors,feature)) {
+    throw Object.assign(new Error('Conținutul AI pentru această limbă este în pregătire.'), {status:409, code:'LANGUAGE_CONTENT_UNAVAILABLE'});
+  }
+  return tutors[feature]();
 }
 function facade(feature) {
   return new Proxy({}, {get(_, name) {
@@ -21,10 +22,8 @@ function facade(feature) {
     return typeof value === 'function' ? (...args) => getTutor(feature)[name](...args) : value;
   }});
 }
-function apiRoute(languages, mount) {
-  if(pairId(languages)==='nb:ro')return null;
-  const load=packs[pairId(languages)]?.api?.[mount];
-  if(!load)throw Object.assign(new Error('Modulul AI pentru această combinație de limbi este în pregătire.'),{status:409,code:'LANGUAGE_CONTENT_UNAVAILABLE'});
-  return load();
+function apiRoute(languages) {
+  if (published(languages.learningLanguage))return null;
+  throw Object.assign(new Error('Modulul AI pentru această combinație de limbi este în pregătire.'),{status:409,code:'LANGUAGE_CONTENT_UNAVAILABLE'});
 }
 module.exports = {getTutor, apiRoute, lesson:facade('lesson'), scenario:facade('scenario'), free:facade('free'), voice:facade('voice')};

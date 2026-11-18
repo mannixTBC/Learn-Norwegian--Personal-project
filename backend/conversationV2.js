@@ -26,6 +26,7 @@ function mount(app,express,dependencies={}){
  // concurrency lease immediately; live audio usage is not text-token usage.
  const liveQuota=createLiveQuota(consumeChatQuota,recordChatUsage);
  mountConversationV2(app,{enabled:true,express,requireAuth:auth,client,catalog:pilotScenarios,
+  canSaveLiveTranscript:async owner=>{const {data,error}=await client.from('voice_transcript_preferences').select('improvement_consent').eq('user_id',owner).maybeSingle();if(error)throw error;return data?.improvement_consent===true;},
   ai:{enabled:process.env.CONVERSATION_V2_AI_ENABLED==='true',getClient:require('./openai').getOpenAI,
    getSettings:()=>require('./textModel').textModelSettings('chat'),consumeQuota:consumeChatQuota,recordUsage:recordChatUsage,
    onAccountingError:event=>console.warn(event.code),onTiming:event=>console.info(JSON.stringify({event:'v2_provider_timing',...event}))},

@@ -1,5 +1,5 @@
 // nordlingo-feedback-languages-v1
-const normalize = (value) => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('nb-NO').replace(/[^a-zæø0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+const normalize = (value) => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('nb-NO').replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
 const containsQuote = (message, quote) => {
   const source = normalize(message);
   const fragment = normalize(quote);
@@ -40,6 +40,7 @@ const situationFor = (context) => context.lesson.uid === 'a1-cafe'
   : `${context.lesson.production?.speakingPrompt || context.lesson.title} Nora este interlocutorul tău. Poți folosi nume și situații fictive.`;
 
 const contextualSupport = (context, question) => {
+  if(require('./localTutorContent.cjs').active())return [];
   const q = normalize(question);
   const pair = (answer, translation) => ({ answer, translation });
   if (/hva heter|navnet ditt/.test(q)) return [pair('Jeg heter Ana.', 'Mă numesc Ana.'), pair('Jeg heter Lars.', 'Mă numesc Lars.')];

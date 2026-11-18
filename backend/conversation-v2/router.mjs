@@ -1,6 +1,7 @@
 import {randomUUID} from 'node:crypto';
 import {check, text, ConversationError, publicScenario} from './contract.mjs';
 import {validateCommand} from './engine.mjs';
+import {supportedPair} from './languages.mjs';
 
 const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 const statuses = {SESSION_NOT_FOUND:404, SESSION_EXPIRED:410, SESSION_EXISTS:409, SESSION_ENDED:409,
@@ -12,7 +13,7 @@ const statuses = {SESSION_NOT_FOUND:404, SESSION_EXPIRED:410, SESSION_EXISTS:409
   INVALID_ASSESSMENT:502,INVALID_EVIDENCE:502,MISSING_EVIDENCE:502,MISSING_PRIOR_CONTEXT:502,INVALID_FEEDBACK:502};
 
 // Mount before the backend's broad JSON parser. No caller-supplied owner or evaluation.
-export function createConversationRouter({express, enabled = false, requireAuth, serviceForRequest, catalog,issueLiveToken}) {
+export function createConversationRouter({express, enabled = false, requireAuth, serviceForRequest, catalog,issueLiveToken,canSaveLiveTranscript}) {
   check(typeof requireAuth === 'function' && typeof serviceForRequest === 'function', 'INVALID_ROUTER_CONFIG');
   const router = express.Router();
   router.use((req,res,next) => {res.set('Cache-Control','no-store');
@@ -27,8 +28,9 @@ export function createConversationRouter({express, enabled = false, requireAuth,
   const service = req => serviceForRequest(req);
   const sessionId = req => {check(uuid(req.params.id),'INVALID_SESSION_ID');return req.params.id;};
   router.get('/catalog', wrap(async(req,res) => {
-    check(typeof req.query.supportLanguage === 'string','INVALID_LANGUAGE');
-    res.json({schemaVersion:2,scenarios:catalog.filter(s => Object.hasOwn(s.locales,req.query.supportLanguage))
+    const learning=req.query.learningLanguage||'nb';
+    check(supportedPair(learning,req.query.supportLanguage),'INVALID_LANGUAGE');
+    res.json({schemaVersion:2,scenarios:catalog.filter(s => s.learningLanguage===learning&&Object.hasOwn(s.locales,req.query.supportLanguage))
       .map(s => publicScenario(s,req.query.supportLanguage))});
   }));
   router.post('/sessions', wrap(async(req,res) => {
@@ -55,6 +57,7 @@ export function createConversationRouter({express, enabled = false, requireAuth,
   }));
   for (const [route,type] of [['turns','turn'],['help','help'],['finish','finish'],['live-transcript','liveTranscript']]) {
     router.post(`/sessions/:id/${route}`, wrap(async(req,res) => {
+      if(type==='liveTranscript')check(await canSaveLiveTranscript?.(req.userId),'UNSUPPORTED_TRANSCRIPT_STORAGE');
       check(req.body && !Object.hasOwn(req.body,'type'),'INVALID_COMMAND');
       const command = {...req.body,type}; validateCommand(command);
       res.json(await service(req).dispatch(sessionId(req),req.userId,command));

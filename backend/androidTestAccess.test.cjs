@@ -7,12 +7,12 @@ const path=require('node:path');
 const {isAndroidTestUser}=require('./androidTestAccess');
 const {consumeChatQuota}=require('./chatUsage');
 const {createTranscriptionGuard}=require('./deepgramTranscription');
-const account=()=>({headers:{'x-nordlingo-client':'android'},userId:'test-account',verifiedUser:{id:'test-account',is_anonymous:false}});
+const account=()=>({headers:{'x-nordlingo-client':'android'},userId:'test-account',verifiedUser:{id:'test-account',is_anonymous:false,app_metadata:{android_test_access:true}}});
 
 test('test access requires the flag, Android and an authoritative non-anonymous account',async t=>{
  const prior=process.env.ANDROID_TEST_UNLIMITED;t.after(()=>{if(prior===undefined)delete process.env.ANDROID_TEST_UNLIMITED;else process.env.ANDROID_TEST_UNLIMITED=prior;});
  process.env.ANDROID_TEST_UNLIMITED='true';assert.equal(isAndroidTestUser(account()),true);
- for(const req of [{headers:account().headers}, {...account(),verifiedUser:undefined},{...account(),verifiedUser:{id:'test-account',is_anonymous:true}},{...account(),verifiedUser:{id:'other',is_anonymous:false}},{...account(),headers:{'x-nordlingo-client':'ios'}},{...account(),headers:{}}])assert.equal(!!isAndroidTestUser(req),false);
+ for(const req of [{...account(),verifiedUser:{id:'test-account',is_anonymous:false}},{...account(),verifiedUser:{id:'test-account',is_anonymous:false,user_metadata:{android_test_access:true}}},{headers:account().headers}, {...account(),verifiedUser:undefined},{...account(),verifiedUser:{id:'test-account',is_anonymous:true}},{...account(),verifiedUser:{id:'other',is_anonymous:false}},{...account(),headers:{'x-nordlingo-client':'ios'}},{...account(),headers:{}}])assert.equal(!!isAndroidTestUser(req),false);
  for(let i=0;i<150;i++)assert.equal((await consumeChatQuota(account())).source,'android-test');
  process.env.ANDROID_TEST_UNLIMITED='false';assert.equal(isAndroidTestUser(account()),false);
 });

@@ -1,7 +1,7 @@
 import {ConversationError, check} from './contract.mjs';
 
 const errors = new Set(['INVALID_COMMAND','INVALID_SESSION','SESSION_NOT_FOUND','SESSION_EXPIRED','SESSION_ENDED',
-  'IDEMPOTENCY_CONFLICT','REVISION_CONFLICT','SESSION_BUSY','SESSION_COMMAND_LIMIT','LEASE_LOST']);
+  'IDEMPOTENCY_CONFLICT','REVISION_CONFLICT','SESSION_BUSY','SESSION_COMMAND_LIMIT','LEASE_LOST','UNSUPPORTED_TRANSCRIPT_STORAGE']);
 export function createSupabaseRepository(client) {
   check(typeof client?.rpc === 'function', 'DATABASE_NOT_CONFIGURED');
   async function call(operation, ownerId, id, data = {}) {

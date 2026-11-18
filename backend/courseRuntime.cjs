@@ -7,7 +7,7 @@ const manifest=require('../src/content/generated/course-manifest.json');
 const scope=new AsyncLocalStorage();
 const fail=()=>Object.assign(new Error('Cursul sau versiunea conversatiei nu corespunde. Incepe o conversatie noua.'),{status:409,code:'SESSION_COURSE_MISMATCH'});
 function requestCourse(req,languages){
- const bundled=manifest.courses.find(c=>c.learningLanguage===languages.learningLanguage);
+ const bundled=require('./localTutorContent.cjs').course(languages.learningLanguage)||manifest.courses.find(c=>c.learningLanguage===languages.learningLanguage);
  const courseId=req.get('X-NordLingo-Course-Id'),version=req.get('X-NordLingo-Course-Version');
  if(!bundled||((courseId!==undefined||version!==undefined)&&(courseId!==bundled.courseId||version!==bundled.version)))throw fail();
  return {courseId:bundled.courseId,version:bundled.version};
@@ -31,7 +31,7 @@ async function prepareCourseSession(req,session,purpose){
  const languages=require('./languageContext').currentLanguages();
  const identity=requestCourse(req,languages);
  let context={...identity,level:session.level,purpose,policyVersion:'1',languages:{...languages},retrievalEnabled:false};
- if(process.env.NORDLINGO_COURSE_DATABASE==='true'){
+ if(process.env.NORDLINGO_COURSE_DATABASE==='true' && !require('./localTutorContent.cjs').has(languages.learningLanguage)){
    const db=databaseClient();if(!db)throw Object.assign(new Error('Course database unavailable'),{status:503});
    context=await loadCourseContext({client:db,languages,...identity,level:session.level,purpose});
  }

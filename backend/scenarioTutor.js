@@ -42,6 +42,7 @@ function verify(token, userId) {
   return verifySessionLanguages(session);
 }
 function context(id, level) {
+  if(require('./localTutorContent.cjs').active())return require('./localTutorContent.cjs').scenarioContext(id,level);
   const scenario = catalog.scenarios.find(s => s.id === id);
   const difficulty = typeof level === 'string' && Object.hasOwn(catalog.levels, level) ? catalog.levels[level] : null;
   if (!scenario || !difficulty) throw fail('Scenariu sau nivel invalid.');

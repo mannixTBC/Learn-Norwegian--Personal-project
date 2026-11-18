@@ -1,4 +1,5 @@
 // Server-side authoring contract. Mobile consumers receive publicScenario only.
+import {learningLanguages,supportedPair} from './languages.mjs';
 export class ConversationError extends Error {
   constructor(code) { super(code); this.name = 'ConversationError'; this.code = code; }
 }
@@ -12,7 +13,7 @@ export function validateScenario(s) {
   const free=s?.kind==='free';
   check(s?.kind===undefined || ['free','scenario'].includes(s.kind));
   check(s?.schemaVersion === 2 && id(s.id) && id(s.familyId));
-  check(Number.isSafeInteger(s.version) && s.version > 0 && s.learningLanguage === 'nb');
+  check(Number.isSafeInteger(s.version) && s.version > 0 && Object.hasOwn(learningLanguages,s.learningLanguage));
   check(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(s.level));
   check(Number.isSafeInteger(s.maxTurns) && s.maxTurns >= 3 && s.maxTurns <= 30);
   check((free?Array.isArray(s.criteria)&&s.criteria.length===0:list(s.criteria)) && s.criteria.length <= 12 && unique(s.criteria.map(c => c.id)));
@@ -34,7 +35,7 @@ export function validateScenario(s) {
   }
   check(s.locales && Object.keys(s.locales).length > 0);
   for (const [language, locale] of Object.entries(s.locales)) {
-    check(/^[a-z]{2}$/.test(language) && ['title', 'brief', 'learnerRole', 'partnerRole', 'hint'].every(k => text(locale[k])));
+    check(supportedPair(s.learningLanguage,language) && ['title', 'brief', 'learnerRole', 'partnerRole', 'hint'].every(k => text(locale[k])));
     check(locale.criteria && Object.keys(locale.criteria).length === s.criteria.length);
     check(s.criteria.every(c => text(locale.criteria[c.id])));
   }

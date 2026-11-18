@@ -4,7 +4,7 @@ const {languageInstructions,voiceLanguage} = require('./languageContext');
 const catalog = require('./voiceCatalog.json');
 
 const getVoiceLesson = ({ level, lessonId, pathId }) => {
-  const lesson = catalog[level]?.[lessonId];
+  const lesson = require('./norwegianTutorContent.cjs').tutorLesson(level,lessonId);
   if (!lesson || !lesson.directions[pathId]) return null;
   const { directions, ...content } = lesson;
   return { level, lessonId, ...content, direction: directions[pathId] };

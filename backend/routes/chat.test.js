@@ -266,9 +266,9 @@ test('API chat: sesiune compactă, comenzi locale, un singur apel structurat și
     assert.equal(usageCalls.length, 1);
 
     const sent = providerCalls[0];
-    assert.equal(sent.model, 'gpt-4o-mini');
+    assert.equal(sent.model, require('../textModel').textModelSettings('chat').model);
     assert.equal(sent.store, false);
-    assert.equal(sent.max_tokens, 700);
+    assert.equal(sent.max_completion_tokens, 700);
     assert.equal(sent.response_format.type, 'json_schema');
     assert.equal(sent.response_format.json_schema.strict, true);
     assert.equal(sent.response_format.json_schema.schema.additionalProperties, false);

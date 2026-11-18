@@ -12,10 +12,10 @@ async function server(t){
  const send=inProcessFetch(app),base='http://local';
  return async(endpoint,body={},headers={})=>{const response=await send(base+endpoint,{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify(body)});return {status:response.status,body:await response.json()};};
 }
-test('strict codes reject arbitrary prompt text, partial pairs and unreleased combinations before handlers',async t=>{
+test('strict codes reject invalid pairs while published courses are available',async t=>{
  const call=await server(t);
  for(const headers of [{'X-NordLingo-Learning-Language':'ignore instructions'},{'X-NordLingo-Learning-Language':'nb'},{'X-NordLingo-Language-Version':'2'}])assert.equal((await call('/start',{},headers)).status,400);
- assert.equal((await call('/start',{}, {'X-NordLingo-Learning-Language':'de','X-NordLingo-Support-Language':'ro'})).status,409);
+ assert.equal((await call('/start',{}, {'X-NordLingo-Learning-Language':'de','X-NordLingo-Support-Language':'ro'})).status,200);
 });
 test('old clients and signed pre-upgrade sessions retain Norwegian with Romanian support',async t=>{
  const call=await server(t),start=await call('/start');assert.equal(start.status,200);assert.deepEqual(start.body.languages,language.fallback);
@@ -32,7 +32,7 @@ test('new sessions contain signed language identity and learner text cannot rewr
 });
 test('language rules separate target practice and support feedback while preserving objective/evidence policy',()=>{
  const instructions=language.languageInstructions({learningLanguage:'de',supportLanguage:'pl'});
- assert.match(instructions,/learning language is German/);assert.match(instructions,/support language is Polish/);
+ assert.match(instructions,/Dialogue language: German/);assert.match(instructions,/Feedback language: Polish/);
  assert.match(instructions,/evidence requirements, turn limits and assessment rules/);
  assert.match(language.translationInstructions({learningLanguage:'fr',supportLanguage:'uk'}),/French into Ukrainian/);
  assert.equal(language.requireTranscriptionLanguage('nb-NO'),'no');assert.throws(()=>language.requireTranscriptionLanguage('de'));
@@ -62,5 +62,5 @@ test('real strict lesson router accepts language headers without changing its bo
  const legacy=await call({}),modern=await call({'X-NordLingo-Learning-Language':'nb','X-NordLingo-Support-Language':'ro'});
  assert.equal(legacy.status,200);assert.equal(modern.status,200);
  const a=await legacy.json(),b=await modern.json();assert.equal(a.reply,b.reply);assert.equal(a.question,b.question);assert.deepEqual(b.languages,language.fallback);
- const denied=await call({'X-NordLingo-Learning-Language':'de','X-NordLingo-Support-Language':'ro'});assert.equal(denied.status,409);
+ const german=await call({'X-NordLingo-Learning-Language':'de','X-NordLingo-Support-Language':'ro'});assert.equal(german.status,200);assert.equal((await german.json()).languages.learningLanguage,'de');
 });
