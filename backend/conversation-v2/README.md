@@ -33,4 +33,6 @@ Live serializează salvarea și încheierea. Dacă serverul răspunde explicit S
 - `node scripts/test-conversation-v2-persistence.mjs`: PostgreSQL local și rute HTTP reale, cu autentificare de test.
 - `node scripts/test-conversation-v2-live.mjs --live`: cazuri sintetice pe providerul configurat; necesită o cheie validă.
 
-Verificarea din 18 noiembrie: ruta V2 de catalog de pe serverul configurat răspunde 404. Încercarea cu providerul real este blocată de 401 / expired_secret_key. Testele simulate nu demonstrează funcționarea AI sau audio în producție. Consultați DEPLOYMENT.md pentru montare, cote și configurare; activarea necesită publicarea fișierelor actualizate și o cheie validă.
+Publicat în Railway pe 18 noiembrie 2026: commit `15d0dc2c50da2eebd1be5bae9ff4b7851fbd0d9b`, deployment `7b593a07-c654-4401-8193-4cfe71f86ba4`. Migrarea V2 și flagurile scenario/AI/Live sunt active. Pe telefon: trei scenarii completate, dialog liber A1–C2 cu provider real, traducere și microfon, Live A1 cu voce în ambele sensuri, mute și încheiere persistentă. Detalii și limite în `docs/VERIFICARE_DIALOG_AI_2026-11-18.md` din proiectul mobil.
+
+Actualizare ulterioară: cheia existentă din Railway a fost verificată cu succes prin traducere din aplicația autentificată pe telefon. Eroarea 401 / expired_secret_key de mai sus aparține numai configurației locale; nu indică expirarea cheii Railway.

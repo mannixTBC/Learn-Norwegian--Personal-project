@@ -25,10 +25,10 @@ export function createConversationService({enabled = false, repository, catalog,
     gate(); const session = await repository.read(id, ownerId); authorize(session, ownerId, clock()); return session;
   }
   return {
-    async start({ownerId, sessionId, scenarioId, scenarioVersion, supportLanguage, mode, variantId}) {
+    async start({ownerId, sessionId, scenarioId, scenarioVersion, supportLanguage, mode, variantId, memory}) {
       gate();
       const scenario = definition({scenarioId, scenarioVersion});
-      const session = createSession({scenario, ownerId, sessionId, supportLanguage, mode, variantId, now: clock()});
+      const session = createSession({scenario, ownerId, sessionId, supportLanguage, mode, variantId, memory, now: clock()});
       await repository.insert(session); return sessionView(session);
     },
     async resume(id, ownerId) { return sessionView(await read(id, ownerId)); },
@@ -52,13 +52,15 @@ export function createConversationService({enabled = false, repository, catalog,
       }
       try {
         let evaluation;
-        if (command.type === 'turn') {
-          check(session.mode!=='live','UNSUPPORTED_MODE');
+        // An example sentence is generated under the same lease and quota as a turn.
+        const example = command.type === 'help' && command.kind === 'example';
+        if (command.type === 'turn' || example) {
+          check(session.mode!=='live' && !(example && scenario.kind==='free'),'UNSUPPORTED_MODE');
           check(typeof evaluate === 'function', 'EVALUATOR_UNAVAILABLE');
           const controller = new AbortController(); let timer;
           try {
             evaluation = await Promise.race([
-              Promise.resolve().then(() => evaluate({scenario: structuredClone(scenario), session: structuredClone(session), command: structuredClone(command), signal: controller.signal})),
+              Promise.resolve().then(() => evaluate({scenario: structuredClone(scenario), session: structuredClone(session), command: structuredClone(command), signal: controller.signal, ...(example ? {task: 'example'} : {})})),
               new Promise((_, reject) => {timer = setTimeout(() => {controller.abort(); reject(new ConversationError('EVALUATION_TIMEOUT'));}, evaluationTimeoutMs);}),
             ]);
           } finally {clearTimeout(timer);}

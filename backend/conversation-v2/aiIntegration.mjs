@@ -10,7 +10,9 @@ export function addUsage(total,usage) {
 
 // All dependencies are injected from the existing backend. No changes to V1's
 // quota rules, model settings, endpoints, memory or progress readers.
-export function createAiEvaluatorForRequest({enabled=false,getClient,getSettings,consumeQuota,recordUsage,onAccountingError=()=>{},onTiming=()=>{}}) {
+// refundQuota is optional: when supplied, a turn that fails after the reservation
+// (provider error, invalid output, timeout) gives the learner's quota unit back.
+export function createAiEvaluatorForRequest({enabled=false,getClient,getSettings,consumeQuota,recordUsage,refundQuota,onAccountingError=()=>{},onTiming=()=>{}}) {
   if(!enabled)return undefined;
   check([getClient,getSettings,consumeQuota,recordUsage].every(fn=>typeof fn==='function'),'INVALID_AI_CONFIG');
   return req => async input => {
@@ -24,6 +26,12 @@ export function createAiEvaluatorForRequest({enabled=false,getClient,getSettings
       throw new ConversationError(error?.status===429 || error?.isChatQuotaError ? 'V2_QUOTA_EXCEEDED' : 'V2_QUOTA_UNAVAILABLE');
     }
     try {return await evaluate(input);}
+    catch(error) {
+      if(typeof refundQuota==='function') {
+        try {await refundQuota(req);} catch {try{onAccountingError({code:'V2_QUOTA_REFUND_FAILED'});}catch{}}
+      }
+      throw error;
+    }
     finally {
       // The existing implementation releases its local quota lease synchronously
       // before doing best-effort durable accounting. Bound any injected adapter.

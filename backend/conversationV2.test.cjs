@@ -19,8 +19,32 @@ test('production mount exposes only the V2 catalog, requires auth and bounds ses
  try{
   assert.equal((await fetch(url+'/catalog?supportLanguage=ro')).status,401);
   const response=await fetch(url+'/catalog?supportLanguage=ro',{headers:{Authorization:'test'}});assert.equal(response.status,200);
-  const catalog=await response.json();assert.equal(catalog.scenarios.length,15);assert.equal(catalog.scenarios.filter(s=>s.kind==='free').length,6);
+  const catalog=await response.json();assert.equal(catalog.scenarios.length,247);assert.equal(catalog.scenarios.filter(s=>s.kind==='free').length,6);
+  // Every practical family is published with a reference variant and at least one harder one.
+  const practical=catalog.scenarios.filter(s=>s.kind==='scenario'&&s.id.startsWith('practice-'));
+  for(const id of new Set(practical.map(s=>s.id)))assert.ok(practical.filter(s=>s.id===id).length>=2,id);
+  const updated=catalog.scenarios.find(s=>s.version>1);assert.ok(updated);
+  assert.ok(catalog.scenarios.filter(s=>s.id===updated.id).every(s=>s.version===updated.version));
+  // A session started on the replaced version can still resolve its definition.
+  const previous=await fetch(url+`/catalog?supportLanguage=ro&scenarioId=${updated.id}&scenarioVersion=${updated.version-1}`,{headers:{Authorization:'test'}});
+  assert.equal(previous.status,200);const pinned=await previous.json();assert.ok(pinned.scenarios.length>=1);assert.ok(pinned.scenarios.every(s=>s.version===updated.version-1));
+  // One level on request; an unknown level is rejected.
+  const one=await (await fetch(url+'/catalog?supportLanguage=ro&level=B1',{headers:{Authorization:'test'}})).json();
+  assert.ok(one.scenarios.length>0&&one.scenarios.length<catalog.scenarios.length&&one.scenarios.every(s=>s.level==='B1'));
+  assert.equal((await fetch(url+'/catalog?supportLanguage=ro&level=Z9',{headers:{Authorization:'test'}})).status,400);
+  assert.equal((await fetch(url+'/catalog?supportLanguage=ro&scenarioVersion=wrong',{headers:{Authorization:'test'}})).status,400);
   assert.ok(!JSON.stringify(catalog).includes('35 NOK'));
+  const {learningLanguages,supportLanguages,supportedPair}=await import('./conversation-v2/languages.mjs');
+  for(const learning of Object.keys(learningLanguages))for(const support of Object.keys(supportLanguages)){
+   if(!supportedPair(learning,support))continue;
+   const result=await fetch(url+`/catalog?learningLanguage=${learning}&supportLanguage=${support}`,{headers:{Authorization:'test'}});
+   assert.equal(result.status,200);const rows=(await result.json()).scenarios;
+   for(const level of ['A1','A2','B1','B2','C1','C2']){
+    const practical=rows.filter(s=>s.kind==='scenario'&&s.level===level);
+    assert.ok(new Set(practical.map(s=>s.familyId)).size>=13,`${learning}:${support}/${level}`);
+    assert.ok(practical.every(s=>s.learningLanguage===learning&&s.supportLanguage===support));
+   }
+  }
   for(let i=0;i<11;i++){
    const result=await fetch(url+'/sessions',{method:'POST',headers:{Authorization:'test','Content-Type':'application/json'},body:'{}'});
    assert.equal(result.status,i===10?429:400);

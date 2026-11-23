@@ -16,7 +16,29 @@ export function validateCommand(command) {
   }
 }
 
-export function createSession({scenario, sessionId, ownerId, supportLanguage, mode, variantId, now, ttlMs = 3600000}) {
+// Translating the partner's line is comprehension support; only help that
+// supplies the learner's own words makes a completion "supported".
+const autonomy = help => help.some(item => item.kind !== 'translation') ? 'supported' : 'independent';
+// A stable choice per session, so retries and resumes see the same opening.
+const pick = (list, seed) => list[[...seed].reduce((n, c) => (n * 31 + c.charCodeAt(0)) >>> 0, 0) % list.length];
+
+// Implicit memory of free conversation. The phone keeps it and sends it when a
+// conversation starts; the server never stores it beyond the session. notes are
+// short recollections of what the learner said about themselves, level is a
+// note on how they actually spoke. Neither is shown in the chat.
+const MEMORY_AGE = 90 * 24 * 60 * 60 * 1000;
+export function readMemory(value, now) {
+  if (value === undefined || value === null) return undefined;
+  check(typeof value === 'object' && !Array.isArray(value) && Object.keys(value).every(key => ['notes', 'level'].includes(key)), 'INVALID_MEMORY');
+  const notes = value.notes ?? [], level = value.level ?? '';
+  check(Array.isArray(notes) && notes.length <= 8 && notes.every(note => note && typeof note === 'object'
+    && Object.keys(note).every(key => ['text', 'updatedAt'].includes(key)) && text(note.text, 240) && Number.isSafeInteger(note.updatedAt)), 'INVALID_MEMORY');
+  check(typeof level === 'string' && level.length <= 300, 'INVALID_MEMORY');
+  return {notes: notes.filter(note => note.updatedAt <= now && now - note.updatedAt < MEMORY_AGE).map(note => ({text: note.text.trim(), updatedAt: note.updatedAt})), level: level.trim()};
+}
+
+// Twelve hours: a learner can leave a conversation and resume it the same day.
+export function createSession({scenario, sessionId, ownerId, supportLanguage, mode, variantId, now, memory, ttlMs = 43200000}) {
   validateScenario(scenario);
   check(text(sessionId, 100) && text(ownerId, 100), 'INVALID_IDENTITY');
   check(scenario.kind==='free'?['free','live'].includes(mode):['guided', 'scenario'].includes(mode), 'UNSUPPORTED_MODE');
@@ -24,12 +46,14 @@ export function createSession({scenario, sessionId, ownerId, supportLanguage, mo
   check(Number.isSafeInteger(now) && Number.isSafeInteger(ttlMs) && ttlMs > 0 && ttlMs <= 86400000, 'INVALID_CLOCK');
   const variant = scenario.variants.find(v => v.id === variantId);
   check(variant, 'UNKNOWN_VARIANT');
+  check(memory === undefined || memory === null || ['free', 'live'].includes(mode), 'INVALID_MEMORY');
+  const remembered = readMemory(memory, now);
   return {schemaVersion: 2, id: sessionId, ownerId, scenarioId: scenario.id, scenarioVersion: scenario.version,
     learningLanguage: scenario.learningLanguage, supportLanguage, mode, variantId, revision: 0,
     state: scenario.initialState, status: 'active', expiresAt: now + ttlMs, turnCount: 0,
-    messages: mode==='live'?[]:[{id: 'opening', role: 'assistant', text: variant.opening}], help: [],
+    messages: mode==='live'?[]:[{id: 'opening', role: 'assistant', text: variant.openings ? pick(variant.openings, sessionId) : variant.opening}], help: [],
     assessment: scenario.criteria.map(c => ({id: c.id, status: 'missing', evidence: [], context: []})),
-    receipts: [], outcome: null};
+    receipts: [], outcome: null, ...(remembered ? {memory: remembered} : {})};
 }
 
 export function authorize(session, ownerId, now) {
@@ -131,10 +155,13 @@ export function applyCommand({scenario, session, ownerId, command, evaluation, n
   } else if (command.type === 'help') {
     check(session.mode!=='live','UNSUPPORTED_MODE');
     check(['hint', 'example', 'translation'].includes(command.kind), 'INVALID_HELP');
-    next.help.push({kind: command.kind, turn: session.turnCount, commandId: command.commandId});
+    const example = evaluation?.example;
+    if (example) check(text(example.text, 300) && text(example.translation, 400), 'INVALID_AI_OUTPUT');
+    next.help.push({kind: command.kind, turn: session.turnCount, commandId: command.commandId,
+      ...(example ? {example: {text: example.text, translation: example.translation}} : {})});
   } else if (command.type === 'finish') {
     next.status = 'completed';
-    next.outcome = {task: ['free','live'].includes(session.mode)?'not_applicable':'partial', reason: 'user_finished', autonomy: session.mode==='live'?'not_assessed':next.help.length ? 'supported' : 'independent', language: 'not_assessed'};
+    next.outcome = {task: ['free','live'].includes(session.mode)?'not_applicable':'partial', reason: 'user_finished', autonomy: session.mode==='live'?'not_assessed':autonomy(next.help), language: 'not_assessed'};
     next.feedback = feedbackFor(scenario,next,next.feedback?.languageNotes || []);
   } else {
     check(session.mode!=='live','UNSUPPORTED_MODE');
@@ -145,6 +172,14 @@ export function applyCommand({scenario, session, ownerId, command, evaluation, n
     const notes=validateLanguageNotes(evaluation.languageNotes ?? [],next.messages);
     const retained=(session.feedback?.languageNotes||[]).filter(old=>!notes.some(n=>n.messageId===old.messageId&&n.quote===old.quote));
     next.feedback = feedbackFor(scenario,next,[...retained,...notes].slice(-12));
+    if (session.mode === 'free' && evaluation.memory) {
+      const learned = evaluation.memory;
+      check(Array.isArray(learned.notes) && learned.notes.length <= 2 && learned.notes.every(note => text(note, 240))
+        && typeof learned.level === 'string' && learned.level.length <= 300, 'INVALID_AI_OUTPUT');
+      const fresh = learned.notes.map(note => note.trim());
+      const kept = (session.memory?.notes || []).filter(old => !fresh.some(note => note.toLowerCase() === old.text.toLowerCase()));
+      next.memory = {notes: [...kept, ...fresh.map(note => ({text: note, updatedAt: now}))].slice(-8), level: learned.level.trim() || session.memory?.level || ''};
+    }
     if (evaluation.provenance) {
       check(text(evaluation.provenance.model,160) && text(evaluation.provenance.policyVersion,80), 'INVALID_EVALUATOR');
       next.evaluator = {model:evaluation.provenance.model,policyVersion:evaluation.provenance.policyVersion};
@@ -157,7 +192,7 @@ export function applyCommand({scenario, session, ownerId, command, evaluation, n
       next.status = 'completed';
       next.outcome = {task: session.mode==='free'?'not_applicable':transition?.terminal ? 'achieved' : 'partial',
         reason: transition?.terminal ? 'criteria_met' : 'turn_limit',
-        autonomy: next.help.length ? 'supported' : 'independent', language: 'not_assessed'};
+        autonomy: autonomy(next.help), language: 'not_assessed'};
     }
   }
   next.revision++;
@@ -168,10 +203,14 @@ export function applyCommand({scenario, session, ownerId, command, evaluation, n
 
 export function sessionView(session) {
   return structuredClone({schemaVersion: 2, id: session.id, scenarioId: session.scenarioId,
-    scenarioVersion: session.scenarioVersion, learningLanguage: session.learningLanguage,
+    scenarioVersion: session.scenarioVersion, variantId:session.variantId, learningLanguage: session.learningLanguage,
     supportLanguage: session.supportLanguage, mode: session.mode, revision: session.revision,
     status: session.status, expiresAt: session.expiresAt, messages: session.messages,
     helpCommandIds:session.help.map(item=>item.commandId),
+    // An example answers the partner's current line; it disappears once the learner replies.
+    example:session.status==='active'&&session.help.findLast(item=>item.example&&item.turn===session.turnCount)?.example||null,
+    // For the phone to keep, never for display.
+    ...(['free','live'].includes(session.mode)?{memory:session.memory||null}:{}),
     ...(session.mode==='live'?{liveStarted:!!session.liveStarted,transcriptSource:session.transcriptSource||'client_realtime_unverified'}:{}),
     criteria: session.assessment.map(c => ({id: c.id, status: c.status})), outcome: session.outcome,
     feedback: session.status === 'completed' || session.mode==='free' ? session.feedback || null : null});

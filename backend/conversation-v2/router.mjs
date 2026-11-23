@@ -30,13 +30,22 @@ export function createConversationRouter({express, enabled = false, requireAuth,
   router.get('/catalog', wrap(async(req,res) => {
     const learning=req.query.learningLanguage||'nb';
     check(supportedPair(learning,req.query.supportLanguage),'INVALID_LANGUAGE');
-    res.json({schemaVersion:2,scenarios:catalog.filter(s => s.learningLanguage===learning&&Object.hasOwn(s.locales,req.query.supportLanguage))
-      .map(s => publicScenario(s,req.query.supportLanguage))});
+    const requestedId=req.query.scenarioId,version=req.query.scenarioVersion;
+    check(requestedId===undefined||text(requestedId,80),'INVALID_SCENARIO');
+    check(version===undefined||(requestedId&&/^[1-9][0-9]*$/.test(version)),'INVALID_SCENARIO');
+    // Optional: a phone showing one level does not download the other five.
+    const level=req.query.level;
+    check(level===undefined||['A1','A2','B1','B2','C1','C2'].includes(level),'INVALID_LEVEL');
+    const latest=new Map();for(const s of catalog)latest.set(s.id,Math.max(latest.get(s.id)||0,s.version));
+    res.json({schemaVersion:2,scenarios:catalog.filter(s => s.learningLanguage===learning&&Object.hasOwn(s.locales,req.query.supportLanguage)
+      &&(!level||s.level===level)
+      &&(!requestedId||s.id===requestedId)&&s.version===(version?Number(version):latest.get(s.id)))
+      .flatMap(s => s.variants.map(v=>publicScenario(s,req.query.supportLanguage,v.id)))});
   }));
   router.post('/sessions', wrap(async(req,res) => {
     const body = req.body;
     check(body && typeof body === 'object' && !Array.isArray(body),'INVALID_COMMAND');
-    check(Object.keys(body).every(k => ['scenarioId','scenarioVersion','supportLanguage','mode','variantId'].includes(k)),'INVALID_COMMAND');
+    check(Object.keys(body).every(k => ['scenarioId','scenarioVersion','supportLanguage','mode','variantId','memory'].includes(k)),'INVALID_COMMAND');
     check(text(body.scenarioId,80) && Number.isSafeInteger(body.scenarioVersion) && body.scenarioVersion > 0
       && /^[a-z]{2}$/.test(body.supportLanguage || '') && ['guided','scenario','free','live'].includes(body.mode)
       && text(body.variantId,80),'INVALID_COMMAND');
