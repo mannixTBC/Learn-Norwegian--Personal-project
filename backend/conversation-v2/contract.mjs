@@ -13,6 +13,7 @@ export function validateScenario(s) {
   const free=s?.kind==='free';
   check(s?.kind===undefined || ['free','scenario'].includes(s.kind));
   check(s?.schemaVersion === 2 && id(s.id) && id(s.familyId));
+  check(s.levelCheck === undefined || (!free && s.levelCheck === true));
   check(Number.isSafeInteger(s.version) && s.version > 0 && Object.hasOwn(learningLanguages,s.learningLanguage));
   check(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(s.level));
   check(s.interaction === undefined || (!free && ['service', 'reversed', 'interview'].includes(s.interaction)));
@@ -55,7 +56,7 @@ export function publicScenario(s, supportLanguage,variantId=s.variants[0].id) {
     kind:s.kind||'scenario',
     learningLanguage: s.learningLanguage, supportLanguage, level: s.level, defaultVariantId: variant.id,
     maxTurns:s.maxTurns,estimatedMinutes:Math.max(3,Math.ceil(s.maxTurns*.45)),
-    topics:s.topics||[],paths:s.paths||[],artworkId:s.artworkId,challenge:variant.challenge||0,
+    topics:s.topics||[],paths:s.paths||[],artworkId:s.artworkId,...(s.levelCheck?{levelCheck:true}:{}),challenge:variant.challenge||0,
     title: locale.title+(locale.variantTitles?.[variant.id]?' · '+locale.variantTitles[variant.id]:''), brief: locale.brief, learnerRole: locale.learnerRole, partnerRole: locale.partnerRole,
     criteria: s.criteria.map(c => ({id: c.id, label: locale.criteria[c.id]}))});
 }

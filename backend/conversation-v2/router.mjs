@@ -36,9 +36,12 @@ export function createConversationRouter({express, enabled = false, requireAuth,
     // Optional: a phone showing one level does not download the other five.
     const level=req.query.level;
     check(level===undefined||['A1','A2','B1','B2','C1','C2'].includes(level),'INVALID_LEVEL');
+    // Final level evaluations open from the course, not the practical library:
+    // listed only when asked for (levelChecks=1) or requested by id.
+    const levelChecks=req.query.levelChecks==='1';
     const latest=new Map();for(const s of catalog)latest.set(s.id,Math.max(latest.get(s.id)||0,s.version));
     res.json({schemaVersion:2,scenarios:catalog.filter(s => s.learningLanguage===learning&&Object.hasOwn(s.locales,req.query.supportLanguage)
-      &&(!level||s.level===level)
+      &&(!level||s.level===level)&&(!s.levelCheck||levelChecks||!!requestedId)
       &&(!requestedId||s.id===requestedId)&&s.version===(version?Number(version):latest.get(s.id)))
       .flatMap(s => s.variants.map(v=>publicScenario(s,req.query.supportLanguage,v.id)))});
   }));
