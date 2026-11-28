@@ -44,6 +44,7 @@ app.use('/api/voice/practice', voicePracticeRouter);
 app.use('/api/voice/transcripts', voiceTranscriptsRouter);
 app.use('/api/voice', voiceRouter);
 app.use('/api/account', accountRouter);
+app.use('/api/contact', express.json({ limit: '16kb' }), require('./routes/contact'));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
